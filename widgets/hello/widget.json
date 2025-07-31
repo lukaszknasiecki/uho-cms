@@ -1,0 +1,14 @@
+{
+    "icon":"{{icon}}",
+    "params":["bg-primary","text-white"],
+    "pl":
+    {
+        "label": "Cześć, {{name}} 👋",
+        "text":"{% if ago %} {{ago}} od Twojego ostatniego logowania.{% else %}Witamy po raz pierwszy w naszym CMS-ie!{% endif %}"
+    },
+    "en":
+    {
+        "label": "Hello, {{name}}!",
+        "text":"{% if ago %}It's been {{ago}} since your last login.{% else %}Welcome for the first time here!{% endif %}"
+    }
+}

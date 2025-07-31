@@ -1,0 +1,70 @@
+{
+    "table": "serdelia_widgets",
+    "label":
+    {
+        "page":"Serdelia Homepage Widgets",
+        "edit":"Serdelia Widget: <code>{% if widget %}{{widget}}{% else %}new{% endif %}</code>"
+    },
+    
+    "order": "level",
+    "model":{"label":"{{level}}"},
+    "buttons_page": [
+        {
+            "label": "before",
+            "plugin": "serdelia_widgets_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_widgets_after",
+            "on_update": true,
+            "hidden":true
+        },
+        {
+            "type":"url",
+            "icon":"eye",
+            "label":"Preview",
+            "url": "home",
+            "class":"default"
+        }
+    ],
+    "buttons_edit": [
+        {
+            "label": "before",
+            "plugin": "serdelia_widgets_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_widgets_after",
+            "on_update": true,
+            "hidden":true
+        }
+        
+    ],
+    "fields": [
+        {
+            "label": "Widget",
+            "field": "widget",
+            "list": true,
+            "settings":{"style":"json"}
+        },
+        
+        {
+            "field":"label",
+            "label":"Copy",
+            "list":true
+        },
+        {
+            "field":"icon",
+            "label":"Icon",
+            "list":true
+        },
+        {
+            "field":"page",
+            "label":"Page"
+        }
+    ]
+}

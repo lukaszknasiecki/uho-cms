@@ -1,0 +1,10 @@
+{% set templates = [
+    'video'
+    ]
+%}
+
+{% for file in templates %}
+    <script type="text/x-jsrender" id="tmpl-{{file}}">
+    {{ source ('templates/'~file~'.html') }}
+    </script>
+{% endfor %}

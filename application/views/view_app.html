@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+
+<head>
+
+  {% include 'scaffold/meta.html' %}
+  {% include 'scaffold/bootstrap.html' %}
+  {% include 'scaffold/css.html' %}
+
+  {% if scaffold.logout_expired %}
+  <script>
+    setTimeout(function () {
+      window.location.href = "{{scaffold.url_logout_expired}}";
+    }, {{ scaffold.logout_expired * 1000 * 60 }});
+  </script>
+  {% endif %}
+
+</head>
+
+<body class="no-menu" data-base-path="{{url_base}}">
+
+  {% if scaffold.nav %}
+    {% include 'modules/nav.html' %}
+  {% endif %}
+  
+  {{content|raw}}
+
+  {% include 'scaffold/wysiwyg1.html' with {editor:scaffold.cfg.wysiwyg} %}
+  {% include 'scaffold/js1.html' %}
+  {% include 'scaffold/wysiwyg2.html' with {editor:scaffold.cfg.wysiwyg} %}
+  {% include 'scaffold/js2.html' %}
+
+  {% for item in scaffold.js_array %}
+  <script src="{{item}}"></script>
+  {% endfor %}
+</body>
+
+</html>

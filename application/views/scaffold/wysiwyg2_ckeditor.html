@@ -1,0 +1,34 @@
+<script type="text/javascript" src="/serdelia/public/ckeditor/ckeditor.js?v=4.16.1"></script>
+<script>
+  CKEDITOR.config.contentsCss = '{{scaffold.cfg.cfg_path}}/ckeditor/contents.css?v={{version}}';
+  CKEDITOR.config.customConfig = '{{scaffold.cfg.cfg_path}}/ckeditor/config.js?v={{version}}';
+  CKEDITOR.config.templates_files = ['{{scaffold.cfg.cfg_path}}/ckeditor/templates.js?v={{version}}'];
+  CKEDITOR.config.language = '{{lang}}';
+
+  CKEDITOR.on('dialogDefinition', function(ev) {
+    var dialogName = ev.data.name;
+    var dialogDefinition = ev.data.definition;
+
+    if (dialogName == 'image') {
+        var infoTab = dialogDefinition.getContents( 'info' );
+        infoTab.remove( 'txtBorder' ); //Remove Element Border From Tab Info
+        infoTab.remove( 'txtHSpace' ); //Remove Element Horizontal Space From Tab Info
+        infoTab.remove( 'txtVSpace' ); //Remove Element Vertical Space From Tab Info
+        infoTab.remove( 'txtWidth' ); //Remove Element Width From Tab Info
+        infoTab.remove( 'txtHeight' ); //Remove Element Height From Tab Info
+
+        //Remove tab Link
+        dialogDefinition.removeContents( 'Link' );
+    }
+});
+
+  CKEDITOR.on('instanceReady', function (ev) {    
+    ev.editor.on('change', function () { Apps.Edit.changeField(); });
+  });
+  {% for key, value in scaffold.wysiwyg.configs %}
+    CKEDITOR.replace('{{key}}', { 
+      customConfig: '/serdelia_config/ckeditor/{{value}}.js' 
+    
+    });
+  {% endfor %}
+</script>

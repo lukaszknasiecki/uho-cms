@@ -1,0 +1,31 @@
+{
+    "name": "lukaszknasiecki/uho-cms",
+    "description": "CMS for UHO-MVC framework",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lukasz Knasiecki",
+            "email": "lukasz@knasiecki.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=8.2",
+        "twig/twig": "^3.3",
+        "james-heinrich/phpthumb": "^1.7.23",
+        "lukaszknasiecki/uho-mvc": "*",
+        "james-heinrich/getid3": "2.0.x-dev",
+        "vimeo/vimeo-api": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

@@ -1,0 +1,38 @@
+{% if records|length==0 %}{% set alert=translate.no_records %}{% endif %}
+{% include 'header/header.html' with {'label': schema.label,'buttons':buttons,'type':'page','alert':alert,'filters':filters,'paging':paging,'help':schema.help,'search':schema.search,'layouts':schema.layouts } %}
+
+<div class="serdelia-body serdelia-bg-color{% if schema_editor %}-schema{% endif %}">
+<div class="container serdelia-page">
+ 
+{% if schema.search %}
+  {% include 'modules/page/search.html' %}
+{% endif %}
+
+{% if schema.help %}
+<div class="col-lg-12 {% if schema.help.hidden %}d-none{% endif %}" style="padding:0">
+  <div class="alert alert-primary alert-dismissible serdelia-page-toggle-help" role="alert" data-page-help="{{schema.page_with_params}}">
+  <span class="close" style="padding-top:0;padding-right:10px;cursor:pointer" aria-label="close"><small>&times;</small></span>
+  {{schema.help.label|szewce|raw}}
+  </div>
+</div>
+{% endif %}
+
+
+{% if records|length>0 %}
+
+  {% if schema.layout.type=='grid' %}
+    {% include 'modules/page_layout_grid.html' %}
+  {% elseif schema.layout.type=='preview' %}
+    {% include 'modules/page_layout_preview.html' %}
+  {% else %}
+    {% include 'modules/page_layout_list.html' %}
+  {% endif %}
+
+{% endif %}
+ 
+
+
+{% include 'modals/modal_removerecord.html' %}
+
+</div>
+</div>

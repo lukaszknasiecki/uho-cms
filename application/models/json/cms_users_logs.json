@@ -1,0 +1,70 @@
+{
+    "table": "cms_users_logs",
+    "order": "!datetime",
+    "disable": [
+        "add",
+        "edit",
+        "remove",
+        "backup"
+    ],
+    "fields": [
+        {
+            "label_PL": "Data i czas",
+            "label_EN": "Date",
+            "field": "datetime",
+            "type": "datetime",
+            "default":"{{now}}",
+            "list": true,
+            "edit": false,
+            "search": true
+        },
+        {
+            "label_PL": "Identyfikator sesji",
+            "label_EN": "Session ID",
+            "field": "session",
+            "type": "integer",
+            "list": true,
+            "edit": false,
+            "search": true
+        },
+        {
+            "label_PL": "Użytkownik",
+            "label_EN": "User",
+            "field": "user",
+            "type": "select",
+            "source": {
+                "model": "cms_users"
+            },
+            "list": true,
+            "edit": false,
+            "search": true
+        },
+        {
+            "label_PL": "Akcja",
+            "label_EN": "Action",
+            "field": "action",
+            "type":"select",
+            "options": [
+                {
+                    "value": "login",
+                    "label": "Login"
+                },
+                {
+                    "value": "edit",
+                    "label": "Edit"
+                },
+                {
+                    "value": "remove",
+                    "label": "Remove"
+                },
+                {
+                    "value": "logout",
+                    "label": "Logout"
+                }
+            ],
+            "list": true,
+            "edit": false,
+            "search": true
+        }
+    ]
+}

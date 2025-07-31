@@ -1,0 +1,40 @@
+<!-- sections style -->
+
+<div class="page-header page-header-short">
+    <div class="container">
+      <h1>Hello!</h1>
+    </div>
+  </div>
+  
+  <div class="container container--home" style="padding-top:30px">
+
+    <div class="row">
+    {% for section in sections %}
+        {% set section_id=loop.index %}       
+        <div class="col-md-4" style="padding-bottom:40px;padding-right:100px">
+          <h4 style="padding-bottom:10px">
+            <span class="mdi mdi-{{section.icon}}"></span>
+            {{section.label}}
+          </h4>
+          <small></small>
+          <ul style="margin-top:10px;margin-left:-38px;line-height:26px;list-style-type: none;">
+          {% for item in section.items %}
+          {% set item_id=loop.index %}       
+            {% if item.submenu %}
+              <li><a data-toggle="collapse" href="#collapse_{{section_id}}_{{item_id}}">{{item.label}} ꜜ</a></li>
+              <ul class="collapse" id="collapse_{{section_id}}_{{item_id}}">
+              {% for i in item.submenu %}
+              <li><a href="{{i.url}}">{{i.label}}</a></li>
+              {% endfor %}
+              </ul>
+            {% else %}
+            <li><a href="{{item.url}}">{{item.label}}</a></li>
+            {% endif %}
+          {% endfor %}                             
+          </ul>
+        </div>
+      {% endfor %}
+      </div>
+  
+  
+  </div>

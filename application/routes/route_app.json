@@ -1,0 +1,136 @@
+{
+    "controllers": {
+        "": "home",
+        "add": "edit",
+        "home": "home",
+        "404": "404",
+        "api": "api",
+        "create": "create",
+        "edit": "edit",
+        "login": "login",
+        "logout": "logout",
+        "password-change": "password_change",
+        "page": "page",
+        "page/%": "page",
+        "plugin": "plugin",
+        "plugin-page": "plugin",
+        "plugin-edit": "plugin",
+        "remove": "remove",
+        "report": "reports",
+        "settings": "settings",
+        "s3": "s3",
+        "write": "write",
+        "view": "edit"
+    },
+    "paths": {
+        "url_now": {
+            "type": "url_now"
+        },
+        "url_now_http": {
+            "type": "url_now_http"
+        },
+        "add": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params"
+            ],
+            "value": "edit/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+        },
+        "edit": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params",
+                "record"
+            ],
+            "value": "edit/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+        },
+        "email": {
+            "type": "email",
+            "email": "email",
+            "hash": true
+        },
+        "external": {
+            "type": "twig",
+            "input": [
+                "link"
+            ],
+            "value": "{{link}}",
+            "skip": true
+        },
+        "logout": {
+            "value": "logout"
+        },
+        "logout_expired": {
+            "value": "logout?expired"
+        },
+        "page": {
+            "type": "twig",
+            "params": {
+                "get": "query",
+                "params": "raw"
+            },
+            "input": [
+                "page",
+                "params",
+                "sort",
+                "query"
+            ],
+            "value": "page/{{page}}{% if params %}{{params|join(',')}}{% endif %}?{{query}}{% if sort %}&sort={{sort}}{% endif %}"
+        },
+        "password_change": {
+            "value": "password-change"
+        },
+        "plugin": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params",
+                "record",
+                "plugin",
+                "get"
+            ],
+            "input_format":
+                {"params": "json"},
+            "value": "{% if record %}plugin-edit{% else %}plugin-page{% endif %}/{{page}}{% if record %}/{{record}}{% endif %}/{{plugin}}?params={{params}}"
+        },
+        "remove": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params",
+                "record"
+            ],
+            "value": "remove/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+        },
+        "settings": {
+            "type": "twig",
+            "input": [
+                "subtype"
+            ],
+            "value": "settings{% if subtype %}/{{subtype}}{% endif %}"
+        },
+        "search": {
+            "value": "search"
+        },
+        "view": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params",
+                "record"
+            ],
+            "value": "view/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+        },
+        "write": {
+            "type": "twig",
+            "input": [
+                "page",
+                "params",
+                "record"
+            ],
+            "value": "write/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+        }
+    }
+}

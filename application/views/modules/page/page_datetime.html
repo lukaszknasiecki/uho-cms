@@ -1,0 +1,1 @@
+{% if value|slice(0,4)=='0000' %}-{% elseif field.list is same as('date') %}{{value|slice(0,10)}}{% else %}{{value}}{% endif %}

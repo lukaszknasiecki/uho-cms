@@ -1,0 +1,33 @@
+<ifmodule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css image/svg+xml application/x-javascript application/javascript text/javascript
+</ifmodule>
+<ifModule mod_headers.c>
+Header set Connection keep-alive
+</ifModule>
+<FilesMatch \.(php)$>
+Order deny,allow
+Deny from all
+Allow from env=localreferer
+</FilesMatch>
+<FilesMatch "index.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+RewriteEngine On
+Options -Indexes
+
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^(.*)$ index.php?url=$1 [NC,L]
+
+RedirectMatch 404 /.git
+RedirectMatch 404 /vendor/
+RedirectMatch 404 /application
+RedirectMatch 404 /application_config
+RedirectMatch 404 /configs
+RedirectMatch 404 /docs
+RedirectMatch 404 /reports
+RedirectMatch 404 /widgets

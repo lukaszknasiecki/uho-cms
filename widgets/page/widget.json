@@ -1,0 +1,15 @@
+{
+    "icon":"",
+    "params":[],
+    "pl":
+    {
+        "label": "{{label}}",
+        "text" : "W tej tabeli {{all|declination(['znajduje','znajdują','znajduje'])}} się {{all|declination(['wpis','wpisy','wpisów',true])}}{% if active>=0 %}, w tym {{active|declination(['aktywny','aktywne','aktywnych',true])}}{% endif %}."
+    },
+    "en":
+    {
+        "label": "{{label}}",
+        "text" : "There {% if all==0 %}is no{% elseif all==1 %}is{% else %}are{% endif %} {{all}} {% if all==1 %}item{% else %}items{% endif %} in this table{% if active>=0 %}, {% if all==active %}all{% else %}{{active}}{% endif %} of them are active{% endif %}.",
+        "footer":"Edit this table"
+    }
+}

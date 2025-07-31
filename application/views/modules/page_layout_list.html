@@ -1,0 +1,42 @@
+<table class="table" id="serdelia_page" data-url-write="{{schema.url_write}}" data-_srdcsrftkn="{{csrf_token_value}}">
+
+  <!-- header -->
+  
+  <thead>
+    <tr height=45>
+      {% for item in schema.fields %}
+      {% if not item.list_hidden %}
+      <th width="{{item.width}}%"  style="vertical-align:top">
+        {% if not schema.sortable and item.url_sort %}
+        <a href="{{item.url_sort}}" style="font-weight:lighter">{{item.label}} {% if item.lang %}<small>{{item.lang|upper}}</small>{% endif %} {% if item.field==schema.order.field %}&nbsp;{% if schema.order.sort!='DESC' %}[[icon::arrow-downward]]{% else %}[[icon::arrow-upward]]{% endif %}{% endif %}</a>
+        {% else %}<span style="font-weight:lighter">{{item.label}} {% if item.lang %}<small>{{item.lang|upper}}</small>{% endif %}</span>
+        {% endif %}
+      </th>
+      {% endif %}
+      {% endfor %}
+      <th colspan=2></th>
+    </tr>
+  </thead>
+
+  <!-- records -->
+  <tbody id="pageList" {% if schema.sortable %}data-sortable="true" data-field="{{schema.sortable.field}}" data-path="{{schema.url_sort}}"{% endif %}>
+    {% for record in records %}
+    <tr class="{% if record.values.active is defined %}serdelia-grid-container serdelia-grid-activate {% if record.values.active is same as ("0") %}serdelia-grid-inactive{% endif %}{% endif %}" data-id="{{record.id}}" {% if record.url_edit %}style="cursor: pointer;" onclick="document.location.href='{{record.url_edit}}'"{% endif %}>
+        {% for item in schema.fields %}
+        {% if not item.list_hidden %}        
+          <td width="{{item.width}}%" class="{% if item.list is same as ('order') %}tr_sortable{% endif %}">
+            {% if item.list.type=='badge' %}
+            {% include 'modules/page/subview_badge.html' with {'list':item.list,'value':record.values[item.field] } %}
+            {% elseif record.values[item.field].html %}{{record.values[item.field].html|raw}}{% else %}
+              {% include 'modules/page/page_'~item.type~'.html' with {'value':record.values[item.field],'record':record,'field':item } %}
+            {% endif %}
+          </td>
+        {% endif %}
+        {% endfor %}
+      {% if record.url_remove %}
+        <td align="right"><a href="#"><span data-url="{{record.url_remove}}" style="color:#aaa" class="mdi mdi-delete-forever mdi-15x serdelia-removeRecord"></span></a></td>
+      {% endif %}
+    </tr>
+      {% endfor %}
+    </tbody>
+</table>

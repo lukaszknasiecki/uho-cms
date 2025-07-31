@@ -1,0 +1,9 @@
+{
+    "fields": [
+        {
+            "field": "list",
+            "label": "List view",
+            "type":"boolean"
+        }
+    ]
+}

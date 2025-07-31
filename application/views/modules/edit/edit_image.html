@@ -1,0 +1,129 @@
+{% set original='' %}
+{% set new=true %}
+{% set webp_missing=false %}
+{% set webp_present=0 %}
+{% for item in field.images %}
+	{% if value[item.folder] or value[item.id] %}{% set new=false %}{% endif %}
+{% endfor %}
+
+ <div id="{{field.field}}_files" class="files" style="margin-bottom:10px">
+ 	<div style="position:relative">
+        {% if '.svg?' in value.original %}
+        <img class="" height="100" style="max-height:516px" src="{{value.original}}">
+        <div style="position:absolute;top:0;left:0;text-align:right;width:100%">
+            <a href="{{value.original}}" type="button" target="_blank" class="mdi mdi-remove-red-eye serdelia-edit-imageUploadView" style="right:5px;"></a>
+        </div>
+        {% else %}
+
+ 		{% for item in field.images %}
+         
+         {% if loop.index>1 and field.settings.webp and value[item.folder] and not value[item.folder~'_webp'] %}{% set webp_missing=true %}
+         {% elseif loop.index>1 and field.settings.webp and value[item.folder~'_webp'] %}{% set webp_present=webp_present+1 %}{% endif %}
+         
+		<div class="serdelia-edit-image-thumb serdelia-edit-image-thumb-{{field.field}}" {% if not item.preview %}style="display:none"{% endif %}>
+            {% set src=value[item.id] %}
+            {% if src %}
+			<span class="serdelia-edit-image-thumb-size">{{item.width}}×{{item.height}}</span>
+			<img class="image" style="{% if field.settings.view_background %}padding:10px;background-color:{{field.settings.view_background}}{% endif %}" src="{{src}}">
+            <div style="position:absolute;top:0;left:0;text-align:right;width:100%">
+                {% if loop.index>1 %}
+                <span data-input="{{field.cms_field}}_crop_data_{{loop.index0}}" data-ratio="{{item.ratio}}" 
+                data-field="{{field.cms_field}}" type="button" class="mdi mdi-crop serdelia-edit-imageUploadView serdelia-edit-imageCrop"></span>
+                <div class="spinner-border" role="status"  style="display:none;margin-right:5px;width:10px;height:10px;margin-bottom:6px"></div>                
+                {% else %}            
+                    {% set original=src %}
+                {% endif %}
+                <a href="{{src}}" type="button" target="_blank" class="mdi mdi-remove-red-eye serdelia-edit-imageUploadView" style="right:5px;"></a>
+            </div>
+			<p class="serdelia-edit-image-thumb-on-off" data-field="{{field.cms_field}}_img_0" style="margin-top:5px"><small>{{item.label}}</small></p>
+			{% else %}
+			<div class="empty"></div>
+			<p class="serdelia-edit-image-thumb-on-off" data-field="{{field.cms_field}}_img_0" style="display:none;margin-top:5px">
+                <p class="serdelia-edit-image-thumb-on-off" data-field="{{field.cms_field}}_img_0" style="margin-top:5px"><small>{{item.label}}</small></p>
+			{% endif %}
+		</div>
+		{% endfor %}
+        {% endif %}
+	</div>
+</div>
+
+{% if webp_missing %}
+    <span style="float:right;margin:5px" class="badge badge-sm badge-warning">webP files missing</span>
+{% elseif webp_present==field.images|length-1 %}
+    <span style="float:right;margin:5px" class="badge badge-sm badge-default">webP files present</span>
+{% endif %}
+
+<div id="{{field.cms_field}}_checkbox_containter" style="display:none;padding-bottom:10px;position:relative">
+	<div style="display:inline-block;padding-right:5px;width:100px;"><input type="checkbox" name="{{field.cms_field}}_folder_original" checked> Oryginalne</div><div style="display:inline-block;padding-right:5px;width:100px;"><input type="checkbox" name="{{field.cms_field}}_folder_thumb" checked> Desktop</div>
+</div>
+{% if not new and not field.disabled and field.edit is not same as false %}
+<span class="btn btn-default serdelia-edit-show-on-demand" data-show='["#{{field.field}}_drag_upload",".serdelia-edit-image-thumb-{{field.field}}"]'>
+        <i class="mdi mdi-crop pull-left"></i> <span>{{translate.showOptions}}</span>
+</span>
+{% endif %}
+
+<!-- DRAG UPLOAD -->
+<div class="serdelia-drag-upload" data-field="{{field.cms_field}}" style="{% if not new %}display:none{% endif %}" id="{{field.field}}_drag_upload">
+    
+    <span class="btn btn-primary fileinput-button">
+        <i class="mdi mdi-pull-left mdi-add"></i> <span>{% if new %}{{translate.imageAdd}}{% else %}{{translate.imageChange}}{% endif %}</span>        
+        <input class="fileupload" id="{{field.field}}" type="file" name="files[]" {% if field.extensions %}data-extensions="{{field.extensions|join('|')}}"{% endif %}>
+    </span>
+    
+    {% if new %}
+    <span class="btn btn-warning fileinput-button serdelia-edit-image-saveedit">
+        	<i class="mdi mdi-pull-left mdi-crop"></i> <span>{{translate.imageSaveEdit}}</span>
+    </span>
+    {% endif %}
+
+    {% if not new %}
+    {% for item in field.images %}
+    {% if loop.index>1 %}
+     <input type="hidden" name="{{field.cms_field}}_crop_data_{{loop.index0}}" id="{{field.cms_field}}_crop_data_{{loop.index0}}">
+     {% endif %}
+    {% endfor %}
+     &nbsp;
+    <input class="serdelia-edit-field serdelia-edit-image-utils-checkbox" id="{{field.cms_field}}_remove" name="{{field.cms_field}}_remove" type="checkbox"> <label for="{{field.cms_field}}_remove" class="serdelia-edit-image-utils">{{translate.remove_image}}</label>    
+
+    <input class="serdelia-edit-field serdelia-edit-image-utils-checkbox" id="{{field.cms_field}}_rescale" name="{{field.cms_field}}_rescale" type="checkbox"> <label  class="serdelia-edit-image-utils" for="{{field.cms_field}}_rescale">{{translate.rescale_image}}</label>
+    <input class="serdelia-edit-image-utils-checkbox serdelia-edit-image-editor" id="{{field.cms_field}}_edit" name="{{field.cms_field}}_recompress" type="checkbox"> <label class="serdelia-edit-image-utils" for="{{field.cms_field}}_edit">{{translate.image_editor}}</label>
+    <!-- transform area -->
+    <div class="serdelia-image-transform-area" id="{{field.cms_field}}_edit_area">
+        <label class="serdelia-edit-image-utils" for="{{field.cms_field}}_recompress">{{translate.image_editor_rotate}}</label>
+                    
+            <input type="radio" class="btn-check" value="" name="{{field.cms_field}}_rotate" id="{{field.cms_field}}_rotate0" autocomplete="off" checked>
+            <label for="{{field.cms_field}}_rotate0">0°</label>
+            &nbsp;&nbsp;
+            <input type="radio" class="btn-check serdelia-edit-field" value="90" name="{{field.cms_field}}_rotate" id="{{field.cms_field}}_rotate1" autocomplete="off">
+            <label for="{{field.cms_field}}_rotate1">↺ -90°</label>
+            &nbsp;&nbsp;
+            <input type="radio" class="btn-check serdelia-edit-field" value="-90" name="{{field.cms_field}}_rotate" id="{{field.cms_field}}_rotate2" autocomplete="off">
+            <label for="{{field.cms_field}}_rotate2">↻ +90°</label>
+            &nbsp;&nbsp;
+            <input type="radio" class="btn-check serdelia-edit-field" value="180" name="{{field.cms_field}}_rotate" id="{{field.cms_field}}_rotate3" autocomplete="off">
+            <label for="{{field.cms_field}}_rotate3">180°</label>
+                      
+        <br>
+        <input class="serdelia-edit-field serdelia-edit-image-utils-checkbox" id="{{field.cms_field}}_recompress" name="{{field.cms_field}}_recompress" type="checkbox"> <label class="serdelia-edit-image-utils" for="{{field.cms_field}}_recompress">{{translate.rescale_drawing}}</label>
+        <input class="serdelia-edit-field serdelia-edit-image-utils-checkbox" id="{{field.cms_field}}_normalize" name="{{field.cms_field}}_normalize" type="checkbox"> <label class="serdelia-edit-image-utils" for="{{field.cms_field}}_normalize">{{translate.normalize_original}}</label>
+        
+    </div>        
+    {% endif %}
+    <!-- The global progress bar -->
+    <div id="{{field.field}}_progress" class="progress" style="display:none;margin-top:10px;;margin-bottom:0px">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+</div>
+<!-- END DRAG UPLOAD -->
+
+<!-- The container for the uploaded files and CROP image -->
+<input id="{{field.field}}_filename" name="{{field.cms_field}}" type="hidden">
+{% if field.cors %}
+<div data-ratio="" id="{{field.cms_field}}_crop" style="display:none;margin-top:15px" data-temp="{{field.cors.original}}" data-cors="{{original}}">
+	<img style="max-width:500px;max-height:500px">
+</div>
+{% else %}
+<div data-ratio="" id="{{field.cms_field}}_crop" style="display:none;margin-top:15px">
+	<img style="max-width:500px;max-height:500px" src="{{original}}">
+</div>
+{% endif %}

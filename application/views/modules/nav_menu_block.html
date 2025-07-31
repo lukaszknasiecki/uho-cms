@@ -1,0 +1,31 @@
+  <!-- menu block -->
+ {% for item in items %}
+ {% if item.hr %}<div class="dropdown-divider"></div>{% endif %}
+  	{% if not item.submenu and not submenu %}
+  	<li class="nav-item">
+            <a class="nav-link" href="{{item.url}}">{{item.label}}</a>
+     </li>
+  	{% elseif not item.submenu and submenu %}
+  	<li>
+  		<a class="dropdown-item" href="{{item.url}}">{{item.label}}</a>
+  	</li>
+    {% elseif not submenu %}
+       <li class="nav-item dropdown" {% if small %}style="font-size:12px;padding-right:0px"{% endif %}>
+              <a class="nav-link dropdown-toggle" href="#" {#id="navbardrop"#} data-toggle="dropdown">
+                {{item.label}}
+              </a>
+              <ul class="dropdown-menu">
+              	{% include 'modules/nav_menu_block.html' with {'items':item.submenu,'submenu':true } %}
+              </ul>
+        </li>
+    {% else %}
+       <li class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#" {#id="navbardrop"#}>
+                {{item.label}}
+              </a>
+              <ul class="dropdown-menu">
+              	{% include 'modules/nav_menu_block.html' with {'items':item.submenu,'submenu':true } %}
+              </ul>
+        </li>
+	{% endif %}
+{% endfor %}

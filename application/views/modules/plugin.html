@@ -1,0 +1,26 @@
+{% if not fullscreen and not lightbox %}
+{% include 'header/header.html' with {'label':translate.title,'type':'plugin','buttons':buttons } %}
+
+<div class="serdelia-body-edit">
+  <div class="container serdelia-edit">
+  	{% if not result %}
+  	<div class="alert alert-danger">
+    <b>{{translate.error}}:</b> {% if translate[message] %}{{translate[message]}}{% else %}{{message}}{% endif %}
+	</div>
+	{% else %}
+	{{html|raw}}
+    {% endif %}
+ </div>    
+</div>
+{% else %}
+
+<link href="{{root_path}}/public/bootstrap-plugins/material-icons/css/material-icons.min.css" rel="stylesheet">
+<body style="margin:0">
+  <div style="padding:5;width:100%;height:16px;font-size:12px;font-family:Helvetica,Arial;color:#ffffff;background-color:#808080">
+    {% if new_window %}
+    <a style="float:right; margin-right:20px;  color:#ffffff;text-decoration:none;" target="_blank" href="{{new_window}}"><span class="mdi mdi-open-in-new"></span></a>
+    {% endif %}
+    <a style="float:right; margin-right:20px;  color:#ffffff;text-decoration:none;" href="{{url_back}}">&#8592; {{translate.back}}</a>
+  </div>
+{{html|raw}}
+{% endif %}

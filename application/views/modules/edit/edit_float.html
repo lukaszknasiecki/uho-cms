@@ -1,0 +1,8 @@
+<input type="number" step="0.001"
+{% if field.placeholder is same as true %}placeholder="{{field.label}}"{% elseif field.placeholder %}placeholder="{{field.placeholder}}"{% endif %}
+name="{{field.cms_field}}" class="form-control serdelia-edit-field"
+id="{{field.cms_field}}"
+value="{% if field.settings.blank_on_zero and value==0 %}{% else %}{{value}}{% endif %}"
+{% if field.required %}required{% endif %}{% if field.on_demand or field.edit is same as(false) %}readonly{% endif %}
+{% if field.settings.step %}step="{{field.settings.step}}"{% endif %}
+>

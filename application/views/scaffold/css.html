@@ -1,0 +1,13 @@
+{% if scaffold.mode=='dark' %}
+<link href="{{serdelia_path}}/public/css/main-dark.css?v=1814" rel="stylesheet">
+{% else %}
+<link href="{{serdelia_path}}/public/css/main.css?v=1814" rel="stylesheet">{% endif %}
+{% if scaffold.css %}
+<link href="{{scaffold.css}}" rel="stylesheet">
+{% endif %}
+
+
+<link href="{{serdelia_path}}/public/jQueryFileUpload/css/jquery.fileupload.css" rel="stylesheet">
+<link href="{{serdelia_path}}/public/jQueryFileUpload/css/jquery.fileupload-ui.css" rel="stylesheet">
+<link href="{{serdelia_path}}/public/cropper/cropper.css" rel="stylesheet">
+<link href="{{serdelia_path}}/public/js/jquery-ui.css?v116" rel="stylesheet">

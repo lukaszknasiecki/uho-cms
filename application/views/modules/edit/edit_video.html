@@ -1,0 +1,28 @@
+<div class="serdelia-drag-upload" data-field="{{field.cms_field}}">    
+    <div id="{{field.field}}_filename_shown" style="padding:10px 0 10px 0">
+        {% if value.src %}<video poster="{{value.poster}}" id="{{field.cms_field}}_video" controls width="518" height="292" src="{{value.src}}"></video>
+        {% else %}<small>{% if lang=='pl' %}Obsługiwany format:{% else %}Available format:{% endif %} MP4</small>{% endif %}
+    </div>
+    <span class="btn btn-success fileinput-button">
+        {% if value.src %}
+        <i class="mdi mdi-refresh"></i> <span>{{translate.videoChange}}</span>
+        {% else %}
+        <i class="mdi mdi-add"></i> <span>{{translate.videoAdd}}</span>
+        {% endif %}
+        <input class="basic_fileupload serdelia-edit-field" id="{{field.field}}" type="file" name="files[]" data-extensions="mp4">
+    </span>
+    {% if value.src %}
+    <span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_remove" id="{{field.cms_field}}_remove" type="checkbox"> <label for="{{field.cms_field}}_remove" style="font-size:11px">{{translate.videoRemove}}</small></span>
+    {% if field.field_cover %}<span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_cover" id="{{field.cms_field}}_cover" type="checkbox"> <label style="font-size:11px" for="{{field.cms_field}}_cover">{{translate.videoSetCover}}</label></span>{% endif %}
+    {% endif %}
+    {% if value.poster %}<a href="{{value.poster}}" class="btn" target="_blank" style="padding-left:10px;font-size:11px">{{translate.videoCover}}</a>{% endif %}
+    <br>
+    <!-- The global progress bar -->
+    <div id="{{field.field}}_progress" class="progress" style="sdisplay:none;margin-top:10px;margin-bottom:0px">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <!-- The container for the uploaded files -->
+    <input id="{{field.field}}_filename" type="hidden" name="{{field.cms_field}}"  value="">
+    <input id="{{field.field}}_filename_old" type="hidden" name="{{field.cms_field}}_old"  value="">
+    <input id="{{field.field}}_filename_upload" type="hidden" name="{{field.cms_field}}_upload" value="0">
+</div>

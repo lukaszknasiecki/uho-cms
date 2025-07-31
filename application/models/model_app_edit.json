@@ -1,0 +1,139 @@
+{
+    "pl": {
+        "write_changes": "Zapisz zmiany",
+        "write_changes_edit": "Zapisz i edytuj",
+        "cancel": "Anuluj",
+        "back": "Powrót",
+        "add": "Dodaj",
+        "continue": "Kontynuuj",
+        "choose": "Wybierz",
+        "saveGo_title": "Zapisanie zmian",
+        "saveGo_copy": "Aby kontynuować, muszę zapisać zmiany.",
+        "saveGo_cancel": "Anuluj",
+        "saveGo_confirm": "Potwierdź",
+        "saveGo_dismiss": "Odrzuć zmiany",
+        "saveGoRequired_title": "Wypełnij wymagane pola",
+        "saveGoRequired_copy": "Aby kontynuować, należy wypełnić wszystkie wymagane pola.",
+        "selectEdit": "Edytuj",
+        "imageAdd": "Dodaj obrazek",
+        "imageChange": "Zmień obrazek",
+        "videoAdd": "Dodaj video",
+        "videoChange": "Zmień video",
+        "videoRemove": "Usuń video",
+        "videoSetCover": "Zmień okładkę na wybraną klatkę",
+        "videoCover": "Pokaż okładkę Video",
+        "fileAdd": "Dodaj plik",
+        "fileChange": "Zmień plik",
+        "fileRemove": "Usuń plik",
+        "fileFormats": "Dostępne formaty",
+        "imageSaveEdit": "Zapisz zmiany i edytuj obrazek",
+        "showOptions": "Pokaż opcje",
+        "remove_image": "Usuń obrazek",
+        "rescale_image": "Przeskaluj ponownie",
+        "rescale_drawing": "Przeskaluj jako rysunek",
+        "normalize_original": "Normalizuj oryginał",
+        "image_editor": "Przekształć",
+        "image_editor_rotate": "Obróć obrazek",
+        "media_add_image": [
+            "perm-media",
+            "Dodaj zdjęcia"
+        ],
+        "media_add_video": [
+            "theaters",
+            "Dodaj filmy"
+        ],
+        "media_add_youtube": [
+            "theaters",
+            "Dodaj YouTube"
+        ],
+        "media_add_vimeo": [
+            "theaters",
+            "Dodaj Vimeo"
+        ],
+        "media_add_audio": [
+            "note",
+            "Dodaj MP3"
+        ],
+        "media_add_file": [
+            "insert-drive-file",
+            "Dodaj pliki"
+        ],
+        "media_add_url": [
+            "link",
+            "Dodaj URL"
+        ],
+        "media_add_panorama": [
+            "panorama-horizontal",
+            "Dodaj panoramę"
+        ],
+        "elements_double_choose": "Wybierz model",
+        "elements_double_add": "Dodaj element"
+    },
+    "en": {
+        "write_changes": "Save",
+        "write_changes_edit": "Save and edit",
+        "cancel": "Cancel",
+        "back": "Back",
+        "add": "Add",
+        "choose": "Choose",
+        "selectEdit": "Edit",
+        "saveGo_title": "Write changes",
+        "saveGo_copy": "Would you like to write your changes?",
+        "saveGo_cancel": "Cancel",
+        "saveGo_confirm": "Confirm",
+        "saveGo_dismiss": "Dismiss",
+        "imageAdd": "Add image",
+        "imageChange": "Change image",
+        "videoAdd": "Add video",
+        "videoChange": "Change video",
+        "videoRemove": "Remove video",
+        "videoSetCover": "Change cover for selected frame",
+        "videoCover": "Show Video Cover",
+        "fileAdd": "Add file",
+        "fileChange": "Change file",
+        "fileRemove": "Remove file",
+        "fileFormats": "Supported formats",
+        "imageSaveEdit": "Writechanges and edit image",
+        "showOptions": "Show options",
+        "remove_image": "Delete",
+        "rescale_image": "Rescale again",
+        "rescale_drawing": "Rescale as illustration",
+        "normalize_original": "Normalize original",
+        "image_editor": "Transform",
+        "image_editor_rotate": "Rotate image",
+        "media_add_image": [
+            "perm-media",
+            "Add images"
+        ],
+        "media_add_video": [
+            "theaters",
+            "Add video"
+        ],
+        "media_add_audio": [
+            "note",
+            "Add MP3"
+        ],
+        "media_add_file": [
+            "insert-drive-file",
+            "Add files"
+        ],
+        "media_add_youtube": [
+            "theaters",
+            "Add YouTube"
+        ],
+        "media_add_vimeo": [
+            "theaters",
+            "Add Vimeo"
+        ],
+        "media_add_url": [
+            "link",
+            "Add URL"
+        ],
+        "media_add_panorama": [
+            "panorama-horizontal",
+            "Add Panorama"
+        ],
+        "elements_double_choose": "Choose data model",
+        "elements_double_add": "Add item"
+    }
+}

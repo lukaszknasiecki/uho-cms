@@ -1,0 +1,15 @@
+{
+    "icon":"",
+    "params":[],
+    "pl":
+    {
+        "label": "{{label}}",
+        "text" : "{% for page in pages %}<p style='margin-bottom:5px;font-size:15px'><a style='color:black' href='{{page.url}}'>{% if page.icon %}[[icon::{{page.icon}}]] {% endif %}{{page.label}} <span class='badge badge-secondary'>{{page.all}}</span></a></p>{% endfor %}"
+    },
+    "en":
+    {
+        "label": "{{label}}",
+        "text" : "There are {{all}} items in this table{% if active>=0 %}, {% if all==active %}all{% else %}{{active}}{% endif %} of them are active{% endif %}.",
+        "footer":"Edit this table"
+    }
+}

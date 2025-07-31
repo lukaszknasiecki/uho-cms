@@ -1,0 +1,16 @@
+<style>
+    .frame_desktop{width:1440px;height:1000px;border:0;transform:scale(0.5);-ms-transform-origin:0 0;-moz-transform-origin:0 0;-o-transform-origin:0 0;-webkit-transform-origin:0 0;transform-origin:0 0}
+</style>
+<iframe class="frame_desktop" {% if schema.layout.border %}style="border:1px solid black"{% endif %} src="{{schema.layout.iframe}}{% if '?' in schema.layout.iframe %}&{% else %}?{% endif %}preview=serdelia_edit&serdelia_model={% if schema.layout.model %}{{schema.layout.model}}{% else %}{{schema.model_name}}{% endif %}{% if schema.disable %}&serdelia_disabled={{schema.disable|join('+')}}{% endif %}"></iframe>
+<div class="table" id="serdelia_page" data-url-write="{{schema.url_write}}" data-_srdcsrftkn="{{csrf_token_value}}">
+{% for record in records %}
+    {% for item in schema.fields %}
+    {% if not item.list_hidden and item.type=='boolean' %}
+          {% include 'modules/page/page_'~item.type~'.html' with {'value':record.values[item.field],'record':record,'field':item,'page_reload':true,'hidden':true } %}
+    {% endif %}
+    {% endfor %}
+    {% if record.url_remove %}
+        <span style="display:none" id="serdelia_record_remove_{{record.id}}" data-url="{{record.url_remove}}" class="mdi mdi-delete-forever mdi-15x serdelia-removeRecord"></span>
+    {% endif %}
+{% endfor %}
+</div>

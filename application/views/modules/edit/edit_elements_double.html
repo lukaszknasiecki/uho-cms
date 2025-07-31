@@ -1,0 +1,48 @@
+{% set w=200 %}
+{% set h=116 %}
+<div id="{{field.cms_field}}_order" data-sortable="true" data-separator="div" data-input="{{field.cms_field}}" class="files serdelia-edit-images">
+    {% for item in value.values %}
+    
+	<div data-id="{{item.val}}" class="serdelia-edit-imageUploadThumb">
+        <div style="display:inline-block;padding-right:0px;width:{{w}}px">
+            <div style="min-width:{{w}}px;min-height:{{h}}px">
+			{% set thumb= item.fields.image | keys[1] %}
+			{% if item.fields.image[thumb] %}
+			<img src="{{item.fields.image[thumb]}}" style="object-fit:cover;width:{{w}}px;height:{{h}}px">
+			{% elseif item.fields.image and item.fields.image is not iterable %}
+			<img src="{{item.fields.image}}" style="object-fit:cover;width:{{w}}px;height:{{h}}px">
+			{% elseif field.source.image %}
+			<img src="{{item.fields[field.source.image]}}" style="object-fit:cover;width:{{w}}px;height:{{h}}px">
+			{% else %}
+			<img style="background-color:white" width={{w}} height={{h}}>
+            {% endif %}
+            </div>
+			<p style="font-size:12px;line-height:18px;margin-top:5px">
+                {% if item.sublabel and not item.sublabel is iterable %}
+                <span class="badge badge-secondary" style="font-size:10px">{{item.sublabel}}</span>{% endif %}
+                {{item.label|raw}}
+            </p>
+		</div>
+		<span data-id="{{item.val}}" class="mdi mdi-clear serdelia-edit-elementsDouble-remove" style="right:18px;top:8px"></span>
+	</div>
+	{% endfor %}
+</div>
+
+
+<div class="row serdelia-elements-double-inputs" style="margin-bottom:20px">
+    <div class="col-xs-4" style="padding-right:0px;margin-left:10px">
+            <select id="{{field.cms_field}}_select_double" data-field="{{field.field}}" class="form-control serdelia-edit-elements-double-select" style="background-color:#eee;"">
+                <option value="0">- {{translate.elements_double_choose}} -</option>
+                {% for item in field.source_double %}
+                <option value="{{loop.index}}" >{{item.model_label}}</option>
+                {% endfor %}
+            </select>
+    </div>&nbsp;&nbsp;
+    <div class="col-xs-8">
+        <select id="{{field.cms_field}}_select" class="form-control serdelia-edit-elements-select" style="display:none;width:100%;max-width:600px">
+            <option value="0">- {{translate.elements_double_add}} -</option>
+        </select>
+    </div>
+</div>
+
+	<input id="{{field.cms_field}}" name="{{field.cms_field}}" value="{{value.value}}" type="hidden">

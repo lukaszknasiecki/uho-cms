@@ -1,0 +1,22 @@
+{% set classes=["bg-primary","bg-secondary","bg-danger","bg-warning","text-white"] %}
+{% if external_url %}<a href="{{external_url}}" class="widget" target="_blank">
+{% elseif url %}<a href="{{url_base}}{{url}}" class="widget">{% endif %}
+	<div class="card {% for class in params %}{% if class in classes %} {{class}}{% endif %}{% endfor %}">
+	{% if image %}<img class="card-img-top" src="{{image}}">{% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{% if icon %}<i class="mdi mdi-{{icon}}"></i> {% endif %} {% if label.page %}{{label.page}}{% else %}{{label}}{% endif %}</h5>
+      <p class="card-text">{{text|raw}}</p>
+      {% if info %}
+      <p class="card-text">
+      	{% for i in info %}
+      	{% if loop.index>1 %}<br>{% endif %}
+      	<i class="mdi mdi-{% if i.type=='danger' %}error text-danger{% elseif i.type=='warning' %}warning text-warning{% elseif i.type=='success' %}check-box text-success{% endif %}"></i> {{i.text}}
+      	{% endfor %}
+      </p>
+      {% endif %}
+      {% if footer %}<p class="card-text"><small class="text-muted">{{footer}}</small></p>{% endif %}
+    </div>
+  </div>
+{% if url %}</a>{% endif %}
+
+

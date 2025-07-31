@@ -1,0 +1,11 @@
+{
+    "icon": "remove-red-eye",
+    "en": {
+        "label": "Preview",
+        "url_empty": "No URL present"
+    },
+    "pl": {
+        "label": "Podgląd",
+        "url_empty": "Brak zdefiniowanego URL"
+    }
+}

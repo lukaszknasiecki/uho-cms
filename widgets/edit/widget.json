@@ -1,0 +1,16 @@
+{
+    "icon":"{{icon}}",
+    "params":[],
+    "pl":
+    {
+        "label": "{{label}}",
+        "text" : "{% if not modules %}Ta strona jest pusta.{% else %}Ta strona składa się z {{modules|declination(['modułu','modułów','modułów',true])}}.{% endif %}",
+        "footer":"Edytuj stronę"
+    },
+    "en":
+    {
+        "label": "{{label}}",
+        "text" : "{% if not modules %}{% else %}{% if modules==1 %}There is {{modules}} module{% else %}There are {{modules}} modules{% endif %} in this page.{% endif %}",
+        "footer":"Edit this page"
+    }
+}

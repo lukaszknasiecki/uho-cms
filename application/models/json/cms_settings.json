@@ -1,0 +1,18 @@
+{
+    "table": "cms_settings",
+    "order": "slug",
+    "fields": [
+        {
+            "label_PL": "Klucz",
+            "label_EN": "Key",
+            "field": "slug",
+            "list": true
+        },
+        {
+            "label_PL": "Wartość",
+            "label_EN": "Value",
+            "field": "value",
+            "list": true
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "pl": {
+        "header": "Cześć!",
+        "cta": "zaloguj się",
+        "your_login": "twój login",
+        "password": "hasło",
+        "login_error": "Podano błędne dane do logowania.",
+        "login_error_project": "Brak zdefiniowanego projektu.",
+        "logins_possible": "Ilośc pozostałych prób",
+        "logins_possible_exceeded": "Maksymalna ilość prób logowania została przekroczona.<br>Skontaktuj się z administratorem aby odblokować konto."
+    },
+    "en": {
+        "header": "Hello!",
+        "cta": "login",
+        "your_login": "your login",
+        "password": "password",
+        "login_error": "Sign In failed. You may have entered the wrong credentials or you account is locked.",
+        "logins_possible": "Number of remaining attempts",
+        "login_error_project": "No project has been defined.",
+        "logins_possible_exceeded": "You have exceeded maximum login attempts.<br>Please, contact your admin to unlock the account."
+    }
+}

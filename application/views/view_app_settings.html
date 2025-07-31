@@ -1,0 +1,50 @@
+<div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
+        {% if text %}<br><br><br><br>
+        <div class="container">
+                {{text|raw}}
+        </div>
+
+        {% else %}
+
+        <div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
+                <div class="container serdelia-page">
+                        <div class="card-columns" style="margin-top:10px">
+
+                                <div class="card {% if errors %}bg-danger{% else %}bg-primary{% endif %}">
+                                        <div class="card-body">
+                                                <h5 class="card-title"><i class="mdi mdi-settings"></i> {{translate.header}}</h5>
+                                                {% if translate.message %}
+                                                        <p class="card-text">{{translate.message}}</p>
+                                                {% endif %}
+                                                {% if errors %}
+                                                <p class="card-text">
+                                                        {% for item in errors %}
+                                                        [[icon::warning]]
+                                                                {% if translate[item] %}{{translate[item]|raw}}{% else %}{{item}}{% endif %}
+                                                                <br>
+                                                        {% endfor %}
+                                                </p>
+                                                {% endif %}
+                                        </div>
+                                </div>
+
+                                {% for item in items %}
+                                {% if not item.admin or admin %}
+                                <a href="{{item.url}}">
+                                <div class="card bg-default">
+                                        <div class="card-body">
+                                        <h5 class="card-title">
+                                                {{translate[item.label]}}
+                                        </h5>
+                                        </div>
+                                </div>
+                                </a>
+                                {% endif %}
+                                {% endfor %}
+                        </div>
+
+
+                </div>
+        </div>
+        {% endif %}
+</div>

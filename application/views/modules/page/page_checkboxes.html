@@ -1,0 +1,6 @@
+{% if value is iterable %}
+{% for item in value %}
+	{% if loop.index>1 %}, {% endif %}
+	{{item.label}}
+{% endfor %}
+{% else %}{{value}}{% endif %}

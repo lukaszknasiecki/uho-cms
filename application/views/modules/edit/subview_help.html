@@ -1,0 +1,8 @@
+<div class="{% if size=='full' %}col-lg-10{% else %}col-lg-6{% endif %} serdelia_edit_help_{{field.cms_field}} {% if field.help.hidden %}d-none{% endif %}" {% if size=='full' %}style="padding:0"{% endif %}>
+    <div class="alert alert-primary alert-dismissible" role="alert" data-field="{{field.cms_field}}">
+    <span class="close serdelia-edit-toggle-help" style="padding-top:0;padding-right:10px;cursor:pointer" aria-label="close"><small>&times;</small></span>
+    {{field.help.text|szewce|raw}}
+    </div>
+  </div>
+  <div class="col-lg-4 {% if field.help.hidden %}d-none{% endif %} serdelia_edit_help_{{field.cms_field}}"></div>
+  <div class="col-lg-2 {% if field.help.hidden %}d-none{% endif %} serdelia_edit_help_{{field.cms_field}}"></div>

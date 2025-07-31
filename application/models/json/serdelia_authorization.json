@@ -1,0 +1,67 @@
+{
+    "table": "serdelia_authorization",
+    "label": {
+        "page": "Serdelia Authorization Options",
+        "edit": "Serdelia Authorization Option <code>{{label}}</code>"
+    },
+    "order": "id",
+    "model": {
+        "label": "{{id}}"
+    },
+    "buttons_page": [
+        {
+            "label": "before",
+            "plugin": "serdelia_authorization_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_authorization_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+    "buttons_edit": [
+        {
+            "label": "before",
+            "plugin": "serdelia_authorization_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_authorization_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+
+    "fields": [
+        {
+            "label": "Identifier",
+            "field": "id",
+            "list": true,
+            "settings": {
+                "style": "json"
+            }
+        },
+        {
+            "field": "label",
+            "label": "Name",
+            "list": true
+        },
+        {
+            "field": "models",
+            "label": "Models",
+            "type": "checkboxes",
+            "output":"string",
+            "source": {
+                "model": "serdelia_tables"
+            },
+            "settings": {
+                "style": "json"
+            }
+        }
+    ]
+}

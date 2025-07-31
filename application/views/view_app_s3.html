@@ -1,0 +1,16 @@
+{% include 'header/header.html' with {'label':'S3 DEBUG','type':'plugin','buttons':[] } %}
+
+<div class="serdelia-body-edit">
+  <div class="container serdelia-edit">
+  	{% if errors %}
+  	<div class="alert alert-danger">
+    {% for item in errors %}{{item}}<br>{% endfor %}
+	</div>
+    {% endif %}
+	{% if success %}
+  	<div class="alert alert-info">
+    {% for item in success %}{{item}}<br>{% endfor %}
+	</div>
+    {% endif %}
+ </div>    
+</div>

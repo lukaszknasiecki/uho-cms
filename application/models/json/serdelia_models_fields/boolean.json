@@ -1,0 +1,14 @@
+{
+    "fields": [
+        {
+            "field": "list",
+            "label": "List view",
+            "type":"select",
+            "null":true,
+            "options":
+            [
+                "true","false","edit"
+            ]
+        }
+    ]
+}

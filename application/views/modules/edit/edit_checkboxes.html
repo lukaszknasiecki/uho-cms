@@ -1,0 +1,13 @@
+{% apply spaceless %}
+{% for item in field.options %}
+{% if field.settings.cols==1 %}
+<div class="col-lg-12" style="margin-top:4px">
+{% elseif field.settings.cols==2 %}
+<div class="col-md-6 form-check-inline" style="margin:0{% if field.settings.small %};font-size:10px{% endif %}">
+{% else %}
+<div class="col-md-4 form-check-inline" style="margin:8px 0 0 0{% if field.settings.small %};font-size:10px{% endif %}">
+{% endif %}
+<label><input type="checkbox" class="serdelia-edit-field" style="margin-right:5px" name="{{field.cms_field}}[]" value="{{item.value}}" {% if value[item.value] %}checked{% endif %} /> {{item.label|raw}}</label>
+</div>
+{% endfor %}
+{% endapply %}

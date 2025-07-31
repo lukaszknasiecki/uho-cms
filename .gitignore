@@ -1,0 +1,15 @@
+*.log
+.DS_Store
+
+cache
+cache/*
+*.cache
+
+reports
+reports/*
+
+vendor
+vendor/*
+
+_data
+_data/*

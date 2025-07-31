@@ -1,0 +1,23 @@
+<div class="container vertical-center">
+<div class="container">
+		<h2 class="text-center">{{translate.header|capitalize}}</h2>
+        <form method="POST" class="form-signin">
+			{% if errors %}
+			<div class="alert alert-danger" role="alert">{{errors|join('<br>')|raw}}</div>
+			{% endif %}
+				<input name="token" type="hidden" value="{{token}}">
+        	{% if projects|length==1 %}<input name="project" type="hidden" value="1">
+        	{% else %}
+        	<select class="form-control" name="project">
+        		{% for project in projects %}
+        		<option value="{{loop.index}}">{{project.name}}</option>
+        		{% endfor %}
+        	</select>
+        	{% endif %}
+            <input type="text" name="login_login" class="form-control first" placeholder="{{translate.your_login|capitalize}}" autofocus required value="admin" readonly>
+			<input type="password" name="login_password" class="form-control" placeholder="{{translate.password|capitalize}}" required>
+			<input type="password" name="login_password2" class="form-control last" placeholder="{{translate.password2|capitalize}}" required>
+        	<button name="login_submit" class="btn btn-lg btn-primary btn-block" type="submit">{{translate.cta|capitalize}}</button>
+    </form>
+</div>
+</div>

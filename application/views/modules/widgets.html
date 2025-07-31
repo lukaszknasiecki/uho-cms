@@ -1,0 +1,12 @@
+<div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
+  <div class="container serdelia-page">
+
+    <div class="card-columns" style="margin-top:10px">
+      {% for item in widgets %}
+      {{item.html|raw}}
+      {% endfor %}
+    </div>
+
+
+  </div>
+</div>

@@ -1,0 +1,44 @@
+{% if scaffold.cfg.layout.menu_align=='body' %}{% set full_width=false %}{% else %}{% set full_width=true %}{% endif %}
+<nav class="fixed-top navbar navbar-expand-lg" >
+  {% if not full_width %}<div class="container">{% endif %}
+
+  <!-- logotype -->
+    <a class="navbar-brand" href="{{url_base}}">
+    {% if scaffold.cfg.logotype %}
+      <img src="{{scaffold.cfg.cfg_path}}/assets/logotype.png" alt="{{scaffold.cfg.title}}">
+    {% else %}
+      {{scaffold.cfg.title}}
+    {% endif %}
+    </a>
+
+  <!-- mobile hamburger -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  {% if scaffold.menu %}
+    {% if scaffold.menu|length>8 %}{% set small=true %}{% endif %}
+    {% include 'modules/nav_menu.html' with {'items':scaffold.menu,'small':small} %}
+  {% else %}
+  <div class="collapse navbar-collapse"><ul class="navbar-nav"></ul></div>
+  {% endif %}
+
+  
+  <!-- search -->
+  {% if scaffold.url_search %}
+  <form action="{{scaffold.url_search}}" name="search" method="GET" role="search" class="navbar-form navbar-right">
+    <input type="text" class="form-control form-control-search {% if small %}form-control-search-small{% endif %} input-sm serdelia-page-search-toggle" id="serdelia-top-search" name="query" placeholder="{{translate.search|capitalize}}">
+  </form>
+  {% endif %}
+  <!-- mode/settings/logoout --> 
+  <ul class="nav navbar-nav navbar-right" style="margin-left:10px">
+    {% if scaffold.mode=='dark' %}
+    <li style="padding-right:5px"><a href="{{scaffold.url_mode_light}}"><span class="mdi mdi-15x  mdi-light-mode"></span></a></li>
+    {% else %}
+    <li style="padding-right:5px"><a href="{{scaffold.url_mode_dark}}"><span class="mdi mdi-15x  mdi-dark-mode"></span></a></li>
+    {% endif %}
+    <li style="padding-right:5px"><a href="{{scaffold.url_settings}}"><span class="mdi mdi-15x  mdi-settings"></span></a></li>
+    <li><a href="{{scaffold.url_logout}}"><span class="mdi mdi-15x  mdi-power-settings-new"></span></a></li>
+  </ul>
+
+  {% if not full_width %}</div>{% endif %}
+</nav>

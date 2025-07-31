@@ -1,0 +1,19 @@
+{
+    "table": "serdelia_tables",
+    "label": "Serdelia Tables",
+    "model":{"label":"{{id}}"},
+    "buttons_page": [
+        {
+            "label": "before",
+            "plugin": "serdelia_before",
+            "on_load": true,
+            "hidden":true
+        }
+    ],
+    "order": "id",
+    "fields": [
+        {
+            "field": "id"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{% set output='' %}
+{% if field.options %}
+	{% for i in field.options %}
+	{% if i.value==value or i.value==value.id %}
+	{% set output=i.label %}
+	{% endif %}
+	{% endfor %}
+{% endif %}
+{% if not output %}{{value|striptags|raw}}{% else %}{{output|striptags|raw}}{% endif %}

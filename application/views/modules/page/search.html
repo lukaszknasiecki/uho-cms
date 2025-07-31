@@ -1,0 +1,34 @@
+<div class="serdelia_page_search" id="serdelia_page_search">
+<form method="GET">
+  {% for item in schema.fields %}
+  {% if item.search %}
+<div class="form-group row">
+  <label for="{{item.field_search}}" class="col-lg-2 control-label" style="font-weight:normal">{{item.label}}{% if item.lang %} <small>{{item.lang|upper}}</small>{% endif %}</label>
+  <div class="col-md-1">
+    <span type="button" data-field="{{item.field_search}}" class="serdelia_page_search-control-trigger btn btn-sm btn-default"><span class="mdi mdi-add"></span>
+  </div>
+  <div class="col-lg-6">
+    {% if item.options %}
+      <select id="{{item.field_search}}" name="{{item.field_search}}" {% if item.searched %}class="form-control" {% else %}class="form-control serdelia_page_search-control" disabled="disabled"{% endif %}>
+        {% for option in item.options %}
+                  <option value="{{option.value}}" {% if item.searched==option.value %}selected{% endif %}>{{option.label}}</option>
+        {% endfor %}
+        </select>
+    {% elseif item.type=='boolean' %}
+      <select id="{{item.field_search}}" name="{{item.field_search}}" {% if item.searched %}class="form-control" {% else %}class="form-control serdelia_page_search-control" disabled="disabled"{% endif %}>
+                  <option value="0" {% if item.searched==0 %}selected{% endif %}>{% if lang=='en' %}No{% else %}Nie{% endif %}</option>
+                  <option value="1" {% if item.searched==1 %}selected{% endif %}>{% if lang=='en' %}Yes{% else %}Tak{% endif %}</option>
+        </select>
+    {% else %}
+    <input type="text" id="{{item.field_search}}" name="{{item.field_search}}" {% if item.searched %}class="form-control" value="{{item.searched}}"{% else %}class="form-control serdelia_page_search-control" disabled="disabled"{% endif %}>
+    {% endif %}
+  </div>
+</div>
+
+{% endif %}
+{% endfor %}
+  
+
+<button type="submit" class="btn btn-primary btn-md"><span class="mdi mdi-search"></span> {{translate.search|capitalize}}</button>
+</form>
+</div>

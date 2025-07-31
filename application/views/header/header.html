@@ -1,0 +1,90 @@
+<!-- header -->
+<div class="page-header-fixed {% if type=='edit' or type=='plugin' %}page-header-edit{% endif %}">
+  <div class="container" style="margin-top:7px">
+
+      <div class="pull-right">
+        {% if type=='page' %}
+          {% set length=0 %}
+          {% for item in buttons %}{% if not item.hidden %}{% set length=length+5 %}
+            {% if translate[item.label] %}{% set length=length+translate[item.label]|length %}{% elseif item.label %}{% set length=length+item.label|length%}{% endif %}{% endif %}
+          {% endfor %}
+          {% if length>40 and paging.nav.pages %}{% set small=true %}{% endif %}
+        {% endif %}
+        {% for item in buttons %}
+        {% if not item.hidden %}
+          <a href="{{item.url}}" {% if item.target %}target="{{item.target}}"{% endif %}><button type="button" class="btn {% if small %}btn-sm{% endif %} {% if item.icon=='back' %}btn-default{% elseif item.class %}btn-{{item.class}}{% else %}btn-primary{% endif %} {% if not item.target %}serdelia-edit-ask-save-go{% endif %}">[[icon::{{item.icon}},left]]{% if translate[item.label] %}{{translate[item.label]}}{% elseif item.label %}{{item.label}}{% else %}&#8203;{% endif %}</button></a>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      <h2>{{label|raw}}</h2>
+      {% if langs|length>1 %}
+      <div class="btn-group-xs">
+        {% for lang in langs %}
+        <button type="button" data-lang="{{lang.lang}}" class="btn btn-sm {% if lang.active %}btn-primary{% else %}btn-default{% endif %} serdelia-edit-toggle-lang">{{lang.lang}}</button>
+        {% endfor %}
+      </div>
+      {% endif %}  
+
+
+
+      {% if type=='page' %}
+
+      <div class="row" style="margin-left:0px">        
+            {% if alert %}
+            <div class="col-xs-3">
+              <span class="mdi mdi-report-problem pull-left" style="color:orange"></span>{{alert}}
+            </div>
+            {% endif %}
+
+
+            {% if paging.nav.pages %}
+            <div class="col-xs-3" style="margin-right:10px">
+                  <ul class="pagination pagination-sm">
+                    <li class="{% if paging.page==1 %}disabled{% endif %} page-item"><a class="page-link" href="{{paging.nav.url_first}}">&laquo;</a></li>
+                    <li class="{% if paging.page==1 %}disabled{% endif %} page-item"><a class="page-link" href="{{paging.nav.url_prev}}"><</a></li>
+                    {% for i in paging.nav.pages %}
+                      {% if paging.page==i.nr %}<li class="page-item active"><span class="page-link">{{i.nr}}</span></li>{% else %}
+                      <li class="page-item"><a class="page-link" href="{{i.url}}">{{i.nr}}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if paging.page==paging.all %}disabled{% endif %}"><a class="page-link" href="{{paging.nav.url_next}}">></a></li>
+                    <li class="page-item {% if paging.page==paging.all %}disabled{% endif %}"><a class="page-link" href="{{paging.nav.url_last}}">&raquo;</a></li>
+                  </ul>
+            </div>
+            {% endif %}
+
+            
+            {% if paging.records.all>0 %}
+            <div class="col-xs-3" style="margin-top:3px;margin-right:10px">
+            {% if not paging.nav.pages %}<span class="mdi mdi-info pull-left {% if help %}serdelia-page-toggle-help{% endif %}" style="{% if help %}cursor:pointer{% endif %}"></span>{% endif %}
+              {{translate.counter1}} {{paging.records.from}}-{{paging.records.to}} {{translate.counter2}} {{paging.records.all}}
+            </div>
+            {% endif %}
+            {% if layouts %}
+              {% for item in layouts %}
+              {% if item.type=='preview' %}{% set icon='view-quilt' %}{% elseif item.type=='list'%}{% set icon='view-list' %}{% endif %}
+              {% if item.active %}
+              <span class="btn btn-xs btn-secondary" style="cursor:default"><span class="mdi mdi-15x mdi-pull-up mdi-{{icon}}"></span></span>&nbsp;
+              {% else %}<a class="btn btn-xs btn-default" href="{{item.url}}"><span class="mdi mdi-15x mdi-pull-up mdi-{{icon}}"></span></a>&nbsp;
+              {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% if search %}
+            <p style="margin-top:2px;margin-left:10px">
+              <span class="badge badge-secondary serdelia-page-search-toggle" style="cursor:pointer">{{translate.filter|capitalize}} [[icon::filter-list]]</span></a>&nbsp;
+            </p>
+            {% endif %}
+            {% if filters %}
+              <div style="margin-top:2px;margin-bottom:5px">
+              {% for item in filters %}
+                <a href="{{item.url}}"><span class="badge badge-success">{{item.label_value}} [[icon::close]]</span></a>
+              {% endfor %}
+              </div>
+            {% endif %}
+
+            
+      </div>      
+      {% endif %}
+   </div>
+</div>

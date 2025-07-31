@@ -1,0 +1,11 @@
+{
+    "icon":"video-settings",
+    "en":
+    {
+        "label": "Test Plug-in name"
+    },
+    "pl":
+    {
+        "title": "Testowa nazwa plug-inu"
+    }    
+}

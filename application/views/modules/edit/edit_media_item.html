@@ -1,0 +1,145 @@
+<!-- media_item {{type}}-->
+{% set wide=false %}
+{% for i in field.captions %}
+    {% if i.settings.wide %}{% set wide=true %}{% endif %}
+{% endfor %}
+<div style="{% if wide %}width:833px;{% endif %}z-index:998{% if field.settings.long %};background-color:white;padding:10px{% endif %}" data-id="{{item.id}}" class="serdelia-edit-imageUploadThumb {% if field.layout.type=='linear' %}serdelia-edit-imageUploadThumbLinear{% endif %}">
+    {% set show_image=true %}
+    {% set thumbnail='' %}
+
+    {% if item.type=='file' %}
+        {% set label=item.extension|upper %}
+        {% if not label %}{% set label='%extension%' %}{% endif %}
+        {% set show_image=false %}
+        {% set zoom=item.file.src %}
+        {% if not zoom and not placeholder %}{% set label='File not found' %}{% set label_small=true %}{% endif %}
+        {% if label=='SVG' or label=='PNG' %}{% set show_zoom=true %}{% endif %}
+    {% endif %}
+    {% if item.type=='audio' %}
+        {% set label='Audio' %}
+        {% set show_image=false %}
+        {% set zoom=item.audio.src %}
+        {% if not zoom and not placeholder %}{% set label='File not found' %}{% set label_small=true %}{% endif %}
+    {% endif %}
+    {% if item.type=='youtube' %}
+        {% set label='YouTube' %}
+        {% if item.youtube %}{% set zoom='https://youtube.com/watch?v='~item.youtube %}{% endif %}
+        {% if placeholder %}{% set show_image=false %}{% endif %}
+    {% endif %}
+    {% if item.type=='vimeo' %}
+        {% set label='Vimeo' %}
+        {% if item.vimeo %}{% set zoom='https://vimeo.com/'~item.vimeo %}{% endif %}
+        {% if placeholder %}{% set show_image=false %}{% endif %}
+    {% endif %}
+    {% if item.type=='video' %}
+        {% set zoom=item.video.src %}
+        {% if placeholder %}{% set show_image=false %}{% endif %}
+    {% endif %}
+    {% if item.type=='url' %}    
+        {% set zoom=item.url %}
+        {% if field.layout.src_thumbnail %}
+            {% set show_image=true %}
+            {% set thumbnail=item.thumbnail %}
+        {% else %}{% set label='URL' %}
+        {% endif %}
+    {% endif %}
+    
+    {% if item.type=='video' and placeholder %}
+    <video controls>
+        <source src="%image%" type="video/mp4">
+    </video>
+    {% elseif item.image and show_image %}        
+        {% if field.settings.ratio is same as(true) %}
+        <img height="128" style="margin-bottom:8px" 
+        {% else %}
+        <img width="{% if item.type=='panorama' %}256{% elseif item.type=='video' or item.type=='youtube' %}228{% elseif field.settings.ratio=='16:9' %}228{% else %}170{% endif %}" height="128" style="object-fit: cover;margin-bottom:8px" 
+        {% endif %}
+        src="{% if placeholder %}%image%{% else %}{% if item.image[field.layout.folder] %}{% if not zoom %}{% set zoom=item.image['original'] %}{% endif %}{{item.image[field.layout.folder]}}{% elseif thumbnail %}{{thumbnail}}{% else %}/serdelia_config/assets/{{field.layout.src_blank}}{% endif %}{% endif %}">
+        <br>
+    {% elseif zoom and show_zoom %}    
+        <img height="128" src="{{zoom}}">
+    {% else %}
+        <div style="width:170px;height:128px;background-color:white;font-size:36px;display: table-cell;vertical-align: middle;text-align:center;{% if label_small %}font-size:16px{% endif %}">{{label}}</div>
+    {% endif %}
+
+    <div style="float:right;text-align:right;position:absolute;top:0;right:0;padding-right:12px">
+    
+    {% if item.type=='panorama' %}    
+    <a href="{{item.url_panorama}}" type="button" class="mdi mdi-panorama-horizontal serdelia-edit-imageUploadView"></a>
+    {% elseif zoom %}
+        {% if field.layout.type=='linear' %}
+        <a href="{{zoom}}" target="_blank" type="button" class="serdelia-edit-media-tool" style="vertical-align: top;"><span class="badge badge-secondary">{{item.type|capitalize}} Source</span></a>
+        {% else %}
+        <a href="{{zoom}}" type="button" target="_blank" class="mdi mdi-remove-red-eye serdelia-edit-imageUploadView"></a>
+        {% endif %}
+    {% endif %}
+    {% if item.url_resize %}
+    <a href="{{item.url_resize}}" type="button"  class="mdi mdi-crop serdelia-edit-imageUploadView"></a>
+    {% endif %}
+    
+    <span data-id="{{item.id}}" class="mdi mdi-clear serdelia-edit-imageUploadRemove"></span>   
+    
+    
+</div>
+
+
+    {% apply spaceless %}
+        
+        {% if item.type=='youtube' %}
+        <div class="col-lg-12" style="padding:0">
+            <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">YouTube:</label>
+            <input placeholder="YouTube" class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" value="{{item.youtube}}" name="{{field.cms_field}}[{{item.id}}][youtube]">
+            <input type="hidden"  value="{{item.youtube}}" name="{{field.cms_field}}[{{item.id}}][youtube_original]">
+        </div>
+        {% elseif item.type=='vimeo' %}
+        <div class="col-lg-12" style="padding:0">
+            <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">Vimeo:</label>
+            <input placeholder="Vimeo" class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" value="{{item.vimeo}}" name="{{field.cms_field}}[{{item.id}}][vimeo]">
+            <input type="hidden"  value="{{item.vimeo}}" name="{{field.cms_field}}[{{item.id}}][vimeo_original]">
+        </div>
+        {% elseif item.type=='url' %}
+            <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">URL:</label>
+            <input placeholder="URL" class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" value="{{item.url}}" name="{{field.cms_field}}[{{item.id}}][url]">
+        {% endif %}
+
+        {% for i in field.captions %}
+        <div class="col-lg-12"  style="padding-left:0" >
+            <div {% if i.lang %}data-edit-lang="{{i.lang}}"{% if not langs[i.lang] %} style="display:none"{% endif %}{% endif %}>
+            {% if not i.type or item.type in i.type %}
+            {% if i.field_type=='boolean' %}            
+                <input id="{{field.field}}-{{item.id}}" class="serdelia-edit-field" type="checkbox" style="margin-right:10px;margin-top:10px" {% if disabled %}disabled{% endif %}   name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" {% if item[i.field] %}checked{% endif %} value="1">
+                <label for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}</label>
+            {% elseif i.field_type=='select' %}
+                <select {% if disabled %}disabled{% endif %}  class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.lang %}data-edit-lang="{{i.lang}}"{% if not langs[i.lang] %} style="display:none"{% endif %}{% endif %} name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">
+                    <option value=0>-- {{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %} --</option>
+                    {% for option in i.options %}
+                    <option {% if option.id==item[i.field] %}selected{% endif %} value="{{option.id}}">{{option.label}}</option>
+                    {% endfor %}
+                </select>
+            {% elseif i.field_type=='text' %}
+                <textarea rows={% if i.settings.rows=='medium' %}6{% elseif i.settings.rows %}{{i.settings.rows}}{% else %}4{% endif %} {% if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}" class="form-control serdelia-edit-field" 
+                style="{% if i.settings.style=='json' %}font-family:cCourier;font-size:11px;{% endif %}{% if i.settings.wide %}width:800px;{% endif %}{% if i.lang and not langs[i.lang] %}display:none;{% endif %}"
+                {% if i.lang %}data-edit-lang="{{i.lang}}"{% endif %} 
+                name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">{{item[i.field]}}</textarea>
+            {% elseif i.field_type=='html' %}
+            <label style="margin-top:10px" for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}:</label>
+                <textarea id="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" class="form-control serdelia-edit-field {% if placeholder %}temp-{% endif %}ckeditor"
+                    {% if disabled %}disabled{% endif %}
+                    placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}"
+                    {% if i.lang %}data-edit-lang="{{i.lang}}"{% endif %}                     
+                    data-height=100 data-toolbar=false
+                    name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">{{item[i.field]}}
+                </textarea>
+                
+                {% else %}
+                <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}:</label>
+                {#<input  {% if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}" class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.lang %}data-edit-lang="{{i.lang}}"{% if not langs[i.lang] %} style="display:none"{% endif %}{% endif %} value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">#}
+                <input  {% if disabled %}disabled{% endif %} class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" {% if i.lang %}data-edit-lang="{{i.lang}}"{% if not langs[i.lang] %} style="display:none"{% endif %}{% endif %} value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">
+            {% endif %}
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endapply %}
+        <input type="hidden" name="{{field.cms_field}}[{{item.id}}][type]" value="{{item.type}}">
+</div>

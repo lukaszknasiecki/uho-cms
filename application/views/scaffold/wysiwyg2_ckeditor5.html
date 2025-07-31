@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5.css">
+{% if editor.css %}<link rel="stylesheet" href="{{editor.css}}">{% endif %}
+{% if scaffold.cfg.mode=='dark' %}<link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5-dark.css">{% endif %}
+<script src="{{serdelia_path}}/public/ckeditor5/ckeditor5.umd.js"></script>
+<script>var serdelia_path="{{serdelia_path}}"</script>
+{% if editor.js %}<script src="{{editor.js}}?{{"now"|date("Y-m-d")}}"></script>{% else %}<script src="{{serdelia_path}}/public/ckeditor5-config/config.js"></script>{% endif %}
+
+<script>
+
+	var CKEditors5 = [];
+	$(document).ready(function () {
+
+		
+		var editors = document.querySelectorAll('.ckeditor5');
+
+		editors.forEach((node, index) => {
+			var style=$(editors[index]).data('style');
+			if (!style) style='default';
+			ClassicEditor
+				.create(node, CKEditor5_Configs[style])
+				.then(editor => {
+					
+					CKEditors5[$(editors[index]).attr('name')] = editor;
+					editor.model.document.on('change:data', (evt, data) => {
+						Apps.Edit.changeField();
+					})
+						.catch(error => {
+							console.error(error);
+						});
+				});
+		});
+
+		window.editors = {};
+
+		document.querySelectorAll('.editor').forEach((node, index) => {
+			ClassicEditor
+				.create(node, {})
+				.then(newEditor => {
+					window.editors[index] = newEditor
+				});
+		});
+
+
+
+	});
+
+
+</script>
+
+<style>
+	.ck-content {
+		padding: 10px 30px 10px 30px !important;
+		min-height:200px;
+	}
+
+	.ck p {
+		font-size: 1rem;
+	}
+
+	.ck img {
+		max-width: 640px !important;
+		height: auto !important;
+	}
+
+	.ck .image {
+		text-align: center !important;
+		margin: 0;
+	}
+
+	.ck figure {
+		text-align: center !important;
+	}
+
+	.ck .media {
+		width: 640px !important;
+		height: auto !important;
+	}
+</style>

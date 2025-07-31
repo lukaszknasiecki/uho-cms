@@ -1,0 +1,95 @@
+{
+    "table": "serdelia_models_fields",
+    "label":
+    {
+        "page":"Serdelia Model Fields: <code>%1%</code>",
+        "edit":"Serdelia Model Field: <code>{{parent}}/{{field}}</code>"
+    },
+    "filters":{"parent":"%1%"},
+    "order": "_order",
+    "model":{"label":"{{field}}"},
+    "buttons_page": [
+        {
+            "label": "before",
+            "plugin": "serdelia_models_fields_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_models_fields_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+    "buttons_edit": [
+        {
+            "label": "before",
+            "plugin": "serdelia_models_fields_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_models_fields_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+    "page_update": "serdelia_models_fields/{{type}}",
+    "fields": [
+        {
+            "field":"_order","label":"Order","type":"order","list":"order"
+        }, 
+        {
+            "tab":"Copy",
+            "field":"label",
+            "label":"Label",
+            "list":true
+        },
+        {
+            "xtab":"Model",
+            "hr":true,
+            "label": "Field name",
+            "field": "field",
+            "list": true,
+            "settings":{"style":"json"}
+        } ,        
+        {
+            "field":"parent","type":"hidden"
+        },        
+        {
+            "label":"Field type",
+            "field":"type",
+            "type":"select",
+            "list":true,
+            "settings":{"style":"json"},
+            "default":"string"
+        },
+        {
+            "field":"list","label":"List","ttype":"json","list":true,
+            "settings":{"rows":3}
+        },
+        {
+            "field":"tab","label":"Tab",
+            "hr":true
+        },
+        {
+            "field":"section","label":"Section"
+        },
+        {
+            "field":"help",
+            
+            "label":"Field description",
+            "type":"text",
+            "settings":{"rows":2}
+        }              ,
+        {
+            "label":"Settings",
+            "type":"json",
+            "hr":true,
+            "field":"settings"
+        }
+        
+    ]
+}

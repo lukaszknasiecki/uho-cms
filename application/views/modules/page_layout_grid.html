@@ -1,0 +1,86 @@
+<div id="serdelia_page" data-url-write="{{schema.url_write}}" data-_srdcsrftkn="{{csrf_token_value}}"></div>
+<div id="gridList" data-separator="section" class="row{% if schema.layout.class %} {{schema.layout.class}}{% endif %}"
+  {% if schema.sortable %}data-sortable="true" data-field="{{schema.sortable.field}}" data-path="{{schema.url_sort}}" {%
+  endif %}>
+
+  {% set width=schema.layout.settings.width %}
+  {% if not width %}
+  {% set width=2 %}
+  {% endif %}
+
+  {% set image_sizes = [ null, null, [166,166] ] %}
+  {% set image_sizes = image_sizes[2] %}
+
+  {% for record in records %}
+  <section data-id="{{record.id}}"
+    class="col-sm-{{width}} serdelia-grid-container {% if record.values.active is defined %}serdelia-grid-activate {% if record.values.active is same as ("
+    0") %}serdelia-grid-inactive{% endif %}{% endif %} {% if record.highlighted %}serdelia-highlight{% endif %}"
+    style="margin-bottom:20px">
+    <div class="grid-tile-wrapper" style="width:100%">
+      {% if record.url_remove %}
+      <div class="serdelia-grid-remove" style="z-index:9999">
+        <a href="#" class="serdelia-grid-on-rollover" style=""><span data-toggle="tooltip" data-placement="top"
+            title="Remove record" style="" data-url="{{record.url_remove}}"
+            class="mdi mdi-delete serdelia-removeRecord"></span></a>
+      </div>
+      {% endif %}
+      {% if record.url_click %}
+      <div class="serdelia-grid-edit" style="z-index:9999">
+        <a href="{{record.url_edit}}" class="serdelia-grid-on-rollover" style=""><span data-toggle="tooltip"
+            data-placement="top" title="Edit record" style="" data-url="{{record.url_remove}}"
+            class="mdi mdi-edit"></span></a>
+      </div>
+      {% endif %}
+      {% if record.url_edit %}
+      <a href="{% if record.url_click %}{{record.url_click}}{% else %}{{record.url_edit}}{% endif %}"
+        style="color:#000;text-decoration:none;{% if schema.sortable %}cursor:move{% endif %}" class="thumbnail widget">
+        {% elseif record.url_view %}
+        <a href="{% if record.url_click %}{{record.url_click}}{% else %}{{record.url_view}}{% endif %}"
+          style="color:#000;text-decoration:none;" class="thumbnail">
+          {% else %}
+          <a style="color:#000;text-decoration:none;" class="thumbnail">
+            {% endif %}
+            {% set html=[] %}
+            {% if schema.layout.settings.cards %}<div class='card' {% if schema.layout.settings.height
+              %}style='height:{{schema.layout.settings.height}}px' {% endif %}>
+              <div class='card-body'>{% endif %}
+
+                {% for item in schema.fields %}
+                {% if not item.list_hidden and item.type!='order' %}
+                  {% if item.list.type=='badge' %}
+                    {% if not schema.layout.html %}
+                    {% include 'modules/page/subview_badge.html' with {'list':item.list,'value':record.values[item.field] }
+                    %}
+                  {% else %}
+                    {% set html=html|merge({(item.field):include ('modules/page/subview_badge.html',
+                    {'list':item.list,'value':record.values[item.field] })}) %}
+                  {% endif %}
+                {% else %}
+                {% if not schema.layout.html %}
+                {% if item.field=='label' and schema.layout.settings.cards %}<h6 class='card-title'>{% endif %}
+                  {% include 'modules/page/page_'~item.type~'.html' with
+                  {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes } %}
+                  {% if item.field=='label' and schema.layout.settings.cards %}</h6>{% else %}<br>{% endif %}
+                {% elseif item.field %}
+                {% set html=html|merge({(item.field):include ('modules/page/page_'~item.type~'.html',
+                {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes })}) %}
+                {% endif %}
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+
+                {% if schema.layout.html %}
+                {{ include(template_from_string(schema.layout.html)) }}
+                {% endif %}
+
+                {% if schema.layout.settings.cards %}</div>
+            </div>{% endif %}
+
+          </a>
+    </div>
+  </section>
+  {% endfor %}
+  {% if schema.layout.settings.cards %}
+</div>
+</div>{% endif %}
+</div>

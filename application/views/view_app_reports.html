@@ -1,0 +1,30 @@
+{% include 'header/header.html' with {'label':'REPORTS','type':'plugin','buttons':[] } %}
+
+<div class="serdelia-body-edit">
+  <div class="container serdelia-edit">
+
+	{% if report %}
+	<h4>Report:</h4>
+	<code>{{report|nl2br|raw}}</code><br><br><hr>
+	{% endif %}
+
+	{% if files %}
+	<h4>List of available reports:</h4>
+	{% for item in files %}
+		<A href="?file={{loop.index}}">{{item}}</a><br>
+	{% endfor %}
+	{% else %}<h3>No reports found</h3>
+	{% endif %}
+
+  	{% if errors %}
+  	<div class="alert alert-danger">
+    {% for item in errors %}{{item}}<br>{% endfor %}
+	</div>
+    {% endif %}
+	{% if success %}
+  	<div class="alert alert-info">
+    {% for item in success %}{{item}}<br>{% endfor %}
+	</div>
+    {% endif %}
+ </div>    
+</div>

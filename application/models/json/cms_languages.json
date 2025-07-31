@@ -1,0 +1,15 @@
+{
+    "table": "cms_languages",
+    "order": "slug",
+    "buttons_page":
+    [
+        {"label":"Set languages","type":"plugin","icon":"fingerprint","plugin":"cms_languages_set"}
+    ],
+
+    "fields" :
+    [
+        { "label" : "Label", "field": "label", "list": true },
+        { "label" : "Slug", "field": "slug", "list": true },
+        { "label" : "Publikacja", "field": "active", "list": true,"type":"boolean" }
+    ]
+}

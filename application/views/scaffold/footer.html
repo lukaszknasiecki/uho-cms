@@ -1,0 +1,6 @@
+<hr>
+<ul class="nav navbar-nav">
+              {% for item in scaffold.footer %}
+              <li{% if item.active %} class="active"{% endif %}><a href="{{item.url}}">{{item.label}}</a></li>
+              {% endfor %}
+</ul>

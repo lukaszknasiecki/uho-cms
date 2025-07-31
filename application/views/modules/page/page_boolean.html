@@ -1,0 +1,5 @@
+{% if field.list is same as ('edit') %}
+	<input {% if hidden %}style="visibility:hidden"{% endif %} id="serdelia_record_activation_{{record.id}}" class="serdelia-updateField" data-update={"record":{{record.values.id}},"field":"{{field.field}}","value":"on","value_not":"0","type":"checkbox","page_reload":"{{page_reload}}"} type="checkbox" {% if value %}checked{% endif %}>
+{% else %}
+	<input type="checkbox" {% if value %}checked{% endif %} disabled>
+{% endif %}

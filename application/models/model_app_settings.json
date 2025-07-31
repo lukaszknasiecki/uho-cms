@@ -1,0 +1,22 @@
+{
+  "pl": {
+    "header": "Ustawienia",
+    "password_change": "Zmiana hasła",
+    "cache_clear": "Wyczyść cache",
+    "app_reports": "Raporty błędów aplikacji",
+    "cms_reports": "Raporty błędów CMS",
+    "php_ini": "Ustawienia PHP",
+    "no_access": "Brak autoryzacji dostępu do tej funkcji",
+    "no_reports": "Brak raportów błędów"
+  },
+  "en": {
+    "header": "Settings",
+    "password_change": "Password change",
+    "cache_clear": "Cache clear",
+    "app_reports": "Application errors report",
+    "cms_reports": "CMS errors report",
+    "php_ini": "PHP settings",
+    "no_access": "You are not authorized to perform this action",
+    "no_reports": "No reports found"
+  }
+}

@@ -1,0 +1,8 @@
+ <div class="container vertical-center text-center">
+<div class="container" style="width:320px">
+        <h2>{{translate.header}}</h2>
+        {% if expired %}<p class="alert alert-danger">{{translate.expired}}</p>{% endif %}
+        <p>{{translate.lead}}</p>
+            <a href="{{url_login}}"><button type="button" class="btn btn-primary"><span class="mdi pull-left mdi-lock-open"></span>{{translate.cta}}</button></a>
+      </div>
+</div>

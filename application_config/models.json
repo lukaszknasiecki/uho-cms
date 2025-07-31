@@ -1,0 +1,12 @@
+{
+    "api": [
+        "client_mailing",
+        "client_tokens",
+        "client_users"
+    ],
+    "pages": [
+        "menu",
+        "pages",
+        "pages_modules"
+    ]
+}

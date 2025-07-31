@@ -1,0 +1,14 @@
+{
+    "icon":"settings",
+    "params":["bg-danger","text-white"],
+    "pl":
+    {
+        "label": "Cześć, {{name}}!",
+        "text":"Do tego CMS logowano się już z sukcesem {{amount}} razy."
+    },
+    "en":
+    {
+        "label": "Hello, {{name}}!",
+        "text":"This CMS was successfully accessed {{amount}} times."
+    }
+}

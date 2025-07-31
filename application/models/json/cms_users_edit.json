@@ -1,0 +1,36 @@
+{
+    "table": "cms_users",
+    "order":"name",
+    "label":"CMS Editors",
+    "model":{"label":"{{name}}"},
+    "filters":{"admin":"0","superadmin":"%user%"},
+    "buttons_edit":
+    [
+        {"label_PL":"Ustaw hasło","label_EN":"Set password","type":"plugin","icon":"fingerprint","plugin":"cms_users_password"},
+        {"label_PL":"Ustaw poziom dostępu","label_EN":"Set authorization level","type":"plugin","icon":"lock","plugin":"cms_users_auth"}
+    ],
+    "fields" :
+    [
+        {"field":"name","label_PL":"Imię","label_EN":"Name","list":true},
+        {"field":"login","label":"Login"},
+        {"field":"password","label":"Password","hidden":true},
+        {"field":"salt","label":"Salt","hidden":true},
+        {"field":"auth","label":"Auth","hidden":true,"hash":"11z"},
+        {"field":"auth_label","label_PL":"Zestaw uprawnień","edit":false,"list":true,"label":"Authorization set","hr":true},
+        {"field":"status","label":"Status","type":"select","hidden":true,"list":true},
+        {
+            "field":"superadmin","label_PL":"Administrator nadrzędny","list":true,"edit":false,
+            "type":"select",
+            "default":"%variable%","variable":"user",
+            "source":{"model":"cms_users","null":true}        
+        },
+        {"field":"date_set","label_PL":"Data utworzenia","label_EN":"Created","type":"datetime","default":"{{now}}","edit":false},
+        {"field":"hide_menu","label_PL":"Ukryj menu","label_EN":"Hide menu",
+            "type":"boolean",
+            "default":1
+        },
+        {"field":"admin","label":"Admin","hidden":true,"type":"boolean"},
+        {"field":"edit_all","label":"Edit All","type":"hidden"},
+        {"field":"locked","type":"boolean","list":"edit","label_EN":"Locked","label_PL":"Blokada konta"}
+    ]
+}

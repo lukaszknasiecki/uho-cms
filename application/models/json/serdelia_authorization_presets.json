@@ -1,0 +1,101 @@
+{
+    "table": "serdelia_authorization_presets",
+    "label": {
+        "page": "Serdelia Authorization Presets",
+        "edit": "Serdelia Authorization Preset <code>{{label}}</code>"
+    },
+    "order": "id",
+    "model": {
+        "label": "{{id}}"
+    },
+    "buttons_page": [
+        {
+            "label": "before",
+            "plugin": "serdelia_authorization_presets_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_authorization_presets_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+    "buttons_edit": [
+        {
+            "label": "before",
+            "plugin": "serdelia_authorization_presets_before",
+            "on_load": true,
+            "hidden":true
+        },
+        {
+            "label": "after",
+            "plugin": "serdelia_authorization_presets_after",
+            "on_update": true,
+            "hidden":true
+        }
+    ],
+
+    "fields": [
+        {
+            "label": "Preset identifier",
+            "field": "id",
+            "required":true,
+            "list": true,
+            "settings": {
+                "style": "json"
+            }
+        },
+        {
+            "field": "label",
+            "label": "Preset name",
+            "list": true,
+            "required":true
+        },
+        {
+            "field": "label_welcome",
+            "label": "Welcome copy",
+            "list": true,
+            "settings": {
+                "style": "json"
+            }
+        },
+        {
+            "field": "auth_1","hr":true,
+            "label": "Read-only models",
+            "type": "elements",
+            "output":"string",
+            "source": {
+                "model": "serdelia_authorization"
+            },
+            "settings": {
+                "style": "json"
+            }
+        },
+        {
+            "field": "auth_2",
+            "label": "Read / Write models",
+            "type": "elements",
+            "output":"string",
+            "source": {
+                "model": "serdelia_authorization"
+            },
+            "settings": {
+                "style": "json"
+            }
+        },
+        {
+            "field": "auth_3",
+            "label": "Admin models",
+            "type": "elements",
+            "output":"string",
+            "source": {
+                "model": "serdelia_authorization"
+            },
+            "settings": {
+                "style": "json"
+            }
+        }
+    ]
+}

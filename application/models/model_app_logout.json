@@ -1,0 +1,14 @@
+{
+    "pl": {
+        "header": "Do zobaczenia!",
+        "cta": "Zaloguj się ponownie",
+        "lead": "Zapraszamy wkrótce ponownie.",
+        "expired": "Zostałeś automatycznie wylogowany."
+    },
+    "en": {
+        "header": "Bye, bye!",
+        "cta": "Login again",
+        "lead": "Hope to see you soon.",
+        "expired": "You have been logged out."
+    }
+}

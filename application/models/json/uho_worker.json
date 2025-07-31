@@ -1,0 +1,30 @@
+{
+    "label_EN":"Worker Queue",
+    "label_PL":"Worker - Kolejka zadań",
+    "table": "uho_worker",
+    "disable":["add","remove"],
+    "order":"date_created",
+    "buttons_page":
+    [
+        {"plugin":"uho_worker_clear"},
+        {"plugin":"uho_worker_errors"}
+    ],
+    "fields" :
+    [
+        { "field":"id","label":"Id","list":true,"edit":false},
+        { "field":"date_created","label":"Created","list":true},
+        { "field":"date_completed","label":"Processed","list":true,"edit":false},
+        { "field":"action","label":"Action","list":true,"edit":false},
+        { "field":"status","label":"Status","list":true,"edit":false,"search":true,"type":"select",
+            "options":
+            [
+                {"value":"waiting","label_PL":"oczekująca","label_EN":"waiting"},
+                {"value":"success","label_PL":"zakończona","label_EN":"completed"},
+                {"value":"error","label_PL":"błędna","label_EN":"error"},
+                {"value":"processing","label_PL":"procesowana","label_EN":"processing"},
+                {"value":"disabled","label_PL":"dezaktywowana","label_EN":"disabled"}
+            ]    
+        },
+        { "field":"message","label":"Message","list":true,"edit":false,"type":"text"}
+    ]
+}

@@ -1,0 +1,35 @@
+{
+  "pl": {
+    "counter1": "Wyświetlanie",
+    "counter2": "rekordów z ogólnej liczby",
+    "cta": "Zaloguj się ponownie",
+    "lead": "Zapraszamy wkrótce ponownie.",
+    "expired": "Zostałeś automatycznie wylogowany.",
+    "add": "Dodaj",
+    "cancel": "Anuluj",
+    "remove": "Usuń",
+    "modal_remove_title": "Usuwanie rekordu",
+    "modal_remove_copy": "Czy usunąć ten rekord nieodwołalnie?",
+    "no_records": "Ta tabela jest pusta",
+    "back": "Powrót",
+    "filter": "Filtruj",
+    "search": "szukaj"
+  },
+  "en": {
+    "counter1": "Showing",
+    "counter2": "records out of",
+    "header": "Bye, bye!",
+    "cta": "Login again",
+    "lead": "Hope to see you soon.",
+    "expired": "You have been logged out.",
+    "add": "Add",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "modal_remove_title": "Remove entry",
+    "modal_remove_copy": "Please, confirm.",
+    "no_records": "There are no records in this table",
+    "back": "Back",
+    "filter": "filter",
+    "search": "search"
+  }
+}

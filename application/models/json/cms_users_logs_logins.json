@@ -1,0 +1,56 @@
+{
+    "table": "cms_users_logs_logins",
+    "disable": [
+        "add",
+        "edit",
+        "remove",
+        "backup"
+    ],
+    "order": "!datetime",
+    "model": {
+        "label": "{{login}} (#{{id}})"
+    },
+    "buttons_edit": [
+        {
+            "type": "page",
+            "page": "cms_users_logs?s_session={{id}}",
+            "label_PL": "Logi sesji",
+            "icon": "bar-chart"
+        }
+    ],
+    "fields": [
+        {
+            "label_PL": "Data i godzina",
+            "label_EN": "Date",
+            "field": "datetime",
+            "type": "datetime",
+            "default":"{{now}}",
+            "list": true,
+            "search": true,
+            "edit": false
+        },
+        {
+            "label": "Login",
+            "field": "login",
+            "list": true,
+            "search": true,
+            "edit": false
+        },
+        {
+            "label": "IP",
+            "field": "ip",
+            "list": true,
+            "search": true,
+            "edit": false
+        },
+        {
+            "label_PL": "Poprawne",
+            "label_EN": "Success",
+            "field": "success",
+            "list": true,
+            "type": "boolean",
+            "search": true,
+            "edit": false
+        }
+    ]
+}

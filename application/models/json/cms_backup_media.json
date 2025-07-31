@@ -1,0 +1,108 @@
+{
+    "table": "cms_backup_media",
+    "order": "!date",
+    "label": "Backup danych - pliki",
+    "disable": [
+        "add",
+        "remove",
+        "backup"
+    ],
+    "buttons_edit": [
+        {
+            "label_PL": "Przywróć media",
+            "label_EN": "Restore media",
+            "icon": "restore",
+            "plugin": "cms_backup_media_restore"
+        }
+    ],
+    "buttons_page": [
+        {
+            "label": "Backup Data",
+            "icon": "backup",
+            "type": "page",
+            "page": "cms_backup?s_page={{get.s_page}}&s_record={{get.s_record}}"
+        }
+    ],
+    "fields": [
+        {
+            "label": "Data",
+            "field": "date",
+            "type":"date",
+            "list": true,
+            "edit": false
+        },
+        {
+            "label": "Sesja",
+            "field": "session",
+            "list": true,
+            "edit": false,
+            "type": "select",
+            "source": {
+                "model": "cms_users_logs_logins"
+            }
+        },
+        {
+            "label": "Strona",
+            "field": "page",
+            "list": true,
+            "edit": false,
+            "search": "strict",
+            "hr": true
+        },
+        {
+            "label": "Model",
+            "field": "model",
+            "list": true,
+            "edit": false,
+            "search": "strict",
+            "hr": true
+        },
+        {
+            "label": "Rekord",
+            "field": "record",
+            "list": true,
+            "edit": false,
+            "search": true
+        },
+        {
+            "label": "Pole",
+            "field": "field",
+            "list": true,
+            "edit": false,
+            "search": true
+        },
+        {
+            "label": "uid",
+            "field": "uid",
+            "edit": false,
+            "list": "read",
+            "hr": true
+        },
+        {
+            "label": "checksum",
+            "field": "checksum",
+            "edit": false
+        },
+        {
+            "label": "Rozszerzenie",
+            "field": "extension",
+            "edit": false,
+            "list": "read"
+        },
+        {
+            "edit": false,
+            "folder": "/public/upload/cms_backup",
+            "field": "file",
+            "type": "file",
+            "list": {
+                "height": 100
+            },
+            "filename": "%uid%.%extension%"
+        },
+        {
+            "field": "path",
+            "label": "Ścieżka źródłowa",
+            "edit": false
+        }
+    ]
+}
