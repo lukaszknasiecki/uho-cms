@@ -102,6 +102,8 @@ class model_app_create extends model_app
         // Create necessary DB schemas (CMS tables)
         $this->createSchemas();
 
+        sleep(1);
+
         // Create new admin account
         $result = $this->clients->createAdmin($login, $password);
 

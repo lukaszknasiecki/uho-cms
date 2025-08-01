@@ -168,7 +168,6 @@ class model_app extends _uho_model
         $this->apporm->removeRootPaths();
         $this->apporm->addRootPath($pagePath);
         $this->apporm->addRootPath($this->cms_folder . '/application/models/json/');
-        $this->apporm->setRootPath($pagePath);
 
         // --- Load authorization config ---
         $authPath = $_SERVER['DOCUMENT_ROOT'] . $this->cfg_path . '/structure/authorization.json';
@@ -2841,7 +2840,9 @@ class model_app extends _uho_model
 
     public function createSchemas()
     {
-        if (empty($_SESSION['schemas_checked'])) {
+        if (empty($_SESSION['schemas_checked'])) $_SESSION['schemas_checked']=0;
+        if ($_SESSION['schemas_checked']<3)
+        {
             $tables = [
                 'cms_users',
                 'cms_users_logs',
@@ -2856,7 +2857,7 @@ class model_app extends _uho_model
                 $this->apporm->creator($schema, ['create' => "auto"]);
             }
 
-            $_SESSION['schemas_checked'] = true;
+            $_SESSION['schemas_checked']++;
         }
     }
 }

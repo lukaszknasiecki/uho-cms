@@ -6,7 +6,7 @@ Easy to use CMS utilizing UHO-MVC framework, Bootstrap and Twig.
 
 `boolean`
 
-Boolean type with values 0|1
+Boolean type
 
 `checkboxes`
 
