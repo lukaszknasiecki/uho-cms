@@ -5,8 +5,8 @@
   <thead>
     <tr height=45>
       {% for item in schema.fields %}
-      {% if not item.list_hidden %}
-      <th width="{{item.width}}%"  style="vertical-align:top">
+      {% if item.list.type in ["show","edit","order"] %}
+      <th width="{{item.list.width}}%"  style="vertical-align:top">
         {% if not schema.sortable and item.url_sort %}
         <a href="{{item.url_sort}}" style="font-weight:lighter">{{item.label}} {% if item.lang %}<small>{{item.lang|upper}}</small>{% endif %} {% if item.field==schema.order.field %}&nbsp;{% if schema.order.sort!='DESC' %}[[icon::arrow-downward]]{% else %}[[icon::arrow-upward]]{% endif %}{% endif %}</a>
         {% else %}<span style="font-weight:lighter">{{item.label}} {% if item.lang %}<small>{{item.lang|upper}}</small>{% endif %}</span>
@@ -23,8 +23,8 @@
     {% for record in records %}
     <tr class="{% if record.values.active is defined %}serdelia-grid-container serdelia-grid-activate {% if record.values.active is same as ("0") %}serdelia-grid-inactive{% endif %}{% endif %}" data-id="{{record.id}}" {% if record.url_edit %}style="cursor: pointer;" onclick="document.location.href='{{record.url_edit}}'"{% endif %}>
         {% for item in schema.fields %}
-        {% if not item.list_hidden %}        
-          <td width="{{item.width}}%" class="{% if item.list is same as ('order') %}tr_sortable{% endif %}">
+        {% if item.list.type in ["show","edit","order"] %}
+          <td width="{{item.list.width}}%" class="{% if item.list is same as ('order') %}tr_sortable{% endif %}">
             {% if item.list.type=='badge' %}
             {% include 'modules/page/subview_badge.html' with {'list':item.list,'value':record.values[item.field] } %}
             {% elseif record.values[item.field].html %}{{record.values[item.field].html|raw}}{% else %}

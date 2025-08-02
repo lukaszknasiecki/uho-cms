@@ -362,6 +362,11 @@ class model_app_page extends model_app
 				$schema['fields'][$k]['label'] = $v['label']['page'];
 			}
 
+			// convert list to object if string
+
+			if (is_string($v['list']))
+				$schema['fields'][$k]['list']=$v['list']=['type'=>$v['list']];
+
 			switch ($v['type']) {
 				case "select":
 					// Normalize option values for selects if source ID is present
@@ -375,8 +380,9 @@ class model_app_page extends model_app
 				case "image":
 					// Ensure list view for images is well-formed
 					if (isset($v['list'])) {
-						if (!is_array($v['list'])) $v['list'] = [];
-						if (empty($v['list']['folder'])) {
+						if (!is_array($v['list'])) $v['list']=[];
+						if (empty($v['list']['folder']))
+						{
 							$v['list']['folder'] = $v['images'][1]['folder'];
 						}
 						$schema['fields'][$k]['list'] = $v['list'];
@@ -404,6 +410,7 @@ class model_app_page extends model_app
 		/*
      * Reorder fields if 'position_after' is defined
      */
+	/*
 		$reordered_fields = [];
 
 		foreach ($schema['fields'] as $field) {
@@ -433,10 +440,11 @@ class model_app_page extends model_app
 		}
 
 		$schema['fields'] = $reordered_fields;
+		*/
 
 		/*
-     * Add schema editor button if user is allowed
-     */
+		     * Add schema editor button if user is allowed
+     	*/
 		if (!isset($schema['buttons_page'])) {
 			$schema['buttons_page'] = [];
 		}
@@ -522,7 +530,8 @@ class model_app_page extends model_app
 	private function removeNonListedFieldsFromSchema(array $schema, string $page_with_params, array $params, int $auth): array
 	{
 		// Remove fields that are not marked to be listed.
-		foreach ($schema['fields'] as $k => $v) {
+		foreach ($schema['fields'] as $k => $v)
+		{
 			if (empty($v['list'])) {
 				unset($schema['fields'][$k]);
 			}
@@ -564,23 +573,21 @@ class model_app_page extends model_app
 		$dynamicFieldCount = 0;
 
 		// Determine total width and count dynamic fields.
-		foreach ($schema['fields'] as $k => $v) {
-			if (!empty($v['list_hidden']) || $v['list'] === 'read') {
-				$schema['fields'][$k]['list_hidden'] = true;
-				continue;
-			}
+		foreach ($schema['fields'] as $k => $v)
+		if (in_array($v['list']['type'],['show','order','edit']))
+		{
 
-			if (empty($v['width'])) {
+			if (empty($v['list']['width'])) {
 				// Assign default width based on field type if none set.
-				if (in_array($v['type'], ['boolean', 'date', 'order'])) {
-					$schema['fields'][$k]['width'] = 10;
+				if (in_array($v['type'], ['integer','boolean', 'date', 'order'])) {
+					$schema['fields'][$k]['list']['width'] = 10;
 				} elseif ($v['type'] === 'datetime') {
-					$schema['fields'][$k]['width'] = 25;
+					$schema['fields'][$k]['list']['width'] = 25;
 				}
 			}
 
-			if (!empty($schema['fields'][$k]['width'])) {
-				$totalFixedWidth += $schema['fields'][$k]['width'];
+			if (!empty($schema['fields'][$k]['list']['width'])) {
+				$totalFixedWidth += $schema['fields'][$k]['list']['width'];
 			} else {
 				$dynamicFieldCount++;
 			}
@@ -589,10 +596,10 @@ class model_app_page extends model_app
 		// Distribute remaining width evenly among dynamic fields.
 		$availableWidth = max(10, intval((100 - $totalFixedWidth) / max(1, $dynamicFieldCount)));
 
-		foreach ($schema['fields'] as $k => $v) {
-			if (empty($v['width'])) {
-				$schema['fields'][$k]['width'] = $availableWidth;
-			}
+		foreach ($schema['fields'] as $k => $v)
+		if (in_array($v['list']['type'],['show','order','edit']) && empty($v['list']['width']))
+		{
+				$schema['fields'][$k]['list']['width'] = $availableWidth;
 		}
 
 		return $schema;
@@ -616,7 +623,7 @@ class model_app_page extends model_app
 					$localizedField['field'] = str_replace(':lang', $langData['lang_add'], $field['field']);
 					$localizedField['lang'] = $langData['lang'];
 
-					if ($field['list'] === 'languages' || $langData === reset($schema['langs'])) {
+					if (!empty($field['list']['languages']) || $langData === reset($schema['langs'])) {
 						$result[] = $localizedField;
 					}
 				}
@@ -770,49 +777,21 @@ class model_app_page extends model_app
 	 * @param array $records The data records to update.
 	 * @return array         The updated records with rendered values.
 	 */
+	
 	private function updateRecordsValues(array $schema, array $records): array
 	{
-		foreach ($schema['fields'] as $field) {
-			$fieldName = $field['field'];
-
-			// Render HTML for virtual fields
-			if ($field['type'] === 'virtual' && !empty($field['html'])) {
-				foreach ($records as $i => $record) {
-					$value = $record['values'][$fieldName] ?? null;
-
-					// Prepare data for Twig rendering
-					$data = ['value' => $value];
-					if (!empty($field['options'])) {
-						$data['options'] = _uho_fx::array_change_keys($field['options'], 'value', 'label');
-					}
-
-					$records[$i]['values'][$fieldName] = [
-						'value' => $value,
-						'html'  => $this->getTwigFromHtml($field['html'], $data)
-					];
-				}
-			}
-
-			// Render list-style HTML for fields with a list template
-			if (!empty($field['list']['html']) && !empty($field['options'])) {
-				foreach ($records as $i => $record) {
-					$value = $record['values'][$fieldName] ?? null;
-
-					// Find the matching label from options
-					$option = _uho_fx::array_filter($field['options'], 'value', $value, ['first' => true]);
-					$label = $option['label'] ?? '';
-
-					// Replace value with rendered HTML
-					$records[$i]['values'][$fieldName] = [
-						'html' => $this->getTwigFromHtml($field['list']['html'], [
-							'label' => $label,
-							'value' => $value
-						])
-					];
-				}
+		foreach ($schema['fields'] as $field)
+		if (!empty($field['list']['value']))
+		{
+			foreach ($records as $k=>$record)
+			{
+				
+				$records[$k]['values'][$field['field']]=$this->getTwigFromHtml($field['list']['value'],$record['values']);
 			}
 		}
-
+		
+		
 		return $records;
 	}
+	
 }

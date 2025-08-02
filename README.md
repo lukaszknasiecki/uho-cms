@@ -145,9 +145,16 @@ Boolean property (true|false) shows divider line above the field
 
 `list`
 
-Shows field value in page (list) view.
+Object setting visibility of the field value in page (list) view.
+Can be used with a shortcut as a string - defining list.type
 
-Available values:
+    {
+        "type": show|read|edit|order
+        "value": string
+        "width": integer
+    }
+
+Available values for `type`:
 
 `show` shows value in the table view
 
@@ -156,6 +163,10 @@ Available values:
 `edit` shows value in editable form, applicable only for boolean-type fields
 
 `order` for fields of type "order" - enabled drag&dtop sorting option
+
+You can override record's view value with .value string which is using Twig template
+and record's data. You can also set field's width a percent of whole table width.
+If empty, default widths will be calculated based on field types.
 
 
 `search`
