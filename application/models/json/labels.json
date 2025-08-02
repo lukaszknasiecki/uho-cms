@@ -1,0 +1,42 @@
+{
+    "table": "labels",
+    "order": "nr",
+    "fields": [
+        {
+            "field": "nr",
+            "type": "order",
+            "list": "order",
+            "label": "Nr"
+        },
+        {
+            "field": "question",
+            "type": "select",
+            "cms": {
+                "edit": "remove"
+            },
+            "source": {
+                "model": "questions"
+            }
+        },
+        {
+            "field": "type",
+            "label": "Type",
+            "type":"select",
+            "list":true,
+            "source":
+            {
+                "model":"tasks_types"
+            }
+        },
+        {
+            "field": "name",
+            "label": "Name",
+            "list": true
+        },
+        {
+            "field": "task_question",
+            "label": "Task Question",
+            "list": true
+        }
+    ]
+}

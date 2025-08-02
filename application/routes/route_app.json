@@ -35,7 +35,7 @@
                 "page",
                 "params"
             ],
-            "value": "edit/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+            "value": "add/{{page}}{% if params %},{{params|join(',')}}{% endif %}"
         },
         "edit": {
             "type": "twig",
@@ -44,7 +44,7 @@
                 "params",
                 "record"
             ],
-            "value": "edit/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+            "value": "edit/{{page}}{% if params %},{{params|join(',')}}{% endif %}/{{record}}"
         },
         "email": {
             "type": "email",
@@ -77,7 +77,7 @@
                 "sort",
                 "query"
             ],
-            "value": "page/{{page}}{% if params %}{{params|join(',')}}{% endif %}?{{query}}{% if sort %}&sort={{sort}}{% endif %}"
+            "value": "page/{{page}}{% if params %},{{params|join(',')}}{% endif %}?{{query}}{% if sort %}&sort={{sort}}{% endif %}"
         },
         "password_change": {
             "value": "password-change"
@@ -102,7 +102,7 @@
                 "params",
                 "record"
             ],
-            "value": "remove/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+            "value": "remove/{{page}}{% if params %},{{params|join(',')}}{% endif %}/{{record}}"
         },
         "settings": {
             "type": "twig",
@@ -121,7 +121,7 @@
                 "params",
                 "record"
             ],
-            "value": "view/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+            "value": "view/{{page}}{% if params %},{{params|join(',')}}{% endif %}/{{record}}"
         },
         "write": {
             "type": "twig",
@@ -130,7 +130,7 @@
                 "params",
                 "record"
             ],
-            "value": "write/{{page}}{% if params %}{{params|join(',')}}{% endif %}/{{record}}"
+            "value": "write/{{page}}{% if params %},{{params|join(',')}}{% endif %}/{{record}}"
         }
     }
 }

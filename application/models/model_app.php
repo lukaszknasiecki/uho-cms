@@ -682,7 +682,7 @@ class model_app extends _uho_model
 
     public function getSchema($model, $separate = true, $params = null, $model_update = null)
     {
-
+        
         if ($model_update) {
             $schema = $this->apporm->getJsonModelSchema([$model, $model_update], false, $params);
         } else

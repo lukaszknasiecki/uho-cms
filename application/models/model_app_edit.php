@@ -53,7 +53,7 @@ class model_app_edit extends model_app
 		// Load base schema and prepare ORM
 
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
-		$this->validateSchema($schema, $model);
+		$this->validateSchema($schema, $model);		
 		$this->orm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
 		
 		// Generate edit schema (populated with record data)

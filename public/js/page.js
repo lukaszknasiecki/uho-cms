@@ -114,11 +114,9 @@ Apps.Page = function($, window)
     }
   },
   removeRecordConfirm = function( event  )
-  {
-    // not sure if its ever executed...
+  {    
       $('#modalRemoveRecord').modal('hide');
       var url = $('#modalRemoveRecord').data('url');
-      var _srdcsrftkn=$('#serdelia_page').data('_srdcsrftkn');
 
       if (url=='-')
       {
@@ -140,15 +138,7 @@ Apps.Page = function($, window)
           }
         );
       }
-/*
-      jQuery.get( $('#modalRemoveRecord').data('url') ,
-      
-        function(data)
-        { 
-          location.reload();
-        },
-        'HTML');
-    }*/
+
         
   },
   removeRecord = function( event  )

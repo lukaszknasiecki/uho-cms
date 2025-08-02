@@ -1744,7 +1744,7 @@ class model_app_write extends model_app
 	 * @return boolean
 	 */
 
-	public function file_exists($f)
+	public function file_exists($f) :bool
 	{
 		if ($this->s3) return $this->s3->file_exists($f);
 		else return file_exists($f);

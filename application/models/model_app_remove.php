@@ -9,11 +9,6 @@ require_once('model_app.php');
  */
 class model_app_remove extends model_app
 {
-	/**
-	 * Utility array for page parameters derived from the request.
-	 * @var array
-	 */
-	private array $page_params = [];
 
 	/**
 	 * Handles the record removal request and returns a JSON response.
@@ -21,19 +16,13 @@ class model_app_remove extends model_app
 	 * @param array|null $params Request parameters
 	 * @return void Outputs JSON and exits
 	 */
+
 	public function getContentData($params = null): void
 	{
 		$page = explode('/', $params['url'] ?? '');
-		$modelParts = explode(',', $page[1] ?? '');
-		$model = $modelParts[0] ?? '';
-
-		// Extract page parameters if present
-		if (!empty($modelParts[1])) {
-			$this->page_params = explode(',', $modelParts[1]);
-			// Remove the first dummy entry if needed
-			array_unshift($this->page_params, '');
-			unset($this->page_params[0]);
-		}
+		$pageParams = explode(',', $page[1] ?? '');
+		$model=$pageParams[0];
+		unset($pageParams[0]);
 
 		// Extract record ID
 		$id = $page[2] ?? null;
@@ -45,7 +34,7 @@ class model_app_remove extends model_app
 		$this->clients->logsAdd("{$model}::{$id}::remove");
 
 		// Attempt record removal
-		$result = $this->removeRecord($model, $modelParts, $id);
+		$result = $this->removeRecord($model, $pageParams, $id);
 
 		// Return JSON response and exit
 		exit(json_encode($result));

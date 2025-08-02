@@ -1,0 +1,37 @@
+{
+    "icon":"import-export",    
+    "pl":
+    {
+        "label":"Import",
+        "title": "Import",
+        "description":"Zaznacz pola, które chcesz wypełnić.",
+        "description_paste":"Wklej Copy/Paste zawartość arkusza kalkulacyjnego zachowując odpowiednią kolejność zaznaczonych pól.",
+        "description_placeholder":"Wklej treść JSON lub dla CSV - jeden rekord w jednej linii...",
+        "description_placeholder_spreadsheet":"Paste contents - header in first row, then one row in every line...",
+        "description_upload":"Lub dodaj plik CSV/JSON.",
+        "skip_first_line":"Zignoruj pierwszy rząd",
+        "error_nothing_checked":"Zaznacz choć jedno pole importu",
+        "error_no_data":"Nie znaleziono żadnych danych",
+        "error_sql":"Błąd SQL",
+        "submit":"Uruchom import",
+        "added":"Dodano nowe rekordy: ",
+        "back":"Powrót"
+    },
+    "en":
+    {
+        "label":"Import",
+        "title": "Import",
+        "description":"Check the field you want to fill with new data.",
+        "description_paste":"Copy/Paste contents of the spreadsheet. Please align number of rows with selected fields.",
+        "description_placeholder":"Paste contents - one row in every line...",
+        "description_placeholder_spreadsheet":"Paste contents - header in first row, then one row in every line...",
+        "description_upload":"Or add CSV file.",
+        "skip_first_line":"Ignore first row",
+        "error_nothing_checked":"Please, select at lest one field",
+        "error_no_data":"No data found",
+        "error_sql":"SQL Error :(",
+        "submit":"Start import",
+        "added":"New records have been added: ",
+        "back":"Back"
+    }    
+}

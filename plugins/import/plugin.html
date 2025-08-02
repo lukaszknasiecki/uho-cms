@@ -1,0 +1,69 @@
+{% if added %}
+<div class="alert alert-success">
+	[[icon::done]]
+	{% for add in added %} {% if loop.index>1 %}<br>{% endif %}
+	{{add|raw}}
+	{% endfor %}
+</div>
+{% endif %}
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{% for error in errors %} {% if loop.index>1 %}<br>{% endif %}
+	{% if translate['error_'~error] %}{{translate['error_'~error]}}{% else %}{{error|raw}}{% endif %}
+	{% endfor %}
+</div>
+{% endif %}
+
+<form action="" method="POST" enctype="multipart/form-data">
+
+<h3>1. Paste data with headers from spreadsheet</h3>
+
+<textarea name="import_spreadsheet" style="width:100%;height:200px"
+		placeholder="{{translate.description_placeholder_spreadsheet}}"></textarea>
+<br><br>
+<h3>2. Or attach source rows to existing fields</h3>
+
+<div class="alert alert-info">
+	[[icon::info-outline]] {{translate.description}}
+</div>
+
+	{% for field in fields %}
+	<div class="checkbox">
+		<label><input type="checkbox" class="field_checkbox" name="f_{{field.field}}">&nbsp; {% if field.label %}{{field.label}}{% else %}{{field.field}}{% endif %}</label>
+	</div>
+	{% endfor %}
+
+	<button id="b_all" type="button"  class="btn btn-default" >Check all</button>
+	<button id="b_none" type="button"  class="btn btn-default">Uncheck all</button>
+
+	<br><br>
+	<div class="alert alert-info">
+		[[icon::info-outline]] {{translate.description_paste}}
+	</div>
+
+	<textarea name="import" style="width:100%;height:200px"
+		placeholder="{{translate.description_placeholder}}"></textarea>
+	<br><br>
+	<h3>3. Or import CSV file with headers</h3>
+	<div class="alert alert-info">
+		[[icon::info-outline]] {{translate.description_upload}}
+	</div>
+	CSV Separator <input id="csv_separator" name="csv_separator" value=";"><br><br>
+	<input type="file" id="csv" name="csv" accept=".csv">
+	
+<hr>
+	<div class="checkbox">
+		<label><input type="checkbox" name="skip">&nbsp; {{translate.skip_first_line}}</label>
+		<br><label>Use following field as Key Index (update existing records)</label>
+		<select name="key">
+			<option value="0">-- don't update, insert all --</option>
+			{% for field in fields %}
+				<option value="{{field.field}}">{{field.label}}</option>
+			{% endfor %}
+			</select>
+	</div>
+	<br>
+	<button type="submit" name="submit" class="btn btn-danger">[[icon::refresh]] {{translate.submit}}</button>
+</form>
+

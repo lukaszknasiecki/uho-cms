@@ -54,9 +54,9 @@ class model_app_page extends model_app
 		}
 
 		// Parse model and parameters from URL
-		$parts = explode(',', $page[1]);
-		$model = array_shift($parts);
-		$params = array_values(array_map(fn($v) => $v === 'null' ? null : $v, $parts));
+		$params = explode(',', $page[1]);
+		$model = $params[0];
+		unset($params[0]);
 
 		// Check authorization
 		$auth = $this->checkAuth($model);
@@ -112,97 +112,98 @@ class model_app_page extends model_app
 		$first = true;
 		$global_search = isset($get['query']);
 
-		foreach ($schema['fields'] as $k => $field) {
-			$searchKey = $field['field_search'] ?? null;
-			$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
-			$value = $global_search ? $get['query'] : $queryVal;
-
+		foreach ($schema['fields'] as $k => $field)
 			if (
-				in_array($field['type'], ['image', 'uid', 'checkboxes', 'temp-elements']) ||
-				(!$searchKey && !$global_search)
-			) continue;
+				!in_array($field['type'], ['image', 'uid', 'checkboxes', 'temp-elements']) &&
+				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
+			)
+			{
+				$searchKey = $field['field_search'] ?? null;
+				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
+				$value = $global_search ? $get['query'] : $queryVal;
 
-			if (!$global_search) {
-				$schema['fields'][$k]['searched'] = $value;
-			}
-
-			$vv = null;
-
-			// Type-specific filter logic
-			switch ($field['type']) {
-				case 'boolean':
-				case 'integer':
-					$vv = $value ?: 0;
-					break;
-
-				case 'select':
-					$vv = [];
-					if (!$global_search && !empty($field['source']['model'])) {
-						$searchParams = [];
-						if (!empty($field['source']['search']) && $field['source']['search_strict']) {
-							foreach ($field['source']['search'] as $srcField) {
-								$searchParams[$srcField] = $value;
-							}
-						}
-						$ids = $this->apporm->getJsonModel($field['source']['model'], $searchParams, false);
-						$vv = _uho_fx::array_extract($ids, 'id') ?: 0;
-					} elseif (!empty($field['options'])) {
-						foreach ($field['options'] as $opt) {
-							if (isset($opt['label']) && str_contains($opt['label'], $value)) {
-								$vv[] = $opt['value'];
-							}
-						}
-					}
-					break;
-
-				case 'string':
-				case 'text':
-					$words = explode(' ', trim($value));
-					if ($field['search'] === 'strict') {
-						$vv = (count($words) === 1)
-							? $value
-							: ['type' => 'custom', 'join' => ' && ', 'value' => array_map(fn($w) => "`{$field['field']}`=\"{$this->sqlSafe($w)}\"", $words)];
-					} else {
-						$vv = (count($words) === 1)
-							? ['operator' => '%LIKE%', 'value' => $value]
-							: ['type' => 'custom', 'join' => ' && ', 'value' => array_map(fn($w) => "`{$field['field']}` LIKE \"%{$this->sqlSafe($w)}%\"", $words)];
-					}
-					break;
-			}
-
-			// Apply filters based on field type
-			if ($field['type'] === 'virtual') {
-				$filters_virtual[$field['field']] = $vv;
-			} elseif ($field['type'] === 'date') {
-				$filters[$field['field']] = ['operator' => '%LIKE%', 'value' => $vv];
-			} elseif ($field['type'] === 'integer' && is_numeric($vv)) {
-				$filters[$field['field']] = (int)$vv;
-			} elseif ($vv !== null) {
-				$filters[$field['field']] = $vv;
-			}
-
-			// Build filter label stack
-			if (!$global_search || $first) {
-				$first = false;
-				$label_value = $field['label'] ?? $value;
-
-				if (!empty($field['options']) && !$global_search) {
-					if ($value === '[not_null]') {
-						$filters[$field['field']] = ['operator' => '!=', 'value' => ''];
-						$label_value = $field['label'];
-					} else {
-						$value = _uho_fx::array_change_keys($field['options'], 'value', 'label')[$value] ?? $value;
-					}
+				if (!$global_search) {
+					$schema['fields'][$k]['searched'] = $value;
 				}
 
-				$filters_stack[] = [
-					'label' => $field['label'],
-					'label_value' => $label_value,
-					'value' => $value,
-					'url' => ['type' => 'url_now', 'getRemove' => ['query', $searchKey]]
-				];
+				$vv = null;
+
+				// Type-specific filter logic
+
+				switch ($field['type']) {
+					case 'boolean':
+					case 'integer':
+						$vv = $value ?: 0;
+						break;
+
+					case 'select':
+						$vv = [];
+						if (!$global_search && !empty($field['source']['model'])) {
+							$searchParams = [];
+							if (!empty($field['source']['search']) && $field['source']['search_strict']) {
+								foreach ($field['source']['search'] as $srcField) {
+									$searchParams[$srcField] = $value;
+								}
+							}
+							$ids = $this->apporm->getJsonModel($field['source']['model'], $searchParams, false);
+							$vv = _uho_fx::array_extract($ids, 'id') ?: 0;
+						} elseif (!empty($field['options'])) {
+							foreach ($field['options'] as $opt) {
+								if (isset($opt['label']) && str_contains($opt['label'], $value)) {
+									$vv[] = $opt['value'];
+								}
+							}
+						}
+						break;
+
+					case 'string':
+					case 'text':
+						$words = explode(' ', trim($value));
+						if ($field['search'] === 'strict') {
+							$vv = (count($words) === 1)
+								? $value
+								: ['type' => 'custom', 'join' => ' && ', 'value' => array_map(fn($w) => "`{$field['field']}`=\"{$this->sqlSafe($w)}\"", $words)];
+						} else {
+							$vv = (count($words) === 1)
+								? ['operator' => '%LIKE%', 'value' => $value]
+								: ['type' => 'custom', 'join' => ' && ', 'value' => array_map(fn($w) => "`{$field['field']}` LIKE \"%{$this->sqlSafe($w)}%\"", $words)];
+						}
+						break;
+				}
+
+				// Apply filters based on field type
+				if ($field['type'] === 'virtual') {
+					$filters_virtual[$field['field']] = $vv;
+				} elseif ($field['type'] === 'date') {
+					$filters[$field['field']] = ['operator' => '%LIKE%', 'value' => $vv];
+				} elseif ($field['type'] === 'integer' && is_numeric($vv)) {
+					$filters[$field['field']] = (int)$vv;
+				} elseif ($vv !== null) {
+					$filters[$field['field']] = $vv;
+				}
+
+				// Build filter label stack
+				if (!$global_search || $first) {
+					$first = false;
+					$label_value = $field['label'] ?? $value;
+
+					if (!empty($field['options']) && !$global_search) {
+						if ($value === '[not_null]') {
+							$filters[$field['field']] = ['operator' => '!=', 'value' => ''];
+							$label_value = $field['label'];
+						} else {
+							$value = _uho_fx::array_change_keys($field['options'], 'value', 'label')[$value] ?? $value;
+						}
+					}
+
+					$filters_stack[] = [
+						'label' => $field['label'],
+						'label_value' => $label_value,
+						'value' => $value,
+						'url' => ['type' => 'url_now', 'getRemove' => ['query', $searchKey]]
+					];
+				}
 			}
-		}
 
 		// Convert global search to unified custom query
 		if ($global_search) {
@@ -220,9 +221,9 @@ class model_app_page extends model_app
 			$filters = array_merge($schema['filters'], $filters);
 		}
 
-		
-     	// Fetch records
-     	
+
+		// Fetch records
+
 		$all = $this->apporm->getJsonModel($schema, $filters, false, null, null, ['count' => true]);
 		$_SESSION['page_filters'][$model] = $filters;
 
@@ -234,8 +235,8 @@ class model_app_page extends model_app
 			$records = $this->apporm->filterResults($schema, $records, $filters_virtual, false);
 		}
 
-     	// Format each record
-     
+		// Format each record
+
 		foreach ($records as $i => $record) {
 			$records[$i] = [
 				'id' => $record['id'],
@@ -689,7 +690,7 @@ class model_app_page extends model_app
 				'icon'  => 'add',
 				'url'   => [
 					'type'   => 'add',
-					'page'   => $schema['id'] ?? 'unknown', // use $schema['id'] or similar if $model not defined
+					'page'   => $schema['table'] ?? 'unknown', // use $schema['id'] or similar if $model not defined
 					'params' => $params
 				]
 			];

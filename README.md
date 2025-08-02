@@ -90,8 +90,10 @@ Defines records order, `INT(11)`
 `string`
 
 String (256 chars) type. If no type is defined this type
-is being used as a default one. You can change default size
-with settings.length field
+is being used as a default one. The only exception is field
+name `id` which by default is integer.
+
+You can change default size of this field with settings.length field
 
 `text`
 
