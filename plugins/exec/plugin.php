@@ -2,6 +2,19 @@
 
 /**
  * Serdelia built-in plugin to exec shell command
+ * from website root directory. Expects JSON reponse
+ * with .result=true. Shows .message or full object
+ * as an output.
+ * You can use variables defined in cfg.plugins[]
+ * Sample json:
+ * 
+ * {
+ *           "plugin": "exec",
+ *           "params":
+ *           {
+ *               "command":"{{PHP}} command.php token={{TOKEN}}"
+ *           }
+ *       }
  */
 
 use Huncwot\UhoFramework\_uho_fx;
@@ -44,28 +57,30 @@ class serdelia_plugin_exec
         {
 
             // construct final url to call
-            $command_primary=$command=$this->input['command'];
-            
-            $cfg=$this->parent->getPluginsCfg();
-            
+            $command_primary=$command=$this->input['command'];            
+            $cfg=$this->parent->getPluginsCfg();            
             if ($cfg) $command=$this->parent->getTwigFromHtml($command,$cfg);
-
             $command='cd '.$_SERVER['DOCUMENT_ROOT'].' ; '.$command;
 
+            // execute
             exec($command, $r, $retval);
 
+            // handle JSON response
             if ($r) $r=implode('',$r);
-            if ($r) $r=json_decode($r,true);
+            if ($r) $r=@json_decode($r,true);
 
             if (!$r)
             {
                 $errors[]='Empty answer, no data.';
             }
-            elseif (!empty($r['result']))
-            {
-                unset($r['result']);
+            elseif (!empty($r['result']) && $r['result']=='true')
+            {                
                 if (!empty($r['message'])) $success[]=$r['message'];
-                    else $success[]='<pre>'.json_encode($r,JSON_PRETTY_PRINT).'</pre>';
+                    else
+                    {
+                        unset($r['result']);
+                        $success[]='<pre>'.json_encode($r,JSON_PRETTY_PRINT).'</pre>';
+                    }
             } else
             {                
                 if (!empty($r['message'])) $errors[]=$r['message'];
