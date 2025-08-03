@@ -1387,15 +1387,7 @@ class model_app extends _uho_model
                     }
                 }
 
-        // remove disputed "?" 
-
-        foreach ($buttons as $k => $v)
-            if (!empty($v['url']['params']['url'])) {
-                $buttons[$k]['url']['params']['url'] = str_replace('?', '¿', $v['url']['params']['url']);
-            }
-
-
-
+            
         return $buttons;
     }
 

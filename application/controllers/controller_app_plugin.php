@@ -37,9 +37,11 @@ class controller_app_plugin extends controller_app
         }
 
         // Decode JSON parameters from GET query string
-        $p = stripslashes(_uho_fx::getGet('params'));
+        $gets=_uho_fx::getGetArray();
+        if (isset($gets['params'])) $p=$gets['params']; else $p=null;
+        
         if ($p) {
-            $p = json_decode($p, true);
+            $p = json_decode(urldecode($p), true);
         }
         if ($p) {
             $params['params'] = $p;

@@ -1,0 +1,17 @@
+<code>{{url}}</code>
+<hr>
+{% if errors %}
+<div class="alert alert-danger">
+    {% for item in errors %}
+    [[icon::error]] {% if translate[item]%}{{translate[item]}}{% else %}{{item|raw}}{% endif %}<br>
+    {% endfor %}
+</div>
+<hr>
+{% endif %}
+{% if success %}
+<div class="alert alert-success">
+    {% for item in success %}
+    [[icon::done]] {% if translate[item] %}{{translate[item]}}{% else %}{{item|raw}}{% endif %}<br>
+    {% endfor %}
+</div>
+{% endif %}
