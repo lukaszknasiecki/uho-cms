@@ -49,6 +49,7 @@ class model_app extends _uho_model
      */
     public $cfg_path;
     public $cfg_folder;
+    public array $plugins_cfg=[];
     /**
      * _uho_s3 instance
      */
@@ -450,6 +451,18 @@ class model_app extends _uho_model
         $r = $this->clients->getCfg($key);
         return $r;
     }
+
+    public function setPluginsCfg($cfg)
+    {
+        $this->plugins_cfg=$cfg;
+    }
+
+    public function getPluginsCfg()
+    {
+        return $this->plugins_cfg;
+    }
+
+    
 
     /**
      * Validates password format
