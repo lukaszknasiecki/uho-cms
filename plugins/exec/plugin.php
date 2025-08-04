@@ -35,7 +35,7 @@ class serdelia_plugin_exec
     {
         $this->cms = $cms;
         $this->parent = $parent;        
-        $this->input = _uho_fx::sanitize_input($params['params'],['command'=>'string']);
+        $this->input = _uho_fx::sanitize_input($params['params'],['command'=>'string','debug'=>'string']);
     }
 
     /** Main plugin-method, returns data for View module
@@ -93,7 +93,7 @@ class serdelia_plugin_exec
 
         $data = [
             'result' => true,
-            'url'=>$command_primary,
+            'url'=>isset($this->input['debug']) ? $command : $command_primary,
             'errors' => $errors,
             'success'=>$success,
             'time' => $time
