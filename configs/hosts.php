@@ -8,6 +8,7 @@ if (getenv('S3_HOST'))
         'bucket' =>	getenv('S3_BUCKET'),
         'region' =>	getenv('S3_REGION'),
         'folder' =>	getenv('S3_FOLDER'),
+		'acl' =>	getenv('S3_ACL'),
         'cache' => '/cache/s3.files'
     ]; else $s3=null;
 
