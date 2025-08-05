@@ -63,11 +63,16 @@ class serdelia_plugin_exec
             $command='cd '.$_SERVER['DOCUMENT_ROOT'].' ; '.$command;
 
             // execute
-            exec($command, $r, $retval);
+            exec($command, $response, $retval);
 
             // handle JSON response
-            if ($r) $r=implode('',$r);
-            if ($r) $r=@json_decode($r,true);
+            if ($response) $r=implode('',$response); else $r=[];
+            
+            if ($r)
+            {
+                $r=@json_decode($r,true);
+                if (!$r) $r=$response;
+            }
 
             if (!$r)
             {
