@@ -65,7 +65,7 @@ class model_app_page extends model_app
 		// Load and validate schema
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
 		$this->validateSchema($schema, $model);
-		$this->orm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
+		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
 
 		// Execute plugin "on_load" hooks

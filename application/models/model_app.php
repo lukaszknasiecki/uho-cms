@@ -2171,7 +2171,7 @@ class model_app extends _uho_model
                 $schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
                 if ($validate) {
                     $this->validateSchema($schema, $model);
-                    $this->orm->creator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
+                    $this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
                 }
 
                 if ($id)
@@ -2186,7 +2186,7 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['page_update'] = true;
         } elseif ($validate) {
             $this->validateSchema($schema, $model);
-            $this->orm->creator($schema, ['create' => 'auto', 'update' => 'alert'], true);
+            $this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert'], true);
         }
 
         // getting new schema updated with record values  ------------------------

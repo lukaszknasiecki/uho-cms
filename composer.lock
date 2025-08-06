@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.352.1",
+            "version": "3.352.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c"
+                "reference": "695daa607b6770e426613453f04f4a82f1555887"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c",
-                "reference": "d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/695daa607b6770e426613453f04f4a82f1555887",
+                "reference": "695daa607b6770e426613453f04f4a82f1555887",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.352.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.352.2"
             },
-            "time": "2025-08-04T18:19:17+00:00"
+            "time": "2025-08-05T18:15:51+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -1146,16 +1146,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v4.32.0RC1",
+            "version": "v4.32.0RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "f85f1d4a433d529674f7e0983e7eb6ba5b230756"
+                "reference": "c1fb4d96a821751920ef55e934e832a767eea61e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/f85f1d4a433d529674f7e0983e7eb6ba5b230756",
-                "reference": "f85f1d4a433d529674f7e0983e7eb6ba5b230756",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/c1fb4d96a821751920ef55e934e832a767eea61e",
+                "reference": "c1fb4d96a821751920ef55e934e832a767eea61e",
                 "shasum": ""
             },
             "require": {
@@ -1187,9 +1187,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.32.0RC1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.32.0RC2"
             },
-            "time": "2025-07-21T22:15:31+00:00"
+            "time": "2025-08-05T17:40:34+00:00"
         },
         {
             "name": "grpc/grpc",
@@ -1831,12 +1831,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "7664f1d63f7f792803a5ac582f626dd47be6d5ce"
+                "reference": "fdb9e0a474a9643e6b2388a00ce9473ca97551c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/7664f1d63f7f792803a5ac582f626dd47be6d5ce",
-                "reference": "7664f1d63f7f792803a5ac582f626dd47be6d5ce",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/fdb9e0a474a9643e6b2388a00ce9473ca97551c4",
+                "reference": "fdb9e0a474a9643e6b2388a00ce9473ca97551c4",
                 "shasum": ""
             },
             "require": {
@@ -1874,7 +1874,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-08-04T21:38:51+00:00"
+            "time": "2025-08-06T14:43:28+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3962,12 +3962,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "c84d2a11373da87564757ea55b24930abbc2413e"
+                "reference": "d7cbab18d0708dbae75f8c4470f4fc5c5c88296c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/c84d2a11373da87564757ea55b24930abbc2413e",
-                "reference": "c84d2a11373da87564757ea55b24930abbc2413e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d7cbab18d0708dbae75f8c4470f4fc5c5c88296c",
+                "reference": "d7cbab18d0708dbae75f8c4470f4fc5c5c88296c",
                 "shasum": ""
             },
             "require": {
@@ -4052,7 +4052,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-04T15:51:53+00:00"
+            "time": "2025-08-06T06:01:34+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
