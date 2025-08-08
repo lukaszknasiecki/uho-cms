@@ -73,9 +73,14 @@ class controller_app extends _uho_controller
             $this->model->setCacheKillPlugin($this->cfg['cms']['serdelia_cache_kill_plugin']);
         }
 
-        if (!empty($this->cfg['cms']['serdelia_keys'])) {
-            $this->model->setOrmKeys($this->cfg['cms']['serdelia_keys']);
+        if (!empty($this->cfg['cms']['keys'])) {
+            $this->model->setAppOrmKeys($this->cfg['cms']['keys']);            
         }
+        if (!empty($this->cfg['cms']['serdelia_keys'])) {
+            $this->model->setSerdeliaOrmKeys($this->cfg['cms']['serdelia_keys']);            
+        }
+
+        
 
         if (!empty($this->cfg['api_keys'])) {
             $this->model->setApiKeys($this->cfg['api_keys']);

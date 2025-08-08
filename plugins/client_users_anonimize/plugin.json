@@ -1,0 +1,23 @@
+{
+    "icon":"account-circle",    
+    "pl":
+    {
+        "title": "Anonimizacja konta użytownika",
+        "label":"Anonimizacja",
+        "description":"Czy na pewno chcesz zanonimizować to konto?",
+        "submit":"Dokonaj anonimizacji (bezpowrotnie)",
+        "success":"Konto zostało zanonimizowane",
+        "cancel":"Anuluj",
+        "back":"Powrót"
+    },
+    "en":
+    {
+        "title": "Anonimize user data",
+        "label":"Anonimize",
+        "description":"Are you sure you want to remove this user's data?",
+        "submit":"Proceed with it (no way back!)",
+        "success":"This account has been anonimized",
+        "cancel":"Cancel",
+        "back":"Back"
+    }    
+}

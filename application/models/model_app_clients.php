@@ -47,10 +47,7 @@ class model_app_clients
             $this->cfg = $cfg;
         }
 
-        // Initialize _uho_client
-        $this->client = new _uho_client(
-            $this->cms->orm,
-            [
+        $client_config=[
                 'models' => [
                     'client_model' => 'cms_users',
                     'client_logs_model' => 'cms_users_logs',
@@ -66,13 +63,20 @@ class model_app_clients
                     'password_format' => @$cfg['password_required'],
                     'max_bad_login' => @$cfg['max_bad_login']
                 ],
-            ],
+            ];
+
+        // Initialize _uho_client
+        $this->client = new _uho_client(
+            $this->cms->orm,
+            $client_config,
             $cms->lang
         );
 
         // Configure client
+        $client_keys=$this->cms->getKeys();
+        
         $this->client->setModel($cms);
-        $this->client->setKeys($this->cms->getKeys());
+        $this->client->setKeys($client_keys);
         $this->client->setFields([
             'email' => '#email',
             'password' => 'password',

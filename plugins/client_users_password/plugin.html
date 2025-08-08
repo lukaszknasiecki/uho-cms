@@ -1,0 +1,59 @@
+{% if success %}
+<div class="alert alert-success">
+	[[icon::done]]
+	{% if generated %}{{translate.success_generated|raw}} 
+	<input id="copy" readonly type="text" style="font-family:Courier New;background: white;width:120px;border: 1px solid white;" value="{{generated}}"></input>
+	<button class="btn btn-sm btn-default" id="copy_button" data-message="{{translate.copied}}">{{translate.copy}}</button>
+	{% else %}{{translate.success}}{% endif %}
+</div>
+{% endif %}
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{% for error in errors %} {% if loop.index>1 %}<br>{% endif %}
+		{% if error is iterable %}{{translate.requitements}} - {{translate.required[error[0]]|capitalize}}: {{error[1]}}
+		{% else %}{{translate['error_'~error]}}
+		{% endif %}
+	{% endfor %}
+</div>
+{% endif %}
+
+{% if success %}
+<a href="{{url_back_string}}"><button type="button" id="button_plugin_back" class="btn btn-default"><span class="mdi mdi-keyboard-backspace pull-left"></span>{{translate.back}}</button></a>
+{% else %}
+
+<div class="alert alert-info">
+	[[icon::info]]
+	{{translate.description}}
+	{{translate.description_required}}
+	{% for item in required %}{% apply spaceless %}
+	{% if loop.index>1 %}, {% endif %}{% if item>0 %}{{translate.required[loop.index0]}}: {{item}}{% endif %}
+	{% endapply %}{% endfor %}
+</div>
+
+
+	<form action="" method="POST">
+		<div class="form-group row">
+			<label for="password" class="col-lg-2 col-form-label">{{translate.new_password}}</label>
+			<div class="col-lg-6">
+				  <input type="password" name="password" required class="form-control serdelia-edit-field"  id="password" value="">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="password2" class="col-lg-2 col-form-label">{{translate.repeat_new_password}}</label>
+			<div class="col-lg-6">
+				  <input type="password" name="password2" required class="form-control serdelia-edit-field"  id="password2" value="">
+			</div>
+		</div>
+		<div class="checkbox">
+			<label><input type="checkbox" id="show" name="show">&nbsp; {{translate.show_password}}</label>
+		  </div>
+<hr>
+		<div class="checkbox">
+			<label><input type="checkbox" id="generate" name="generate">&nbsp; {{translate.generate_password}}</label>
+		  </div>
+
+		<br>
+		<button type="submit" name="submit" class="btn btn-danger">[[icon::fingerprint]] {{translate.submit}}</button>
+	</form>
+{% endif %}

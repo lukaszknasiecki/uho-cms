@@ -139,7 +139,7 @@ class model_app extends _uho_model
         }
 
         // --- Initialize ORM ---
-        $this->apporm = new _uho_orm($this, $this->sql, null, true);
+        $this->apporm = new _uho_orm($this, $this->sql, null, []);
         $this->apporm->setDebug(true);
         $this->apporm->setFilesDecache(true);
         $this->apporm->setImageSizes(false);
@@ -257,9 +257,14 @@ class model_app extends _uho_model
      * @return null
      */
 
-    public function setOrmKeys($keys)
+    public function setAppOrmKeys($keys)
     {
         $this->apporm->setKeys($keys);
+    }
+
+    public function setSerdeliaOrmKeys($keys)
+    {
+        $this->orm->setKeys($keys);
     }
 
     /**
