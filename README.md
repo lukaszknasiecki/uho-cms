@@ -93,7 +93,10 @@ String (256 chars) type. If no type is defined this type
 is being used as a default one. The only exception is field
 name `id` which by default is integer.
 
-You can change default size of this field with settings.length field
+Additional settings:
+
+`(int) settings.length` - changes default size (of 256)
+`(bool) settings.code` - changes input field's font to Courier
 
 `text`
 
