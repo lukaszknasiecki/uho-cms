@@ -98,6 +98,19 @@ Additional settings:
 `(int) settings.length` - changes default size (of 256)
 `(bool) settings.code` - changes input field's font to Courier
 
+`table`
+
+Table view with multiple columns and rows.
+
+Settings:
+
+    settings.cols       int
+    settings.counter    boolean
+    settings.height       int
+    settings.wide   boolean
+    settings.style  enum (distinct)
+    settings.header array [{label,width,placeholder}]
+
 `text`
 
 Multi-line text type, no HTML.

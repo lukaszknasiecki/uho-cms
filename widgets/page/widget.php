@@ -57,7 +57,15 @@ class serdelia_widget_page
         $model_params = $p;
 
         $model = explode('?', $model)[0];
-        $schema = $this->orm->getJsonModelSchema($model, true);
+
+        $this->orm->setHaltOnError(false);
+        $schema = $this->orm->get($model, true);
+
+        if (!$schema)
+        {
+            $this->orm->setHaltOnError(true);
+            return ['result' => false];
+        }
 
         if (!$schema['label']) $schema['label'] = $this->parent->getSchemaLabelFromMenu($this->params['model']);
         if ($this->params['label'])  $schema['label'] = $this->params['label'];
@@ -73,6 +81,8 @@ class serdelia_widget_page
             }
         }
 
+        
+        
         $all = $this->orm->getJsonModel($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
         if (_uho_fx::array_filter($schema['fields'], 'field', 'active')) {
             $f['active'] = 1;
@@ -90,6 +100,8 @@ class serdelia_widget_page
                 $image = $i;
             }
         }
+
+        $this->orm->setHaltOnError(true);
 
         return ['result' => true, 'all' => $all, 'active' => $active, 'icon' => @$this->params['icon'], 'label' => $schema['label'], 'image' => $image, 'url' => '/page/' . $this->params['model']];
     }

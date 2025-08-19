@@ -24,10 +24,15 @@
     },
     "paths": {
         "url_now": {
-            "type": "url_now"
+            "type": "url_now",
+            "get":"get"
         },
         "url_now_http": {
             "type": "url_now_http"
+        },
+        "home":
+        {
+            "type": "home"
         },
         "add": {
             "type": "twig",
@@ -77,7 +82,7 @@
                 "sort",
                 "query"
             ],
-            "value": "page/{{page}}{% if params %},{{params|join(',')}}{% endif %}?{{query}}{% if sort %}&sort={{sort}}{% endif %}"
+            "value": "page/{{page}}{% if params %},{{params|join(',')}}{% endif %}?{{query}}{% if sort %}&sort={{sort}}{% endif %}{% if paging %}&page={{paging}}{% endif %}"
         },
         "password_change": {
             "value": "password-change"

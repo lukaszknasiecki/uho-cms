@@ -3,7 +3,12 @@
 {% elseif field.settings.placeholders %}{% set cols=field.settings.placeholders|length %}
 {% else %}{% set cols=1 %}{% endif %}
 
-<table class="table"  id="{{field.cms_field}}" {#style="{% if field.settings.wide %}width:800px;{% else %}width:100%;{% endif %}"#} data-counter="{{field.settings.counter}}" data-cols="{{cols}}" data-paste='{{field.settings.paste|json_encode|raw}}' data-placeholders="{{field.settings.placeholders|json_encode}}">
+<table class="table {% if field.settings.style %}serdelia-table-{{field.settings.style}}{% endif %}"
+    id="{{field.cms_field}}" {#style="{% if field.settings.wide %}width:800px;{% else %}width:100%;{% endif %}"#}
+    data-counter="{{field.settings.counter}}"
+    data-cols="{{cols}}"
+    data-paste='{{field.settings.paste|json_encode|raw}}'
+    data-placeholders="{{field.settings.placeholders|json_encode}}">
 {% if field.settings.header %}
 <thead>
     <tr>

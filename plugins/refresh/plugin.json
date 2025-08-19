@@ -1,0 +1,39 @@
+{
+    "icon":"refresh",
+    "pl":
+    {
+        "label": "Automat",
+        "title": "Automat",
+        "description":"Zaznacz pola lub wtyczki, które chcesz wypełnić w sposób automatyczny:",
+        "description_alert":"Wykonane zmiany nie będa możliwe do cofnięcia.",
+        "description_empty":"Nie znaleziono pól ani wtyczek, które można uruchomić w sposób automatyczny.",
+        "description_proccess":"Trwa proces automatyczny...",
+        "completed":"Proces zakończony",
+        "submit":"Uruchom automat",
+        "back":"Powrót",
+        "filters_header":"Zawężanie kolejki",
+        "filters_from":"Rozpocznij od rekordu",
+        "filters_count":"Ilość rekordów",
+        "filters_all":"wszystkie",
+        "filters_present":"Rekordy tego modelu są przefiltrowane",
+        "count_all":"Całkowita ilość rekordów do procesowania"
+    },
+    "en":
+    {
+        "title": "Refresh",
+        "label": "Refresh",
+        "filters_present":"Model filters are in use",
+        "description":"Check fields or plugins for the process:",
+        "description_alert":"Please note, that any changes you make here are final.",
+        "description_empty":"No fields or plugins suited for the proccess found.",
+        "description_proccess":"The process in progress...",
+        "completed":"The process has finished.",
+        "submit":"Start the process",
+        "count_all":"Total records count to process",
+        "back":"Back",
+        "filters_header":"Filter records",
+        "filters_from":"Start with record nr",
+        "filters_count":"Count of records",
+        "filters_all":"all"
+    }    
+}

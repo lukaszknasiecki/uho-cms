@@ -116,8 +116,7 @@ class model_app_page extends model_app
 			if (
 				!in_array($field['type'], ['image', 'uid', 'checkboxes', 'temp-elements']) &&
 				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
-			)
-			{
+			) {
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
@@ -135,8 +134,8 @@ class model_app_page extends model_app
 					case 'integer':
 						$vv = $value ?: 0;
 						break;
-
 					case 'select':
+						/*
 						$vv = [];
 						if (!$global_search && !empty($field['source']['model'])) {
 							$searchParams = [];
@@ -147,13 +146,17 @@ class model_app_page extends model_app
 							}
 							$ids = $this->apporm->getJsonModel($field['source']['model'], $searchParams, false);
 							$vv = _uho_fx::array_extract($ids, 'id') ?: 0;
-						} elseif (!empty($field['options'])) {
-							foreach ($field['options'] as $opt) {
-								if (isset($opt['label']) && str_contains($opt['label'], $value)) {
-									$vv[] = $opt['value'];
+						} else*/
+							if ($global_search && !empty($field['options']))
+							{
+								foreach ($field['options'] as $opt)
+								{
+									if (isset($opt['label']) && str_contains($opt['label'], $value)) {
+										$vv[] = $opt['value'];
+									}
 								}
-							}
-						}
+							} else $vv=$value;
+							
 						break;
 
 					case 'string':
@@ -184,8 +187,8 @@ class model_app_page extends model_app
 
 				// Build filter label stack
 				if (!$global_search || $first) {
+					
 					$first = false;
-					$label_value = $field['label'] ?? $value;
 
 					if (!empty($field['options']) && !$global_search) {
 						if ($value === '[not_null]') {
@@ -195,6 +198,15 @@ class model_app_page extends model_app
 							$value = _uho_fx::array_change_keys($field['options'], 'value', 'label')[$value] ?? $value;
 						}
 					}
+
+					if ($field['type'] == 'boolean')
+					{
+						if ($this->lang == 'en') $no = 'No'; else $no = 'Nie';
+						if (!$label_value) $label_value = $field['label'];
+						if (!$value && $field['label_not']) $label_value = $field['label_not'];
+						elseif (!$value) $label_value = $no . '-' . $field['label'];
+					} elseif (!$label_value)  $label_value = $value;
+
 
 					$filters_stack[] = [
 						'label' => $field['label'],
@@ -280,6 +292,7 @@ class model_app_page extends model_app
 
 		// Paging and record HTML reformatting
 		$paging = $this->getPaging($this->paging['count'], $page_nr, $all);
+
 		$records = $this->updateRecordsValues($schema, $records);
 
 		// Load translation JSON (if available)
@@ -365,7 +378,7 @@ class model_app_page extends model_app
 			// convert list to object if string
 
 			if (is_string($v['list']))
-				$schema['fields'][$k]['list']=$v['list']=['type'=>$v['list']];
+				$schema['fields'][$k]['list'] = $v['list'] = ['type' => $v['list']];
 
 			switch ($v['type']) {
 				case "select":
@@ -380,10 +393,12 @@ class model_app_page extends model_app
 				case "image":
 					// Ensure list view for images is well-formed
 					if (isset($v['list'])) {
-						if (!is_array($v['list'])) $v['list']=[];
-						if (empty($v['list']['folder']))
-						{
+						if (!is_array($v['list'])) $v['list'] = [];
+						if (empty($v['list']['folder'])) {
 							$v['list']['folder'] = $v['images'][1]['folder'];
+						}
+						if (!empty($v['list']['src_blank'])) {
+							$v['list']['src_blank'] = $this->cfg_path . '/assets/' . $v['list']['src_blank'];
 						}
 						$schema['fields'][$k]['list'] = $v['list'];
 					}
@@ -410,7 +425,7 @@ class model_app_page extends model_app
 		/*
      * Reorder fields if 'position_after' is defined
      */
-	/*
+		/*
 		$reordered_fields = [];
 
 		foreach ($schema['fields'] as $field) {
@@ -530,8 +545,7 @@ class model_app_page extends model_app
 	private function removeNonListedFieldsFromSchema(array $schema, string $page_with_params, array $params, int $auth): array
 	{
 		// Remove fields that are not marked to be listed.
-		foreach ($schema['fields'] as $k => $v)
-		{
+		foreach ($schema['fields'] as $k => $v) {
 			if (empty($v['list'])) {
 				unset($schema['fields'][$k]);
 			}
@@ -574,33 +588,31 @@ class model_app_page extends model_app
 
 		// Determine total width and count dynamic fields.
 		foreach ($schema['fields'] as $k => $v)
-		if (in_array($v['list']['type'],['show','order','edit']))
-		{
+			if (in_array($v['list']['type'], ['show', 'order', 'edit'])) {
 
-			if (empty($v['list']['width'])) {
-				// Assign default width based on field type if none set.
-				if (in_array($v['type'], ['integer','boolean', 'date', 'order'])) {
-					$schema['fields'][$k]['list']['width'] = 10;
-				} elseif ($v['type'] === 'datetime') {
-					$schema['fields'][$k]['list']['width'] = 25;
+				if (empty($v['list']['width'])) {
+					// Assign default width based on field type if none set.
+					if (in_array($v['type'], ['integer', 'boolean', 'date', 'order'])) {
+						$schema['fields'][$k]['list']['width'] = 10;
+					} elseif ($v['type'] === 'datetime') {
+						$schema['fields'][$k]['list']['width'] = 25;
+					}
+				}
+
+				if (!empty($schema['fields'][$k]['list']['width'])) {
+					$totalFixedWidth += $schema['fields'][$k]['list']['width'];
+				} else {
+					$dynamicFieldCount++;
 				}
 			}
-
-			if (!empty($schema['fields'][$k]['list']['width'])) {
-				$totalFixedWidth += $schema['fields'][$k]['list']['width'];
-			} else {
-				$dynamicFieldCount++;
-			}
-		}
 
 		// Distribute remaining width evenly among dynamic fields.
 		$availableWidth = max(10, intval((100 - $totalFixedWidth) / max(1, $dynamicFieldCount)));
 
 		foreach ($schema['fields'] as $k => $v)
-		if (in_array($v['list']['type'],['show','order','edit']) && empty($v['list']['width']))
-		{
+			if (in_array($v['list']['type'], ['show', 'order', 'edit']) && empty($v['list']['width'])) {
 				$schema['fields'][$k]['list']['width'] = $availableWidth;
-		}
+			}
 
 		return $schema;
 	}
@@ -738,10 +750,10 @@ class model_app_page extends model_app
 				'all'  => $all
 			],
 			'nav' => [
-				'url_first' => ['type' => 'url_now', 'getNew' => ['page' => 1]],
-				'url_prev'  => ['type' => 'url_now', 'getNew' => ['page' => max(1, $page_nr - 1)]],
-				'url_next'  => ['type' => 'url_now', 'getNew' => ['page' => min($total_pages, $page_nr + 1)]],
-				'url_last'  => ['type' => 'url_now', 'getNew' => ['page' => $total_pages]]
+				'url_first' => ['type' => 'url_now', 'get' => ['page' => 1]],
+				'url_prev'  => ['type' => 'url_now', 'get' => ['page' => max(1, $page_nr - 1)]],
+				'url_next'  => ['type' => 'url_now', 'get' => ['page' => min($total_pages, $page_nr + 1)]],
+				'url_last'  => ['type' => 'url_now', 'get' => ['page' => $total_pages]]
 			]
 		];
 
@@ -757,7 +769,7 @@ class model_app_page extends model_app
 			for ($i = $range_start; $i <= $range_end; $i++) {
 				$pages[] = [
 					'nr'  => $i,
-					'url' => ['type' => 'url_now', 'getNew' => ['page' => $i]]
+					'url' => ['type' => 'url_now', 'get' => ['page' => $i]]
 				];
 			}
 
@@ -777,21 +789,18 @@ class model_app_page extends model_app
 	 * @param array $records The data records to update.
 	 * @return array         The updated records with rendered values.
 	 */
-	
+
 	private function updateRecordsValues(array $schema, array $records): array
 	{
 		foreach ($schema['fields'] as $field)
-		if (!empty($field['list']['value']))
-		{
-			foreach ($records as $k=>$record)
-			{
-				
-				$records[$k]['values'][$field['field']]=$this->getTwigFromHtml($field['list']['value'],$record['values']);
+			if (!empty($field['list']['value'])) {
+				foreach ($records as $k => $record) {
+
+					$records[$k]['values'][$field['field']] = $this->getTwigFromHtml($field['list']['value'], $record['values']);
+				}
 			}
-		}
-		
-		
+
+
 		return $records;
 	}
-	
 }

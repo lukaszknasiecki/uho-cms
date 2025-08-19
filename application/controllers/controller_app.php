@@ -19,7 +19,7 @@ class controller_app extends _uho_controller
      * @return void
      */
     public function getData() : void
-    {
+    {        
         // Set CMS base path
         $this->model->cms_path = $this->route->getUrl('');
         if (!empty($this->cfg['plugins'])) $this->model->setPluginsCfg($this->cfg['plugins']);
@@ -123,11 +123,14 @@ class controller_app extends _uho_controller
         }
 
         // Configure WYSIWYG editor settings
+        /*
         switch ($this->cfg['cms']['wysiwyg']['type']) {
-            case "ckeditor":
+            case "ckeditor5":
+                
                 $this->cfg['cms']['wysiwyg']['configs'] = $this->model->ckeditor_configs;
+                
                 break;
-        }
+        }*/
         $this->model->setWysiwyg($this->cfg['cms']['wysiwyg']);
 
         // Fetch content data for current controller/action
@@ -172,15 +175,18 @@ class controller_app extends _uho_controller
         }
 
         // Add CKEditor5 specific assets if configured
-        if ($this->cfg['cms']['wysiwyg']['type'] === 'ckeditor5') {
+        if ($this->cfg['cms']['wysiwyg']['type'] === 'ckeditor5')
+        {
             $srcCss = $this->model->cfg_path . '/ckeditor5/config.css';
-            if (file_exists($srcCss)) {
+            if (_uho_fx::file_exists($srcCss))
                 $this->data['scaffold']['cfg']['wysiwyg']['css'] = $srcCss;
-            }
+            
             $srcJs = $this->model->cfg_path . '/ckeditor5/config.js';
-            if (file_exists($srcJs)) {
+            if (_uho_fx::file_exists($srcJs))
+            {
                 $this->data['scaffold']['cfg']['wysiwyg']['js'] = $srcJs;
             }
+            
         }
 
         // Control rendering root HTML

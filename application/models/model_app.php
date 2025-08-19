@@ -753,9 +753,11 @@ class model_app extends _uho_model
 
         if ($separate) {
 
-            foreach ($schema['fields'] as $k => $v) {
+            foreach ($schema['fields'] as $k => $v)
+            {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['langs'] as $k2 => $v2) {
+                    foreach ($schema['langs'] as $k2 => $v2)
+                    {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
@@ -766,6 +768,7 @@ class model_app extends _uho_model
                             unset($v['help']);
                             unset($v['hr']);
                         }
+                        if ($k2>0 && isset($v['header'])) unset($v['header']);
                         $f[] = $v;
                     }
                 else {
@@ -924,7 +927,7 @@ class model_app extends _uho_model
 
                 /*
                     Update schema by type
-                */
+                */                    
 
                 switch ($v['type']) {
                     case "image":
@@ -2159,7 +2162,8 @@ class model_app extends _uho_model
         $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
 
         // changing schema according to record values ------------------------
-        if ($schema['page_update']) {
+        if ($schema['page_update'])
+        {
             if (!is_array($schema['page_update']))
                 $schema['page_update'] = ['file' => $schema['page_update']];
             // fields which cause update
@@ -2200,7 +2204,8 @@ class model_app extends _uho_model
 
         // updating on_create defaults
 
-        foreach ($schema['fields'] as $k => $v) {
+        foreach ($schema['fields'] as $k => $v)
+        {
             if ($create_defaults[$v['field']])
                 $schema['fields'][$k]['default'] = $create_defaults[$v['field']];
             if (isset($v['edit']) && $v['edit'] === 'add' && $id)

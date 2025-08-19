@@ -62,10 +62,11 @@ class controller_app_plugin extends controller_app
         }
 
         $params['url_back'] = $url_back;
-        $params['url_serdelia'] = '';
+        $params['url_serdelia'] = ["type"=>"home"];
 
         // Update URLs based on current parameters
         $updatedUrls = $this->urlUpdate($params);
+
         $params['url_back_string']     = $updatedUrls['url_back'];
         $params['url_serdelia']        = $updatedUrls['url_serdelia'];
         $params['url_back_page']       = ['type' => 'page', 'page' => $params['page']];

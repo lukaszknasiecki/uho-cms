@@ -2,7 +2,11 @@
 <div class="page-header-fixed {% if type=='edit' or type=='plugin' %}page-header-edit{% endif %}">
   <div class="container" style="margin-top:7px">
 
-      <div class="pull-right">
+    <div style="display: flex;width: 100%">
+      <div style="flex:1;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+        <h2>{{label|raw}}</h2>
+      </div>
+      <div style="flex: 0 0 auto;">
         {% if type=='page' %}
           {% set length=0 %}
           {% for item in buttons %}{% if not item.hidden %}{% set length=length+5 %}
@@ -16,8 +20,11 @@
         {% endif %}
         {% endfor %}
       </div>
+    </div>
 
-      <h2>{{label|raw}}</h2>
+      
+
+      
       {% if langs|length>1 %}
       <div class="btn-group-xs">
         {% for lang in langs %}

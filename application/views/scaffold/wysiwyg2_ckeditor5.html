@@ -1,9 +1,12 @@
 <link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5.css">
-{% if editor.css %}<link rel="stylesheet" href="{{editor.css}}">{% endif %}
+{% if scaffold.cfg.wysiwyg.css %}<link rel="stylesheet" href="{{scaffold.cfg.wysiwyg.css}}">{% endif %}
 {% if scaffold.cfg.mode=='dark' %}<link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5-dark.css">{% endif %}
 <script src="{{serdelia_path}}/public/ckeditor5/ckeditor5.umd.js"></script>
 <script>var serdelia_path="{{serdelia_path}}"</script>
-{% if editor.js %}<script src="{{editor.js}}?{{"now"|date("Y-m-d")}}"></script>{% else %}<script src="{{serdelia_path}}/public/ckeditor5-config/config.js"></script>{% endif %}
+{% if scaffold.cfg.wysiwyg.js %}
+	<script src="{{scaffold.cfg.wysiwyg.js}}?{{"now"|date("Y-m-d")}}"></script>
+	{% else %}<script src="{{serdelia_path}}/public/ckeditor5-config/config.js"></script>
+{% endif %}
 
 <script>
 
@@ -15,7 +18,7 @@
 
 		editors.forEach((node, index) => {
 			var style=$(editors[index]).data('style');
-			if (!style) style='default';
+			if (!style) style='default';			
 			ClassicEditor
 				.create(node, CKEditor5_Configs[style])
 				.then(editor => {

@@ -198,6 +198,8 @@ class model_app_write extends model_app
 				if ($f && $f['type'] == 'image' && !empty($f['settings']['sizes']) && !in_array($f['settings']['sizes'], $update_fields)) $update_fields_even_empty[] = $update_fields[] = $f['settings']['sizes'];
 			}
 
+
+			
 		// value updates
 		foreach ($schema['fields'] as $k => $v) {
 			if ($v['auto'] && $v['type'] != 'file' && (!@$v['auto']['on_null'] || !$data[$v['field']])) {
@@ -254,8 +256,10 @@ class model_app_write extends model_app
 					break;
 
 				case "boolean":
+					
 					if ($data[$v['field']] == 'off') $data[$v['field']] = 0;
 					elseif ($data[$v['field']] == 'on') $data[$v['field']] = 1;
+
 					break;
 
 				case "checkboxes":
@@ -362,7 +366,8 @@ class model_app_write extends model_app
 		$additional_delete = [];
 
 
-		foreach ($schema['fields'] as $k => $v) {
+		foreach ($schema['fields'] as $k => $v)
+		{
 
 			$backup_record_data['field'] = $v['field'];
 			switch ($v['type']) {
@@ -378,8 +383,6 @@ class model_app_write extends model_app
 					}
 
 					break;
-
-				// --------------------------------------------------------
 
 				case "image":
 
@@ -719,10 +722,13 @@ class model_app_write extends model_app
 		** adding new record
 		*/
 
-		if ($id == 'new') {
+		if ($id == 'new')
+		{
 			// setting up proper order value
+
 			foreach ($schema['fields'] as $k => $v)
-				if ($v['type'] == 'order') {
+				if ($v['type'] == 'order')
+				{
 					if (@$v['default'] == 'first') {
 						$query = $this->apporm->getJsonModelFiltersQuery($schema);
 						if ($query) $query = ' WHERE ' . implode(' && ', $query);
@@ -732,9 +738,10 @@ class model_app_write extends model_app
 						$last = $this->apporm->getJsonModel($schema, $schema['filters'], true, $v['field'] . ' DESC');
 						if ($last) $data[$v['field']] = $last[$v['field']] + 1;
 					}
-				} elseif (@$v['default'] == '%variable%') {
+				} elseif (isset($v['default']) && $v['default'] === '%variable%') {
 					$data[$v['field']] = $this->getAutoVariable($v['variable']);
 				}
+
 
 			$result = $this->apporm->postJsonModel($schema, $data);
 
@@ -1557,7 +1564,6 @@ class model_app_write extends model_app
 			$json = json_decode($json, true);
 
 			if (!@$json['items']) {
-				//	print_r($json);exit($url);
 				$result = false;
 			} else {
 
@@ -2011,7 +2017,7 @@ class model_app_write extends model_app
 	 * @param bool   $s3       If true and S3 is configured, returns destination using S3 path
 	 * @return array           Associative array with keys: 'images' (list of image paths) and 'extension'
 	 */
-	private function updateImageDest(array $field, array $data, string $filename = '', bool $s3 = false): array
+	private function updateImageDest(array $field, array $data, $filename = '', bool $s3 = false): array
 	{
 		// Resolve dynamic folder path using templating and data
 		if (!empty($field['folder'])) {

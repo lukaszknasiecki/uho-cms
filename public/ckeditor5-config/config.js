@@ -8,6 +8,7 @@ const {
 	CloudServices,
 	Essentials,
 	Heading,
+    GeneralHtmlSupport,
 	Image,
 	ImageCaption,
 	ImageToolbar,
@@ -38,6 +39,13 @@ const {
 // STANDARD
 
 var CKEditor5_Config = {
+    htmlSupport: {
+            disallow: [
+                {
+                    attributes: [ 'style' ]
+                }
+            ]
+        },
     toolbar: {
         viewportTopOffset : 137,
         items: [
@@ -67,13 +75,14 @@ var CKEditor5_Config = {
         Bold,
         CloudServices,
         Essentials,
+        GeneralHtmlSupport,
         Heading,
         Image,
         ImageCaption,
         ImageToolbar,
         ImageUpload,
         Indent,
-        IndentBlock,
+        //IndentBlock,
         Italic,
         Link,
         LinkImage,
@@ -83,16 +92,7 @@ var CKEditor5_Config = {
         Paragraph,
         PasteFromOffice,
         SimpleUploadAdapter,
-        SourceEditing,
-        Table,
-        TableCaption,
-        TableCellProperties,
-        TableColumnResize,
-        TableProperties,
-        TableToolbar,
-        TextTransformation,
-        TodoList,
-        Underline
+        SourceEditing
     ],
     heading: {
         options: [
@@ -259,7 +259,6 @@ var CKEditor5_Config_Simple = {
         contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
     }
 };
-
 
 var CKEditor5_Configs=
 {
