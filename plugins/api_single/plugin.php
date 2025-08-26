@@ -49,11 +49,14 @@ class serdelia_plugin_api_single
             
             $cfg=$this->parent->getPluginsCfg();
             if ($cfg) $url=$this->parent->getTwigFromHtml($url,$cfg);
+            $url=html_entity_decode($url);
 
-            if (substr($url, 0, 4) != 'http') {
+            if (substr($url, 0, 4) != 'http')
+            {
                 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')  || $_SERVER['SERVER_PORT'] == 443;
                 $https= $isHttps ? 'https' :'http';
                 $url = $https . '://'.$_SERVER['HTTP_HOST'].$url;                
+                
             }
 
             // method
@@ -64,11 +67,14 @@ class serdelia_plugin_api_single
                 case "GET":
 
                 $r = @file_get_contents($url);
+                
                 if ($r)
                 {
                     if (is_string($r)) $r = @json_decode($r, true); else $r=null;
                 }
-                else $r = _uho_fx::fileCurl($url,['json'=>true,'decode'=>true]);
+                else 
+                    
+                    $r = _uho_fx::fileCurl($url,['json'=>true,'decode'=>true]);
                 break;
 
                 case "POST":

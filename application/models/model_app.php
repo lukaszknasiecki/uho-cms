@@ -1537,7 +1537,7 @@ class model_app extends _uho_model
                 else
                     $tt[] = $v;
             }
-
+        
         return $tt;
     }
 

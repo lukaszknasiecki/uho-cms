@@ -210,7 +210,6 @@ class cms_sunship
             Build application
         */
 
-
         try {
             $app = new _uho_application($index['root_path'], $index['development'], $cfg_file);
         } catch (Exception $e) {

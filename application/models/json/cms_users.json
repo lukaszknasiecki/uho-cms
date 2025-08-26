@@ -1,6 +1,7 @@
 {
     "table": "cms_users",
     "order": "name",
+    "label":"CMS Users",
     "model": {
         "label": "{{name}}"
     },
@@ -32,7 +33,7 @@
             "field": "name",
             "label_PL": "Imię",
             "label_EN": "Name",
-            "list": true,
+            "list": "show",
             "required": true
         },
         {
@@ -40,7 +41,7 @@
             "label": "Login",
             "unique": true,
             "required": true,
-            "list": true
+            "list": "show"
         },
         {
             "field": "password",

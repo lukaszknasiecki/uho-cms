@@ -40,7 +40,8 @@ class model_app_login extends model_app
 			isset($cfg['projects'][intval($params['project']) - 1])
 		) {
 			$result = $this->clients->login($params['login_login'], $params['login_password']);
-			if (!empty($result['result'])) {
+			if (!empty($result['result']))
+			{
 				$logged = true;
 				$_SESSION['serdelia_project'] = intval($params['project']);
 			} else {
