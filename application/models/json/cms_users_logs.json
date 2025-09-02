@@ -14,7 +14,7 @@
             "field": "datetime",
             "type": "datetime",
             "default":"{{now}}",
-            "list": true,
+            "list":"show",
             "edit": false,
             "search": true
         },
@@ -23,7 +23,7 @@
             "label_EN": "Session ID",
             "field": "session",
             "type": "integer",
-            "list": true,
+            "list":"show",
             "edit": false,
             "search": true
         },
@@ -35,7 +35,7 @@
             "source": {
                 "model": "cms_users"
             },
-            "list": true,
+            "list":"show",
             "edit": false,
             "search": true
         },
@@ -62,7 +62,7 @@
                     "label": "Logout"
                 }
             ],
-            "list": true,
+            "list":"show",
             "edit": false,
             "search": true
         }

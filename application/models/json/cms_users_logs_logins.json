@@ -25,21 +25,21 @@
             "field": "datetime",
             "type": "datetime",
             "default":"{{now}}",
-            "list": true,
+            "list":"show",
             "search": true,
             "edit": false
         },
         {
             "label": "Login",
             "field": "login",
-            "list": true,
+            "list":"show",
             "search": true,
             "edit": false
         },
         {
             "label": "IP",
             "field": "ip",
-            "list": true,
+            "list":"show",
             "search": true,
             "edit": false
         },
@@ -47,7 +47,7 @@
             "label_PL": "Poprawne",
             "label_EN": "Success",
             "field": "success",
-            "list": true,
+            "list":"show",
             "type": "boolean",
             "search": true,
             "edit": false
