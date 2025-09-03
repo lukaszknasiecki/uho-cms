@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/vendor/autoload.php';
 
 use Huncwot\UhoFramework\_uho_application;
 use Huncwot\UhoFramework\_uho_fx;
@@ -29,7 +28,14 @@ class cms_sunship
 
         $instances = !empty($cfg['CMS_CONFIG_FOLDERS']) ? explode(',', $cfg['CMS_CONFIG_FOLDERS']) : ["cms_config"];
         $lang = !empty($cfg['CMS_CONFIG_LANG']) ? $cfg['CMS_CONFIG_LANG'] : "en";
+
         $cms_prefix = !empty($cfg['CMS_CONFIG_PREFIX']) ? $cfg['CMS_CONFIG_PREFIX'] : "cms";
+        if (substr($cms_prefix,0,4)=='ENV.')
+        {
+            $cms_prefix=getenv(substr($cms_prefix,4));
+            $cms_prefix = !empty($cms_prefix) ? $cms_prefix : "cms";
+        }
+        
         $debug = !empty($cfg['CMS_CONFIG_DEBUG']) ? $cfg['CMS_CONFIG_DEBUG'] : false;
         $theme = !empty($cfg['CMS_CONFIG_THEME']) ? $cfg['CMS_CONFIG_THEME'] : "light";
 
