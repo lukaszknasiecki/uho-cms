@@ -1130,13 +1130,6 @@ class model_app extends _uho_model
 
                     case "select":
 
-                        // add null
-                        if (isset($v['source']['null']) || isset($v['null'])) {
-                            if (!$schema['fields'][$k]['options'])
-                                $schema['fields'][$k]['options'] = [];
-                            array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
-                        }
-
                         // add full source
                         if ($v['source']['model']) {
                             if (!$v['source']['label'])
@@ -1164,6 +1157,15 @@ class model_app extends _uho_model
                                 $schema['fields'][$k]['options'] = $v['options'];
                             }
                         }
+
+                        // add null
+                        if (isset($v['source']['null']) || isset($v['null']))
+                        {
+                            if (!$schema['fields'][$k]['options'])
+                                $schema['fields'][$k]['options'] = [];
+                            array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
+                        }                        
+                        
 
                         // add default
                         if ($is_new && $v['default']) {
@@ -2828,7 +2830,8 @@ class model_app extends _uho_model
             'file',
             'table',
             'media',
-            'plugin'
+            'plugin',
+            'video'
         ];
 
         foreach ($schema['fields'] as $k => $v) {

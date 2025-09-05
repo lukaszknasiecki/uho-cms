@@ -69,6 +69,12 @@ Attaches external model with media to specified field. You need to specify this 
                     ]
                 }
 
+You also need to define preview folder for media, i.e.:
+
+"layout": {
+                "folder": "desktop"
+            }
+
 You can also add additional text fields from this model to be edited in captions array:
 
     "captions": [
@@ -123,6 +129,16 @@ Additional settings:
 
 Automatacally generated UID with PHP's uniq()
 varchar(13)
+
+`video`
+
+Defines path to video (MP4) file.
+
+Destination paths is based on value of `folder`
+setting and `uid` field value:
+
+{folder}/{uid}.mp4
+
 
 ## Additional field parameters:
 
