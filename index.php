@@ -67,12 +67,14 @@ class cms_sunship
 
     private function createFolders($root, $cfg_project)
     {
+        
         if (!empty($cfg_project['folder_logs']) && !is_dir($root . $cfg_project['folder_logs'])) {
             mkdir($root . $cfg_project['folder_logs']);
             file_put_contents($root . $cfg_project['folder_logs'] . '/.htaccess', 'Deny: all');
         }
 
-        if (!empty($cfg_project['folder_temp']) && !is_dir($root . $cfg_project['folder_temp'])) {
+        if (!empty($cfg_project['folder_temp']) && !is_dir($root . $cfg_project['folder_temp']))
+        {
             mkdir($root . $cfg_project['folder_temp']);
             mkdir($root . $cfg_project['folder_temp'] . '/upload');
             mkdir($root . $cfg_project['folder_temp'] . '/upload/thumbnail');
@@ -88,6 +90,7 @@ class cms_sunship
             file_put_contents($root . $cfg_project['folder_temp'] . '/upload/.htaccess', $htaccess);
             file_put_contents($root . $cfg_project['folder_temp'] . '/upload/thumbnail/.htaccess', $htaccess);
         }
+
     }
 
     public function start()
@@ -131,7 +134,8 @@ class cms_sunship
         $cfg_folder = null;
         $cfg_project = null;
 
-        if (isset($_SESSION['serdelia_project']) || (isset($_POST['login_login']) && isset($_POST['project']))) {
+        if (isset($_SESSION['serdelia_project']) || (isset($_POST['login_login']) && isset($_POST['project'])))
+        {
             
             $blank = false;
 

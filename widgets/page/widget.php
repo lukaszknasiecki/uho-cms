@@ -59,7 +59,8 @@ class serdelia_widget_page
         $model = explode('?', $model)[0];
 
         $this->orm->setHaltOnError(false);
-        $schema = $this->orm->get($model, true);
+        $schema = $this->parent->getSchema($model);
+        
 
         if (!$schema)
         {

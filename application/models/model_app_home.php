@@ -30,7 +30,6 @@ class model_app_home extends model_app
 	 */
 	public function getContentData($params = null, $url_base = '')
 	{
-		
 		$this->url_base = str_replace('//', '/', $url_base . '/');
 
 		$uri = $this->cfg_folder . '/structure/dashboard.json';
