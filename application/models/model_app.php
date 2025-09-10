@@ -1022,6 +1022,7 @@ class model_app extends _uho_model
                         }
 
                         break;
+
                     case "checkboxes":
                         $val = [];
                         if (is_array($record[$v['field']]))
@@ -1168,8 +1169,12 @@ class model_app extends _uho_model
                         
 
                         // add default
-                        if ($is_new && $v['default']) {
-                            $v['default'] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params]);
+                        if ($is_new && $v['default'])
+                        {
+                            
+                            $v['default'] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params,'params'=>['cms_user'=>1]]);                            
+                            $v['default'] = $this->getTwigFromHtml($v['default'], ['params' => ['cms_user'=>$this->getUser()['id']]]);
+                            
                             $record[$v['field']] = $v['default'];
                         }
 

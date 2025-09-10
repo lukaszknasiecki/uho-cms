@@ -702,14 +702,16 @@ class model_app_page extends model_app
 		}
 
 		// Add "add" button if it's not disabled
-		if (empty($schema['disable']) || !in_array('add', $schema['disable'], true)) {
+		if (empty($schema['disable']) || !in_array('add', $schema['disable'], true))
+		{
+			
 			$addLabel = $schema['buttons_page_labels']['add'] ?? 'add';
 			$buttons[] = [
 				'label' => $addLabel,
 				'icon'  => 'add',
 				'url'   => [
 					'type'   => 'add',
-					'page'   => $schema['table'] ?? 'unknown', // use $schema['id'] or similar if $model not defined
+					'page'   => $schema['model_name'] ?? $schema['table'],
 					'params' => $params
 				]
 			];
