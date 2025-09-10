@@ -1,0 +1,41 @@
+{
+    "pl":
+    {
+        "title": "Zmiana hasła",
+        "description":"Podaj nowe hasło dla użytkownika. Możesz też zastosować generator hasła. Hasło zostanie zmienione natychmiast.",
+        "description_required":"Minimalne wymagania to: ",
+        "required":["długość hasła","małe litery","wielkie litery","cyfry","znaki szczególne"],
+        "new_password":"Nowe hasło",
+        "repeat_new_password":"Powtórz nowe hasło",
+        "generate_password":"Wygeneruj automatycznie nowe hasło",
+        "submit":"Zmień hasło",
+        "show_password":"Pokaż hasło",
+        "error_mismatch":"Podane hasła nie są identyczne",
+        "error_system":"System error, please try again later",  
+        "success":"Nowe hasło zostało ustawione.",
+        "success_generated":"Zostało wygenerowane nowe hasło. Trzymaj je w zastrzeżonym miejscu: ",
+        "copy":"Kopiuj",
+        "copied":"Hasło zostało skopiowane do schowka",
+        "back":"Powrót",
+        "requitements":"Minimalne wymagania"
+    },
+    "en":
+    {
+        "title": "Password change",
+        "description":"Please, enter new password or auto-generate one. New password will be applied immediately.",
+        "description_required":"Please follow required minumums: ",
+        "required":["password length","lower chars count","upper chars count","numbers count","special chars count"],
+        "new_password":"New password",
+        "repeat_new_password":"Repeat new password",
+        "generate_password":"Auto-generate new password",
+        "show_password":"Show password",
+        "error_mismatch":"Passwords don't match",
+        "error_system":"System error, please try again later",
+        "success_generated":"New password has been generated and set.&nbsp;&nbsp;&nbsp;New password: ",
+        "success":"New password has been set.",
+        "copy":"Copy",
+        "copied":"Well done!",
+        "submit":"Change the password",
+        "requitements":"Minimal requirements"
+    }    
+}

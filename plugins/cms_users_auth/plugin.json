@@ -1,0 +1,50 @@
+{
+    "pl":
+    {
+        "title": "Ustawienia dostępu",
+        "description":"Wybierz poziomy autoryzacji.",
+        
+        "level_off":"brak dostępu",
+        "level_read":"tylko odczyt",
+        "level_write":"odczyt i zapis",
+        "level_admin":"administracja",
+        
+        "label_set_all_header":"Za pomocą poniższego skrótu można ustawić jeden poziom autoryzacji dla wszystkich sekcji:",
+        "label_presets_header":"Możesz także wybrać gotowy zestaw uprawnień:",
+        "label_presets_blank":"Wybierz zestaw uprawnień",
+        
+        "preset_submit":"Zastosuj zestaw uprawnień",
+        "success":"Dane zostały zmienione",
+        "choose_level":"wybierz poziom",
+        "submit_for_all":"Zastosuj dla wszystkich",
+        "write":"Zapisz zmiany",
+        "cancel":"Anuluj",
+        "back":"Powrót"
+    },
+    "en":
+    {
+        "title": "Authorization settings",
+        "description":"Please, choose authorization levels.",
+
+        "level_off":"no access",
+        "level_read":"read only",
+        "level_write":"read and write",
+        "level_admin":"admin",
+        "label_set_all_header":"Use this shortcut to set one authorization level for all sections:",
+        "label_presets_header":"You can also use authorization template:",
+        "label_presets_blank":"Choose authorization template",
+
+
+        "error_system":"System error, please try again later",
+        "success":"Changes have been set.",
+        "copy":"Copy",
+        "choose_level":"Choose level",
+        "submit_for_all":"Use for all",
+        "copied":"Well done!",
+        "submit":"Change the password",
+        "write":"Submit changes",
+        "cancel":"Cancel",
+        "back":"Back"
+
+    }    
+}

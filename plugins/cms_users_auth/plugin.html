@@ -1,0 +1,77 @@
+{% if success %}
+<div class="alert alert-success">
+	[[icon::done]] {{translate.success}}
+</div>
+{% endif %}
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{% for error in errors %} {% if loop.index>1 %}<br>{% endif %}
+		{% if error is iterable %}{{translate.required[error[0]]|capitalize}}: {{error[1]}}
+		{% else %}{{translate['error_'~error]}}
+		{% endif %}
+	{% endfor %}
+</div>
+{% endif %}
+<div class="alert alert-info">
+	[[icon::info]]
+	{{translate.description}}
+</div>
+
+<form enctype="multipart/form-data" action="" method="POST" role="form">		
+	<h4>
+		{% for item in items %}
+		<div style="margin-left:-20px"  class="checkbox">
+			<div class="btn-group" style="padding:0;margin-left:20px">
+				<button id="b_{{item.id}}" type="button" style="width:112px;text-align:left" class="btn btn-default btn-sm dropdown-toggle btn-{{levels[item.value].class}}" data-toggle="dropdown">{{translate['level_'~levels[item.value].label]}}</button>&nbsp;
+				<div class="dropdown-menu serdelia-admin-dropdown" aria-labelledby="dropdownMenuButton">
+				{% for level in levels %}
+				<li data-id="{{loop.index0}}" data-label="{{translate['level_'~level.label]}}" data-class="{{level.class}}">
+					<a class="dropdown-item btn-sm">{{translate['level_'~level.label]}}</a>
+				</li>
+				{% endfor %}
+			</div>
+			<input type="hidden" class="serdelia-admin-hidden-field" id="allow_{{item.id}}" name="allow_{{item.id}}" value="{{item.value}}">
+		</div>
+		<label style="font-size:18px">{{item.label}}</label>
+		</div>
+		{% endfor %}
+	</h4>
+
+	<hr>
+	<h5>{{translate.label_set_all_header}}</h5>
+	<div class="btn-group">
+				<button id="b_all" type="button" style="width:112px;text-align:left" class="btn btn-default btn-sm dropdown-toggle %class%" data-toggle="dropdown">{{translate.choose_level}}</button>&nbsp;
+				<div class="dropdown-menu serdelia-admin-apply-dropdown" aria-labelledby="dropdownMenuButton">
+				{% for level in levels %}
+					<li data-id="{{loop.index0}}" data-label="off" data-class="btn-{{level.class}}">
+					<a class="dropdown-item btn-sm">{{translate['level_'~level.label]}}</a>
+					</li>
+				{% endfor %}
+				</div><input type="hidden" class="serdelia-admin-hidden-field" id="allow_all" name="allow_all" value="">
+				</div> <button type="button" class="btn btn-sm btn-default serdelia-admin-apply"><span class="mdi mdi-done-all pull-left"></span> {{translate.submit_for_all}}</button>
+				<input type="hidden" class="serdelia-admin-hidden-field" id="allow_all" name="allow_all" value="">
+
+				
+	{% if presets %}
+	<hr>
+	<h5>{{translate.label_presets_header}}</h5>
+
+	<div class="btn-group">
+		<button id="b_all" type="button" style="width:250px;text-align:left" class="btn btn-sm btn-default dropdown-toggle %class%" data-toggle="dropdown">{{translate.label_presets_blank}}</button>
+		<div class="dropdown-menu serdelia-admin-dropdown-preset" aria-labelledby="dropdownMenuButton">
+			{% for preset in presets %}
+			<li data-id="{{loop.index}}" data-label="{{preset.label}}" data-json='{{preset.auth|json_encode|raw}}' data-class=""><a class="dropdown-item btn-sm">{{preset.label}}</a></li>
+			{% endfor %}
+		</div>		
+	</div> <button type="button" class="btn btn-sm btn-default serdelia-admin-apply-preset" id="apply_preset"><span class="mdi mdi-done pull-left"></span> {{translate.preset_submit}}</button>	
+	
+	
+
+	{% endif %}
+<hr>
+	
+	<button  type="submit" name="submit" value="submit" class="btn btn btn-primary"><span class="glyphicon glyphicon-ok"></span> {{translate.write}}</button>
+	<a href="{{url_back_string}}"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cancel"></span> {{translate.cancel}}</button></a>
+</form>
+
