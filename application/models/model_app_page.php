@@ -420,6 +420,7 @@ class model_app_page extends model_app
 			if (!empty($v['search'])) {
 				$schema['search'] = true;
 			}
+
 		}
 
 		/*

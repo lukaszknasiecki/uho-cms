@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.15",
+            "version": "3.356.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "ee8e1516b950e33c617ac17d6352ec5421253cff"
+                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ee8e1516b950e33c617ac17d6352ec5421253cff",
-                "reference": "ee8e1516b950e33c617ac17d6352ec5421253cff",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
+                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
                 "shasum": ""
             },
             "require": {
@@ -252,7 +252,7 @@
                 "guzzlehttp/psr7": "^2.4.5",
                 "mtdowling/jmespath.php": "^2.8.0",
                 "php": ">=8.1",
-                "psr/http-message": "^2.0"
+                "psr/http-message": "^1.0 || ^2.0"
             },
             "require-dev": {
                 "andrewsville/php-token-reflection": "^1.4",
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.15"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.17"
             },
-            "time": "2025-09-10T18:05:36+00:00"
+            "time": "2025-09-12T18:07:37+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -766,12 +766,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "e009e9c1345b40481d981167e0858bee391d627c"
+                "reference": "6530c6ba1b1c3bd4311c354c12948a48b46b15a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/e009e9c1345b40481d981167e0858bee391d627c",
-                "reference": "e009e9c1345b40481d981167e0858bee391d627c",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/6530c6ba1b1c3bd4311c354c12948a48b46b15a3",
+                "reference": "6530c6ba1b1c3bd4311c354c12948a48b46b15a3",
                 "shasum": ""
             },
             "require": {
@@ -781,7 +781,7 @@
                 "guzzlehttp/guzzle": "^7.4.5",
                 "guzzlehttp/psr7": "^2.6",
                 "monolog/monolog": "^2.9||^3.0",
-                "php": "^8.0",
+                "php": "^8.1",
                 "phpseclib/phpseclib": "^3.0.36"
             },
             "require-dev": {
@@ -828,24 +828,24 @@
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
                 "source": "https://github.com/googleapis/google-api-php-client/tree/main"
             },
-            "time": "2025-05-07T17:49:42+00:00"
+            "time": "2025-09-11T20:09:59+00:00"
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.411.0",
+            "version": "v0.411.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "3d616fcefdb8e6c598b2d007d4155fe516b91abd"
+                "reference": "04c4a6caf7e443afc76f70827814656c7b03cbd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/3d616fcefdb8e6c598b2d007d4155fe516b91abd",
-                "reference": "3d616fcefdb8e6c598b2d007d4155fe516b91abd",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/04c4a6caf7e443afc76f70827814656c7b03cbd1",
+                "reference": "04c4a6caf7e443afc76f70827814656c7b03cbd1",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0"
+                "php": "^8.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.6"
@@ -870,9 +870,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.411.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.411.1"
             },
-            "time": "2025-09-05T20:24:02+00:00"
+            "time": "2025-09-12T01:08:23+00:00"
         },
         {
             "name": "google/auth",
@@ -1827,12 +1827,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "88b74d3f53a758636ce21a481efc246eeae91843"
+                "reference": "0247bc1ea7b59eff6af5edf9133756b3425048ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/88b74d3f53a758636ce21a481efc246eeae91843",
-                "reference": "88b74d3f53a758636ce21a481efc246eeae91843",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/0247bc1ea7b59eff6af5edf9133756b3425048ce",
+                "reference": "0247bc1ea7b59eff6af5edf9133756b3425048ce",
                 "shasum": ""
             },
             "require": {
@@ -1870,7 +1870,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-09-10T22:03:47+00:00"
+            "time": "2025-09-13T15:25:50+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3958,12 +3958,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "1300845638f13d525067cdbb273a0dc8e391a3d8"
+                "reference": "671639a4d48a5b17b67f5266facc5d2ef22bb1b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/1300845638f13d525067cdbb273a0dc8e391a3d8",
-                "reference": "1300845638f13d525067cdbb273a0dc8e391a3d8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/671639a4d48a5b17b67f5266facc5d2ef22bb1b1",
+                "reference": "671639a4d48a5b17b67f5266facc5d2ef22bb1b1",
                 "shasum": ""
             },
             "require": {
@@ -4048,7 +4048,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-09T14:30:21+00:00"
+            "time": "2025-09-12T06:14:53+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4293,12 +4293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "3a978ec56b3b38d0b4fb5a736249819773169dd4"
+                "reference": "3eef5d4f9f376fd3e748650ad9cd11cb593a68d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/3a978ec56b3b38d0b4fb5a736249819773169dd4",
-                "reference": "3a978ec56b3b38d0b4fb5a736249819773169dd4",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/3eef5d4f9f376fd3e748650ad9cd11cb593a68d3",
+                "reference": "3eef5d4f9f376fd3e748650ad9cd11cb593a68d3",
                 "shasum": ""
             },
             "require": {
@@ -4367,7 +4367,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-04T08:58:35+00:00"
+            "time": "2025-09-10T14:32:51+00:00"
         },
         {
             "name": "symfony/mime",
@@ -4375,12 +4375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "ece5f0ddfa1f386217b089e7aa4e43aa1271842e"
+                "reference": "7caeebb55303944a95942fcea34797467366bcd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/ece5f0ddfa1f386217b089e7aa4e43aa1271842e",
-                "reference": "ece5f0ddfa1f386217b089e7aa4e43aa1271842e",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/7caeebb55303944a95942fcea34797467366bcd7",
+                "reference": "7caeebb55303944a95942fcea34797467366bcd7",
                 "shasum": ""
             },
             "require": {
@@ -4456,7 +4456,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-08T06:18:32+00:00"
+            "time": "2025-09-11T10:15:23+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -5060,12 +5060,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "7c89abad72b6ed937fe3b53731e2bf5da0209d3b"
+                "reference": "bc7852160e1f18ce249c3daaba3b26cf5425a34d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/7c89abad72b6ed937fe3b53731e2bf5da0209d3b",
-                "reference": "7c89abad72b6ed937fe3b53731e2bf5da0209d3b",
+                "url": "https://api.github.com/repos/symfony/string/zipball/bc7852160e1f18ce249c3daaba3b26cf5425a34d",
+                "reference": "bc7852160e1f18ce249c3daaba3b26cf5425a34d",
                 "shasum": ""
             },
             "require": {
@@ -5081,7 +5081,6 @@
             },
             "require-dev": {
                 "symfony/emoji": "^7.1|^8.0",
-                "symfony/error-handler": "^6.4|^7.0|^8.0",
                 "symfony/http-client": "^6.4|^7.0|^8.0",
                 "symfony/intl": "^6.4|^7.0|^8.0",
                 "symfony/translation-contracts": "^2.5|^3.0",
@@ -5144,7 +5143,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-01T09:24:22+00:00"
+            "time": "2025-09-11T14:37:11+00:00"
         },
         {
             "name": "symfony/translation",

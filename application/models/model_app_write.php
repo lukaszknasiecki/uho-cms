@@ -386,6 +386,12 @@ class model_app_write extends model_app
 
 				case "image":
 
+					$filename=$data[$v['field']];
+					if (!empty($v['settings']['filename_field']))
+					{
+						$data[$v['settings']['filename_field']]=$filename;
+					}
+
 					// for plugin (refresh), let's set rescale only
 					if (in_array($v['field'], $update_fields)) {
 						$data[$v['field'] . '_rescale'] = 'on';
@@ -2052,9 +2058,14 @@ class model_app_write extends model_app
 		}
 
 		// Generate the base filename
-		$destinationFilename = !empty($field['filename'])
-			? str_replace('%uid%', $data['uid'], $field['filename']) . '.' . $extension
-			: $data['uid'] . '.' . $extension;
+		if (empty($field['filename'])) $destinationFilename=$data['uid'] . '.' . $extension;
+		else
+		{
+			$destinationFilename =  str_replace('%id%', $data['id'], $field['filename']) . '.' . $extension;
+			if (isset($data['uid'])) $destinationFilename =  str_replace('%uid%', $data['uid'], $destinationFilename);
+		}
+		
+		
 
 		// Build destination paths for each image size (e.g., thumb, preview, etc.)
 		foreach ($field['images'] as $k => $imageConfig) {
