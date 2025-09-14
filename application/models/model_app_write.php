@@ -387,10 +387,16 @@ class model_app_write extends model_app
 				case "image":
 
 					$filename=$data[$v['field']];
-					if (!empty($v['settings']['filename_field']))
+					if ($filename && !empty($v['settings']['filename_field']))
 					{
 						$data[$v['settings']['filename_field']]=$filename;
 					}
+
+					if (!empty($v['settings']['change_uid_on_upload']))
+					{
+						$data['uid']=uniqid();
+					}
+					
 
 					// for plugin (refresh), let's set rescale only
 					if (in_array($v['field'], $update_fields)) {
@@ -2061,7 +2067,8 @@ class model_app_write extends model_app
 		if (empty($field['filename'])) $destinationFilename=$data['uid'] . '.' . $extension;
 		else
 		{
-			$destinationFilename =  str_replace('%id%', $data['id'], $field['filename']) . '.' . $extension;
+			if (isset($data['id'])) $destinationFilename =  str_replace('%id%', $data['id'], $field['filename']) . '.' . $extension;
+				else $destinationFilename =  $field['filename'] . '.' . $extension;
 			if (isset($data['uid'])) $destinationFilename =  str_replace('%uid%', $data['uid'], $destinationFilename);
 		}
 		

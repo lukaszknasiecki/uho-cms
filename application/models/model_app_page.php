@@ -392,15 +392,19 @@ class model_app_page extends model_app
 
 				case "image":
 					// Ensure list view for images is well-formed
-					if (isset($v['list'])) {
-						if (!is_array($v['list'])) $v['list'] = [];
-						if (empty($v['list']['folder'])) {
-							$v['list']['folder'] = $v['images'][1]['folder'];
+					if (isset($v['list']))
+					{
+						$list=@$v['settings']['list'];
+						if (!$list) $list=$v['settings']['list'] = [];
+						if (empty($list['folder'])) {
+							$v['settings']['list']['folder'] = $v['images'][1]['folder'];
 						}
-						if (!empty($v['list']['src_blank'])) {
-							$v['list']['src_blank'] = $this->cfg_path . '/assets/' . $v['list']['src_blank'];
+						if (!empty($list['src_blank']))
+						{
+							$v['settings']['list']['src_blank'] = $this->cfg_path . '/assets/' . $list['src_blank'];
 						}
-						$schema['fields'][$k]['list'] = $v['list'];
+						$schema['fields'][$k]['settings']['list'] = $v['settings']['list'];
+
 					}
 					break;
 
