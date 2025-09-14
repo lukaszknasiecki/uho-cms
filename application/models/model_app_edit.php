@@ -353,8 +353,10 @@ class model_app_edit extends model_app
 		$items = $this->apporm->getJsonModel($field['source']['model'], $filter, false, null, '0,10');
 		foreach ($items as &$item) {
 			$item['label'] = $this->getTwigFromHtml($field['source']['label'], $item);
-			if (isset($searchSchema['model']['image'])) {
+			if (isset($searchSchema['model']['image']))
+			{
 				$item['image'] = ['thumb' => $this->getTwigFromHtml($searchSchema['model']['image'], $item)];
+				if ($this->s3) $item['image']['thumb'] = $this->s3->getFilenameWithHost($item['image']['thumb']);
 			}
 		}
 

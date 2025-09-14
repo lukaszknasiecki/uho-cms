@@ -46,6 +46,7 @@ class model_app_page extends model_app
 				$f[$k] = $v;
 			}
 		}
+		
 
 		// Append filters to the URL if they exist
 		if (!empty($f)) {
@@ -114,7 +115,7 @@ class model_app_page extends model_app
 
 		foreach ($schema['fields'] as $k => $field)
 			if (
-				!in_array($field['type'], ['image', 'uid', 'checkboxes', 'temp-elements']) &&
+				!in_array($field['type'], ['image', 'checkboxes', 'temp-elements']) &&
 				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
 			) {
 				$searchKey = $field['field_search'] ?? null;
@@ -130,6 +131,9 @@ class model_app_page extends model_app
 				// Type-specific filter logic
 
 				switch ($field['type']) {
+					case 'uid':
+						$vv = $value ?: "";
+						break;
 					case 'boolean':
 					case 'integer':
 						$vv = $value ?: 0;
@@ -184,6 +188,7 @@ class model_app_page extends model_app
 				} elseif ($vv !== null) {
 					$filters[$field['field']] = $vv;
 				}
+
 
 				// Build filter label stack
 				if (!$global_search || $first) {

@@ -93,6 +93,22 @@ You can also add additional text fields from this model to be edited in captions
 
 Defines records order, `INT(11)`
 
+`select`
+
+User can choose one value from predefined set.
+
+You can define options for enum types:
+
+options: [ { value:"", label:"" }]
+
+or set another model as a source
+
+source: { model:"", "search": ["field_to_be_searched"], "search_strict":false }
+
+For large models you can use search field instead of select dropdown:
+
+input="search"
+
 `string`
 
 String (256 chars) type. If no type is defined this type
