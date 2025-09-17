@@ -203,7 +203,9 @@ class model_app extends _uho_model
         $config['path_skip'] = '/public/upload';
         $this->s3 = new _uho_s3($config, _uho_fx::getGet('s3recache') == 1);
         if (!$this->s3->checkCacheFile())
+        {
             $this->s3->buildCache();
+        }
         $this->apporm->setUhoS3($this->s3);
         $this->orm->setUhoS3($this->s3);
     }
@@ -214,7 +216,7 @@ class model_app extends _uho_model
     public function s3recache()
     {
         if (isset($this->s3)) {
-            $this->s3->buildCache();
+            //$this->s3->buildCache();
         }
     }
 
