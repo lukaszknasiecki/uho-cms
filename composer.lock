@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.17",
+            "version": "3.356.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c"
+                "reference": "4dbc87e689c4e4a6655d6b7e3d02ce2f4e87aa5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
-                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4dbc87e689c4e4a6655d6b7e3d02ce2f4e87aa5c",
+                "reference": "4dbc87e689c4e4a6655d6b7e3d02ce2f4e87aa5c",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.17"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.19"
             },
-            "time": "2025-09-12T18:07:37+00:00"
+            "time": "2025-09-16T18:17:04+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -876,23 +876,23 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.47.1",
+            "version": "v1.48.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "d7a0a215ec42ca0c8cb40e9ae0c5960aa9a024b7"
+                "reference": "3053a5bfe284538419d4fee8c9df148488db6d30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/d7a0a215ec42ca0c8cb40e9ae0c5960aa9a024b7",
-                "reference": "d7a0a215ec42ca0c8cb40e9ae0c5960aa9a024b7",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/3053a5bfe284538419d4fee8c9df148488db6d30",
+                "reference": "3053a5bfe284538419d4fee8c9df148488db6d30",
                 "shasum": ""
             },
             "require": {
                 "firebase/php-jwt": "^6.0",
                 "guzzlehttp/guzzle": "^7.4.5",
                 "guzzlehttp/psr7": "^2.4.5",
-                "php": "^8.0",
+                "php": "^8.1",
                 "psr/cache": "^2.0||^3.0",
                 "psr/http-message": "^1.1||^2.0",
                 "psr/log": "^3.0"
@@ -904,7 +904,7 @@
                 "phpspec/prophecy-phpunit": "^2.1",
                 "phpunit/phpunit": "^9.6",
                 "sebastian/comparator": ">=1.2.3",
-                "squizlabs/php_codesniffer": "^3.5",
+                "squizlabs/php_codesniffer": "^4.0",
                 "symfony/process": "^6.0||^7.0",
                 "webmozart/assert": "^1.11"
             },
@@ -931,9 +931,9 @@
             "support": {
                 "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.47.1"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.48.0"
             },
-            "time": "2025-07-09T15:26:02+00:00"
+            "time": "2025-09-16T22:09:18+00:00"
         },
         {
             "name": "google/common-protos",
@@ -1824,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "62ee8cd94b7dab1944a08ef4a806ba0cd9f7f44b"
+                "reference": "aec28d9b92f9623e7122b066a826c085965d5855"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/62ee8cd94b7dab1944a08ef4a806ba0cd9f7f44b",
-                "reference": "62ee8cd94b7dab1944a08ef4a806ba0cd9f7f44b",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/aec28d9b92f9623e7122b066a826c085965d5855",
+                "reference": "aec28d9b92f9623e7122b066a826c085965d5855",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-09-15T14:15:31+00:00"
+            "time": "2025-09-17T09:55:27+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3798,12 +3798,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "da7a676315a8d58eac8231fd5b2dbf339ce58505"
+                "reference": "7390d3a0adf7b55dc2a95e8277f91343650f44fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/da7a676315a8d58eac8231fd5b2dbf339ce58505",
-                "reference": "da7a676315a8d58eac8231fd5b2dbf339ce58505",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/7390d3a0adf7b55dc2a95e8277f91343650f44fa",
+                "reference": "7390d3a0adf7b55dc2a95e8277f91343650f44fa",
                 "shasum": ""
             },
             "require": {
@@ -3869,7 +3869,7 @@
                 "issues": "https://github.com/ramsey/uuid/issues",
                 "source": "https://github.com/ramsey/uuid/tree/4.x"
             },
-            "time": "2025-09-08T21:21:29+00:00"
+            "time": "2025-09-15T21:06:19+00:00"
         },
         {
             "name": "symfony/clock",
@@ -4290,12 +4290,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "9313b647cfeb7ca41fff26991fedb8b5552d9f03"
+                "reference": "a8cdf8672847eeb8a87b72837ab02b2810212232"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/9313b647cfeb7ca41fff26991fedb8b5552d9f03",
-                "reference": "9313b647cfeb7ca41fff26991fedb8b5552d9f03",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/a8cdf8672847eeb8a87b72837ab02b2810212232",
+                "reference": "a8cdf8672847eeb8a87b72837ab02b2810212232",
                 "shasum": ""
             },
             "require": {
@@ -4364,7 +4364,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-15T09:17:33+00:00"
+            "time": "2025-09-16T08:41:45+00:00"
         },
         {
             "name": "symfony/mime",
@@ -4372,12 +4372,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "7caeebb55303944a95942fcea34797467366bcd7"
+                "reference": "adb6275d178ac5fabb59ac18d42bbbf887f809bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/7caeebb55303944a95942fcea34797467366bcd7",
-                "reference": "7caeebb55303944a95942fcea34797467366bcd7",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/adb6275d178ac5fabb59ac18d42bbbf887f809bc",
+                "reference": "adb6275d178ac5fabb59ac18d42bbbf887f809bc",
                 "shasum": ""
             },
             "require": {
@@ -4453,7 +4453,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-11T10:15:23+00:00"
+            "time": "2025-09-16T08:41:45+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
