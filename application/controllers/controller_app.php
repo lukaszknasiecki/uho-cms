@@ -211,8 +211,8 @@ class controller_app extends _uho_controller
         // Various URLs for scaffold
         $this->data['scaffold']['url_logout_expired'] = ['type' => 'logout_expired'];
         $this->data['scaffold']['url_settings'] = ['type' => 'settings'];
-        $this->data['scaffold']['url_mode_dark'] = ['type' => 'url_now', 'getNew' => ['mode' => 'dark']];
-        $this->data['scaffold']['url_mode_light'] = ['type' => 'url_now', 'getNew' => ['mode' => 'light']];
+        $this->data['scaffold']['url_mode_dark'] = ['type' => 'url_now', 'get' => ['mode' => 'dark']];
+        $this->data['scaffold']['url_mode_light'] = ['type' => 'url_now', 'get' => ['mode' => 'light']];
         $this->data['scaffold']['url_password_change'] = ['type' => 'password_change'];
         $this->data['scaffold']['js_array'] = $this->js_array;
 
@@ -288,7 +288,7 @@ class controller_app extends _uho_controller
         if ($this->no_sql) return;
 
         if ($this->route->e(0) === 'login') {
-            $this->model->s3recache();
+            // $this->model->s3recache();
         }
 
         $last = $this->route->getUrlNow();

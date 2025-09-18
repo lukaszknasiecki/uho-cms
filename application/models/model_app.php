@@ -216,7 +216,7 @@ class model_app extends _uho_model
     public function s3recache()
     {
         if (isset($this->s3)) {
-            //$this->s3->buildCache();
+            $this->s3->buildCache();
         }
     }
 

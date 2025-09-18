@@ -19,6 +19,7 @@ class model_app_settings extends model_app
 		$action = '';
 		$text = '';
 		$errors = [];
+		$success=[];
 		$admin = $this->isAdmin();
 		$url = explode('/', $params['url'] ?? '');
 
@@ -26,6 +27,7 @@ class model_app_settings extends model_app
 		$items = [
 			['label' => 'password_change', 'url' => ['type' => 'password_change']],
 			['label' => 'cache_clear', 'url' => ['type' => 'settings', 'subtype' => 'cache-clear']],
+			['label' => 's3_cache_build', 'url' => ['type' => 'settings', 'subtype' => 's3-cache-build']],
 			['label' => 'app_reports', 'url' => ['type' => 'settings', 'subtype' => 'app-reports'], 'admin' => true],
 			['label' => 'cms_reports', 'url' => ['type' => 'settings', 'subtype' => 'cms-reports'], 'admin' => true],
 			['label' => 'php_ini', 'url' => ['type' => 'settings', 'subtype' => 'php-ini'], 'admin' => true],
@@ -56,6 +58,15 @@ class model_app_settings extends model_app
 				phpinfo();
 				exit;
 
+			case 's3-cache-build':
+				if (isset($this->s3))
+				{
+					$this->s3recache();
+					$success[]='s3_built';
+				}
+					else $errors[] = 's3_not_defined';
+				break;
+
 			case 'app-reports':
 				$text = $this->getReports('/reports/', _uho_fx::getGet('file'), _uho_fx::getGet('remove'));
 				if (!$text) $errors[] = 'no_reports';
@@ -82,6 +93,7 @@ class model_app_settings extends model_app
 
 		return [
 			'action' => $action,
+			'success'=>$success,
 			'errors' => $errors,
 			'translate' => $translations[$this->lang] ?? [],
 			'items' => $items,

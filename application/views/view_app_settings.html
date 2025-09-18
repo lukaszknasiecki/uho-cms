@@ -10,11 +10,20 @@
                 <div class="container serdelia-page">
                         <div class="card-columns" style="margin-top:10px">
 
-                                <div class="card {% if errors %}bg-danger{% else %}bg-primary{% endif %}">
+                                <div class="card {% if errors %}bg-danger{% elseif success%}bg-warning{% else %}bg-primary{% endif %}">
                                         <div class="card-body">
                                                 <h5 class="card-title"><i class="mdi mdi-settings"></i> {{translate.header}}</h5>
                                                 {% if translate.message %}
                                                         <p class="card-text">{{translate.message}}</p>
+                                                {% endif %}
+                                                {% if success %}
+                                                <p class="card-text">
+                                                        {% for item in success %}
+                                                        [[icon::success]]
+                                                                {% if translate[item] %}{{translate[item]|raw}}{% else %}{{item}}{% endif %}
+                                                                <br>
+                                                        {% endfor %}
+                                                </p>
                                                 {% endif %}
                                                 {% if errors %}
                                                 <p class="card-text">
