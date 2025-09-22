@@ -2,3 +2,11 @@
 {
 	margin-bottom:20px !important;
 }
+
+
+.theme-dark .ck.ck-content[role="textbox"]
+{
+    background-color: black;  
+    color: white;  
+
+}

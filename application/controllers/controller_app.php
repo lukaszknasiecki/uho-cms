@@ -163,6 +163,7 @@ class controller_app extends _uho_controller
 
         // Mode (light/dark/etc.)
         $this->cfg['cms']['mode'] = $this->data['scaffold']['mode'] = $this->model->getMode($this->cfg['cms']['mode']);
+        
 
         // Navigation and menu
         $this->data['scaffold']['nav'] = $this->data['nav'];
@@ -201,6 +202,9 @@ class controller_app extends _uho_controller
 
         // Handle logout expiration time
         if (strpos($_SERVER['HTTP_HOST'], '.lh') !== false) {
+            $this->data['scaffold']['logout_expired'] = null;
+        } elseif (isset($this->cfg['cms']['serdelia_logout_time']) && !$this->cfg['cms']['serdelia_logout_time'])
+        {
             $this->data['scaffold']['logout_expired'] = null;
         } elseif (!empty($this->cfg['cms']['serdelia_logout_time'])) {
             $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['serdelia_logout_time'];
