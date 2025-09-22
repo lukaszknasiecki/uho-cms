@@ -372,6 +372,18 @@ class model_app_page extends model_app
 		}
 
 		/**
+		 * Shortcuts
+		*/
+
+		if (isset($schema['shortcuts']))
+		{
+			foreach ($schema['shortcuts'] as $k=>$v)
+			{
+				$schema['shortcuts'][$k]['url']=['type'=>'url_now','get'=>@$v['link']['query']];
+			}
+		}
+
+		/**
 		 * Loop through all fields and normalize configuration
 		 */
 		foreach ($schema['fields'] as $k => $v) {

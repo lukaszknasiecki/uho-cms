@@ -4,7 +4,21 @@
 
     <div style="display: flex;width: 100%">
       <div style="flex:1;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-        <h2>{{label|raw}}</h2>
+        <div style="display: flex;">
+
+          <h2>{{label|raw}}</h2>
+
+              {% if shortcuts %}
+              <div style="margin-left:10px;margin-top:4px">
+                {% for item in shortcuts %}
+                <a href="{{item.url}}">
+                  <span class="badge badge-{{item.color}}">{{item.label}}</span>
+                </a> 
+                {% endfor %}                
+              </div>
+              {% endif %}
+          </div>
+
       </div>
       <div style="flex: 0 0 auto;">
         {% if type=='page' %}
@@ -43,7 +57,6 @@
               <span class="mdi mdi-report-problem pull-left" style="color:orange"></span>{{alert}}
             </div>
             {% endif %}
-
 
             {% if paging.nav.pages %}
             <div class="col-xs-3" style="margin-right:10px">

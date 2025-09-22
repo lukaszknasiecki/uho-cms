@@ -1,5 +1,5 @@
 {% if records|length==0 %}{% set alert=translate.no_records %}{% endif %}
-{% include 'header/header.html' with {'label': schema.label,'buttons':buttons,'type':'page','alert':alert,'filters':filters,'paging':paging,'help':schema.help,'search':schema.search,'layouts':schema.layouts } %}
+{% include 'header/header.html' with {'label': schema.label,'buttons':buttons,'type':'page','alert':alert,'filters':filters,'paging':paging,'help':schema.help,'search':schema.search,'layouts':schema.layouts,'shortcuts':schema.shortcuts } %}
 
 <div class="serdelia-body serdelia-bg-color{% if schema_editor %}-schema{% endif %}">
 <div class="container serdelia-page">
