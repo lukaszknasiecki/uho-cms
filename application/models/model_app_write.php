@@ -75,6 +75,7 @@ class model_app_write extends model_app
 
 			// Post-sort plugin hooks
 			$afterHooks = _uho_fx::array_filter($schema['buttons_page'] ?? [], 'on_update', 1);
+
 			if ($afterHooks) {
 				require_once("model_app_plugin.php");
 
@@ -807,13 +808,16 @@ class model_app_write extends model_app
 
 		$plugins = array_merge($plugins1, $plugins2);
 
-		if ($plugins && !$update_fields) {
+		if ($plugins && !$update_fields)
+		{
 			require_once("model_app_plugin.php");
-			foreach ($plugins as $k => $v) {
-				$class = new model_app_plugin($this->sql, $lang);
-				$class->setParent($this);
-				$class->setCfgPath($this->cfg_path);
 
+			$class = new model_app_plugin($this->sql, $lang);
+			$class->setParent($this);
+			$class->setCfgPath($this->cfg_path);
+
+			foreach ($plugins as $k => $v)
+			{
 				$p = ['page' => $model, 'page_with_params' => $page_with_params, 'params' => $v['params'], 'record' => $id, 'plugin' => $v['plugin'], 'orm' => $this->apporm];
 				$output = $class->getContentData(array('params' => $p, 'get' => []));
 			}

@@ -202,7 +202,10 @@ class model_app extends _uho_model
     {
         $config['path_skip'] = '/public/upload';
         $this->s3 = new _uho_s3($config, _uho_fx::getGet('s3recache') == 1);
-        if (!$this->s3->checkCacheFile())
+
+        $age=$this->s3->getCacheFileAge();
+
+        if (!$age || $age>10)
         {
             $this->s3->buildCache();
         }
