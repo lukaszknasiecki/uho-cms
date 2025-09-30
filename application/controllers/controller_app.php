@@ -20,7 +20,6 @@ class controller_app extends _uho_controller
      */
     public function getData() : void
     {        
-        
         // Set CMS base path
         $this->model->cms_path = $this->route->getUrl('');
         if (!empty($this->cfg['plugins'])) $this->model->setPluginsCfg($this->cfg['plugins']);

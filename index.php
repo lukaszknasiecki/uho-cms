@@ -224,7 +224,10 @@ class cms_sunship
             $app = new _uho_application($index['root_path'], $index['development'], $cfg_file);
         } catch (Exception $e) {
             header('Content-Type: text/plain; charset=utf-8');
-            echo ("503 Service Unavailable: Uho framework not found.");
+            echo ("503 Service Unavailable: Uho framework error.");
+            if ($index['development'])
+                    echo $e->getMessage();
+
             exit();
         }
 

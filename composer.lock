@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.27",
+            "version": "3.356.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "6f6b8cfdc1a1555b7a749395a79bda51910646e0"
+                "reference": "3e413221956aa969f379ff6fa67a303ce76aad13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6f6b8cfdc1a1555b7a749395a79bda51910646e0",
-                "reference": "6f6b8cfdc1a1555b7a749395a79bda51910646e0",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3e413221956aa969f379ff6fa67a303ce76aad13",
+                "reference": "3e413221956aa969f379ff6fa67a303ce76aad13",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.27"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.29"
             },
-            "time": "2025-09-26T18:12:38+00:00"
+            "time": "2025-09-30T18:12:45+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -766,12 +766,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "6530c6ba1b1c3bd4311c354c12948a48b46b15a3"
+                "reference": "5b51fdb2cbd2a96088e3dfc6f565bdf6fb0af94b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/6530c6ba1b1c3bd4311c354c12948a48b46b15a3",
-                "reference": "6530c6ba1b1c3bd4311c354c12948a48b46b15a3",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/5b51fdb2cbd2a96088e3dfc6f565bdf6fb0af94b",
+                "reference": "5b51fdb2cbd2a96088e3dfc6f565bdf6fb0af94b",
                 "shasum": ""
             },
             "require": {
@@ -828,20 +828,20 @@
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
                 "source": "https://github.com/googleapis/google-api-php-client/tree/main"
             },
-            "time": "2025-09-11T20:09:59+00:00"
+            "time": "2025-09-30T04:23:07+00:00"
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.413.0",
+            "version": "v0.414.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "8c8f936b85a50d658c50fbfd4331cfd5144c473f"
+                "reference": "5bd542b6d9639b89b95270ae85ed3062b4ca9b8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/8c8f936b85a50d658c50fbfd4331cfd5144c473f",
-                "reference": "8c8f936b85a50d658c50fbfd4331cfd5144c473f",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/5bd542b6d9639b89b95270ae85ed3062b4ca9b8e",
+                "reference": "5bd542b6d9639b89b95270ae85ed3062b4ca9b8e",
                 "shasum": ""
             },
             "require": {
@@ -870,22 +870,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.413.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.414.0"
             },
-            "time": "2025-09-22T00:58:25+00:00"
+            "time": "2025-09-28T01:08:30+00:00"
         },
         {
             "name": "google/auth",
-            "version": "v1.48.0",
+            "version": "v1.48.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "3053a5bfe284538419d4fee8c9df148488db6d30"
+                "reference": "023f41a2c80fb98a493dfb9dffcab643481a7ab0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/3053a5bfe284538419d4fee8c9df148488db6d30",
-                "reference": "3053a5bfe284538419d4fee8c9df148488db6d30",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/023f41a2c80fb98a493dfb9dffcab643481a7ab0",
+                "reference": "023f41a2c80fb98a493dfb9dffcab643481a7ab0",
                 "shasum": ""
             },
             "require": {
@@ -931,9 +931,9 @@
             "support": {
                 "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.48.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.48.1"
             },
-            "time": "2025-09-16T22:09:18+00:00"
+            "time": "2025-09-30T04:22:33+00:00"
         },
         {
             "name": "google/common-protos",
@@ -1824,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "d71a50e6f914877bd194b60d4d1f9e435b6808d7"
+                "reference": "fb7d7fde63058853e28bda816cdcd97d55f2ad0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/d71a50e6f914877bd194b60d4d1f9e435b6808d7",
-                "reference": "d71a50e6f914877bd194b60d4d1f9e435b6808d7",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/fb7d7fde63058853e28bda816cdcd97d55f2ad0a",
+                "reference": "fb7d7fde63058853e28bda816cdcd97d55f2ad0a",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-09-27T15:30:29+00:00"
+            "time": "2025-09-30T18:53:03+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2404,16 +2404,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v6.10.0",
+            "version": "v6.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144"
+                "reference": "d9e3b36b47f04b497a0164c5a20f92acb4593284"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144",
-                "reference": "bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/d9e3b36b47f04b497a0164c5a20f92acb4593284",
+                "reference": "d9e3b36b47f04b497a0164c5a20f92acb4593284",
                 "shasum": ""
             },
             "require": {
@@ -2434,6 +2434,7 @@
             },
             "suggest": {
                 "decomplexity/SendOauth2": "Adapter for using XOAUTH2 authentication",
+                "ext-imap": "Needed to support advanced email address parsing according to RFC822",
                 "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
                 "ext-openssl": "Needed for secure SMTP sending and DKIM signing",
                 "greew/oauth2-azure-provider": "Needed for Microsoft Azure XOAUTH2 authentication",
@@ -2473,7 +2474,7 @@
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
             "support": {
                 "issues": "https://github.com/PHPMailer/PHPMailer/issues",
-                "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.10.0"
+                "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.11.1"
             },
             "funding": [
                 {
@@ -2481,7 +2482,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-04-24T15:19:31+00:00"
+            "time": "2025-09-30T11:54:53+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -2489,12 +2490,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "eab8db4359fb0334930b388fce1076aef8af9df5"
+                "reference": "5805c0e661cd26b4a893b021e5d8ae9cfbeaea5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/eab8db4359fb0334930b388fce1076aef8af9df5",
-                "reference": "eab8db4359fb0334930b388fce1076aef8af9df5",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/5805c0e661cd26b4a893b021e5d8ae9cfbeaea5a",
+                "reference": "5805c0e661cd26b4a893b021e5d8ae9cfbeaea5a",
                 "shasum": ""
             },
             "require": {
@@ -2591,7 +2592,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-18T00:51:28+00:00"
+            "time": "2025-09-28T11:15:58+00:00"
         },
         {
             "name": "predis/predis",
@@ -3800,12 +3801,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "6c074f9ab24235adc68de71ad209799d835f172c"
+                "reference": "7ccc0b6be5e995489b7624b1b9a582dc579f22ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/6c074f9ab24235adc68de71ad209799d835f172c",
-                "reference": "6c074f9ab24235adc68de71ad209799d835f172c",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/7ccc0b6be5e995489b7624b1b9a582dc579f22ff",
+                "reference": "7ccc0b6be5e995489b7624b1b9a582dc579f22ff",
                 "shasum": ""
             },
             "require": {
@@ -3871,7 +3872,7 @@
                 "issues": "https://github.com/ramsey/uuid/issues",
                 "source": "https://github.com/ramsey/uuid/tree/4.x"
             },
-            "time": "2025-09-22T21:07:56+00:00"
+            "time": "2025-09-30T02:45:36+00:00"
         },
         {
             "name": "symfony/clock",
@@ -5150,12 +5151,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "cfd2401d28ee4b92a54baafb3af91ba5bef2e76b"
+                "reference": "7d843af0451b4a94ab380eea4f8aaf7ba17d28af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/cfd2401d28ee4b92a54baafb3af91ba5bef2e76b",
-                "reference": "cfd2401d28ee4b92a54baafb3af91ba5bef2e76b",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/7d843af0451b4a94ab380eea4f8aaf7ba17d28af",
+                "reference": "7d843af0451b4a94ab380eea4f8aaf7ba17d28af",
                 "shasum": ""
             },
             "require": {
@@ -5242,7 +5243,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-17T17:04:24+00:00"
+            "time": "2025-09-29T13:00:59+00:00"
         },
         {
             "name": "symfony/translation-contracts",
@@ -5333,12 +5334,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "8832f6327cbde1cdf49650e8e2eee2d58e33884c"
+                "reference": "a895a3f00d015159caf4759a4ee12c2fa4ebb432"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8832f6327cbde1cdf49650e8e2eee2d58e33884c",
-                "reference": "8832f6327cbde1cdf49650e8e2eee2d58e33884c",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a895a3f00d015159caf4759a4ee12c2fa4ebb432",
+                "reference": "a895a3f00d015159caf4759a4ee12c2fa4ebb432",
                 "shasum": ""
             },
             "require": {
@@ -5405,7 +5406,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-25T19:44:53+00:00"
+            "time": "2025-09-25T10:20:18+00:00"
         },
         {
             "name": "vimeo/vimeo-api",
