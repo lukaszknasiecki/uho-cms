@@ -1629,11 +1629,11 @@ class model_app extends _uho_model
         if ($this->cache_folders) {
             foreach ($this->cache_folders as $k => $v) {
                 if (substr($v, 0, 4) == 'http') {
-                    $r = json_decode(_uho_fx::fileCurl($v), true);
+                    $r = @json_decode(_uho_fx::fileCurl($v), true);
                     if (!$r['result'])
-                        $r = json_decode(_uho_fx::fileCurl(str_replace('https', 'http', $v), true));
+                        $r = @json_decode(_uho_fx::fileCurl(str_replace('https', 'http', $v), true));
                     if (!$r['result'])
-                        $r = json_decode(file_get_contents($v, false, stream_context_create($arrContextOptions)), true);
+                        $r = @json_decode(file_get_contents($v, false, stream_context_create($arrContextOptions)), true);
                     if (!$r['result'])
                         exit('Error perfoming cache clean at: ' . $v);
                 } else
