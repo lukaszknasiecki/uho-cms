@@ -20,7 +20,6 @@
             {% set type_params=type %}
             {% set type=type.type %}            
         {% endif %}
-        
         {% if translate['media_add_'~type][1] %}        
         <span class="btn btn-success fileinput-button serdelia-edit-images-{{type}}" data-type="{{type}}" style="margin-bottom:8px">
         <i class="mdi mdi-{{translate['media_add_'~type][0]}} pull-left"></i>&nbsp;<span>{{translate['media_add_'~type][1]}}</span>
