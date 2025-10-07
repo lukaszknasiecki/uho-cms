@@ -694,35 +694,33 @@ Apps.Edit = function($, window)
     else
     if (field.is(":visible") && 1==2)
     {
-//      $('#'+id+'_crop_data').val("");
-  //    field.hide();
     } else
     {
 
       if (field.data('cors'))
       {
+        source=field.data('cors');
+        $('#'+id+'_crop').data('cors',null);
         button.parent().find('.spinner-border').show();
         button.hide();
         
-        setTimeout(() => {
-          
           $.ajax({
-            url: '/serdelia/api/cors_copy',
+            url: '/cms/api/cors_copy',
             global: false,
             type: "POST",
             dataType: "html",
-            data: {'source':field.data('cors'),'destination':field.data('temp')},
+            data: {'source':source,'destination':field.data('temp')},
             async: false,
             success: function(data, textStatus, jqXHR)
             {
               console.log('Image Copied to: '+field.data('temp'));
               button.show();
               button.parent().find('.spinner-border').hide();
-              field.find('img').attr('src',field.data('temp'));              
+              field.find('img').attr('src','/cms_config-temp/'+field.data('temp'));
             }
           });
 
-        }, 1000);
+        return;
           
       }
 

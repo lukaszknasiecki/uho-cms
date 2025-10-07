@@ -118,8 +118,8 @@
 
 <!-- The container for the uploaded files and CROP image -->
 <input id="{{field.field}}_filename" name="{{field.cms_field}}" type="hidden">
-{% if field.cors %}
-<div data-ratio="" id="{{field.cms_field}}_crop" style="display:none;margin-top:15px" data-temp="{{field.cors.original}}" data-cors="{{original}}">
+{% if field.settings.cors %}
+<div data-ratio="" id="{{field.cms_field}}_crop" style="display:none;margin-top:15px" data-temp="{{field.settings.cors.original}}" data-cors="{{original}}">
 	<img style="max-width:500px;max-height:500px">
 </div>
 {% else %}

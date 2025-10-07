@@ -12,12 +12,6 @@ class model_app_api_cors_copy
 	private $parent;
 
 	/**
-	 * Settings or configuration array.
-	 * @var array
-	 */
-	private $settings;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param mixed $parent   Reference to the parent object.
@@ -25,6 +19,7 @@ class model_app_api_cors_copy
 	 */
 	public function __construct($parent, array $settings)
 	{
+		$this->parent = $parent;
 	}
 
 	/**
@@ -49,6 +44,6 @@ class model_app_api_cors_copy
 		$destinationPath = $this->parent->temp_folder. '/'.$sanitizedFilename;
 
 		// Perform the file copy
-		return copy($_POST['source'], $destinationPath);
+		return ['result'=>copy($_POST['source'], $destinationPath)];
 	}
 }
