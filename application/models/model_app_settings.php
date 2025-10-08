@@ -28,6 +28,7 @@ class model_app_settings extends model_app
 			['label' => 'password_change', 'url' => ['type' => 'password_change']],
 			['label' => 'cache_clear', 'url' => ['type' => 'settings', 'subtype' => 'cache-clear']],
 			['label' => 's3_cache_build', 'url' => ['type' => 'settings', 'subtype' => 's3-cache-build']],
+			['label' => 's3_cache_check', 'url' => ['type' => 'settings', 'subtype' => 's3-cache-check']],
 			['label' => 'app_reports', 'url' => ['type' => 'settings', 'subtype' => 'app-reports'], 'admin' => true],
 			['label' => 'cms_reports', 'url' => ['type' => 'settings', 'subtype' => 'cms-reports'], 'admin' => true],
 			['label' => 'php_ini', 'url' => ['type' => 'settings', 'subtype' => 'php-ini'], 'admin' => true],
@@ -65,6 +66,14 @@ class model_app_settings extends model_app
 					$success[]='s3_built';
 				}
 					else $errors[] = 's3_not_defined';
+				break;
+
+			case 's3-cache-check':
+				if (isset($this->s3))
+				{
+					$success[]=$this->s3->getCacheFileAge().' min.';
+				}
+				else $errors[] = 's3_not_defined';
 				break;
 
 			case 'app-reports':

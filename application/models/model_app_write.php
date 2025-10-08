@@ -1210,7 +1210,8 @@ class model_app_write extends model_app
 				if ($params) $variant = array_merge($variant, $params);
 
 				$crop = null;
-				if (!empty($params['crop'][$variant['id']])) {
+				if (!empty($params['crop'][$variant['id']]))
+				{
 					[$x1, $y1, $w, $h] = $params['crop'][$variant['id']];
 					$crop = ['x1' => $x1, 'y1' => $y1, 'width' => $w, 'height' => $h];
 				}
@@ -1222,7 +1223,8 @@ class model_app_write extends model_app
 				}
 
 				// --- Perform image conversion ---
-				if ($extension !== 'svg') {
+				if ($extension !== 'svg')
+				{
 					if ($this->s3) {
 						$temp_destination = $this->s3GetTempFilename();
 						$r = _uho_thumb::convert($filename, $source, $temp_destination, $variant, true, 1, $crop);
@@ -1241,14 +1243,16 @@ class model_app_write extends model_app
 					}
 
 					// --- Handle retina (@2x) variant ---
-					if (!empty($variant['retina'])) {
+					if (!empty($variant['retina']))
+					{
 						$variant['width']  = $variant['width'] ? $variant['width'] * 2 : null;
 						$variant['height'] = $variant['height'] ? $variant['height'] * 2 : null;
 
 						if ($this->s3) {
 							$temp_destination = $this->s3GetTempFilename();
 							$r = _uho_thumb::convert($filename, $source, $temp_destination, $variant, true, 1, $crop);
-							if ($r['result']) {
+							if ($r['result'])
+							{
 								$this->s3->copy($temp_destination, $destination_retina);
 								$webp_dest_x2 = $this->jpg2webp($destination_retina);
 								if ($variant['webp'] && !empty($r['webp'])) {
