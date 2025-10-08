@@ -71,7 +71,10 @@ class model_app_settings extends model_app
 			case 's3-cache-check':
 				if (isset($this->s3))
 				{
-					$success[]=$this->s3->getCacheFileAge().' min.';
+					$age=$this->s3->getCacheFileAge();
+					if ($age===false) $errors[]='s3 cache file time not found';
+						else $success[]='Cache age: '.$age.' min.';
+					
 				}
 				else $errors[] = 's3_not_defined';
 				break;

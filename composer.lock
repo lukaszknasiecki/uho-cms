@@ -1824,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "61aa6afcb3422de2d32f8a2794155cb909ed38d3"
+                "reference": "874a11d5a652cc152313768bb00823c8e5b5ee3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/61aa6afcb3422de2d32f8a2794155cb909ed38d3",
-                "reference": "61aa6afcb3422de2d32f8a2794155cb909ed38d3",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/874a11d5a652cc152313768bb00823c8e5b5ee3a",
+                "reference": "874a11d5a652cc152313768bb00823c8e5b5ee3a",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-10-05T11:27:22+00:00"
+            "time": "2025-10-08T11:20:05+00:00"
         },
         {
             "name": "monolog/monolog",
