@@ -11,7 +11,8 @@
     "cms_reports": "Raporty błędów CMS",
     "php_ini": "Ustawienia PHP",
     "no_access": "Brak autoryzacji dostępu do tej funkcji",
-    "no_reports": "Brak raportów błędów"
+    "no_reports": "Brak raportów błędów",
+    "time_from_login":"Czas od zalogowania"
   },
   "en": {
     "header": "Settings",
@@ -25,6 +26,7 @@
     "cms_reports": "CMS errors report",
     "php_ini": "PHP settings",
     "no_access": "You are not authorized to perform this action",
-    "no_reports": "No reports found"
+    "no_reports": "No reports found",
+    "time_from_login":"Time since login"
   }
 }

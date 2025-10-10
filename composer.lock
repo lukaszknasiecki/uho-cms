@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.34",
+            "version": "3.356.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4dabcc34c34ec3c3ce74373c2ff2fc318099d20b"
+                "reference": "20facd00fe1a8f733c3275918bf533d2330af53d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4dabcc34c34ec3c3ce74373c2ff2fc318099d20b",
-                "reference": "4dabcc34c34ec3c3ce74373c2ff2fc318099d20b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/20facd00fe1a8f733c3275918bf533d2330af53d",
+                "reference": "20facd00fe1a8f733c3275918bf533d2330af53d",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.34"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.36"
             },
-            "time": "2025-10-07T18:05:06+00:00"
+            "time": "2025-10-09T18:07:17+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -1098,16 +1098,16 @@
         },
         {
             "name": "google/longrunning",
-            "version": "0.5.0",
+            "version": "0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/php-longrunning.git",
-                "reference": "715519ab4aaf3c4268adb2b551ee0f34135c8c5f"
+                "reference": "226d3b5166eaa13754cc5e452b37872478e23375"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/php-longrunning/zipball/715519ab4aaf3c4268adb2b551ee0f34135c8c5f",
-                "reference": "715519ab4aaf3c4268adb2b551ee0f34135c8c5f",
+                "url": "https://api.github.com/repos/googleapis/php-longrunning/zipball/226d3b5166eaa13754cc5e452b37872478e23375",
+                "reference": "226d3b5166eaa13754cc5e452b37872478e23375",
                 "shasum": ""
             },
             "require-dev": {
@@ -1136,22 +1136,22 @@
             ],
             "description": "Google LongRunning Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/php-longrunning/tree/v0.5.0"
+                "source": "https://github.com/googleapis/php-longrunning/tree/v0.6.0"
             },
-            "time": "2025-09-20T01:29:44+00:00"
+            "time": "2025-10-07T18:41:09+00:00"
         },
         {
             "name": "google/protobuf",
-            "version": "v4.33.0RC1",
+            "version": "v4.33.0RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "961799df3cc236f5ead1396f54f5b4c6ec0fbdeb"
+                "reference": "c516a4463fdde67ccd658589c31685cbbebbf794"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/961799df3cc236f5ead1396f54f5b4c6ec0fbdeb",
-                "reference": "961799df3cc236f5ead1396f54f5b4c6ec0fbdeb",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/c516a4463fdde67ccd658589c31685cbbebbf794",
+                "reference": "c516a4463fdde67ccd658589c31685cbbebbf794",
                 "shasum": ""
             },
             "require": {
@@ -1180,9 +1180,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.33.0RC1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.33.0RC2"
             },
-            "time": "2025-10-01T14:53:19+00:00"
+            "time": "2025-10-09T20:13:57+00:00"
         },
         {
             "name": "grpc/grpc",
@@ -1824,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "874a11d5a652cc152313768bb00823c8e5b5ee3a"
+                "reference": "718595ae834ef5bba018e7bc31991c2c11862a61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/874a11d5a652cc152313768bb00823c8e5b5ee3a",
-                "reference": "874a11d5a652cc152313768bb00823c8e5b5ee3a",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/718595ae834ef5bba018e7bc31991c2c11862a61",
+                "reference": "718595ae834ef5bba018e7bc31991c2c11862a61",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-10-08T11:20:05+00:00"
+            "time": "2025-10-09T21:53:03+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4293,12 +4293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "3d9e8f1198684f990fea34d0804940c078b3b4df"
+                "reference": "8ef075a381c7e879e5432219201667cebf625c5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/3d9e8f1198684f990fea34d0804940c078b3b4df",
-                "reference": "3d9e8f1198684f990fea34d0804940c078b3b4df",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/8ef075a381c7e879e5432219201667cebf625c5d",
+                "reference": "8ef075a381c7e879e5432219201667cebf625c5d",
                 "shasum": ""
             },
             "require": {
@@ -4367,7 +4367,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-03T13:59:18+00:00"
+            "time": "2025-10-10T05:53:19+00:00"
         },
         {
             "name": "symfony/mime",

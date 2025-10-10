@@ -103,6 +103,16 @@ class model_app_settings extends model_app
 			: [];
 
 
+		$time=time()-$_SESSION['serdelia_login_time'];
+		
+		if ($time>60) $time=intval($time/60).' min.'; else $time=$time.' s.';
+		
+		$logout=$this->getLogoutTime();
+		if ($logout && $logout/60==intval($logout/60)) $logout=intval($logout/60).'H'; elseif ($logout) $logout=$logout.' min.';
+
+		$info=$translations[$this->lang]['time_from_login'].': '.$time;
+		if ($logout) $info.=' (max='.$logout.')';
+
 		return [
 			'action' => $action,
 			'success'=>$success,
@@ -111,6 +121,7 @@ class model_app_settings extends model_app
 			'items' => $items,
 			'admin' => $admin,
 			'text' => $text,
+			'info'=>$info,
 			'result' => true
 		];
 	}

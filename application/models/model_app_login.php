@@ -44,6 +44,9 @@ class model_app_login extends model_app
 			{
 				$logged = true;
 				$_SESSION['serdelia_project'] = intval($params['project']);
+				$_SESSION['serdelia_login_time']   = time();
+				$_SESSION['serdelia_activity_time']= time();
+
 			} else {
 				$error = 'login_error';
 			}

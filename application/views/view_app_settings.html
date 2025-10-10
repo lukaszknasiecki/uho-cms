@@ -8,6 +8,9 @@
 
         <div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
                 <div class="container serdelia-page">
+                        {% if info %}
+                                <p>{{info}}</p>
+                        {% endif %}
                         <div class="card-columns" style="margin-top:10px">
 
                                 <div class="card {% if errors %}bg-danger{% elseif success%}bg-warning{% else %}bg-primary{% endif %}">

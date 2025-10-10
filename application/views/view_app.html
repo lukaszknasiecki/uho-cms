@@ -10,7 +10,7 @@
   {% if scaffold.logout_expired %}
   <script>
     setTimeout(function () {
-      window.location.href = "{{scaffold.url_logout_expired}}";
+      alert('{% if lang=='pl' %}Niedługo zostaniesz wylogowany{% else %}You will be logged out soon{% endif %}');
     }, {{ scaffold.logout_expired * 1000 * 60 }});
   </script>
   {% endif %}

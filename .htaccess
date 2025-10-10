@@ -31,3 +31,6 @@ RedirectMatch 404 /configs
 RedirectMatch 404 /docs
 RedirectMatch 404 /reports
 RedirectMatch 404 /widgets
+RedirectMatch 404 /composer.lock
+RedirectMatch 404 /composer.json
+RedirectMatch 404 /README.md

@@ -1,0 +1,9 @@
+# Allow only .js and .css files
+<FilesMatch "\.(js|css)$">
+    Require all granted
+</FilesMatch>
+
+# Deny everything else
+<FilesMatch ".*">
+    Require all denied
+</FilesMatch>

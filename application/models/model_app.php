@@ -40,6 +40,8 @@ class model_app extends _uho_model
     public $temp_folder;
     public $logs_path;
     public $logs_folder;
+    private $logoutTime;
+    private $activityTime;
     /**
      * auth array decoded from authorization.json
      */
@@ -133,6 +135,8 @@ class model_app extends _uho_model
      */
     public function init(): void
     {
+
+
         // --- Set error logging for SQL ---
         if (isset($this->sql)) {
             $this->sql->setErrorFolder(folder_logs);
@@ -2899,5 +2903,62 @@ class model_app extends _uho_model
 
             $_SESSION['schemas_checked']++;
         }
+    }
+
+    public function setLogoutTime($time)
+    {
+        $this->logoutTime=$time;
+    }
+    public function setActivityTime($time)
+    {
+        $this->activityTime=$time;
+    }
+
+    public function checkLogoutTime()
+    {
+        if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return true;
+        $time=intval((time()-$_SESSION['serdelia_login_time'])/60);
+        if ($time<$this->logoutTime) return true;
+        else
+        {
+            $_SESSION['serdelia_login_time']=null;
+            return false;
+        }
+    }
+
+    public function checkActivityTime()
+    {
+        if (empty($this->activityTime) || empty($_SESSION['serdelia_activity_time']))
+        {
+            $_SESSION['serdelia_activity_time']= time();
+            return true;
+        }
+
+        $time=(time()-$_SESSION['serdelia_activity_time'])/60;
+        if ($time<$this->activityTime)
+        {
+            $_SESSION['serdelia_activity_time']= time();
+            return true;
+        }
+        else
+        {
+            $_SESSION['serdelia_activity_time']=null;
+            return false;
+        }
+    }
+
+    public function getLeftLogoutTime($max_time_min)
+    {
+        if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return null;
+        $time_passed_seconds=intval( (time()-$_SESSION['serdelia_login_time']));
+        $time_passed_min=1+intval($time_passed_seconds/60);
+        if ($time_passed_min<$max_time_min) return $max_time_min-$time_passed_min;
+            else return 0;
+    }
+
+
+    public function getLogoutTime()
+    {
+        return $this->logoutTime;
     }
 }

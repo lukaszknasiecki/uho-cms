@@ -133,6 +133,38 @@ class controller_app extends _uho_controller
         }*/
         $this->model->setWysiwyg($this->cfg['cms']['wysiwyg']);
 
+        if (empty($this->cfg['cms']['serdelia_logout_time']) && $this->cfg['cms']['serdelia_logout_time']!==0)
+            $this->cfg['cms']['serdelia_logout_time']=60;
+        if (empty($this->cfg['cms']['serdelia_activity_time']) && $this->cfg['cms']['serdelia_activity_time']!==0)
+            $this->cfg['cms']['serdelia_activity_time']=15;
+
+        /*
+            Logout if time TOTAL time have passed
+        */
+        if (isset($this->cfg['cms']['serdelia_logout_time']))
+        {
+            $this->model->setLogoutTime($this->cfg['cms']['serdelia_logout_time']);
+            if (!$this->model->checkLogoutTime())
+            {
+                $uri=$this->route->getUrl('logout?action=max_time_expired');
+                header('Location: '.$uri);
+                exit();
+            }
+        }
+        /*
+            Logout if time ACTIVITY time have passed
+        */
+        if (isset($this->cfg['cms']['serdelia_activity_time']))
+        {
+            $this->model->setActivityTime($this->cfg['cms']['serdelia_activity_time']);
+            if (!$this->model->checkActivityTime())
+            {
+                $uri=$this->route->getUrl('logout?action=activity_time');
+                header('Location: '.$uri);
+                exit();
+            }
+        }
+        
         // Fetch content data for current controller/action
         $this->data = $this->getContentData();
 
@@ -197,18 +229,35 @@ class controller_app extends _uho_controller
         if ($this->model->url_search) {
             $this->data['scaffold']['url_search'] = $this->model->url_search;
         }
+            
         $this->data['scaffold']['url_logout'] = ['type' => 'logout'];
 
+
         // Handle logout expiration time
-        if (strpos($_SERVER['HTTP_HOST'], '.lh') !== false) {
-            $this->data['scaffold']['logout_expired'] = null;
-        } elseif (isset($this->cfg['cms']['serdelia_logout_time']) && !$this->cfg['cms']['serdelia_logout_time'])
+        
+        if (strpos($_SERVER['HTTP_HOST'], '.lhh') !== false)
         {
             $this->data['scaffold']['logout_expired'] = null;
-        } elseif (!empty($this->cfg['cms']['serdelia_logout_time'])) {
-            $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['serdelia_logout_time'];
-        } else {
-            $this->data['scaffold']['logout_expired'] = $this->model->logout_expired;
+        }
+        elseif (!empty($this->cfg['cms']['serdelia_activity_time']))
+        {
+            $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['serdelia_activity_time']-2;
+        }
+
+        /*
+            if max logout time is sooner than activity time
+        */
+        if ($this->cfg['cms']['serdelia_logout_time'])
+        {
+            $time=$this->model->getLeftLogoutTime($this->cfg['cms']['serdelia_logout_time']);
+            if ($time>0)
+            {
+                $time=$time-2;
+                if ($time<1) $time=1;
+            }
+            if ($time>0 && $time<$this->data['scaffold']['logout_expired'])
+                    $this->data['scaffold']['logout_expired']=$time;
+
         }
 
         // Various URLs for scaffold

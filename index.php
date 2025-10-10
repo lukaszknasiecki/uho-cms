@@ -70,7 +70,7 @@ class cms_sunship
         
         if (!empty($cfg_project['folder_logs']) && !is_dir($root . $cfg_project['folder_logs'])) {
             mkdir($root . $cfg_project['folder_logs']);
-            file_put_contents($root . $cfg_project['folder_logs'] . '/.htaccess', 'Deny: all');
+            file_put_contents($root . $cfg_project['folder_logs'] . '/.htaccess', 'Deny from all');
         }
 
         if (!empty($cfg_project['folder_temp']) && !is_dir($root . $cfg_project['folder_temp']))
@@ -78,6 +78,8 @@ class cms_sunship
             mkdir($root . $cfg_project['folder_temp']);
             mkdir($root . $cfg_project['folder_temp'] . '/upload');
             mkdir($root . $cfg_project['folder_temp'] . '/upload/thumbnail');
+            $htaccess = 'Deny from all';
+            /*
             $htaccess = 'ForceType application/octet-stream
             Header set Content-Disposition attachment
             <FilesMatch "(?i)\.(gif|jpe?g|png)$">
@@ -85,7 +87,7 @@ class cms_sunship
                 Header unset Content-Disposition
             </FilesMatch>
             Header set X-Content-Type-Options nosniff';
-
+            */
             file_put_contents($root . $cfg_project['folder_temp'] . '/.htaccess', $htaccess);
             file_put_contents($root . $cfg_project['folder_temp'] . '/upload/.htaccess', $htaccess);
             file_put_contents($root . $cfg_project['folder_temp'] . '/upload/thumbnail/.htaccess', $htaccess);
