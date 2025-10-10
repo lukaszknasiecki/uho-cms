@@ -57,6 +57,11 @@ body {
   margin-top:156px;
   background-color: var(--background-color);
   min-height:calc(100vh - 160px);
+  @media (max-width: 767px) {
+    
+      margin-top: 230px;
+    
+  }
 }
 
 .serdelia-body--no-header
@@ -1505,4 +1510,12 @@ hr
 .alert-success .btn-default
 {
   color:black;
+}
+
+.desktop-only {
+  @media (max-width: 767px) {
+    
+      display: none !important;
+    
+  }
 }

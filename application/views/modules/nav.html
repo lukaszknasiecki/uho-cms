@@ -1,7 +1,7 @@
 {% if scaffold.cfg.layout.menu_align=='body' %}{% set full_width=false %}{% else %}{% set full_width=true %}{% endif %}
 <nav class="fixed-top navbar navbar-expand-lg" >
   {% if not full_width %}<div class="container">{% endif %}
-
+    
   <!-- logotype -->
     <a class="navbar-brand" href="{{url_base}}">
     {% if scaffold.cfg.logotype %}
@@ -25,12 +25,12 @@
   
   <!-- search -->
   {% if scaffold.url_search %}
-  <form action="{{scaffold.url_search}}" name="search" method="GET" role="search" class="navbar-form navbar-right">
+  <form action="{{scaffold.url_search}}" name="search" method="GET" role="search" class="navbar-form navbar-right desktop-only">
     <input type="text" class="form-control form-control-search {% if small %}form-control-search-small{% endif %} input-sm serdelia-page-search-toggle" id="serdelia-top-search" name="query" placeholder="{{translate.search|capitalize}}">
   </form>
   {% endif %}
   <!-- mode/settings/logoout --> 
-  <ul class="nav navbar-nav navbar-right" style="margin-left:10px">
+  <ul class="nav navbar-nav navbar-right" style="margin-left:10px;flex-direction:row !important;min-width:80px;align-items:right">
     {% if scaffold.mode=='dark' %}
     <li style="padding-right:5px"><a href="{{scaffold.url_mode_light}}"><span class="mdi mdi-15x  mdi-light-mode"></span></a></li>
     {% else %}
