@@ -271,11 +271,13 @@ class model_app_write extends model_app
 					if ($v['output'] == 'string') $iDigits = 0;
 
 					$val = [];
-					if ($iDigits && $data[$v['field']])
+					if ($data[$v['field']])
+					{
 						foreach ($data[$v['field']] as $k2 => $v2)
-							if (is_numeric($v2))
+							if ($iDigits && is_numeric($v2))
 								$val[] = _uho_fx::dozeruj($v2, $iDigits);
-							elseif ($v2 != 'off') $val[] = $v2;
+							elseif (!$iDigits && $v2 != 'off') $val[] = $v2;
+					}
 					$data[$v['field']] = implode(',', $val);
 
 					break;

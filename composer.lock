@@ -230,16 +230,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.36",
+            "version": "3.356.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "20facd00fe1a8f733c3275918bf533d2330af53d"
+                "reference": "1a08e07656baf7328e18a98b8ec766a6fd5c92a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/20facd00fe1a8f733c3275918bf533d2330af53d",
-                "reference": "20facd00fe1a8f733c3275918bf533d2330af53d",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1a08e07656baf7328e18a98b8ec766a6fd5c92a9",
+                "reference": "1a08e07656baf7328e18a98b8ec766a6fd5c92a9",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.36"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.39"
             },
-            "time": "2025-10-09T18:07:17+00:00"
+            "time": "2025-10-14T18:08:04+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -832,16 +832,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.415.0",
+            "version": "v0.416.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "080bdeb1d5243429164dc589b69426bae98dad1d"
+                "reference": "a7b96415b22d85cee12ab730089f1d1b66bc191f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/080bdeb1d5243429164dc589b69426bae98dad1d",
-                "reference": "080bdeb1d5243429164dc589b69426bae98dad1d",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/a7b96415b22d85cee12ab730089f1d1b66bc191f",
+                "reference": "a7b96415b22d85cee12ab730089f1d1b66bc191f",
                 "shasum": ""
             },
             "require": {
@@ -870,9 +870,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.415.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.416.0"
             },
-            "time": "2025-10-05T01:02:15+00:00"
+            "time": "2025-10-13T01:08:26+00:00"
         },
         {
             "name": "google/auth",
@@ -1824,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "718595ae834ef5bba018e7bc31991c2c11862a61"
+                "reference": "d56c7ad5ff75dec36ad42377a9ab15f4106d1fed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/718595ae834ef5bba018e7bc31991c2c11862a61",
-                "reference": "718595ae834ef5bba018e7bc31991c2c11862a61",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/d56c7ad5ff75dec36ad42377a9ab15f4106d1fed",
+                "reference": "d56c7ad5ff75dec36ad42377a9ab15f4106d1fed",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
                 "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/main"
             },
-            "time": "2025-10-09T21:53:03+00:00"
+            "time": "2025-10-15T10:47:35+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3958,12 +3958,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "8294fbe48814e9e313f5af7adcd2ce3d49fcba84"
+                "reference": "c3da86291d89157fe2a9ba2401c4acf1a7c93eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/8294fbe48814e9e313f5af7adcd2ce3d49fcba84",
-                "reference": "8294fbe48814e9e313f5af7adcd2ce3d49fcba84",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c3da86291d89157fe2a9ba2401c4acf1a7c93eba",
+                "reference": "c3da86291d89157fe2a9ba2401c4acf1a7c93eba",
                 "shasum": ""
             },
             "require": {
@@ -4048,7 +4048,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-08T10:26:29+00:00"
+            "time": "2025-10-15T08:15:57+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4293,12 +4293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "8ef075a381c7e879e5432219201667cebf625c5d"
+                "reference": "0960bc2879ee31747b31a13ca4baa8e5f5212b9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/8ef075a381c7e879e5432219201667cebf625c5d",
-                "reference": "8ef075a381c7e879e5432219201667cebf625c5d",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/0960bc2879ee31747b31a13ca4baa8e5f5212b9a",
+                "reference": "0960bc2879ee31747b31a13ca4baa8e5f5212b9a",
                 "shasum": ""
             },
             "require": {
@@ -4367,7 +4367,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-10T05:53:19+00:00"
+            "time": "2025-10-14T10:51:45+00:00"
         },
         {
             "name": "symfony/mime",
