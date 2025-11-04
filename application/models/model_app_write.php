@@ -1830,13 +1830,19 @@ class model_app_write extends model_app
 
 		// --- STEP 1: Process newly uploaded temp images ---
 
+		$search=$this->temp_path . '/upload';
+
 		$max = 100;
-		while (strpos(' ' . $html, $this->temp_folder . '/upload') && $max-- > 0) {
-			$i1 = strpos($html, $this->temp_folder . '/upload');
+		while (strpos(' ' . $html, $search) && $max-- > 0) {
+
+			// looking for  <img style="aspect-ratio:4096/2304;" src="/cms_config-temp/upload/temp.jpg" width="4096" height="2304">
+
+			$i1 = strpos($html, $this->temp_path . '/upload');
 			$i2 = strpos($html, '"', $i1 + 10);
 
 			$uid = uniqid();
 			$source = $_SERVER['DOCUMENT_ROOT'] . substr($html, $i1, $i2 - $i1);
+			
 			$image_type = 'image';
 
 			$upload_result = $this->imageUpload($image_field, ['uid' => $uid], $uid, false, ['source' => $source], $image_type);
@@ -1950,12 +1956,14 @@ class model_app_write extends model_app
 			}
 		}
 
-		return [
+		$result=[
 			'html'   => $html,
 			'post'   => $new_media,
 			'put'    => $updated_media,
 			'delete' => $deleted_media
 		];
+		//print_r($result);exit();
+		return $result; 
 	}
 
 	/**

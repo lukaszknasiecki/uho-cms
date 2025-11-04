@@ -1079,7 +1079,8 @@ class model_app extends _uho_model
 
                     case "media":
 
-                        if ($v['media']['model']) {
+                        if ($v['media']['model'])
+                        {
                             $sch = $this->apporm->getJsonModelSchema($v['media']['model']);
 
                             $im = _uho_fx::array_filter($sch['fields'], 'type', 'image', ['first' => true]);

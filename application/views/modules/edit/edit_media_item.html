@@ -1,4 +1,4 @@
-<!-- media_item {{type}}-->
+<!-- media_item {{item.type}}-->
 {% set wide=false %}
 {% for i in field.captions %}
     {% if i.settings.wide %}{% set wide=true %}{% endif %}
@@ -50,16 +50,15 @@
     </video>
     {% elseif item.image and show_image %}        
         {% if field.settings.ratio is same as(true) %}
-        <img height="128" style="margin-bottom:8px" 
+            <img height="128" style="margin-bottom:8px" 
         {% else %}
-        <img width="{% if item.type=='panorama' %}256{% elseif item.type=='video' or item.type=='youtube' %}228{% elseif field.settings.ratio=='16:9' %}228{% else %}170{% endif %}" height="128" style="object-fit: cover;margin-bottom:8px" 
-        {% endif %}
+            <img width="{% if item.type=='panorama' %}256{% elseif item.type=='video' or item.type=='youtube' %}228{% elseif field.settings.ratio=='16:9' %}228{% else %}170{% endif %}" height="128" style="object-fit: cover;margin-bottom:8px" 
+        {% endif %}        
         src="{% if placeholder %}%image%{% else %}{% if item.image[field.layout.folder] %}{% if not zoom %}{% set zoom=item.image['original'] %}{% endif %}{{item.image[field.layout.folder]}}{% elseif thumbnail %}{{thumbnail}}{% else %}/serdelia_config/assets/{{field.layout.src_blank}}{% endif %}{% endif %}">
-        <br>
-    {% elseif zoom and show_zoom %}    
-        <img height="128" src="{{zoom}}">
-    {% else %}
-        <div style="width:170px;height:128px;background-color:white;font-size:36px;display: table-cell;vertical-align: middle;text-align:center;{% if label_small %}font-size:16px{% endif %}">{{label}}</div>
+        {% elseif zoom and show_zoom %}    
+            <img height="128" src="{{zoom}}">
+        {% else %}
+            <div style="width:170px;height:128px;background-color:white;font-size:36px;display: table-cell;vertical-align: middle;text-align:center;{% if label_small %}font-size:16px{% endif %}">{{label}}</div>
     {% endif %}
 
     <div style="float:right;text-align:right;position:absolute;top:0;right:0;padding-right:12px">

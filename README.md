@@ -2,6 +2,40 @@
 
 Easy to use CMS utilizing UHO-MVC framework, Bootstrap and Twig.
 
+## Install
+
+Unpack repository to any folder, i.e. /cms, run composer install
+and create config file sunship-cms.json in the root directory:
+
+{
+    "CMS_CONFIG_DEBUG":true,
+    "CMS_CONFIG_PREFIX":"cms",
+    "CMS_CONFIG_FOLDERS":"cms_config",
+    "CMS_CONFIG_LANG":"en"
+}
+
+Create config folder (i.e. /cms_config)
+with all neccessary informaction, including model schemes.
+
+Add environmental variables and hash values:
+
+DOMAIN=mysite.com
+
+SQL_HOST=mysql_host
+SQL_USER=mysq_user
+SQL_PASS=mysql_password
+SQL_BASE=mysql_dbname
+
+CLIENT_PASSWORD_SALT=xxx
+CLIENT_KEY1=xxxxxxxxxxxxxxxx
+CLIENT_KEY2=xxxxxxxxxxxxxxxx
+
+## Install
+
+Launch CMS and set admin password via GUI
+
+https://mysite.com/cms
+
 ## Available field types
 
 `boolean`
@@ -105,9 +139,14 @@ or set another model as a source
 
 source: { model:"", "search": ["field_to_be_searched"], "search_strict":false }
 
+If you want to get values not full objects from options, add
+
+"settings": { "output":"value" }
+
 For large models you can use search field instead of select dropdown:
 
 input="search"
+
 
 `string`
 
