@@ -1,9 +1,10 @@
-# Allow only .js and .css files
-<FilesMatch "\.(js|css)$">
-    Require all granted
-</FilesMatch>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# Deny everything else
-<FilesMatch ".*">
-    Require all denied
-</FilesMatch>
+    # Allow .js and .css files
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^.*\.(js|css)$ - [L]
+
+    # Deny everything else
+    RewriteRule ^ - [F,L]
+</IfModule>

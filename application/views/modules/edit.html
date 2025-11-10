@@ -93,8 +93,8 @@
           </label>
           {% endif %}
 
-          {% set size=6 %}
-          {% if field.settings.wide %}{% set size=12 %}{% endif %}
+          {% if field.settings.width %}{% set size=field.settings.width %}{% else %}{% set size=6 %}{% endif %}
+          {% if field.settings.wide and not field.settings.width %}{% set size=12 %}{% endif %}
           {% set sizes = { 'date': 2,'elements_double': 10 } %}
           {% if sizes[field.type] %}{% set size=sizes[field.type] %}{% endif %}
 

@@ -46,21 +46,28 @@
               <div class='card-body'>{% endif %}
 
                 {% for item in schema.fields %}
-                {% if not item.list_hidden and item.type!='order' %}
-                  {% if item.list.type=='badge' %}
-                    {% if not schema.layout.html %}
-                    {% include 'modules/page/subview_badge.html' with {'list':item.list,'value':record.values[item.field] }
-                    %}
-                  {% else %}
-                    {% set html=html|merge({(item.field):include ('modules/page/subview_badge.html',
-                    {'list':item.list,'value':record.values[item.field] })}) %}
-                  {% endif %}
+                {% if not item.list_hidden and item.type!='uid' and item.type!='order' %}
+                {% if item.list.type=='badge' %}
+                {% if not schema.layout.html %}
+                {% include 'modules/page/subview_badge.html' with {'list':item.list,'value':record.values[item.field] }
+                %}
+                {% else %}
+                {% set html=html|merge({(item.field):include ('modules/page/subview_badge.html',
+                {'list':item.list,'value':record.values[item.field] })}) %}
+                {% endif %}
                 {% else %}
                 {% if not schema.layout.html %}
-                {% if item.field=='label' and schema.layout.settings.cards %}<h6 class='card-title'>{% endif %}
+                {% if schema.layout.settings.cards and item.field==schema.layout.settings.card_title %}
+                  {% set card_title=true %}{% else %}{% set card_title=null %}{% endif %}
+                
+                {% if card_title %}
+                  <h6 class='card-title'>
+                {% endif %}
                   {% include 'modules/page/page_'~item.type~'.html' with
                   {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes } %}
-                  {% if item.field=='label' and schema.layout.settings.cards %}</h6>{% else %}<br>{% endif %}
+
+                  {% if card_title %}</h6>{% else %}<br>{% endif %}
+
                 {% elseif item.field %}
                 {% set html=html|merge({(item.field):include ('modules/page/page_'~item.type~'.html',
                 {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes })}) %}
@@ -73,7 +80,8 @@
                 {{ include(template_from_string(schema.layout.html)) }}
                 {% endif %}
 
-                {% if schema.layout.settings.cards %}</div>
+                {% if schema.layout.settings.cards %}
+              </div>
             </div>{% endif %}
 
           </a>

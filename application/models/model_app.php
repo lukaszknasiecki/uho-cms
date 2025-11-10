@@ -1157,6 +1157,7 @@ class model_app extends _uho_model
                         // filter options
                         if (isset($v['options']) && isset($v['filters'])) {
                             $option_filters = $v['filters'];
+                            
                             foreach ($option_filters as $kf => $vf) {
                                 $option_filters[$kf] = $this->getTwigFromHtml($vf, $original_record);
                                 if (empty($option_filters[$kf])) unset($option_filters[$kf]);
@@ -1236,9 +1237,10 @@ class model_app extends _uho_model
                     if (is_array($val))
                         $val = $val['values']['id'];
                     $toggle = $v['toggle_fields'];
-
+    
                     if (isset($toggle)) // && @isset($toggle[$val]))
                     {
+                        
                         $toggle_found = null;
                         foreach ($toggle as $kk => $vv)
                             if ($kk == $val)
@@ -1279,13 +1281,14 @@ class model_app extends _uho_model
 
                 $html = $this->removeTags($html, ['span', 'figcaption']);
 
-
                 $max = 100;
 
                 while ($max && strpos(' ' . $html, '<img src="' . $filename)) {
+                    
                     $max--;
                     $i1 = strpos($html, '<img src="' . $filename);
                     $i2 = strpos($html, '>', $i1);
+                    
                     $image = _uho_fx::array_filter($media, 'type', 'image', ['first' => true, 'keys' => true]);
 
                     if ($image !== false && $i2 > $i1) {
@@ -2328,6 +2331,7 @@ class model_app extends _uho_model
                 $label_value = '';
 
                 if ($v['options']) {
+                    
                     if ($val == '[not_null]') {
                         $filters[$v['field']] = ['operator' => '!=', 'value' => ''];
                         $label_value = $v['label'];
