@@ -1835,8 +1835,6 @@ class model_app_write extends model_app
 		$max = 100;
 		while (strpos(' ' . $html, $search) && $max-- > 0) {
 
-			// looking for  <img style="aspect-ratio:4096/2304;" src="/cms_config-temp/upload/temp.jpg" width="4096" height="2304">
-
 			$i1 = strpos($html, $this->temp_path . '/upload');
 			$i2 = strpos($html, '"', $i1 + 10);
 

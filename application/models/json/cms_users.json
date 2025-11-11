@@ -72,6 +72,7 @@
             "label": "Status",
             "edit": false,
             "type":"select",
+            "default":"confirmed",
             "options":
             [
                 {"value":"confirmed","label":"Confirmed"}

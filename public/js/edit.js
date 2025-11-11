@@ -705,7 +705,7 @@ Apps.Edit = function($, window)
         button.hide();
         
           $.ajax({
-            url: '/cms/api/cors_copy',
+            url: $('body').data('base-path')+'/api/cors_copy',
             global: false,
             type: "POST",
             dataType: "html",
@@ -716,12 +716,15 @@ Apps.Edit = function($, window)
               console.log('Image Copied to: '+field.data('temp'));
               button.show();
               button.parent().find('.spinner-border').hide();
-              field.find('img').attr('src','/cms_config-temp/'+field.data('temp'));
+              field.find('img').attr('src',$('body').data('base-path')+'_config-temp/'+field.data('temp'));
             }
           });
 
         return;
           
+      } else
+      {
+        
       }
 
       field.show();
@@ -729,7 +732,6 @@ Apps.Edit = function($, window)
       if (!$(this).data('wasInit'))
       {
         $('.serdelia-edit-imageCrop').data('wasInit',false);
-        console.log('[imageCrop.init]');
         $(this).data('wasInit',true);
         
         var data=$(this).data('crop_data');

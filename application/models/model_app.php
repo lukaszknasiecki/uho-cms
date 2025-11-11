@@ -2244,6 +2244,12 @@ class model_app extends _uho_model
                 $schema['fields'][$k]['edit'] = false;
 
             switch ($v['type']) {
+                case "image":
+                    if (isset($v['settings']['cors']))
+                        $schema['fields'][$k]['settings']['cors']=[
+                                    'original'=>uniqid().'.jpg'
+                                ];
+                    break;
                 case "html":
                     if (!isset($v['settings']))
                         $schema['fields'][$k]['settings'] = [];
