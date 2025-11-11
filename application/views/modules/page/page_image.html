@@ -2,7 +2,7 @@
 {% if not src %}{% set src=value.original %}{% endif %}
 {% if not src and field.settings.list.src_blank %}{% set src=field.settings.list.src_blank %}{% endif %}
 {% if field.settings.list.layout=='cover' %}
-<div style="width:{% if field.settings..list.width %}{{field.settings.list.width}}{% else %}{{image_sizes[0]}}{% endif %}px;height:{% if field.settings.list.height %}{{field.settings.list.height}}{% else %}{{image_sizes[1]}}{% endif %}px;background: url({{src}});background-repeat: no-repeat;background-size: cover;">&nbsp;</div>
+<div style="width:{% if field.settings.list.width %}{{field.settings.list.width}}{% else %}{{image_sizes[0]}}{% endif %}px;height:{% if field.settings.list.height %}{{field.settings.list.height}}{% else %}{{image_sizes[1]}}{% endif %}px;background: url({{src}});background-repeat: no-repeat;background-size: cover;">&nbsp;</div>
 {% else %}
 <div style="width:{% if field.settings.list.width %}{{field.settings.list.width}}{% else %}{{image_sizes[0]}}{% endif %}px;height:{% if field.settings.list.height %}{{field.settings.list.height}}{% else %}{{image_sizes[1]}}{% endif %}px;text-align:center;display: flex;align-items: center;{% if field.settings.list.background %}padding:10px;background:{{field.settings.list.background}}{% endif %}">
 <img src="{{src}}" style="max-width:100%;max-height:100%;text-align:center">
