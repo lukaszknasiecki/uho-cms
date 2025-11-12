@@ -1851,6 +1851,7 @@ class model_app_write extends model_app
 					'value' => [
 						'model'    => $parent_model,
 						'model_id' => '%record_id%',
+						'type'=>'image',
 						'uid'      => $uid,
 						'extension' => $upload_result['extension']
 					]
