@@ -1816,7 +1816,8 @@ class model_app_write extends model_app
 	private function htmlMediaUpdate($html, $parent_model, $media_model_name, $field): array
 	{
 		$uho_media_replacer = !empty($field['settings']['media_field']);
-		$uho_media_filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
+		//$uho_media_filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
+		$uho_media_filename = 'uho_media.png';
 
 		$new_media = [];     // New images to upload
 		$updated_media = []; // Existing media metadata to update

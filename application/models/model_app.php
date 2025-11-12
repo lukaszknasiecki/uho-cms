@@ -1272,7 +1272,8 @@ class model_app extends _uho_model
         foreach ($schema['fields'] as $k => $v)
             if ($v['type'] == 'html' && isset($v['settings']['media_field']) && (in_array($v['settings']['wysiwyg'], ['ckeditor', 'ckeditor5']))) {
                 $media = $record[$v['settings']['media_field']];
-                $filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
+                //$filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
+                $filename = 'uho_media.png';
 
                 $html = $record[$v['field']];
 
