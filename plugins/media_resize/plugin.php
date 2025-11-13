@@ -93,7 +93,7 @@ class serdelia_plugin_media_resize
       {
 
         $source = $this->parent->upload_path . $_POST['e_image'];
-        $destination = $field['folder'] . '/original/' . $field['filename'] . '.jpg'; //$_SERVER['DOCUMENT_ROOT'] . 
+        $destination = $field['folder'] . '/original/' . $field['filename'] . '.jpg';
 
         if (file_exists($source)) {
           $this->unlink($destination);
@@ -121,16 +121,18 @@ class serdelia_plugin_media_resize
           {
             $source = $field['folder'] . '/original/' . $field['filename'] . '.jpg';
             if ($this->parent->s3) $source = $this->parent->s3->getFilenameWithHost($source);
+              else $source=$_SERVER['DOCUMENT_ROOT'].$source;
           }
 
           $destination =  $this->root . $field['folder'] . '/' . $field['images'][$nr]['folder'] . '/' . $field['filename'] . '.jpg';
           $destination_path = $field['folder'] . '/' . $field['images'][$nr]['folder'] . '/' . $field['filename'] . '.jpg';
           if ($this->parent->s3) $destination = $this->parent->s3GetTempFilename();
+          
           $webp = @$field['settings']['webp'];
 
           $result = _uho_thumb::convert(
             $field['filename'],
-            $_SERVER['DOCUMENT_ROOT'] . $source,
+            $source,
             $destination,
             array(
               'width' => $field['images'][$nr]['width'],
