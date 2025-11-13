@@ -125,7 +125,7 @@ class serdelia_plugin_media_resize
 
           $destination =  $this->root . $field['folder'] . '/' . $field['images'][$nr]['folder'] . '/' . $field['filename'] . '.jpg';
           $destination_path = $field['folder'] . '/' . $field['images'][$nr]['folder'] . '/' . $field['filename'] . '.jpg';
-          if ($this->parent->s3) $destination = $this->s3GetTempFilename();
+          if ($this->parent->s3) $destination = $this->parent->s3GetTempFilename();
           $webp = @$field['settings']['webp'];
 
           $result = _uho_thumb::convert(
@@ -157,7 +157,7 @@ class serdelia_plugin_media_resize
 
             $destination_path = $dir . '/' . $field['filename'] . '.jpg';
             $destination = $this->root . $destination_path;
-            if ($this->parent->s3) $destination = $this->s3GetTempFilename();
+            if ($this->parent->s3) $destination = $this->parent->s3GetTempFilename();
 
             $result = _uho_thumb::convert(
                 $field['filename'],
@@ -217,11 +217,5 @@ class serdelia_plugin_media_resize
       }
     } else return copy($$source, $this->root . $dest);
   }
-  private function s3GetTempFilename($ext = null)
-  {
-    $f = $_SERVER['DOCUMENT_ROOT'] . '/serdelia/temp/' . uniqid();
-    $f = str_replace('//', '/', $f);
-    if ($ext) $f .= '.' . $ext;
-    return $f;
-  }
+  
 }

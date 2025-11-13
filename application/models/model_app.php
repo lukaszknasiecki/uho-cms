@@ -2778,9 +2778,9 @@ class model_app extends _uho_model
      * @param string|null $ext
      * @return string
      */
-    private function s3GetTempFilename(?string $ext = null): string
-    {
-        $file = $this->cms_folder . '/temp/' . uniqid();
+    public function s3GetTempFilename(?string $ext = null): string
+    {        
+        $file = $this->temp_folder . '/'.uniqid();
         if ($ext) $file .= '.' . $ext;
         return str_replace('//', '/', $file);
     }
