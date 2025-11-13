@@ -429,7 +429,7 @@ class model_app_write extends model_app
 					if ($data[$v['field'] . '_rescale'] == 'on') {
 						$filename = $data[$v['field']];
 						if (is_array($filename)) $filename = ''; // refresh plugin only
-						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);
+						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);						
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
 					}
 					// recompress
@@ -446,9 +446,7 @@ class model_app_write extends model_app
 						}
 					}
 
-
 					// image resize
-
 					foreach ($v['images'] as $k2 => $v2)
 						if ($data[$v['field'] . '_crop_data_' . $k2]) {
 							$crop = explode(',', $data[$v['field'] . '_crop_data_' . $k2]);
@@ -1176,6 +1174,7 @@ class model_app_write extends model_app
 
 		// --- Process each image size variant
 		if (empty($errors)) {
+
 			foreach ($field['images'] as $variant) {
 				if (!empty($params['folder']) && $variant['folder'] !== $params['folder']) continue;
 
@@ -1196,9 +1195,14 @@ class model_app_write extends model_app
 				$original = $source ?? $field['images'][0]['destination'];
 
 				// No resize — just copy original
-				if (empty($variant['width']) && empty($variant['height']) && !$rescale_only) {
+				if (empty($variant['width']) && empty($variant['height']) && !$rescale_only)
+				{
 					$this->backup_media_copy($source, $destination, $record);
 					if ($this->s3) $source_to_remove = $source;
+					continue;
+				}
+				if (empty($variant['width']) && empty($variant['height']) && $rescale_only)
+				{
 					continue;
 				}
 

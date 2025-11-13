@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-lg-6">
+	  <br><form method="POST">
+
+		{% if value.video.src %}		
+			<h4>{{translate.videoHeader}}</h4>
+			<p>
+			<video poster="{{value.video.poster.desktop}}" id="video" controls width="320" height="180" src="{{value.video.src}}"></video>
+			<br><input class="serdelia-edit-field" name="cover_from_video" id="cover_from_video" type="checkbox">
+				<label style="font-size:11px" for="cover_from_video">{{translate.videoSetCover}}</label>
+			<input name="position" id="video_position" type="hidden">
+			<hr>
+		</p>
+		{% endif %}
+		<h4>{{translate.videoCover}}</h4>
+		  {% for item in field.images %}
+		  {% if loop.index>1 %}
+			<div class="serdelia-edit-image-thumb">
+			  <img style="max-height:100px" src="{{value.image[item.folder]}}?{{"now"|date('H-i-s')}}">
+			  <div style="float:right;text-align:right;position:absolute;top:0;right:0;padding-right:5px">
+				<a href="{{value.image[item.folder]}}" type="button" target="_blank" class="mdi mdi-remove-red-eye serdelia-edit-imageUploadView" style="color:white;background-color:black"></a>
+				<span data-input="e_fake1_crop_data_{{loop.index0}}" data-ratio="{% if item.crop and item.height %}{{item.width/item.height}}{% endif %}" data-field="e_fake1" type="button" class="mdi mdi-crop serdelia-edit-imageUploadView serdelia-edit-imageCrop" style="color:white;background-color:black"></span>
+			  </div>
+			  <p class="serdelia-edit-image-thumb-on-off" data-field="e_fake1_img_{{loop.index0}}" style="margin-top:5px"><small>{{item.label}}</small>
+			  <input type="hidden" name="e_fake1_crop_data_{{loop.index0}}" id="e_fake1_crop_data_{{loop.index0}}" value="">
+			</div>
+		{% endif %}
+		{% endfor %}
+		<div data-ratio="" id="e_fake1_crop" style="display:none;margin-top:15px">
+			<img style="max-width:500px;max-height:500px" src="{{value.image['original']}}?{{"now"|date('H-i-s')}}">
+		</div>
+		<br>
+
+	  <div id="image_files" class="files" style="margin-bottom:10px"></div>
+	  <div class="serdelia-drag-upload" data-field="image">
+	  <span class="btn btn-success fileinput-button">
+		  <i class="glyphicon glyphicon-plus"></i> <span>{{translate.upload}}</span>
+		  <input class="fileupload" id="image" type="file" name="files[]">
+	  </span>
+	  <!-- The global progress bar -->
+	  <div id="image_progress" class="progress" style="display:none;margin-top:10px;;margin-bottom:0px">
+		  <div class="progress-bar progress-bar-success"></div>
+	  </div>
+	  </div>
+	  <!-- The container for the uploaded files -->
+	  <input id="image_filename" type="hidden" name="e_image" ><br><br>
+	  <button type="submit" name="submit" value="submit" class="btn btn btn-primary"><span class="mdi mdi-done"></span> {{translate.write}}</button>
+	  <button type="submit" name="submit_back" value="submit" class="btn btn btn-primary"><span class="mdi mdi-done-all"></span> {{translate.write_back}}</button> 
+	  <a href="{{url_back_string}}">
+	  <button type="button" class="btn btn-default"> {{translate.cancel}}</button></a>
+	</form>
+	</div>
+</div>

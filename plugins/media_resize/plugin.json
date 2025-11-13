@@ -1,0 +1,34 @@
+{
+    "pl":
+    {
+        "title": "Kadrowanie zdjęcia",
+        "description":"Zaznacz pola, które chcesz wypełnić.",
+        "description_paste":"Wklej Copy/Paste zawartość arkusza kalkulacyjnego zachowując odpowiednią kolejność zaznaczonych pól.",
+        "description_placeholder":"Wklej treść - jeden rekord w jednej linii...",
+        "skip_first_line":"Zignoruj pierwszy rząd",
+        "error_nothing_checked":"Zaznacz choć jedno pole importu",
+        "error_no_data":"Nie znaleziono żadnych danych",
+        "error_sql":"Błąd SQL",
+        "submit":"Uruchom import",
+        "added":"Dodano nowe rekordy: ",
+        "cancel":"Anuluj",
+        "write":"Zapisz zmiany",
+        "write_back":"Zapisz zmiany i wróć",
+        "back":"Powrót",
+        "upload":"Wczytaj nowy obrazek",
+        "videoSetCover":"Ustaw okładkę z wybranej klatki wideo",
+        "videoCover":"Okładka wideo",
+        "videoHeader":"Plik wideo"
+    },
+    "en":
+    {
+        "title": "Crop image",
+        "cancel":"Cancel",
+        "write":"Save",
+        "write_back":"Save and go back",
+        "upload":"Upload new image",
+        "videoSetCover":"Set Video cover from choosen frame",
+        "videoCover":"Video Cover",
+        "videoHeader":"Video File"
+    }    
+}
