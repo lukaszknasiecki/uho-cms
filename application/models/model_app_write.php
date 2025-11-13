@@ -1738,7 +1738,7 @@ class model_app_write extends model_app
 	 * @return string
 	 */
 
-	private function s3GetTempFilename($ext = null)
+	public function s3GetTempFilename(?string $ext = null): string
 	{
 		$f = $this->temp_folder . '/' . uniqid();
 		$f = str_replace('//', '/', $f);
