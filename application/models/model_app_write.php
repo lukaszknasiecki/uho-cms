@@ -520,7 +520,8 @@ class model_app_write extends model_app
 						else $video_uploaded = true;
 					}
 
-					if ($data[$v['field'] . '_cover'] == 'on' || $video_uploaded) {
+					if ($data[$v['field'] . '_cover'] == 'on' || $video_uploaded)
+					{
 						$position = floatval($data[$v['field'] . '_video']);
 						$cover_field = _uho_fx::array_filter($schema['fields'], 'field', $v['field_cover'], ['first' => true]);
 						if ($cover_field) $r = $this->videoCover($v, $cover_field, $data, $position);
