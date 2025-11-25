@@ -60,6 +60,25 @@ class model_app_edit extends model_app
 
 		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);
 
+		// Update data with Helper Models
+
+		if (isset($schema['helper_models']))
+		{
+			/*
+			foreach ($schema['helper_models'] as $k=>$v)
+			{
+				if ($params)
+				foreach ($params as $kk=>$vv)
+				if (is_string($v['record']))
+					$v['record']=str_replace('%'.$kk.'%', $vv, $v['record']);
+
+				$schema['helper_models'][$k]=$this->apporm->getJsonModel($v['model'], ['id'=>$v['record']],true);
+			}*/
+			$replace=$record;
+			$replace['helper_models']=$schema['helper_models'];
+			$schema['label']['edit'] = $this->getTwigFromHtml($schema['label']['edit'], $replace);
+		}
+
 		// Execute "on_load" plugins if configured
 
 		$before = _uho_fx::array_filter(@$schema['buttons_edit'], 'on_load', 1);

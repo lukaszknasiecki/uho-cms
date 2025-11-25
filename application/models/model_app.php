@@ -51,7 +51,7 @@ class model_app extends _uho_model
      */
     public $cfg_path;
     public $cfg_folder;
-    public array $plugins_cfg=[];
+    public array $plugins_cfg = [];
     /**
      * _uho_s3 instance
      */
@@ -209,11 +209,10 @@ class model_app extends _uho_model
 
         //  $age=$this->s3->getCacheFileAge();
 
-        if (!$this->s3->checkCacheFile())
-        {
+        if (!$this->s3->checkCacheFile()) {
             $this->s3->buildCache();
         }
-        
+
         $this->apporm->setUhoS3($this->s3);
         $this->orm->setUhoS3($this->s3);
     }
@@ -469,7 +468,7 @@ class model_app extends _uho_model
 
     public function setPluginsCfg($cfg)
     {
-        $this->plugins_cfg=$cfg;
+        $this->plugins_cfg = $cfg;
     }
 
     public function getPluginsCfg()
@@ -477,7 +476,7 @@ class model_app extends _uho_model
         return $this->plugins_cfg;
     }
 
-    
+
 
     /**
      * Validates password format
@@ -710,7 +709,7 @@ class model_app extends _uho_model
 
     public function getSchema($model, $separate = true, $params = null, $model_update = null)
     {
-        
+
         if ($model_update) {
             $schema = $this->apporm->getJsonModelSchema([$model, $model_update], false, $params);
         } else
@@ -763,11 +762,9 @@ class model_app extends _uho_model
 
         if ($separate) {
 
-            foreach ($schema['fields'] as $k => $v)
-            {
+            foreach ($schema['fields'] as $k => $v) {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['langs'] as $k2 => $v2)
-                    {
+                    foreach ($schema['langs'] as $k2 => $v2) {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
@@ -778,7 +775,7 @@ class model_app extends _uho_model
                             unset($v['help']);
                             unset($v['hr']);
                         }
-                        if ($k2>0 && isset($v['header'])) unset($v['header']);
+                        if ($k2 > 0 && isset($v['header'])) unset($v['header']);
                         $f[] = $v;
                     }
                 else {
@@ -834,9 +831,25 @@ class model_app extends _uho_model
                     break;
             }
 
-        if (isset($schema['label']['page']))
-            $schema['label']['page'] = $this->fillPattern($schema['label']['page'], $params);
+        // helper models
+        if (isset($schema['helper_models'])) {
+            foreach ($schema['helper_models'] as $k => $v) {
+                if (isset($params['numbers']))
+                    foreach ($params['numbers'] as $kk => $vv)
+                        $v['record'] = str_replace('%' . $kk . '%', $vv, $v['record']);
+                $schema['helper_models'][$k] = $this->apporm->getJsonModel($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
+            }
+        }
 
+        if ($schema['helper_models']) {
+            if (!isset($params['twig'])) $params['twig'] = [];
+            $params['twig']['helper_models'] = $schema['helper_models'];
+        }
+
+        if (isset($schema['label']['page']))
+        {
+            $schema['label']['page'] = $this->fillPattern($schema['label']['page'], $params);
+        }
         return $schema;
     }
 
@@ -937,7 +950,7 @@ class model_app extends _uho_model
 
                 /*
                     Update schema by type
-                */                    
+                */
 
                 switch ($v['type']) {
                     case "image":
@@ -1079,8 +1092,7 @@ class model_app extends _uho_model
 
                     case "media":
 
-                        if ($v['media']['model'])
-                        {
+                        if ($v['media']['model']) {
                             $sch = $this->apporm->getJsonModelSchema($v['media']['model']);
 
                             $im = _uho_fx::array_filter($sch['fields'], 'type', 'image', ['first' => true]);
@@ -1157,7 +1169,7 @@ class model_app extends _uho_model
                         // filter options
                         if (isset($v['options']) && isset($v['filters'])) {
                             $option_filters = $v['filters'];
-                            
+
                             foreach ($option_filters as $kf => $vf) {
                                 $option_filters[$kf] = $this->getTwigFromHtml($vf, $original_record);
                                 if (empty($option_filters[$kf])) unset($option_filters[$kf]);
@@ -1172,21 +1184,19 @@ class model_app extends _uho_model
                         }
 
                         // add null
-                        if (isset($v['source']['null']) || isset($v['null']))
-                        {
+                        if (isset($v['source']['null']) || isset($v['null'])) {
                             if (!$schema['fields'][$k]['options'])
                                 $schema['fields'][$k]['options'] = [];
                             array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
-                        }                        
-                        
+                        }
+
 
                         // add default
-                        if ($is_new && $v['default'])
-                        {
-                            
-                            $v['default'] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params,'params'=>['cms_user'=>1]]);                            
-                            $v['default'] = $this->getTwigFromHtml($v['default'], ['params' => ['cms_user'=>$this->getUser()['id']]]);
-                            
+                        if ($is_new && $v['default']) {
+
+                            $v['default'] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params, 'params' => ['cms_user' => 1]]);
+                            $v['default'] = $this->getTwigFromHtml($v['default'], ['params' => ['cms_user' => $this->getUser()['id']]]);
+
                             $record[$v['field']] = $v['default'];
                         }
 
@@ -1237,10 +1247,10 @@ class model_app extends _uho_model
                     if (is_array($val))
                         $val = $val['values']['id'];
                     $toggle = $v['toggle_fields'];
-    
+
                     if (isset($toggle)) // && @isset($toggle[$val]))
                     {
-                        
+
                         $toggle_found = null;
                         foreach ($toggle as $kk => $vv)
                             if ($kk == $val)
@@ -1285,11 +1295,11 @@ class model_app extends _uho_model
                 $max = 100;
 
                 while ($max && strpos(' ' . $html, '<img src="' . $filename)) {
-                    
+
                     $max--;
                     $i1 = strpos($html, '<img src="' . $filename);
                     $i2 = strpos($html, '>', $i1);
-                    
+
                     $image = _uho_fx::array_filter($media, 'type', 'image', ['first' => true, 'keys' => true]);
 
                     if ($image !== false && $i2 > $i1) {
@@ -1417,7 +1427,7 @@ class model_app extends _uho_model
                     }
                 }
 
-            
+
         return $buttons;
     }
 
@@ -1559,7 +1569,7 @@ class model_app extends _uho_model
                 else
                     $tt[] = $v;
             }
-        
+
         return $tt;
     }
 
@@ -1637,21 +1647,21 @@ class model_app extends _uho_model
 
         if ($this->cache_folders) {
             foreach ($this->cache_folders as $k => $v) {
-                if (substr($v, 0, 4) == 'http')
-                {
-                    $file_contents=_uho_fx::fileCurl($v);
-                    if (is_string($file_contents)) $r = @json_decode($file_contents, true); else $r=null;
+                if (substr($v, 0, 4) == 'http') {
+                    $file_contents = _uho_fx::fileCurl($v);
+                    if (is_string($file_contents)) $r = @json_decode($file_contents, true);
+                    else $r = null;
 
-                    if (!$r || !$r['result'])
-                    {
-                        $file_contents=_uho_fx::fileCurl(str_replace('https', 'http', $v));
-                        if (is_string($file_contents)) $r = @json_decode($file_contents, true); else $r=null;
+                    if (!$r || !$r['result']) {
+                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v));
+                        if (is_string($file_contents)) $r = @json_decode($file_contents, true);
+                        else $r = null;
                     }
 
-                    if (!$r || !$r['result'])
-                    {
-                        $file_contents=file_get_contents($v, false, stream_context_create($arrContextOptions));
-                        if (is_string($file_contents)) $r = @json_decode($file_contents, true); else $r=null;
+                    if (!$r || !$r['result']) {
+                        $file_contents = file_get_contents($v, false, stream_context_create($arrContextOptions));
+                        if (is_string($file_contents)) $r = @json_decode($file_contents, true);
+                        else $r = null;
                     }
 
                     if (!$r || !$r['result'])
@@ -2195,8 +2205,7 @@ class model_app extends _uho_model
         $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
 
         // changing schema according to record values ------------------------
-        if ($schema['page_update'])
-        {
+        if ($schema['page_update']) {
             if (!is_array($schema['page_update']))
                 $schema['page_update'] = ['file' => $schema['page_update']];
             // fields which cause update
@@ -2237,8 +2246,7 @@ class model_app extends _uho_model
 
         // updating on_create defaults
 
-        foreach ($schema['fields'] as $k => $v)
-        {
+        foreach ($schema['fields'] as $k => $v) {
             if ($create_defaults[$v['field']])
                 $schema['fields'][$k]['default'] = $create_defaults[$v['field']];
             if (isset($v['edit']) && $v['edit'] === 'add' && $id)
@@ -2247,9 +2255,9 @@ class model_app extends _uho_model
             switch ($v['type']) {
                 case "image":
                     if (isset($v['settings']['cors']))
-                        $schema['fields'][$k]['settings']['cors']=[
-                                    'original'=>uniqid().'.jpg'
-                                ];
+                        $schema['fields'][$k]['settings']['cors'] = [
+                            'original' => uniqid() . '.jpg'
+                        ];
                     break;
                 case "html":
                     if (!isset($v['settings']))
@@ -2338,7 +2346,7 @@ class model_app extends _uho_model
                 $label_value = '';
 
                 if ($v['options']) {
-                    
+
                     if ($val == '[not_null]') {
                         $filters[$v['field']] = ['operator' => '!=', 'value' => ''];
                         $label_value = $v['label'];
@@ -2779,8 +2787,8 @@ class model_app extends _uho_model
      * @return string
      */
     public function s3GetTempFilename(?string $ext = null): string
-    {        
-        $file = $this->temp_folder . '/'.uniqid();
+    {
+        $file = $this->temp_folder . '/' . uniqid();
         if ($ext) $file .= '.' . $ext;
         return str_replace('//', '/', $file);
     }
@@ -2896,9 +2904,8 @@ class model_app extends _uho_model
 
     public function createSchemas()
     {
-        if (empty($_SESSION['schemas_checked'])) $_SESSION['schemas_checked']=0;
-        if ($_SESSION['schemas_checked']<3)
-        {
+        if (empty($_SESSION['schemas_checked'])) $_SESSION['schemas_checked'] = 0;
+        if ($_SESSION['schemas_checked'] < 3) {
             $tables = [
                 'cms_users',
                 'cms_users_logs',
@@ -2919,42 +2926,37 @@ class model_app extends _uho_model
 
     public function setLogoutTime($time)
     {
-        $this->logoutTime=$time;
+        $this->logoutTime = $time;
     }
     public function setActivityTime($time)
     {
-        $this->activityTime=$time;
+        $this->activityTime = $time;
     }
 
     public function checkLogoutTime()
     {
         if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return true;
-        $time=intval((time()-$_SESSION['serdelia_login_time'])/60);
-        if ($time<$this->logoutTime) return true;
-        else
-        {
-            $_SESSION['serdelia_login_time']=null;
+        $time = intval((time() - $_SESSION['serdelia_login_time']) / 60);
+        if ($time < $this->logoutTime) return true;
+        else {
+            $_SESSION['serdelia_login_time'] = null;
             return false;
         }
     }
 
     public function checkActivityTime()
     {
-        if (empty($this->activityTime) || empty($_SESSION['serdelia_activity_time']))
-        {
-            $_SESSION['serdelia_activity_time']= time();
+        if (empty($this->activityTime) || empty($_SESSION['serdelia_activity_time'])) {
+            $_SESSION['serdelia_activity_time'] = time();
             return true;
         }
 
-        $time=(time()-$_SESSION['serdelia_activity_time'])/60;
-        if ($time<$this->activityTime)
-        {
-            $_SESSION['serdelia_activity_time']= time();
+        $time = (time() - $_SESSION['serdelia_activity_time']) / 60;
+        if ($time < $this->activityTime) {
+            $_SESSION['serdelia_activity_time'] = time();
             return true;
-        }
-        else
-        {
-            $_SESSION['serdelia_activity_time']=null;
+        } else {
+            $_SESSION['serdelia_activity_time'] = null;
             return false;
         }
     }
@@ -2962,10 +2964,10 @@ class model_app extends _uho_model
     public function getLeftLogoutTime($max_time_min)
     {
         if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return null;
-        $time_passed_seconds=intval( (time()-$_SESSION['serdelia_login_time']));
-        $time_passed_min=1+intval($time_passed_seconds/60);
-        if ($time_passed_min<$max_time_min) return $max_time_min-$time_passed_min;
-            else return 0;
+        $time_passed_seconds = intval((time() - $_SESSION['serdelia_login_time']));
+        $time_passed_min = 1 + intval($time_passed_seconds / 60);
+        if ($time_passed_min < $max_time_min) return $max_time_min - $time_passed_min;
+        else return 0;
     }
 
 

@@ -78,7 +78,12 @@ class cms_sunship
             mkdir($root . $cfg_project['folder_temp']);
             mkdir($root . $cfg_project['folder_temp'] . '/upload');
             mkdir($root . $cfg_project['folder_temp'] . '/upload/thumbnail');
-            $htaccess = 'Deny from all';
+            $htaccess = '<FilesMatch ".*">
+    Require all denied
+</FilesMatch>
+<FilesMatch "\.(png|jpe?g|gif|js|css|webp)$">
+    Require all granted
+</FilesMatch>';
             /*
             $htaccess = 'ForceType application/octet-stream
             Header set Content-Disposition attachment
