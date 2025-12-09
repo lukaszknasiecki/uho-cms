@@ -13,7 +13,7 @@
     </span>
     {% if value.src %}
     <span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_remove" id="{{field.cms_field}}_remove" type="checkbox"> <label for="{{field.cms_field}}_remove" style="font-size:11px">{{translate.videoRemove}}</small></span>
-    {% if field.field_cover %}<span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_cover" id="{{field.cms_field}}_cover" type="checkbox"> <label style="font-size:11px" for="{{field.cms_field}}_cover">{{translate.videoSetCover}}</label></span>{% endif %}
+    {% if field.settings.field_cover %}<span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_cover" id="{{field.cms_field}}_cover" type="checkbox"> <label style="font-size:11px" for="{{field.cms_field}}_cover">{{translate.videoSetCover}}</label></span>{% endif %}
     {% endif %}
     {% if value.poster %}<a href="{{value.poster}}" class="btn" target="_blank" style="padding-left:10px;font-size:11px">{{translate.videoCover}}</a>{% endif %}
     <br>

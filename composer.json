@@ -14,7 +14,7 @@
         "php": ">=8.2",
         "twig/twig": "^3.3",
         "james-heinrich/phpthumb": "^1.7.23",
-        "lukaszknasiecki/uho-mvc": "*",
+        "lukaszknasiecki/uho-mvc": "^0.0.3",
         "james-heinrich/getid3": "2.0.x-dev",
         "vimeo/vimeo-api": "dev-master"
     },

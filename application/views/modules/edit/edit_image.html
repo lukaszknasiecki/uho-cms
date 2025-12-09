@@ -56,7 +56,7 @@
 <div id="{{field.cms_field}}_checkbox_containter" style="display:none;padding-bottom:10px;position:relative">
 	<div style="display:inline-block;padding-right:5px;width:100px;"><input type="checkbox" name="{{field.cms_field}}_folder_original" checked> Oryginalne</div><div style="display:inline-block;padding-right:5px;width:100px;"><input type="checkbox" name="{{field.cms_field}}_folder_thumb" checked> Desktop</div>
 </div>
-{% if not new and not field.disabled and field.edit is not same as false %}
+{% if not new and not field.disabled and field.cms.edit is not same as false %}
 <span class="btn btn-default serdelia-edit-show-on-demand" data-show='["#{{field.field}}_drag_upload",".serdelia-edit-image-thumb-{{field.field}}"]'>
         <i class="mdi mdi-crop pull-left"></i> <span>{{translate.showOptions}}</span>
 </span>

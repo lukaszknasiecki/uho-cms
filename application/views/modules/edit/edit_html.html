@@ -1,2 +1,2 @@
 {% set class=field.settings.wysiwyg %}
-<textarea type="text" name="{{field.cms_field}}" class="{{class}}" {% if field.settings.style %}data-style="{{field.settings.style}}"{% endif %} {% if field.settings.tall %}data-height="calc(100vh - 300px)"{% endif %} id="{{field.cms_field}}" {% if field.required %}required{% endif %}{% if field.on_demand %}readonly{% endif %}>{{value|raw}}</textarea>
+<textarea type="text" name="{{field.cms_field}}" class="{{class}}" {% if field.settings.style %}data-style="{{field.settings.style}}"{% endif %} {% if field.settings.tall %}data-height="calc(100vh - 300px)"{% endif %} id="{{field.cms_field}}" {% if field.cms.required %}required{% endif %}{% if field.cms.on_demand %}readonly{% endif %}>{{value|raw}}</textarea>

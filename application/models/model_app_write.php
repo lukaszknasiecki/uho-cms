@@ -1,7 +1,6 @@
 <?php
 
 use Vimeo\Vimeo;
-use JamesHeinrich\GetID3;
 use Huncwot\UhoFramework\_uho_fx;
 use Huncwot\UhoFramework\_uho_thumb;
 
@@ -165,6 +164,7 @@ class model_app_write extends model_app
 		// schema update
 
 		$schema = $this->getSchema($model, true, ['numbers' => $params]);
+		$schema = $this->getSchemaDepreceated($schema);
 
 		if ($schema['page_update']) {
 			$schema = $this->updateSchemaSources($schema);
@@ -203,8 +203,8 @@ class model_app_write extends model_app
 			
 		// value updates
 		foreach ($schema['fields'] as $k => $v) {
-			if ($v['auto'] && $v['type'] != 'file' && (!@$v['auto']['on_null'] || !$data[$v['field']])) {
-
+			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']]))
+			{
 				$data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
 			}
 
@@ -473,11 +473,10 @@ class model_app_write extends model_app
 
 					$source = $data[$v['field']];
 
-
 					if ($data['file'] && isset($data['filename_original']))
 						$data['filename_original'] = $data['file'];
 
-					if ($v['extension']) $extension = $v['extension'];
+					if (!empty($v['settings']['extension'])) $extension = $v['settings']['extension'];
 					else
 							if ($data['extension']) $extension = $data['extension'];
 					elseif ($source) {
@@ -487,8 +486,8 @@ class model_app_write extends model_app
 					if (!empty($v['settings']['size'])) $size = $v['settings']['size'];
 					else $size = '';
 
-					if ($extension && $v['extension_field'])
-						$data[$v['extension_field']] = $extension;
+					if ($extension && !empty($v['settings']['extension_field']))
+						$data[$v['settings']['extension_field']] = $extension;
 
 					if ($data[$v['field'] . '_remove'] == 'on') {
 						$r = $this->fileRemove($v, $data, null, true);
@@ -496,8 +495,8 @@ class model_app_write extends model_app
 						$r = $this->fileUpload($v, $data, $data[$v['field']], $extension);
 						if ($size) $data[$size] = $r['size'];
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
-						elseif ($v['auto']) {
-							foreach ($v['auto'] as $k2 => $v2) {
+						elseif ($v['cms']['auto']) {
+							foreach ($v['cms']['auto'] as $k2 => $v2) {
 								$r0 = $this->getFileAuto($v2['type'], $r['file']);
 								if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
 							}
@@ -523,13 +522,19 @@ class model_app_write extends model_app
 					if ($data[$v['field'] . '_cover'] == 'on' || $video_uploaded)
 					{
 						$position = floatval($data[$v['field'] . '_video']);
-						$cover_field = _uho_fx::array_filter($schema['fields'], 'field', $v['field_cover'], ['first' => true]);
-						if ($cover_field) $r = $this->videoCover($v, $cover_field, $data, $position);
+						$cover_field = !empty($v['settings']['field_cover']) ? $v['settings']['field_cover'] : null;
+						if ($cover_field) $cover_field=_uho_fx::array_filter($schema['fields'],'field',$cover_field,['first'=>true]);
+						if ($cover_field)
+						{
+							$r = $this->videoCover($v, $cover_field, $data, $position);
+						}
 					}
 
 					break;
 
-				// --------------------------------------------------------
+				/*
+					media type
+				*/
 
 				case "media":
 
@@ -575,15 +580,15 @@ class model_app_write extends model_app
 							} else
 							if ($image_type == 'audio') {
 								$im = $image_field;
-								if ($im['folder_audio']) $im['folder'] = $im['folder_audio'];
-								if (@$audio_field['folder']) $im['folder'] = $audio_field['folder'];
+								if ($im['settings']['folder_audio']) $im['settings']['folder'] = $im['settings']['folder_audio'];
+								if (@$audio_field['settings']['folder']) $im['settings']['folder'] = $audio_field['settings']['folder'];
 								$r = $this->fileUpload($im, ['uid' => $uid], $source);
 								$new[$v2] = ['uid' => $uid, 'filename_original' => $r['filename']];
 							} else
 							if ($image_type == 'video') {
 								$im = $image_field;
-								if ($im['folder_video']) $im['folder'] = $im['folder_video'];
-								if (@$video_field['folder']) $im['folder'] = $video_field['folder'];
+								if ($im['settings']['folder_video']) $im['settings']['folder'] = $im['settings']['folder_video'];
+								if (@$video_field['settings']['folder']) $im['settings']['folder'] = $video_field['settings']['folder'];
 								$r = $this->fileUpload($im, ['uid' => $uid], $source);
 								$new[$v2] = ['uid' => $uid, 'filename_original' => $r['filename']];
 								$this->videoCover($video_field, $image_field, $new[$v2], 0);
@@ -826,7 +831,7 @@ class model_app_write extends model_app
 			$data = $this->apporm->getJsonModel($model, ['id' => $id], true, null, null, ['additionalParams' => $params]);
 			$new = [];
 			foreach ($schema['fields'] as $k => $v) {
-				if ($v['auto'] && (!@$v['auto']['on_null'] || !$data[$v['field']])) {
+				if ($v['cms']['auto'] && (!@$v['cms']['auto']['on_null'] || !$data[$v['field']])) {
 					$auto = $this->updateAutoValue($v, $schema, $data, $params);
 					if ($auto) $new[$v['field']] = $auto;
 				}
@@ -903,19 +908,19 @@ class model_app_write extends model_app
 	private function updateAutoValue(array $field, array $schema, array $data, array $params)
 	{
 		// Simple case: direct auto-variable reference
-		if (is_string($field['auto'])) {
-			return $this->getAutoVariable($field['auto']);
+		if (is_string($field['cms']['auto'])) {
+			return $this->getAutoVariable($field['cms']['auto']);
 		}
 
 		// Pattern-based auto value
-		$value = $field['auto']['pattern'] ?? null;
+		$value = $field['cms']['auto']['pattern'] ?? null;
 		if (!$value) {
 			return null;
 		}
 
 		// Ensure type array is set
-		if (!isset($field['auto']['type'])) {
-			$field['auto']['type'] = isset($field['auto']['url']) ? ['translit', 'url'] : [];
+		if (!isset($field['cms']['auto']['type'])) {
+			$field['cms']['auto']['type'] = isset($field['cms']['auto']['url']) ? ['translit', 'url'] : [];
 		}
 
 		// Sanitize input values in $data
@@ -933,12 +938,12 @@ class model_app_write extends model_app
 		$value = $this->getTwigFromHtml($value, $data);
 
 		// Transliterate value if needed
-		if (in_array('translit', $field['auto']['type'])) {
+		if (in_array('translit', $field['cms']['auto']['type'])) {
 			$value = _uho_fx::removeLocalChars($value, true);
 		}
 
 		// Convert to URL-friendly format if needed
-		if (in_array('url', $field['auto']['type'])) {
+		if (in_array('url', $field['cms']['auto']['type'])) {
 			$value = preg_replace('/\s+/', '-', $value);                  // Replace spaces with hyphens
 			$value = preg_replace('/[^a-zA-Z0-9\-]/', '', $value);        // Remove non-URL-safe characters
 			$value = strtolower(str_replace('_', '-', $value));           // Lowercase and replace underscores
@@ -946,7 +951,7 @@ class model_app_write extends model_app
 		}
 
 		// Enforce max length for URL slugs (60 chars max)
-		if (in_array('url', $field['auto']['type']) && strlen($value) > 60) {
+		if (in_array('url', $field['cms']['auto']['type']) && strlen($value) > 60) {
 			$parts = explode('-', $value);
 			while (strlen(implode('-', $parts)) > 60) {
 				array_pop($parts);
@@ -955,7 +960,7 @@ class model_app_write extends model_app
 		}
 
 		// Enforce uniqueness if required
-		if (!empty($field['auto']['unique']) && $value !== '') {
+		if (!empty($field['cms']['auto']['unique']) && $value !== '') {
 			$i = 0;
 			$exists = false;
 			$original = $value;
@@ -1115,7 +1120,7 @@ class model_app_write extends model_app
 		}
 
 		// Prepare destination info
-		$dir = rtrim(root_doc, '/') . $field['folder'] . '/';
+		$dir = rtrim(root_doc, '/') . $field['settings']['folder'] . '/';
 		$dest = $this->updateImageDest($field, $data, $filename);
 		$field['images'] = $dest['images'];
 		$extension = $dest['extension'];
@@ -1209,7 +1214,7 @@ class model_app_write extends model_app
 
 				// Prepare conversion options
 				if ($extension !== 'jpg') $variant['output'] = $extension;
-				if (!empty($field['mask'])) $variant['mask'] = $field['mask'];
+				if (!empty($field['settings']['mask'])) $variant['mask'] = $field['settings']['mask'];
 				if (!empty($variant['crop'])) {
 					$variant['cut'] = $variant['crop'];
 					unset($variant['crop']);
@@ -1330,19 +1335,19 @@ class model_app_write extends model_app
 	{
 		// Resolve video folder path (local or S3)
 		$folder_video = $this->s3
-			? $this->s3->getFilenameWithHost($video_field['folder'])
-			: rtrim(root_doc, '/') . $video_field['folder'];
+			? $this->s3->getFilenameWithHost($video_field['settings']['folder'])
+			: rtrim(root_doc, '/') . $video_field['settings']['folder'];
 
 		// Resolve image folder path
-		$folder_image = rtrim(root_doc, '/') . $image_field['folder'];
+		$folder_image = rtrim(root_doc, '/') . $image_field['settings']['folder'];
 
 		// Apply templating to paths
 		$folder_video = $this->getTwigFromHtml($folder_video, $data);
 		$folder_image = $this->getTwigFromHtml($folder_image, $data);
 
 		// Build video filename
-		if (!empty($video_field['filename'])) {
-			$filename = str_replace('%uid%', $data['uid'], $video_field['filename']);
+		if (!empty($video_field['settings']['filename'])) {
+			$filename = str_replace('%uid%', $data['uid'], $video_field['settings']['filename']);
 			$filename = $this->getTwigFromHtml($filename, $data);
 		} else {
 			$filename = $data['uid'] . '.mp4';
@@ -1356,8 +1361,8 @@ class model_app_write extends model_app
 		$video = $folder_video . '/' . $filename;
 
 		// Build default image filename
-		if (!empty($image_field['filename'])) {
-			$image_filename = str_replace('%uid%', $data['uid'], $image_field['filename'] . '.jpg');
+		if (!empty($image_field['settings']['filename'])) {
+			$image_filename = str_replace('%uid%', $data['uid'], $image_field['settings']['filename'] . '.jpg');
 			$image_filename = $this->getTwigFromHtml($image_filename, $data);
 		} else {
 			$image_filename = $data['uid'] . '.jpg';
@@ -1425,7 +1430,7 @@ class model_app_write extends model_app
 		$errors = [];
 
 		// Resolve folder and source path
-		$folder = rtrim(root_doc, '/') . $field['folder'] . '/';
+		$folder = rtrim(root_doc, '/') . $field['settings']['folder'] . '/';
 		$source = $this->upload_path . $filename;
 
 		// Detect extension from source filename if not provided
@@ -1436,11 +1441,11 @@ class model_app_write extends model_app
 		}
 
 		// --- Generate destination filename ---
-		if (!empty($field['filename'])) {
-			$dest_filename = $field['filename'];
+		if (!empty($field['settings']['filename'])) {
+			$dest_filename = $field['settings']['filename'];
 
 			// Handle original filename collisions (if pattern includes %filename_original%)
-			if (str_contains($field['filename'], '%filename_original%')) {
+			if (str_contains($field['settings']['filename'], '%filename_original%')) {
 				$nr = 0;
 				$originalFilename = $filename;
 				$testPath = str_replace('%filename_original%', $filename, $dest_filename);
@@ -1464,6 +1469,7 @@ class model_app_write extends model_app
 		} else {
 			$dest_filename = $data['uid'] . '.' . $extension;
 		}
+
 
 		// Resolve folder and filename using template logic (if dynamic)
 		$folder = $this->getTwigFromHtml($folder, $data);
@@ -1527,18 +1533,18 @@ class model_app_write extends model_app
 		// Determine the file extension
 		if ($ext) {
 			// Provided externally
-		} elseif (!empty($field['extension_field']) && !empty($data[$field['extension_field']])) {
-			$ext = $data[$field['extension_field']];
-		} elseif (!empty($field['extension'])) {
-			$ext = $field['extension'];
+		} elseif (!empty($field['settings']['extension_field']) && !empty($data[$field['settings']['extension_field']])) {
+			$ext = $data[$field['settings']['extension_field']];
+		} elseif (!empty($field['settings']['extension'])) {
+			$ext = $field['settings']['extension'];
 		} elseif (!empty($data['extension'])) {
 			$ext = $data['extension'];
 		}
 
 		// Build destination filename
 		if ($ext) {
-			if (!empty($field['filename'])) {
-				$destinationFilename = str_replace('%uid%', $data['uid'], $field['filename']);
+			if (!empty($field['settings']['filename'])) {
+				$destinationFilename = str_replace('%uid%', $data['uid'], $field['settings']['filename']);
 				$destinationFilename = $this->getTwigFromHtml($destinationFilename, $data);
 
 				// Append extension if not templated
@@ -1550,10 +1556,10 @@ class model_app_write extends model_app
 			}
 		} else {
 			// Extension-less fallback path
-			if (empty($field['filename'])) {
-				$destinationFilename = $data['uid'] . '.' . ($field['extension'] ?? '');
+			if (empty($field['settings']['filename'])) {
+				$destinationFilename = $data['uid'] . '.' . ($field['settings']['extension'] ?? '');
 			} else {
-				$destinationFilename = $field['filename'];
+				$destinationFilename = $field['settings']['filename'];
 				if (!empty($data['uid'])) {
 					$destinationFilename = str_replace('%uid%', $data['uid'], $destinationFilename);
 				}
@@ -1565,7 +1571,7 @@ class model_app_write extends model_app
 		}
 
 		// Final file path
-		$folder = rtrim(root_doc, '/') . $field['folder'];
+		$folder = rtrim(root_doc, '/') . $field['settings']['folder'];
 		$file = $folder . '/' . $destinationFilename;
 		$file = $this->getTwigFromHtml($file, $data);
 
@@ -2055,22 +2061,22 @@ class model_app_write extends model_app
 	private function updateImageDest(array $field, array $data, $filename = '', bool $s3 = false): array
 	{
 		// Resolve dynamic folder path using templating and data
-		if (!empty($field['folder'])) {
-			$field['folder'] = $this->fillPattern($field['folder'], ['keys' => $data]);
-			$field['folder'] = $this->getTwigFromHtml($field['folder'], $data);
+		if (!empty($field['settings']['folder'])) {
+			$field['settings']['folder'] = $this->fillPattern($field['settings']['folder'], ['keys' => $data]);
+			$field['settings']['folder'] = $this->getTwigFromHtml($field['settings']['folder'], $data);
 		}
 
 		// Base directory path (local or S3)
-		$dir = rtrim(root_doc, '/') . $field['folder'] . '/';
+		$dir = rtrim(root_doc, '/') . $field['settings']['folder'] . '/';
 		if ($this->s3 && $s3) {
-			$dir = rtrim($this->s3->getFilenameWithHost($field['folder']), '/') . '/';
+			$dir = rtrim($this->s3->getFilenameWithHost($field['settings']['folder']), '/') . '/';
 		}
 
 		// Determine file extension
 		$extension = 'jpg';
-		if (!empty($field['extension_field']) && !empty($field['extensions'])) {
+		if (!empty($field['settings']['extension_field']) && !empty($field['settings']['extensions'])) {
 			if (!$filename) {
-				$extension = $data[$field['extension_field']] ?? 'jpg';
+				$extension = $data[$field['settings']['extension_field']] ?? 'jpg';
 			} else {
 				$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 				if ($extension === 'jpeg') {
@@ -2079,19 +2085,19 @@ class model_app_write extends model_app
 			}
 
 			// Validate extension against allowed list
-			if (!in_array($extension, $field['extensions'], true)) {
+			if (!in_array($extension, $field['settings']['extensions'], true)) {
 				$extension = 'jpg';
 			}
-		} elseif (!empty($field['extensions']) && count($field['extensions']) === 1) {
-			$extension = $field['extensions'][0];
+		} elseif (!empty($field['settings']['extensions']) && count($field['settings']['extensions']) === 1) {
+			$extension = $field['settings']['extensions'][0];
 		}
 
 		// Generate the base filename
-		if (empty($field['filename'])) $destinationFilename=$data['uid'] . '.' . $extension;
+		if (empty($field['settings']['filename'])) $destinationFilename=$data['uid'] . '.' . $extension;
 		else
 		{
-			if (isset($data['id'])) $destinationFilename =  str_replace('%id%', $data['id'], $field['filename']) . '.' . $extension;
-				else $destinationFilename =  $field['filename'] . '.' . $extension;
+			if (isset($data['id'])) $destinationFilename =  str_replace('%id%', $data['id'], $field['settings']['filename']) . '.' . $extension;
+				else $destinationFilename =  $field['settings']['filename'] . '.' . $extension;
 			if (isset($data['uid'])) $destinationFilename =  str_replace('%uid%', $data['uid'], $destinationFilename);
 		}
 		

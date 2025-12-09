@@ -6,7 +6,7 @@
         {% elseif value.src %}<code><a href="{{value.src}}" target="_blank">{{value.src|split('?')[0]}}</code></a>{% if value.size %} ({{value.size}}){% endif %}<br>{% endif %}
         {% if field.extensions %}<small>{{translate.fileFormats}}: {% if field.extensions %}{{field.extensions|join(',')|upper}}{% else %}{{field.extension|upper}}{% endif %}</small>{% endif %}
     </div>
-    {% if field.disabled or field.edit is same as false %}
+    {% if field.disabled or field.cms.edit is same as false %}
     {% else %}
     <span class="btn btn-success fileinput-button">
         {% if value.src %}

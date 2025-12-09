@@ -15,6 +15,17 @@
 <div
   class="{% if lightbox %}serdelia-body-edit-lightbox{% else %}serdelia-body-edit{% endif %} {% if schema_editor %}serdelia-body-edit-schema{% endif %}">
   <div class="container serdelia-edit">
+    {% if schema_validation.errors|length>0 %}    
+    <div class="alert alert-info" role="alert">
+      <h5 class="alert-heading">This schema is not valid and should be updated.</h5>
+      <ul>
+        {% for error in schema_validation.errors %}
+        <li>{{error}}</li>
+        {% endfor %}
+      </ul>
+      {% if schema_validation.url %}<a href="{{schema_validation.url}}" class="btn btn-danger">Update schema</a>{% endif %}
+    </div>
+    {% endif %}
     <form class="form-horizontal" id="serdelia_edit_form" {#id="fileupload" #} enctype="multipart/form-data"
       action="{{schema.url_write}}" data-page="{{schema.model_name}}" data-url-back="{{schema.url_back_form}}" {% if not
       record.id %}data-url-new={{schema.url_new}} {% endif %} method="POST" role="form">
@@ -24,7 +35,7 @@
       <input type="hidden" name="tab" id="hidden_tab" value="">
       <ul class="nav nav-tabs" id="serdelia-edit-tabs" role="tablist">
         {% for item in tabs %}
-        {% if not item.hidden %}
+        {% if not item.cms.hidden %}
         <li id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item">
           <a class="nav-link {% if item.active %}active{% endif %}" href="#tab{{loop.index}}"
             aria-controls="tab{{loop.index}}" role="tab" data-toggle="tab">
@@ -42,7 +53,7 @@
         {% set iElementsNow=0 %}
 
         {% for field in schema.fields %}
-        {% if field.tab %}
+        {% if field.cms.tab %}
         {% if iTab!=0 %}</div><!-- closeTab -->{% endif %}
       <!-- openTab -->
       <div role="tabpanel" class="tab-pane{% if tabs[iTab].active %} active{% endif %}" id="tab{{iTab+1}}"><br><br>
@@ -59,36 +70,36 @@
         </div>
         {% else %}
 
-        {% if not field.hidden %}
-        {% if field.hr and field.hr is not same as ('down') and iElementsNow>0 %}
+        {% if not field.cms.hidden %}
+        {% if field.cms.hr and field.cms.hr is not same as ('down') and iElementsNow>0 %}
         <hr>{% endif %}
         {% endif %}
 
-        {% if field.header %}
+        {% if field.cms.header %}
         <div class="form-group row">
           <label class="col-lg-2 col-form-label"></label>
           <div class="col-lg-6">
-            <h5>{{field.header}}</h5>
+            <h5>{{field.cms.header}}</h5>
           </div>
         </div>
         {% endif %}
 
-        {% if field.help and field.help.size=='full' %}
+        {% if field.cms.help and field.cms.help.size=='full' %}
         {% include 'modules/edit/subview_help.html' with {field:field,size:'full'} %}
         {% endif %}
 
         <div class="form-group row" data-edit-lang="{{field.lang}}" data-edit-field="{{field.cms_field}}" {% if
-          field.hidden %}style="display:none" {% endif %}>
+          field.cms.hidden %}style="display:none" {% endif %}>
           {% if not field.label and field.settings.wide %}
           {% else %}
-          <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.label}}{% if field.required %}<sup>
+          <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.label}}{% if field.cms.required %}<sup>
               *</sup>{% endif %}
             {% if field.lang and schema.langs|length>1 %}
             &nbsp;<span class="btn btn-xs btn-default serdelia-edit-fields-lang">{{field.lang}}</span>
             {% endif %}
-            {% if field.help %}
+            {% if field.cms.help %}
             &nbsp;<span data-field="e_{{field.field}}"
-              class="btn btn-xs btn-default serdelia-edit-toggle-help {% if not field.help.hidden %}d-none{% endif %}">?</span>
+              class="btn btn-xs btn-default serdelia-edit-toggle-help {% if not field.cms.help.hidden %}d-none{% endif %}">?</span>
             {% endif %}
           </label>
           {% endif %}
@@ -101,16 +112,16 @@
 
           {% set non_inline = ['table','elements','image'] %}
 
-          {% if field.help and field.help.size!='full' %}
+          {% if field.cms.help and field.cms.help.size!='full' %}
           {% include 'modules/edit/subview_help.html' %}
           {% endif %}
 
           <div
-            class="col-lg-{{size}} {% if not field.type in non_inline %}form-check-inline{% else %}{% endif %} {% if field.on_demand %}input-group{% endif %}"
+            class="col-lg-{{size}} {% if not field.type in non_inline %}form-check-inline{% else %}{% endif %} {% if field.cms.on_demand %}input-group{% endif %}"
             style="{% if not field.type in non_inline %}padding-left:0{% endif %}">
             {% include 'modules/edit/edit_'~field.type~'.html' with
             {'field':field,'value':record[field.field],'lang':lang,'langs':langs } %}
-            {% if field.on_demand %}
+            {% if field.cms.on_demand %}
             <div class="input-group-append">
               <div class="input-group-text">
                 <input type="checkbox" aria-label="" class="serdelia-on-demand" data-field="{{field.cms_field}}">
@@ -126,9 +137,9 @@
 
         </div>
         {% endif %}
-        {% if field.hr is same as ('down') %}
+        {% if field.cms.hr is same as ('down') %}
         <hr>{% endif %}
-        {% if not field.hidden %}
+        {% if not field.cms.hidden %}
         {% set iElementsNow=iElementsNow+1 %}
         {% endif %}
         {% endfor %}

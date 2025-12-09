@@ -1,1 +1,1 @@
-<input {% if field.disabled or field.edit is same as false %}disabled{% endif %} type="date" name="{{field.cms_field}}" class="form-control serdelia-edit-field" style="" id="{{field.cms_field}}" value="{{value|slice(0,10)}}">
+<input {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} type="date" name="{{field.cms_field}}" class="form-control serdelia-edit-field" style="" id="{{field.cms_field}}" value="{{value|slice(0,10)}}">

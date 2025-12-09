@@ -27,6 +27,7 @@ class model_app extends _uho_model
      * mode = light|dark
      */
     public $mode = null;
+    private $debug_mode=false;
     /**
      * current _uho_orm app instance
      */
@@ -733,15 +734,16 @@ class model_app extends _uho_model
         // translations
         $schema = $this->extractTranslation($schema, ['label', 'buttons_edit', 'help']);
         foreach ($schema['fields'] as $k => $v)
-            $schema['fields'][$k] = $this->extractTranslation($schema['fields'][$k], ['help', 'tab', 'label']);
+            $schema['fields'][$k] = $this->extractTranslation($schema['fields'][$k], ['cms', 'label']);
 
         // filters
         if (!isset($params['keys']) || !$params['keys'])
             $params['keys'] = [];
         $params['keys']['user'] = $this->getUser()['id'];
 
-        if (isset($schema['filters']) && $schema['filters'] && isset($params)) {
-            $params['twig'] = ['cms_user' => $this->getUser()];
+        if (isset($schema['filters']) && $schema['filters'] && isset($params))
+        {
+            $params['twig'] = ['cms_user' => $this->getUser(),'params'=>$params['numbers']];
             $schema['filters'] = $this->fillPattern($schema['filters'], $params);
         }
         if (isset($schema['layout']['iframe']) && $params)
@@ -846,10 +848,10 @@ class model_app extends _uho_model
             $params['twig']['helper_models'] = $schema['helper_models'];
         }
 
-        if (isset($schema['label']['page']))
-        {
+        if (isset($schema['label']['page'])) {
             $schema['label']['page'] = $this->fillPattern($schema['label']['page'], $params);
         }
+
         return $schema;
     }
 
@@ -891,7 +893,6 @@ class model_app extends _uho_model
 
     public function updateSchemaForEdit(&$schema, $page_with_params, $record, $translate, $params)
     {
-
         if (is_array($schema['label'])) {
             if (isset($schema['label']['edit']))
                 $schema['label'] = $schema['label']['edit'];
@@ -980,7 +981,7 @@ class model_app extends _uho_model
 
                     case "boolean":
 
-                        if ($is_new && ($v['default'] === 1 || $v['default'] === true))
+                        if ($is_new && ($v['cms']['default'] === 1 || $v['cms']['default'] === true))
                             $record[$v['field']] = 1;
 
                         break;
@@ -1060,14 +1061,14 @@ class model_app extends _uho_model
 
                     case "date":
 
-                        if ((!$record[$v['field']] || $record[$v['field']] == '0000-00-00' || $record[$v['field']] == '{{now}}') && $v['default'] == '{{now}}')
+                        if ((!$record[$v['field']] || $record[$v['field']] == '0000-00-00' || $record[$v['field']] == '{{now}}') && $v['cms']['default'] == '{{now}}')
                             $record[$v['field']] = date('Y-m-d');
 
                         break;
 
                     case "file":
 
-                        $required = ['folder', ['extension', 'extensios']];
+                        $required = ['folder', ['extension', 'extensions']];
                         $val = @$record[$v['field']];
                         if ($val['src'])
                             $record[$v['field']]['size'] = _uho_fx::filesize($val['src'], true);
@@ -1076,7 +1077,7 @@ class model_app extends _uho_model
 
                     case "datetime":
 
-                        if ($v['default'] == '{{now}}' && (!$record[$v['field']] || $record[$v['field']] == '{{now}}'))
+                        if ($v['cms']['default'] == '{{now}}' && (!$record[$v['field']] || $record[$v['field']] == '{{now}}'))
                             $record[$v['field']] = date('Y-m-d H:i:s');
                         break;
 
@@ -1098,8 +1099,8 @@ class model_app extends _uho_model
                             $im = _uho_fx::array_filter($sch['fields'], 'type', 'image', ['first' => true]);
                             $ff = _uho_fx::array_filter($sch['fields'], 'type', 'file', ['first' => true]);
 
-                            if (!$v['layout']) {
-                                $schema['fields'][$k]['layout'] = ['folder' => $im['images'][1]['folder']];
+                            if (empty($v['settings']['layout'])) {
+                                $schema['fields'][$k]['settings']['layout'] = ['folder' => $im['images'][1]['folder']];
                             }
                         }
 
@@ -1192,12 +1193,12 @@ class model_app extends _uho_model
 
 
                         // add default
-                        if ($is_new && $v['default']) {
+                        if ($is_new && $v['cms']['default']) {
 
-                            $v['default'] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params, 'params' => ['cms_user' => 1]]);
-                            $v['default'] = $this->getTwigFromHtml($v['default'], ['params' => ['cms_user' => $this->getUser()['id']]]);
+                            $v['cms']['default'] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'numbers' => $params, 'params' => ['cms_user' => 1]]);
+                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'], ['params' => ['cms_user' => $this->getUser()['id']]]);
 
-                            $record[$v['field']] = $v['default'];
+                            $record[$v['field']] = $v['cms']['default'];
                         }
 
                         if ($is_new && $v['value']) {
@@ -1212,10 +1213,10 @@ class model_app extends _uho_model
                             $this->ckeditor_configs['e_' . $v['field']] = $v['settings']['config'];
 
                     case "string":
-                        if ($record[$v['field']] == '{{random32}}' && $v['default'] == '{{random32}}')
+                        if ($record[$v['field']] == '{{random32}}' && $v['cms']['default'] == '{{random32}}')
                             $record[$v['field']] = md5(uniqid());
-                        elseif ($is_new && $v['default']) {
-                            $record[$v['field']] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params]);
+                        elseif ($is_new && $v['cms']['default']) {
+                            $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'numbers' => $params]);
                         }
 
                         break;
@@ -1242,28 +1243,31 @@ class model_app extends _uho_model
                     exit(implode('<br>', $errors));
 
                 // toggle -------------------------------------------------------
-                if ($v['toggle_fields']) {
+                if ($v['cms']['toggle_fields']) {
+                    
                     $val = $record[$v['field']];
                     if (is_array($val))
                         $val = $val['values']['id'];
-                    $toggle = $v['toggle_fields'];
+                    $toggle = $v['cms']['toggle_fields'];
 
                     if (isset($toggle)) // && @isset($toggle[$val]))
                     {
-
                         $toggle_found = null;
                         foreach ($toggle as $kk => $vv)
                             if ($kk == $val)
                                 $toggle_found = $kk;
                             else if ($kk[0] == '!' && substr($kk, 1) != $val)
                                 $toggle_found = $kk;
-                        if ($toggle_found !== null) {
+
+                        if ($toggle_found !== null)
+                        {
                             $toggle = $toggle[$toggle_found];
                             if ($toggle['hide'])
                                 $hide = array_merge($hide, $toggle['hide']);
                         }
                     }
                 }
+
 
                 // help ---------------------------------------------
                 if ($v['help']) {
@@ -1326,7 +1330,10 @@ class model_app extends _uho_model
         if ($hide)
             foreach ($schema['fields'] as $k => $v)
                 if (in_array($v['field'], $hide))
-                    $schema['fields'][$k]['hidden'] = true;
+                {
+                    if (!isset($schema['fields'][$k]['cms'])) $schema['fields'][$k]['cms']=[];
+                    $schema['fields'][$k]['cms']['hidden'] = true;
+                }
 
         return $record;
     }
@@ -1869,13 +1876,13 @@ class model_app extends _uho_model
         $filename = explode('?', $filename);
         $filename = $filename[0];
 
-        $dir = rtrim(root_doc, '/') . $field['folder'] . '/';
+        $dir = rtrim(root_doc, '/') . $field['settings']['folder'] . '/';
         $dir = $this->getTwigFromHtml($dir, $data);
 
         $destination_filename = $data['uid'] . '.jpg';
 
         if ($field['filename']) {
-            $destination_filename = str_replace('%uid%', $data['uid'], $field['filename']) . '.jpg';
+            $destination_filename = str_replace('%uid%', $data['uid'], $field['settings']['filename']) . '.jpg';
         }
 
         if (isset($field['images'][0]['filename'])) {
@@ -2196,8 +2203,8 @@ class model_app extends _uho_model
         if (!$record) {
             $record = [];
             foreach ($schema['fields'] as $k => $v)
-                if ($v['default']) {
-                    $record[$v['field']] = $this->fillPattern($v['default'], ['keys' => $record, 'numbers' => $params]);
+                if ($v['cms']['default']) {
+                    $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'numbers' => $params]);
                 }
         }
 
@@ -2248,7 +2255,7 @@ class model_app extends _uho_model
 
         foreach ($schema['fields'] as $k => $v) {
             if ($create_defaults[$v['field']])
-                $schema['fields'][$k]['default'] = $create_defaults[$v['field']];
+                $schema['fields'][$k]['cms']['default'] = $create_defaults[$v['field']];
             if (isset($v['edit']) && $v['edit'] === 'add' && $id)
                 $schema['fields'][$k]['edit'] = false;
 
@@ -2298,7 +2305,7 @@ class model_app extends _uho_model
 
         $s = $schema['fields'];
         foreach ($s as $k => $v)
-            if ($v['search'])
+            if ($v['cms']['search'])
                 $s[$k]['field_search'] = 's_' . $v['field'];
 
         $schema['fields'] = array_values($s);
@@ -2889,7 +2896,7 @@ class model_app extends _uho_model
 
             switch ($type) {
                 case "image":
-                    if (empty($v['folder'])) $this->halt('No .folder specified image type field: ' . $field);
+                    if (empty($v['settings']['folder'])) $this->halt('No .settings.folder specified image type field: ' . $field);
                     if (empty($v['images']) || !is_array($v['images'])) $this->halt('No .images array for image type field: ' . $field);
 
                     break;
@@ -2975,4 +2982,41 @@ class model_app extends _uho_model
     {
         return $this->logoutTime;
     }
+
+    public function getSchemaDepreceated($schema)
+    {
+        $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden','hr','search','tab'];
+        $cms_fields_both = ['list','label'];
+
+        foreach ($schema['fields'] as $k => $field) {
+            foreach ($cms_fields_both as $k2 => $cms_field) {
+                if (isset($field[$cms_field])) {
+                    if (empty($field['cms'])) $field['cms'] = [];
+                    $field['cms'][$cms_field] = $field[$cms_field];
+                } elseif (isset($field['cms'][$cms_field])) {
+                    $field[$cms_field] = $field['cms'][$cms_field];
+                }
+            }
+            foreach ($cms_fields as $k2 => $cms_field) {
+                if (isset($field[$cms_field])) {
+                    if (empty($field['cms'])) $field['cms'] = [];
+                    $field['cms'][$cms_field] = $field[$cms_field];
+                    unset($field[$cms_field]);
+                }
+            }
+            $schema['fields'][$k] = $field;
+        }
+
+        return $schema;
+    }
+
+    public function setDebugMode($mode)
+    {
+        $this->debug_mode = $mode;
+    }
+    public function getDebugMode()
+    {
+        return $this->debug_mode;
+    }
+
 }

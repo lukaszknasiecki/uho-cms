@@ -23,7 +23,7 @@ class controller_app extends _uho_controller
         // Set CMS base path
         $this->model->cms_path = $this->route->getUrl('');
         if (!empty($this->cfg['plugins'])) $this->model->setPluginsCfg($this->cfg['plugins']);
-        
+        if (isset($this->cfg['cms']['debug']) && $this->cfg['cms']['debug']==1) $this->model->setDebugMode(true);
         // Load additional CMS settings if using non-NoSQL clients
         if (!$this->model->clients->isNoSql()) {
             $cfg_add = $this->model->getJsonModel('cms_settings');
@@ -290,6 +290,7 @@ class controller_app extends _uho_controller
 
         // Update URLs with routing info        
         $this->data = $this->urlUpdate($this->data);
+
         $this->data['head']['url'] = rtrim($this->route->getUrlNow(), '/');
     }
 

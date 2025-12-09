@@ -1,7 +1,7 @@
 <div class="serdelia_page_search" id="serdelia_page_search">
 <form method="GET">
   {% for item in schema.fields %}
-  {% if item.search %}
+  {% if item.cms.search %}
 <div class="form-group row">
   <label for="{{item.field_search}}" class="col-lg-2 control-label" style="font-weight:normal">{{item.label}}{% if item.lang %} <small>{{item.lang|upper}}</small>{% endif %}</label>
   <div class="col-md-1">

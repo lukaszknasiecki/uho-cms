@@ -9,7 +9,7 @@
 		{% if field.settings.layout=='simple' %}
 		<div class="serdelia-edit-elements--simple">
 			{{item.label}}
-			{% if field.edit is same as(false) %}
+			{% if field.cms.edit is same as(false) %}
 			{% else %}<span data-id="{{item.fields.id}}" class="mdi mdi-clear serdelia-edit-elements-remove serdelia-edit-elements-remove--simple"></span>
 			{% endif %}
 		</div>		
@@ -17,7 +17,7 @@
 		<div class="card" >
 			<div class="card-body">
 			  <p class="card-title" style="margin-bottom:0.25rem">{{item.label|raw}}
-				{% if field.edit is same as(false) %}
+				{% if field.cms.edit is same as(false) %}
 				{% else %}<span data-id="{{item.fields.id}}" class="mdi mdi-clear serdelia-edit-elements-remove serdelia-edit-elements-remove--card"></span>
 				{% endif %}
 				</p>
@@ -43,12 +43,12 @@
 </div>
 
 
-{% if field.settings.layout=='simple' and field.edit is not same as(false) %}
+{% if field.settings.layout=='simple' and field.cms.edit is not same as(false) %}
 		<div id="excludedElement" class="btn btn-sm btn-default serdelia-edit-elements-add--simple" style="display: inline-block;margin-top:25px" data-field="{{field.cms_field}}{% if field.input!='search' %}_select{% else %}_text{% endif %}"><span  class="mdi mdi-add"></span></div>
 {% endif %}
 </div>
 
-{% if field.disabled or field.edit is same as false %}
+{% if field.disabled or field.cms.edit is same as false %}
 {% elseif field.input!='search' %}
 	<select id="{{field.cms_field}}_select" class="form-control serdelia-edit-elements-select" {% if field.settings.layout=='simple' %}style="display:none"{% endif %}>
 		<option value="0">--- {{translate.add}} ---</option>
@@ -57,7 +57,7 @@
 		<option {% if value.ids[item.value] %}disabled{% endif %} value="{{item.value}}" {% if image %}data-img="{{image}}"{% endif %}>{{item.label|raw}}</option>
 		{% endfor %}
 	</select>
-	<input id="{{field.cms_field}}" name="{{field.cms_field}}" value="{{value.value}}" style="width:0;height:0;opacity:0" and-type="hidden" {% if field.required %}required{% endif %}><div id="{{field.cms_field}}_search_results" class="files serdelia-edit-images"></div>
+	<input id="{{field.cms_field}}" name="{{field.cms_field}}" value="{{value.value}}" style="width:0;height:0;opacity:0" and-type="hidden" {% if field.cms.required %}required{% endif %}><div id="{{field.cms_field}}_search_results" class="files serdelia-edit-images"></div>
 
 {% else %}
 

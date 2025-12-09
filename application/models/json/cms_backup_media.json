@@ -27,7 +27,7 @@
         {
             "label": "Data",
             "field": "date",
-            "type":"date",
+            "type": "date",
             "list": true,
             "edit": false
         },
@@ -44,10 +44,12 @@
         {
             "label": "Strona",
             "field": "page",
-            "list": true,
-            "edit": false,
             "search": "strict",
-            "hr": true
+            "cms": {
+                "hr": true,
+                "list": true,
+                "edit": false
+            }
         },
         {
             "label": "Model",

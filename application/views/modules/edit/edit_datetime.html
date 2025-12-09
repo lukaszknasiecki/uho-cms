@@ -1,1 +1,1 @@
-<input type="datetime-local" {% if field.required %}required{% endif %} name="{{field.cms_field}}" class="form-control serdelia-edit-field" style="" id="{{field.cms_field}}" value="{{value|replace({' ':'T'})|slice(0,16)}}" {% if field.edit is same as(false) %}readonly{% endif %}>
+<input type="datetime-local" {% if field.cms.required %}required{% endif %} name="{{field.cms_field}}" class="form-control serdelia-edit-field" style="" id="{{field.cms_field}}" value="{{value|replace({' ':'T'})|slice(0,16)}}" {% if field.cms.edit is same as(false) %}readonly{% endif %}>

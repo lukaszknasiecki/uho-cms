@@ -65,6 +65,7 @@ class model_app_page extends model_app
 
 		// Load and validate schema
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
+		$schema=$this->getSchemaDepreceated($schema);
 		$this->validateSchema($schema, $model);
 		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
@@ -166,7 +167,7 @@ class model_app_page extends model_app
 					case 'string':
 					case 'text':
 						$words = explode(' ', trim($value));
-						if ($field['search'] === 'strict') {
+						if ($field['cms']['search'] === 'strict') {
 							$vv = (count($words) === 1)
 								? $value
 								: ['type' => 'custom', 'join' => ' && ', 'value' => array_map(fn($w) => "`{$field['field']}`=\"{$this->sqlSafe($w)}\"", $words)];
@@ -438,7 +439,7 @@ class model_app_page extends model_app
 			}
 
 			// If any field has search enabled, set schema search flag
-			if (!empty($v['search'])) {
+			if (!empty($v['cms']['search'])) {
 				$schema['search'] = true;
 			}
 
@@ -668,7 +669,7 @@ class model_app_page extends model_app
 
 		// Add search field name if applicable.
 		foreach ($result as $k => $v) {
-			if (!empty($v['search'])) {
+			if (!empty($v['cms']['search'])) {
 				$result[$k]['field_search'] = 's_' . $v['field'];
 			}
 		}

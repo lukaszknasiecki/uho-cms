@@ -53,12 +53,27 @@ class model_app_edit extends model_app
 		// Load base schema and prepare ORM
 
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
-		$this->validateSchema($schema, $model);		
+		
+		if ($this->getDebugMode()) {
+			$s= $this->getSchemaDepreceated($schema);
+			unset($s['structure']);
+			unset($s['langs']);
+			unset($s['sortable']);
+			$schema_validation=$this->orm->validateSchema($s,true);
+			if ($schema_validation['errors'])
+			{
+				//$schema_validation['url']=['type'=>'url_now','get'=>['rebuild_schema'=>'1']];
+			}
+		} else $schema_validation=null;
+
+		$this->validateSchema($schema, $model);				
 		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
+
 		
 		// Generate edit schema (populated with record data)
 
 		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);
+		$schema = $this->getSchemaDepreceated($schema);
 
 		// Update data with Helper Models
 
@@ -163,8 +178,8 @@ class model_app_edit extends model_app
 
 		$tabs = [];
 		foreach ($schema['fields'] as $field) {
-			if ($field['tab']) {
-				$tabs[] = ['id' => count($tabs) + 1, 'label' => $field['tab'], 'count' => 0];
+			if ($field['cms']['tab']) {
+				$tabs[] = ['id' => count($tabs) + 1, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
 			if (!empty($tabs) && ($field['field'] || $field['type'] === 'plugin') && !$field['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
 				$tabs[count($tabs) - 1]['count']++;
@@ -192,7 +207,7 @@ class model_app_edit extends model_app
 		if ($iTabs === 1) {
 			$tabs = [];
 			foreach ($schema['fields'] as &$field) {
-				unset($field['tab']);
+				unset($field['cms']['tab']);
 			}
 		}
 
@@ -229,7 +244,11 @@ class model_app_edit extends model_app
 		// Hide system fields like 'order'
 
 		foreach ($schema['fields'] as &$field) {
-			if (in_array($field['type'], ['order'])) $field['hidden'] = true;
+			if (in_array($field['type'], ['order']))
+			{
+				if (!isset($field['cms'])) $field['cms']=[];
+				$field['cms']['hidden'] = true;
+			}
 		}
 
 		// Prepend back button
@@ -262,6 +281,7 @@ class model_app_edit extends model_app
 			'record' => $record,
 			'schema' => $schema,
 			'schema_editor' => str_starts_with($schema['table'], 'serdelia_'),
+			'schema_validation'=>$schema_validation,
 			'paging' => ['page' => 1, 'records' => ['from' => 1, 'to' => 2, 'all' => 2]],
 			'translate' => $translate,
 			'tabs' => $tabs,
