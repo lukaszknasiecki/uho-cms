@@ -1,4 +1,4 @@
-<div id="{{field.field}}_files" data-sortable="true" data-separator="div" data-input="{{field.field}}_order" class="files serdelia-edit-images" {% if field.settings.wide %}style="width:800px"{% endif %}>{% apply spaceless %}
+<div id="{{field.field}}_files" data-sortable="true" data-separator="div" data-input="{{field.field}}_order" class="files serdelia-edit-images" {% if field.cms.wide %}style="width:800px"{% endif %}>{% apply spaceless %}
 {% set ids=[] %}
     {% for item in value %}
     {% set ids=ids|merge([item.id]) %}

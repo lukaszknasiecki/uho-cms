@@ -1,12 +1,13 @@
+{% set layout=field.settings.layout %}{% if field.cms.small %}{% set layout='simple' %}{% endif %}
 <div>
-<div id="{{field.cms_field}}_order" data-layout="{{field.settings.layout}}" data-sortable="true" data-separator="div" data-input="{{field.cms_field}}" {% if field.settings.layout=='simple' %}style="display:inline-block"{% else %}class="files serdelia-edit-images"{% endif %}>
+<div id="{{field.cms_field}}_order" data-layout="{{layout}}" data-sortable="true" data-separator="div" data-input="{{field.cms_field}}" {% if layout=='simple' %}style="display:inline-block"{% else %}class="files serdelia-edit-images"{% endif %}>
 	{% for item in value.values %}	
 	<div data-id="{{item.fields.id}}" class="serdelia-edit-imageUploadThumb">		
 		{% set thumb= item.fields.image | keys[1] %}
 			{% if item.fields.image|keys[1]=='original_webp' %}
 				{% set thumb= item.fields.image | keys[2] %}
 			{% endif %}
-		{% if field.settings.layout=='simple' %}
+		{% if layout=='simple' %}
 		<div class="serdelia-edit-elements--simple">
 			{{item.label}}
 			{% if field.cms.edit is same as(false) %}
@@ -43,14 +44,14 @@
 </div>
 
 
-{% if field.settings.layout=='simple' and field.cms.edit is not same as(false) %}
+{% if layout=='simple' and field.cms.edit is not same as(false) %}
 		<div id="excludedElement" class="btn btn-sm btn-default serdelia-edit-elements-add--simple" style="display: inline-block;margin-top:25px" data-field="{{field.cms_field}}{% if field.input!='search' %}_select{% else %}_text{% endif %}"><span  class="mdi mdi-add"></span></div>
 {% endif %}
 </div>
 
 {% if field.disabled or field.cms.edit is same as false %}
 {% elseif field.input!='search' %}
-	<select id="{{field.cms_field}}_select" class="form-control serdelia-edit-elements-select" {% if field.settings.layout=='simple' %}style="display:none"{% endif %}>
+	<select id="{{field.cms_field}}_select" class="form-control serdelia-edit-elements-select" {% if layout=='simple' %}style="display:none"{% endif %}>
 		<option value="0">--- {{translate.add}} ---</option>
 		{% for item in field.options %}
 		{% if item.values.image %}{% set image=item.values.image.thumb %}{% else %}{% set image=item.image %}{% endif %}
@@ -63,7 +64,7 @@
 
 	<input type="hidden" name="{{field.cms_field}}" class="form-control serdelia-edit-field"  id="{{field.cms_field}}" value="{{value.value}}" data-type="elements">
 	<input type="hidden" name="{{field.cms_field}}_new" class="form-control serdelia-edit-field"  id="{{field.cms_field}}_new">
-	<input type="text" autocomplete="off" name="{{field.cms_field}}_text" data-field="{{field.cms_field}}" {% if field.settings.add %}data-add="true"{% endif %} class="form-control serdelia-edit-field serdelia-edit-field-search"  id="{{field.cms_field}}_text" placeholder="{{field.source.placeholder}}" value="{{value.label}}" {% if field.settings.layout=='simple' %}style="display:none"{% endif %}>
+	<input type="text" autocomplete="off" name="{{field.cms_field}}_text" data-field="{{field.cms_field}}" {% if field.settings.add %}data-add="true"{% endif %} class="form-control serdelia-edit-field serdelia-edit-field-search"  id="{{field.cms_field}}_text" placeholder="{{field.source.placeholder}}" value="{{value.label}}" {% if layout=='simple' %}style="display:none"{% endif %}>
 	<ul class="list-group" data-field="{{field.cms_field}}" data-searched="{{field.cms_field}}"></ul>
 
 {% endif %}

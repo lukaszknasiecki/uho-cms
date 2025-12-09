@@ -1,7 +1,7 @@
 <!-- media_item {{item.type}}-->
 {% set wide=false %}
 {% for i in field.captions %}
-    {% if i.settings.wide %}{% set wide=true %}{% endif %}
+    {% if i.cms.wide %}{% set wide=true %}{% endif %}
 {% endfor %}
 <div style="{% if wide %}width:833px;{% endif %}z-index:998{% if field.settings.long %};background-color:white;padding:10px{% endif %}" data-id="{{item.id}}" class="serdelia-edit-imageUploadThumb {% if field.settings.layout.type=='linear' %}serdelia-edit-imageUploadThumbLinear{% endif %}">
     {% set show_image=true %}
@@ -116,8 +116,8 @@
                     {% endfor %}
                 </select>
             {% elseif i.field_type=='text' %}
-                <textarea rows={% if i.settings.rows=='medium' %}6{% elseif i.settings.rows %}{{i.settings.rows}}{% else %}4{% endif %} {% if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}" class="form-control serdelia-edit-field" 
-                style="{% if i.settings.style=='json' %}font-family:cCourier;font-size:11px;{% endif %}{% if i.settings.wide %}width:800px;{% endif %}{% if i.lang and not langs[i.lang] %}display:none;{% endif %}"
+                <textarea rows={% if i.cms.rows=='medium' %}6{% elseif i.cms.rows %}{{i.cms.rows}}{% else %}4{% endif %} {% if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}" class="form-control serdelia-edit-field" 
+                style="{% if i.settings.style=='json' %}font-family:cCourier;font-size:11px;{% endif %}{% if i.cms.wide %}width:800px;{% endif %}{% if i.lang and not langs[i.lang] %}display:none;{% endif %}"
                 {% if i.lang %}data-edit-lang="{{i.lang}}"{% endif %} 
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">{{item[i.field]}}</textarea>
             {% elseif i.field_type=='html' %}

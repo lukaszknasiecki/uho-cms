@@ -54,12 +54,14 @@ class model_app_edit extends model_app
 
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
 		
-		if ($this->getDebugMode()) {
-			$s= $this->getSchemaDepreceated($schema);
+		if ($this->getDebugMode())
+		{
+			if ($this->getStrictSchema()) $s=$schema;
+				else $s= $this->getSchemaDepreceated($schema);
 			unset($s['structure']);
 			unset($s['langs']);
 			unset($s['sortable']);
-			$schema_validation=$this->orm->validateSchema($s,true);
+			$schema_validation=$this->orm->validateSchema($s,$this->getStrictSchema());
 			if ($schema_validation['errors'])
 			{
 				//$schema_validation['url']=['type'=>'url_now','get'=>['rebuild_schema'=>'1']];

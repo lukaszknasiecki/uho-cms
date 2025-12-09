@@ -90,7 +90,7 @@
 
         <div class="form-group row" data-edit-lang="{{field.lang}}" data-edit-field="{{field.cms_field}}" {% if
           field.cms.hidden %}style="display:none" {% endif %}>
-          {% if not field.label and field.settings.wide %}
+          {% if not field.label and field.cms.wide %}
           {% else %}
           <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.label}}{% if field.cms.required %}<sup>
               *</sup>{% endif %}
@@ -104,8 +104,8 @@
           </label>
           {% endif %}
 
-          {% if field.settings.width %}{% set size=field.settings.width %}{% else %}{% set size=6 %}{% endif %}
-          {% if field.settings.wide and not field.settings.width %}{% set size=12 %}{% endif %}
+          {% if field.cms.width %}{% set size=field.cms.width %}{% else %}{% set size=6 %}{% endif %}
+          {% if field.cms.wide and not field.cms.width %}{% set size=12 %}{% endif %}
           {% set sizes = { 'date': 2,'elements_double': 10 } %}
           {% if sizes[field.type] %}{% set size=sizes[field.type] %}{% endif %}
 

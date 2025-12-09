@@ -43,6 +43,7 @@ class model_app extends _uho_model
     public $logs_folder;
     private $logoutTime;
     private $activityTime;
+    private $strict_schema=false;
     /**
      * auth array decoded from authorization.json
      */
@@ -2986,9 +2987,12 @@ class model_app extends _uho_model
     public function getSchemaDepreceated($schema)
     {
         $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden','hr','search','tab'];
+        
         $cms_fields_both = ['list','label'];
 
-        foreach ($schema['fields'] as $k => $field) {
+        foreach ($schema['fields'] as $k => $field)
+        {
+            // copy those fields to . and .cms
             foreach ($cms_fields_both as $k2 => $cms_field) {
                 if (isset($field[$cms_field])) {
                     if (empty($field['cms'])) $field['cms'] = [];
@@ -3017,6 +3021,14 @@ class model_app extends _uho_model
     public function getDebugMode()
     {
         return $this->debug_mode;
+    }
+    public function setStrictSchema($mode)
+    {
+        $this->strict_schema = $mode;
+    }
+    public function getStrictSchema()
+    {
+        return $this->strict_schema;
     }
 
 }

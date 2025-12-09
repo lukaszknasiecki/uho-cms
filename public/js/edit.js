@@ -1485,7 +1485,8 @@ Apps.Edit = function($, window)
       sublabel=$(this).children(':selected').data('sublabel');
 
       var layout=$('#'+field+'_order').data('layout');
-      if (!layout && filename) layout='image'; else layout='card';
+      if (!layout && filename) layout='image'; else
+        if (layout=='simple'); else layout='card';
 
       if (layout=='simple')
       var element='<div class="serdelia-edit-elements--simple">%label%<span data-id="{{item.fields.id}}" class="mdi mdi-clear serdelia-edit-elements-remove serdelia-edit-elements-remove--simple"></span></div>';

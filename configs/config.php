@@ -37,7 +37,8 @@ $cfg = [
         'favicon'       =>   false,
 
         'serdelia_languages_url'  =>    false,                        //  add language string in serdelia URL      		
-
+        'debug' => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),
+        'strict_schema' => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
         'serdelia_keys' => [
             getenv('CLIENT_KEY1'),
             getenv('CLIENT_KEY2')
