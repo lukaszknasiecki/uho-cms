@@ -28,7 +28,7 @@ class model_app_edit extends model_app
 	public function getContentData($params = null)
 	{
 
-		$this->translate = json_decode(file_get_contents(__DIR__.'/model_app_edit.json'),true);
+		$this->translate = json_decode(file_get_contents(__DIR__ . '/model_app_edit.json'), true);
 
 		$translate = $this->getTranslateByLang($this->lang);
 		$id = $this->findIdByUrl($params['url']);
@@ -53,25 +53,23 @@ class model_app_edit extends model_app
 		// Load base schema and prepare ORM
 
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
-		
-		if ($this->getDebugMode())
-		{
-			if ($this->getStrictSchema()) $s=$schema;
-				else $s= $this->getSchemaDepreceated($schema);
+
+		if ($this->getDebugMode()) {
+			if ($this->getStrictSchema()) $s = $schema;
+			else $s = $this->getSchemaDepreceated($schema);
 			unset($s['structure']);
 			unset($s['langs']);
 			unset($s['sortable']);
-			$schema_validation=$this->orm->validateSchema($s,$this->getStrictSchema());
-			if ($schema_validation['errors'])
-			{
+			$schema_validation = $this->orm->validateSchema($s, $this->getStrictSchema());
+			if ($schema_validation['errors']) {
 				//$schema_validation['url']=['type'=>'url_now','get'=>['rebuild_schema'=>'1']];
 			}
-		} else $schema_validation=null;
+		} else $schema_validation = null;
 
-		$this->validateSchema($schema, $model);				
+		$this->validateSchema($schema, $model);
 		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
 
-		
+
 		// Generate edit schema (populated with record data)
 
 		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);
@@ -79,8 +77,7 @@ class model_app_edit extends model_app
 
 		// Update data with Helper Models
 
-		if (isset($schema['helper_models']))
-		{
+		if (isset($schema['helper_models'])) {
 			/*
 			foreach ($schema['helper_models'] as $k=>$v)
 			{
@@ -91,8 +88,8 @@ class model_app_edit extends model_app
 
 				$schema['helper_models'][$k]=$this->apporm->getJsonModel($v['model'], ['id'=>$v['record']],true);
 			}*/
-			$replace=$record;
-			$replace['helper_models']=$schema['helper_models'];
+			$replace = $record;
+			$replace['helper_models'] = $schema['helper_models'];
 			$schema['label']['edit'] = $this->getTwigFromHtml($schema['label']['edit'], $replace);
 		}
 
@@ -124,8 +121,10 @@ class model_app_edit extends model_app
 
 		// Add backup URLs if applicable
 
-		if ($this->is_backup() && $id && $this->checkAuth($model, [3]) &&
-			(!isset($schema['disable']) || !in_array('backup', $schema['disable']))) {
+		if (
+			$this->is_backup() && $id && $this->checkAuth($model, [3]) &&
+			(!isset($schema['disable']) || !in_array('backup', $schema['disable']))
+		) {
 			$schema['url_backup'] = "page/cms_backup?s_page={$schema['table']}&s_record={$id}";
 			$schema['url_backup_media'] = "page/cms_backup_media?s_page={$schema['table']}&s_record={$id}";
 		}
@@ -246,9 +245,8 @@ class model_app_edit extends model_app
 		// Hide system fields like 'order'
 
 		foreach ($schema['fields'] as &$field) {
-			if (in_array($field['type'], ['order']))
-			{
-				if (!isset($field['cms'])) $field['cms']=[];
+			if (in_array($field['type'], ['order'])) {
+				if (!isset($field['cms'])) $field['cms'] = [];
 				$field['cms']['hidden'] = true;
 			}
 		}
@@ -283,7 +281,7 @@ class model_app_edit extends model_app
 			'record' => $record,
 			'schema' => $schema,
 			'schema_editor' => str_starts_with($schema['table'], 'serdelia_'),
-			'schema_validation'=>$schema_validation,
+			'schema_validation' => $schema_validation,
 			'paging' => ['page' => 1, 'records' => ['from' => 1, 'to' => 2, 'all' => 2]],
 			'translate' => $translate,
 			'tabs' => $tabs,
@@ -318,10 +316,10 @@ class model_app_edit extends model_app
 			// Bind plugin metadata
 			if ($v['type'] === 'plugin') {
 				$plugin = null;
-				if ($v['plugin']) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'plugin', $v['plugin']);
-				} elseif ($v['page']) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'page', $v['page']);
+				if (!empty($v['settings']['plugin'])) {
+					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'plugin', $v['settings']['plugin']);
+				} elseif (!empty($v['settings']['page'])) {
+					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'page', $v['settings']['page']);
 				}
 
 				if ($plugin) {
@@ -394,8 +392,7 @@ class model_app_edit extends model_app
 		$items = $this->apporm->getJsonModel($field['source']['model'], $filter, false, null, '0,10');
 		foreach ($items as &$item) {
 			$item['label'] = $this->getTwigFromHtml($field['source']['label'], $item);
-			if (isset($searchSchema['model']['image']))
-			{
+			if (isset($searchSchema['model']['image'])) {
 				$item['image'] = ['thumb' => $this->getTwigFromHtml($searchSchema['model']['image'], $item)];
 				if ($this->s3) $item['image']['thumb'] = $this->s3->getFilenameWithHost($item['image']['thumb']);
 			}

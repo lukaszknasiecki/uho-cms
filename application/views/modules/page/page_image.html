@@ -1,6 +1,6 @@
 {% set src=value[field.settings.list.folder] %}
 {% if not src %}{% set src=value.original %}{% endif %}
-{% if not src and field.settings.list.src_blank %}{% set src=field.settings.list.src_blank %}{% endif %}
+{% if not src and field.cms.list.src_blank %}{% set src=field.cms.list.src_blank %}{% endif %}
 {% if field.settings.list.layout=='cover' %}
 <div style="width:{% if field.settings.list.width %}{{field.settings.list.width}}{% else %}{{image_sizes[0]}}{% endif %}px;height:{% if field.settings.list.height %}{{field.settings.list.height}}{% else %}{{image_sizes[1]}}{% endif %}px;background: url({{src}});background-repeat: no-repeat;background-size: cover;">&nbsp;</div>
 {% else %}

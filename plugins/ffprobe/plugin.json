@@ -1,0 +1,11 @@
+{
+    "icon":"video-settings",
+    "pl":
+    {
+        "title": "Import danych o video"
+    },
+    "en":
+    {
+        "label": "Import data using FFProbe"
+    }
+}

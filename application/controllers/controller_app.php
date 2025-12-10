@@ -82,8 +82,6 @@ class controller_app extends _uho_controller
             $this->model->setSerdeliaOrmKeys($this->cfg['cms']['serdelia_keys']);            
         }
 
-        
-
         if (!empty($this->cfg['api_keys'])) {
             $this->model->setApiKeys($this->cfg['api_keys']);
         }

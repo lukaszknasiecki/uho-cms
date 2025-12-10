@@ -1,0 +1,26 @@
+{
+    "icon":"video-settings",
+    "pl":
+    {
+        "label": "Import okładki",
+        "added_title_added":"Tytuł filmu został dodany",
+        "added_poster_added":"Okładka została dodana",
+        "added_subtitles_added":"Napisy zostały dodane",
+        "added_sources_added":"Źródła MP4 z Vimeo zostały dodane",
+        "errors_poster_failed":"Błąd importu okładki",
+        "added_duration_added":"Długość filmu została uaktualniona",
+        "errors_vimeo_not_found":"Plik Vimeo nie został znaleziony"
+    },
+    "en":
+    {
+        "label": "Import cover",
+        "added_title_added":"Video title has been updated",
+        "added_poster_added":"Cover has been updated",
+        "added_subtitles_added":"Subtitles have been updated",
+        "added_duration_added":"Duration have been updated",
+        "added_sources_added":"MP4 Vimeo sources have been updated",
+        "errors_poster_failed":"Cover import error",
+        "errors_vimeo_not_found":"Vimeo file not found"
+
+    }
+}

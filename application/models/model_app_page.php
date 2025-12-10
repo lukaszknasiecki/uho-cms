@@ -412,16 +412,16 @@ class model_app_page extends model_app
 					// Ensure list view for images is well-formed
 					if (isset($v['list']))
 					{
-						$list=@$v['settings']['list'];
-						if (!$list) $list=$v['settings']['list'] = [];
+						$list=@$v['cms']['list'];
+						if (!$list) $list=$v['cms']['list'] = [];
 						if (empty($list['folder'])) {
-							$v['settings']['list']['folder'] = $v['images'][1]['folder'];
+							$v['cms']['list']['folder'] = $v['images'][1]['folder'];
 						}
 						if (!empty($list['src_blank']))
 						{
-							$v['settings']['list']['src_blank'] = $this->cfg_path . '/assets/' . $list['src_blank'];
+							$v['cms']['list']['src_blank'] = $this->cfg_path . '/assets/' . $list['src_blank'];
 						}
-						$schema['fields'][$k]['settings']['list'] = $v['settings']['list'];
+						$schema['fields'][$k]['cms']['list'] = $v['cms']['list'];
 
 					}
 					break;

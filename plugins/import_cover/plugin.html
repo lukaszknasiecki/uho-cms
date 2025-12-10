@@ -1,0 +1,15 @@
+<h3>{{translate.label}}</h3><br>
+	{% if errors %}
+		<div class="alert alert-danger">
+			{% for error in errors %}
+			⚠ {% if translate['errors_'~error] %}{{translate['errors_'~error]}}{% else %}{{error}}{% endif %}<br>
+			{% endfor %}
+		</div>
+	{% endif %}
+	{% if success %}
+	<div class="alert alert-success">
+		{% for item in success %}
+		✓ {% if translate['added_'~item] %}{{translate['added_'~item]}}{% else %}{{item}}{% endif %}<br>
+		{% endfor %}
+	</div>
+	{% endif %}

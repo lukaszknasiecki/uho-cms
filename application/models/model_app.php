@@ -1186,7 +1186,7 @@ class model_app extends _uho_model
                         }
 
                         // add null
-                        if (isset($v['source']['null']) || isset($v['null'])) {
+                        if (isset($v['source']['null']) || !empty($v['settings']['null'])) {
                             if (!$schema['fields'][$k]['options'])
                                 $schema['fields'][$k]['options'] = [];
                             array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
@@ -1761,15 +1761,15 @@ class model_app extends _uho_model
         $field_schema = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
 
         if ($field_schema) {
-            $dest = $_SERVER['DOCUMENT_ROOT'] . $field_schema['folder'];
+            $dest = $_SERVER['DOCUMENT_ROOT'] . $field_schema['settings']['folder'];
             if (!file_exists($dest)) mkdir($dest, 0775, true);
             $dest .= '/';
 
-            if (!empty($field_schema['filename']))
-                $dest .= $field_schema['filename'];
+            if (!empty($field_schema['settings']['filename']))
+                $dest .= $field_schema['settings']['filename'];
             else
                 $dest .= $data['uid'];
-            $dest .= '.' . $field_schema['extension'];
+            $dest .= '.' . $field_schema['settings']['extension'];
             $dest = $this->getTwigFromHtml($dest, $data);
 
             $r = copy($source, $dest);

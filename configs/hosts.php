@@ -1,16 +1,17 @@
 <?php
 
-if (getenv('S3_HOST'))	
-    $s3 = [
-        'host' =>	getenv('S3_HOST'),
-        'key' =>	getenv('S3_KEY'),
-        'secret' =>	getenv('S3_SECRET'),
-        'bucket' =>	getenv('S3_BUCKET'),
-        'region' =>	getenv('S3_REGION'),
-        'folder' =>	getenv('S3_FOLDER'),
+if (getenv('S3_HOST'))
+	$s3 = [
+		'host' =>	getenv('S3_HOST'),
+		'key' =>	getenv('S3_KEY'),
+		'secret' =>	getenv('S3_SECRET'),
+		'bucket' =>	getenv('S3_BUCKET'),
+		'region' =>	getenv('S3_REGION'),
+		'folder' =>	getenv('S3_FOLDER'),
 		'acl' =>	getenv('S3_ACL'),
-        'cache' => '/cache/s3.files'
-    ]; else $s3=null;
+		'cache' => '/cache/s3.files'
+	];
+else $s3 = null;
 
 
 $cfg_domains = [
@@ -24,6 +25,7 @@ $cfg_domains = [
 		'params'        =>
 		[
 			"ffmpeg"        =>                              getenv('FFMPEG_PATH'),
+			"ffprobe"        =>                              getenv('FFPROBE_PATH'),
 		],
 		'smtp' =>
 		[
@@ -37,8 +39,14 @@ $cfg_domains = [
 		],
 		"api_keys" =>
 		[
-			'youtube' => getenv('YOUTUBE_TOKEN')
+			'youtube' => getenv('YOUTUBE_TOKEN'),
+			"vimeo" =>
+			[
+				'client' => getEnv('VIMEO_CLIENT'),
+				'secret' => getEnv('VIMEO_SECRET'),
+				'token' => getEnv('VIMEO_TOKEN')
+			]
 		],
-		"s3"=>$s3
+		"s3" => $s3
 	]
 ];

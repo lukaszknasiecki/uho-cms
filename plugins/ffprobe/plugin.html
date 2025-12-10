@@ -1,0 +1,8 @@
+
+	{% if errors %}
+		<div class="alert alert-danger">{{errors|join('<br>')|raw}}</div>
+	{% endif %}
+	{% if success %}
+		<div class="alert alert-success">{{success|join('<br>')|raw}}</div>
+	{% endif %}
+
