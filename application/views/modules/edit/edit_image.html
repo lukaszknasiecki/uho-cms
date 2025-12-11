@@ -22,6 +22,7 @@
          
 		<div class="serdelia-edit-image-thumb serdelia-edit-image-thumb-{{field.field}}" {% if not item.preview %}style="display:none"{% endif %}>
             {% set src=value[item.id] %}
+            
             {% if src %}
 			<span class="serdelia-edit-image-thumb-size">{{item.width}}×{{item.height}}</span>
 			<img class="image" style="{% if field.settings.view_background %}padding:10px;background-color:{{field.settings.view_background}}{% endif %}" src="{{src}}">

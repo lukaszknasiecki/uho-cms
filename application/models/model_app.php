@@ -1084,10 +1084,10 @@ class model_app extends _uho_model
 
                     case "text":
 
-                        if (!isset($v['settings']['rows'])) {
-                            if (!$v['settings'])
-                                $schema['fields'][$k]['settings'] = [];
-                            $schema['fields'][$k]['settings']['rows'] = 'medium';
+                        if (!isset($v['cms']['rows'])) {
+                            if (!$v['cms'])
+                                $schema['fields'][$k]['cms'] = [];
+                            $schema['fields'][$k]['cms']['rows'] = 'medium';
                         }
 
                         break;
