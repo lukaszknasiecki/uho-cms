@@ -416,7 +416,7 @@ class model_app_page extends model_app
 						if (!$list) $list=$v['cms']['list'] = [];
 						if (empty($list['folder']))
 						{
-							if (is_string($v['cms']['list']))
+							if (!is_array($v['cms']['list']))
 								$v['cms']['list']=[];
 							$v['cms']['list']['folder'] = 
 								$v['images'][1]['folder'];
