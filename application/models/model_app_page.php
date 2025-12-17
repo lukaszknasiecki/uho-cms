@@ -414,8 +414,12 @@ class model_app_page extends model_app
 					{
 						$list=@$v['cms']['list'];
 						if (!$list) $list=$v['cms']['list'] = [];
-						if (empty($list['folder'])) {
-							$v['cms']['list']['folder'] = $v['images'][1]['folder'];
+						if (empty($list['folder']))
+						{
+							if (is_string($v['cms']['list']))
+								$v['cms']['list']=[];
+							$v['cms']['list']['folder'] = 
+								$v['images'][1]['folder'];
 						}
 						if (!empty($list['src_blank']))
 						{
