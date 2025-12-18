@@ -129,7 +129,7 @@ class UploadHandler
             // e.g. PHP scripts, nor executed by the browser when downloaded,
             // e.g. HTML files with embedded JavaScript code.
             // Please also read the SECURITY.md document in this repository.
-            'accept_file_types' => '/\.(jpe?g|png|svg|pdf|webp|zip|doc|docx|ppt|gif|mp3|mp4|ppt|pptx|vtt|mov|webm|geojson|json)$/i',
+            'accept_file_types' => '/\.(jpe?g|png|svg|pdf|webp|zip|doc|docx|ppt|gif|mp3|mp4|ppt|pptx|vtt|mov|webm|geojson|srt|json)$/i',
             
             // Replaces dots in filenames with the given string.
             // Can be disabled by setting it to false or an empty string.
