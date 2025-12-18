@@ -1,4 +1,4 @@
-{% set src=value[field.settings.list.folder] %}
+{% set src=value[field.cms.list.folder] %}
 {% if not src %}{% set src=value.original %}{% endif %}
 {% if not src and field.cms.list.src_blank %}{% set src=field.cms.list.src_blank %}{% endif %}
 {% if field.settings.list.layout=='cover' %}

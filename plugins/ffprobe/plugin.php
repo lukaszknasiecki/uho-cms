@@ -91,13 +91,18 @@ class serdelia_plugin_ffprobe
         if ($json) {
             if (isset($json['streams']))
             {
+                if (!empty($json['format']['duration']))
+                    $duration=$json['format']['duration']; else $duration=0;
                 $stream = _uho_fx::array_filter($json['streams'], 'codec_type', 'video', ['first' => true]);
                 if (!$stream) $stream = _uho_fx::array_filter($json['streams'], 'codec_type', 'audio', ['first' => true]);
+
+                if (isset($stream['duration'])) $duration=$stream['duration'];
+                
                 //$stream=$json['streams'][0];
                 $stream = [
                     'width' => $stream['coded_width'],
                     'height' => $stream['coded_height'],
-                    'duration' => round($stream['duration'])
+                    'duration' => round($duration)
                 ];
             }
         }
