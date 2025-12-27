@@ -1739,10 +1739,14 @@ class model_app extends _uho_model
     public function ffmpeg($cmd)
     {
         if ($this->config_params['ffmpeg'])
+        {
             $ffmpeg = $this->config_params['ffmpeg'];
+            $regex = '#^(ffmpeg|/(?:[a-zA-Z0-9._-]+/)*[a-zA-Z0-9._-]+)$#';
+            if (!preg_match($regex, $ffmpeg)) return false;
+        }
         else
             $ffmpeg = 'ffmpeg';
-
+        
         if (isset($this->config_params['exec']) && $this->config_params['exec'] == 'exec')
             return exec($ffmpeg . ' ' . $cmd);
         else return shell_exec($ffmpeg . ' ' . $cmd);

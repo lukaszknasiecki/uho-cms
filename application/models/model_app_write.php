@@ -1109,6 +1109,16 @@ class model_app_write extends model_app
 			if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif'], true)) $ext = 'jpg';
 			$temp_filename = uniqid() . '.' . $ext;
 			copy($filename, $this->upload_path . $temp_filename);
+			// check mime
+        	$finfo = new finfo(FILEINFO_MIME_TYPE);
+        	$realMime = $finfo->file($this->upload_path . $temp_filename);
+			if ($realMime) $realMime=explode('/',$realMime)[0];
+			if (!$realMime || $realMime!='image')
+			{
+				unlink($this->upload_path . $temp_filename);
+				return ['result' => false, 'errors' => ['Mime type should be image']];
+			}
+
 			$filename = $temp_filename;
 		}
 

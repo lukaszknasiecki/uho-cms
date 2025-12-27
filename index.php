@@ -109,6 +109,8 @@ class cms_sunship
         header('X-Frame-Options: SAMEORIGIN');
         date_default_timezone_set('Europe/Berlin');
         ini_set("session.cookie_httponly", 1);
+        ini_set("session.cookie_samesite", "Strict");
+        ini_set("session.use_strict_mode", 1);
         session_start();
 
         /*
