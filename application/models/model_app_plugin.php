@@ -49,9 +49,11 @@ class model_app_plugin extends model_app
 		$params = $input['params'] ?? [];
 
 		// Access control
-		$page = $params['page'] ?? '';
+		$page = $params['page'] ?? '';			
 		$plugin = $params['plugin'] ?? '';
 		$plugin = preg_replace('/[^a-zA-Z0-9_-]/', '', $plugin); // Only alphanumeric, dash, underscore
+		
+	
 		if (empty($plugin)) {
 			exit("Invalid plugin name");
 		}
@@ -62,6 +64,14 @@ class model_app_plugin extends model_app
 		if (!$this->parent && !$this->checkAuth($page, [2, 3])) {
 			exit("auth::error::1::app_plugin::{$page}::{$plugin}");
 		}
+
+		$schema=$this->apporm->getJsonModelSchemaWithPageUpdate($page);
+
+		if (isset($params['record'])) $buttons=$schema['buttons_edit'];
+			else $buttons=$schema['buttons_page'];
+		
+		if (!_uho_fx::array_filter($buttons,'plugin',$plugin))
+			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
 
 		// Translations
 		$defaultTranslate = [

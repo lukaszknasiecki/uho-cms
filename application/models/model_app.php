@@ -1379,7 +1379,8 @@ class model_app extends _uho_model
         if ($buttons)
             foreach ($buttons as $k => $v)
                 // page button
-                if ($v['type'] == 'page') {
+                if ($v['type'] == 'page')
+                {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
 
                     if ($this->checkAuth($v['page'], [2, 3]))
@@ -1397,7 +1398,7 @@ class model_app extends _uho_model
                 }
                 // plugins
                 elseif ($v['type'] == 'plugin' || isset($v['plugin'])) {
-
+                    
                     $buttons[$k]['type'] = 'plugin';
                     if ($v['params']) {
                         $v['params'] = $this->fillPattern($v['params'], ['keys' => $record, 'numbers' => $params]);
@@ -1420,7 +1421,18 @@ class model_app extends _uho_model
                         else
                             $m_name = $schema['model_name'];
 
+                        /*                        
+                        $buttons[$k]['url'] = [
+                            'type' => 'plugin',
+                            'page' => $m_name,
+                            'page_params' => $params,
+                            'plugin_nr' => $k+1,
+                            'record' => $record['id'],
+                            'get' => $get
+                        ];*/
+
                         $buttons[$k]['url'] = ['type' => 'plugin', 'page' => $m_name, 'page_params' => $params, 'plugin' => $v['plugin'], 'record' => $record['id'], 'params' => $buttons[$k]['params'], 'get' => $get];
+
                         // let's find plugin's JSON
 
                         $json = @file_get_contents($this->cms_folder . '/plugins/' . $v['plugin'] . '/plugin.json');

@@ -5,7 +5,7 @@
 {% endfor %}
 <div style="{% if wide %}width:833px;{% endif %}z-index:998{% if field.settings.long %};background-color:white;padding:10px{% endif %}"
     data-id="{{item.id}}"
-    class="serdelia-edit-imageUploadThumb {% if field.settings.layout.type=='linear' %}serdelia-edit-imageUploadThumbLinear{% endif %}">
+    class="serdelia-edit-imageUploadThumb {% if field.cms.layout.type=='linear' %}serdelia-edit-imageUploadThumbLinear{% endif %}">
     {% set show_image=true %}
     {% set thumbnail='' %}
 
@@ -53,7 +53,7 @@
 
     {% if item.type=='url' %}
         {% set zoom=item.url %}
-        {% if field.settings.layout.src_thumbnail %}
+        {% if field.cms.layout.src_thumbnail %}
             {% set show_image=true %}
             {% set thumbnail=item.thumbnail %}
             {% else %}{% set label='URL' %}
@@ -69,7 +69,7 @@
         <img height="128" style="margin-bottom:8px" {% else %} <img
             width="{% if item.type=='panorama' %}256{% elseif item.type=='video' or item.type=='youtube' %}228{% elseif field.settings.ratio=='16:9' %}228{% else %}170{% endif %}"
             height="128" style="object-fit: cover;margin-bottom:8px" {% endif %}
-            src="{% if placeholder %}%image%{% else %}{% if item.image[field.settings.layout.folder] %}{% if not zoom %}{% set zoom=item.image['original'] %}{% endif %}{{item.image[field.settings.layout.folder]}}{% elseif thumbnail %}{{thumbnail}}{% else %}/serdelia_config/assets/{{field.settings.layout.src_blank}}{% endif %}{% endif %}">
+            src="{% if placeholder %}%image%{% else %}{% if item.image[field.cms.layout.folder] %}{% if not zoom %}{% set zoom=item.image['original'] %}{% endif %}{{item.image[field.cms.layout.folder]}}{% elseif thumbnail %}{{thumbnail}}{% else %}/serdelia_config/assets/{{field.cms.layout.src_blank}}{% endif %}{% endif %}">
     {% elseif zoom and show_zoom %}
         <img height="128" src="{{zoom}}">
     {% else %}

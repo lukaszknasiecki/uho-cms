@@ -35,6 +35,7 @@ class model_app_write extends model_app
 	 */
 	public function getContentData($params = null): void
 	{
+
 		// Load language-specific translations
 		$this->translate = $this->translate[$this->lang];
 
@@ -821,10 +822,15 @@ class model_app_write extends model_app
 			$class = new model_app_plugin($this->sql, $lang);
 			$class->setParent($this);
 			$class->setCfgPath($this->cfg_path);
+			$class->apporm=$this->apporm;
 
 			foreach ($plugins as $k => $v)
 			{
-				$p = ['page' => $model, 'page_with_params' => $page_with_params, 'params' => $v['params'], 'record' => $id, 'plugin' => $v['plugin'], 'orm' => $this->apporm];
+				$p = [
+					'page' => $model,
+					'page_with_params' => $page_with_params,
+					'params' => $v['params'],
+					'record' => $id, 'plugin' => $v['plugin'], 'orm' => $this->apporm];
 				$output = $class->getContentData(array('params' => $p, 'get' => []));
 			}
 
