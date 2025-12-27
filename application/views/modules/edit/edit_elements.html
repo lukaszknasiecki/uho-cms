@@ -45,12 +45,12 @@
 
 
 {% if layout=='simple' and field.cms.edit is not same as(false) %}
-		<div id="excludedElement" class="btn btn-sm btn-default serdelia-edit-elements-add--simple" style="display: inline-block;margin-top:25px" data-field="{{field.cms_field}}{% if field.input!='search' %}_select{% else %}_text{% endif %}"><span  class="mdi mdi-add"></span></div>
+		<div id="excludedElement" class="btn btn-sm btn-default serdelia-edit-elements-add--simple" style="display: inline-block;margin-top:25px" data-field="{{field.cms_field}}{% if field.cms.input!='search' %}_select{% else %}_text{% endif %}"><span  class="mdi mdi-add"></span></div>
 {% endif %}
 </div>
 
 {% if field.disabled or field.cms.edit is same as false %}
-{% elseif field.input!='search' %}
+{% elseif field.cms.input!='search' %}
 	<select id="{{field.cms_field}}_select" class="form-control serdelia-edit-elements-select" {% if layout=='simple' %}style="display:none"{% endif %}>
 		<option value="0">--- {{translate.add}} ---</option>
 		{% for item in field.options %}

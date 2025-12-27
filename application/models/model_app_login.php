@@ -84,7 +84,9 @@ class model_app_login extends model_app
 	 */
 	private function getAvailableProjects()
 	{
-		$configPath = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
+		$configPath = $_SERVER['DOCUMENT_ROOT'] . '/uho-cms.json';
+		if (!file_exists($configPath))
+			$configPath = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
 
 		// Load base CMS config
 		if (!file_exists($configPath)) {

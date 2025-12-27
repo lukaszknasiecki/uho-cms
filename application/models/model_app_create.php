@@ -121,7 +121,9 @@ class model_app_create extends model_app
      */
     private function getAvailableProjects()
     {
-        $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
+        $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/uho-cms.json';
+        if (!file_exists($cfg_src))
+            $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
 
         if (!file_exists($cfg_src)) return null;
 

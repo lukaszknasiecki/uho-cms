@@ -51,6 +51,10 @@ class model_app_plugin extends model_app
 		// Access control
 		$page = $params['page'] ?? '';
 		$plugin = $params['plugin'] ?? '';
+		$plugin = preg_replace('/[^a-zA-Z0-9_-]/', '', $plugin); // Only alphanumeric, dash, underscore
+		if (empty($plugin)) {
+			exit("Invalid plugin name");
+		}
 
 		if ($this->parent && !$this->parent->checkAuth($page, [2, 3])) {
 			exit("auth::error::0::app_plugin::{$page}::{$plugin}");
@@ -75,6 +79,7 @@ class model_app_plugin extends model_app
 		}
 
 		// Determine plugin path
+
 		$customPath = rtrim($this->cfg_path, '/') . '/plugins/' . $plugin . '/';
 		$defaultPath = rtrim($this->cms_path, '/') . '/plugins/' . $plugin . '/';
 
@@ -90,7 +95,12 @@ class model_app_plugin extends model_app
 		$pluginTrans = $pluginTrans[$this->lang] ?? [];
 
 		// Load plugin PHP class
-		require_once $pluginFolder . 'plugin.php';
+		$pluginFile=$pluginFolder . 'plugin.php';
+		if (!file_exists($pluginFile) || !is_readable($pluginFile)) {
+			exit("Plugin file not found");
+		}
+
+		require_once $pluginFile;
 		$pluginClass = 'serdelia_plugin_' . $plugin;
 
 		// Parse page and parameters
