@@ -6,8 +6,9 @@
 <link href="{{scaffold.css}}" rel="stylesheet">
 {% endif %}
 
-
+{% if scaffold.logged %}
 <link href="{{serdelia_path}}/public/jQueryFileUpload/css/jquery.fileupload.css" rel="stylesheet">
 <link href="{{serdelia_path}}/public/jQueryFileUpload/css/jquery.fileupload-ui.css" rel="stylesheet">
 <link href="{{serdelia_path}}/public/cropper/cropper.css" rel="stylesheet">
 <link href="{{serdelia_path}}/public/js/jquery-ui.css?v116" rel="stylesheet">
+{% endif %}

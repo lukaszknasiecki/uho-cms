@@ -25,14 +25,15 @@
   
   {{content|raw}}
 
-  {% include 'scaffold/wysiwyg1.html' with {editor:scaffold.cfg.wysiwyg} %}
-  {% include 'scaffold/js1.html' %}
-  {% include 'scaffold/wysiwyg2.html' with {editor:scaffold.cfg.wysiwyg} %}
-  {% include 'scaffold/js2.html' %}
-
-  {% for item in scaffold.js_array %}
-  <script src="{{item}}"></script>
-  {% endfor %}
+  {% if scaffold.logged %}
+    {% include 'scaffold/wysiwyg1.html' with {editor:scaffold.cfg.wysiwyg} %}
+    {% include 'scaffold/js1.html' %}
+    {% include 'scaffold/wysiwyg2.html' with {editor:scaffold.cfg.wysiwyg} %}
+    {% include 'scaffold/js2.html' %}
+    {% for item in scaffold.js_array %}
+    <script src="{{item}}"></script>
+    {% endfor %}
+  {% endif %}
 </body>
 
 </html>

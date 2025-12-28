@@ -183,6 +183,7 @@ class controller_app extends _uho_controller
 
         // Scaffold setup (page layout, CSS, menus, etc.)
         $this->data['scaffold'] = [];
+        $this->data['scaffold']['logged'] = $this->model->clients->isLogged();
         $this->data['scaffold']['title'] = $this->cfg['cms']['title'] . ' Admin';
         $this->data['scaffold']['cfg'] = $this->cfg['cms'];
         $this->data['scaffold']['cfg']['cfg_path'] = $this->model->cfg_path;
