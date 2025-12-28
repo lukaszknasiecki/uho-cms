@@ -232,16 +232,40 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 - **`buttons_page`**: Array of buttons shown in list view
 - **`buttons_edit`**: Array of buttons shown in edit view
 
-#### Layout Configuration
+#### Page title (label) configuration
+
+You can define separate title for list and edit views. Moreover you can use `helper_models` object to get properties from other models, especially useful
+for nested structures. In the following case CMS is using `params.1` value to get
+the parent model from the URL.
+
+```json
+{
+    "label": {
+        "page": "<code>/{{helper_models.page.path}}</code> Modules",
+        "edit": "<code>/{{helper_models.page.path}}</code>: {% if not type %}New module{% else %}{{type.label}}{% endif %}"
+    },
+    "helper_models": {
+        "page": {
+            "model": "pages",
+            "parent": "{{params.1}}"
+        }
+    }
+}
+```
+
+#### List View - Layout Configuration
+
+The standard layout is in the form of a list. An additional layout type (grid) is available. You can use built-on HTML for grid cells (based on `list` properties) or define custom HTML using values record values stored in `record.values` object.
+You can enhabce `grid` layout with `cards` settings, showing a more structured view.
 
 ```json
 {
     "layout": {
-        "type": "grid",              // "grid" or "table"
+        "type": "grid",              // "grid" or "table" (default)
         "count": 100,                // Items per page
-        "html": "Twig template",     // Custom HTML for grid items
+        "html": "Twig template: {{record.values.title}}",     // Custom HTML for grid items
         "settings": {
-            "cards": true,           // Use card layout
+            "cards": true,           // Use grid card layout
             "card_title": "title"    // Field to use as card title
         }
     }
@@ -250,13 +274,15 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 
 #### Buttons Configuration
 
+Each page can have custom buttons which can execute custom (or CMS-based) pugins or simply move users to other CMS pages. Please note that you can use button icons from https://mervick.github.io/material-design-icons/.
+
 **Page Buttons (List View):**
 
 ```json
 {
     "buttons_page": [
         {
-            "label": "Button Label",
+            "label": "Plugin Label",
             "icon": "icon-name",
             "type": "plugin",         // "plugin" or "page"
             "plugin": "plugin_name",
@@ -264,6 +290,12 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
             "params": {
                 "key": "value"
             }
+        },
+        {
+            "label": "Page Label",
+            "icon": "icon-name",
+            "type": "page",        
+            "page": "items"
         }
     ]
 }
@@ -278,7 +310,7 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
             "label": "Related Items",
             "type": "page",
             "icon": "reorder",
-            "page": "related_model,%id%"
+            "page": "related_model,{{id}}"    // you can use current record's id
         },
         {
             "type": "plugin",
