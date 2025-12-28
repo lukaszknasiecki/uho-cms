@@ -1,10 +1,13 @@
-<div class="serdelia-drag-upload" data-field="{{field.cms_field}}">    
-    <div id="{{field.field}}_filename_shown" style="padding:10px 0 10px 0">        
+<div class="serdelia-drag-upload" data-field="{{field.cms_field}}">
+    <div id="{{field.field}}_filename_shown" style="padding:10px 0 10px 0">
         {% if field.value_hashed %}<em>This file is encrypted</em>
         {% elseif value.src and (value.extension=='jpg' or value.extension=='png' or value.extension=='svg') %}
-        <a href="{{value.src}}" target="_blank"><img style="max-width:200px;max-height:100px" src="{{value.src}}"></a><br><br>
-        {% elseif value.src %}<code><a href="{{value.src}}" target="_blank">{{value.src|split('?')[0]}}</code></a>{% if value.size %} ({{value.size}}){% endif %}<br>{% endif %}
-        {% if field.extensions %}<small>{{translate.fileFormats}}: {% if field.extensions %}{{field.extensions|join(',')|upper}}{% else %}{{field.extension|upper}}{% endif %}</small>{% endif %}
+        <a href="{{value.src}}" target="_blank"><img style="max-width:200px;max-height:100px"
+                src="{{value.src}}"></a><br><br>
+        {% elseif value.src %}<code><a href="{{value.src}}" target="_blank">{{value.src|split('?')[0]}}</code></a>{% if
+        value.size %} ({{value.size}}){% endif %}<br>{% endif %}
+        {% if field.extensions %}<small>{{translate.fileFormats}}: {% if field.extensions
+            %}{{field.extensions|join(',')|upper}}{% else %}{{field.extension|upper}}{% endif %}</small>{% endif %}
     </div>
     {% if field.disabled or field.cms.edit is same as false %}
     {% else %}
@@ -14,10 +17,13 @@
         {% else %}
         <i class="mdi mdi-add"></i> <span>{{translate.fileAdd}}</span>
         {% endif %}
-        <input class="basic_fileupload temp-serdelia-edit-field" id="{{field.field}}" type="file" name="files[]" data-extensions="{{field.extensions|join(',')}}">
+        <input class="basic_fileupload temp-serdelia-edit-field" id="{{field.field}}" type="file" name="files[]"
+            data-extensions="{{field.extensions|join(',')}}">
     </span>
     {% if value.src %}
-    <span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_remove" id="{{field.cms_field}}_remove" type="checkbox"> <label for="{{field.cms_field}}_remove" style="font-size:11px">{{translate.fileRemove}}</small></span>    
+    <span style="padding-left:10px"><input class="serdelia-edit-field" name="{{field.cms_field}}_remove"
+            id="{{field.cms_field}}_remove" type="checkbox"> <label for="{{field.cms_field}}_remove"
+            style="font-size:11px">{{translate.fileRemove}}</small></span>
     {% endif %}
     {% endif %}
     <br>
@@ -26,7 +32,7 @@
         <div class="progress-bar progress-bar-success"></div>
     </div>
     <!-- The container for the uploaded files -->
-    <input id="{{field.field}}_filename" type="hidden" name="{{field.cms_field}}"  value="">
-    <input id="{{field.field}}_filename_old" type="hidden" name="{{field.cms_field}}_old"  value="">
+    <input id="{{field.field}}_filename" type="hidden" name="{{field.cms_field}}" value="">
+    <input id="{{field.field}}_filename_old" type="hidden" name="{{field.cms_field}}_old" value="">
     <input id="{{field.field}}_filename_upload" type="hidden" name="{{field.cms_field}}_upload" value="0">
 </div>

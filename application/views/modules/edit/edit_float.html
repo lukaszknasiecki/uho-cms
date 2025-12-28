@@ -1,8 +1,8 @@
 <input type="number" step="0.001"
-{% if field.placeholder is same as true %}placeholder="{{field.label}}"{% elseif field.placeholder %}placeholder="{{field.placeholder}}"{% endif %}
+{% if field.cms.placeholder is same as true %}placeholder="{{field.cms.label}}"{% elseif field.cms.placeholder %}placeholder="{{field.cms.placeholder}}"{% endif %}
 name="{{field.cms_field}}" class="form-control serdelia-edit-field"
 id="{{field.cms_field}}"
-value="{% if field.settings.blank_on_zero and value==0 %}{% else %}{{value}}{% endif %}"
+value="{% if field.cms.blank_on_zero and value==0 %}{% else %}{{value}}{% endif %}"
 {% if field.cms.required %}required{% endif %}{% if field.cms.on_demand or field.cms.edit is same as(false) %}readonly{% endif %}
-{% if field.settings.step %}step="{{field.settings.step}}"{% endif %}
+{% if field.cms.step %}step="{{field.cms.step}}"{% endif %}
 >

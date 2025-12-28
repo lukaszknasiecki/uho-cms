@@ -1,265 +1,339 @@
-# UHO CMS
+# UHO-CMS Quick Reference
 
-Easy to use CMS utilizing UHO-MVC framework, Bootstrap and Twig.
+Quick reference guide for common uho-cms configuration tasks.
 
-## Install
+## Setup Checklist
 
-Unpack repository to any folder, i.e. /cms, run composer install
-and create config file sunship-cms.json in the root directory:
+- [ ] Create `uho-cms.json` in project root
+- [ ] Create `cms_config/` folder
+- [ ] Create `cms_config/config.php`
+- [ ] Set environment variables (database, keys)
+- [ ] Create `cms_config/structure/` folder with structure files
+- [ ] Create `cms_config/pages/` folder with model configurations
+- [ ] Run `composer install` in `/cms` directory
+- [ ] Access CMS at `/cms` URL
 
+## File Structure
+
+```
+project_root/
+├── uho-cms.json              # Root configuration
+├── cms/                      # CMS core (framework)
+└── cms_config/               # Your configuration
+    ├── config.php
+    ├── pages/
+    │   └── *.json           # Model configurations
+    ├── plugins/
+    │   └── plugin_name/
+    │       ├── plugin.json
+    │       ├── plugin.php
+    │       └── plugin.html
+    └── structure/
+        ├── menu.json
+        ├── dashboard.json
+        ├── authorization.json
+        └── model_tree.json
+```
+
+## Configuration Files
+
+### uho-cms.json
+```json
 {
-    "CMS_CONFIG_DEBUG":true,
-    "CMS_CONFIG_PREFIX":"cms",
-    "CMS_CONFIG_FOLDERS":"cms_config",
-    "CMS_CONFIG_LANG":"en"
+  "CMS_CONFIG_DEBUG": true,
+  "CMS_CONFIG_PREFIX": "cms",
+  "CMS_CONFIG_FOLDERS": "cms_config",
+  "CMS_CONFIG_LANG": "en"
 }
+```
 
-Create config folder (i.e. /cms_config)
-with all neccessary informaction, including model schemes.
+### cms_config/config.php
+```php
+<?php
+$cfg = [
+    'cms' => [
+        'title' => 'CMS Title',
+        'app_languages' => ['en']
+    ]
+];
+```
 
-Add environmental variables and hash values:
+## Field Types Cheat Sheet
 
-DOMAIN=mysite.com
+| Type | Description | Example |
+|------|-------------|---------|
+| `boolean` | Checkbox | Active, published |
+| `checkboxes` | Multiple choice | Tags |
+| `date` | Date (YYYY-mm-dd) | Publish date |
+| `datetime` | Date + time | Created at |
+| `elements` | Ordered multiple | Related items |
+| `file` | Fila upload | PDF file |
+| `float` | Decimal number | Price |
+| `html` | Rich text editor | Content |
+| `integer` | Whole number | Count, ID |
+| `image` | Image upload | Featured image |
+| `media` | Media attachment | Gallery |
+| `order` | Sort order | Drag & drop |
+| `string` | Text (256 chars) | Title, name |
+| `select` | Single choice | Category, status |
+| `text` | Multi-line text | Description |
+| `table` | Table data | Schedule |
+| `uid` | Auto UID | Unique identifier |
+| `video` | Video upload | Video file |
 
-SQL_HOST=mysql_host
-SQL_USER=mysq_user
-SQL_PASS=mysql_password
-SQL_BASE=mysql_dbname
+## Common Field Patterns
 
-CLIENT_PASSWORD_SALT=xxx
-CLIENT_KEY1=xxxxxxxxxxxxxxxx
-CLIENT_KEY2=xxxxxxxxxxxxxxxx
-
-## Install
-
-Launch CMS and set admin password via GUI
-
-https://mysite.com/cms
-
-## Available field types
-
-`boolean`
-
-Boolean type
-
-`checkboxes`
-
-Multi-elements choice of records from other model
-with no fixed order
-
-`date`
-
-Date type in `YYYY-mm-dd` format
-
-`datetime`
-
-Datetime type in `YYYY-mm-dd H:i:s` format 
-
-`elements`
-
-Multi-elements choice of records from other model with fixed order
-
-`float`
-
-Float number type
-
-`html`
-
-HTML edit field
-
-`integer`
-
-Integer type INT(11)
-
-`image`
-
-Creates virtual image schema, no SQL field is used.
-
-Image sizes are defined in `.images` array with object:
-
-    {
-        "folder":"folder-name",
-        "width":integer,
-        "height":integer,
-        "retina":true|false,
-        "crop":true|false
+### Required Text Field
+```json
+{
+    "field": "title",
+    "cms": {
+        "label": "Title",
+        "required": true,
+        "list": "show"
     }
+}
+```
 
-Additional settings:
-
-    {
-        "folder": absolute-path-to-images-folder
-        "settings": {"webp":true|false}
+### Auto-Generated Slug
+```json
+{
+    "field": "slug",
+    "cms": {
+        "label": "URL",
+        "on_demand": true,
+        "auto": {
+            "on_null": true,
+            "pattern": "{{title}}",
+            "unique": true,
+            "url": true
+        }
     }
+}
+```
 
-`media`
+### Image with Sizes
+```json
+{
+    "field": "image",
+    "type": "image",
+    "settings": {
+        "folder": "/public/upload/images",
+        "filename": "%uid%"
+    },
+    "images": [
+        {"folder": "original", "label": "Original"},
+        {"folder": "thumb", "width": 400, "height": 300, "crop": true}
+    ]
+}
+```
 
-Attaches external model with media to specified field. You need to specify this media model as source.model, and add types of media to be available to upload (`image`, `video`, `audio`, `file`), example:
-
+### Select from Model
+```json
+{
+    "field": "category_id",
+    "type": "select",
     "source": {
-                    "model": "media",
-                    "types": [
-                        "image"
-                    ]
-                }
-
-You also need to define preview folder for media, i.e.:
-
-"layout": {
-                "folder": "desktop"
-            }
-
-You can also add additional text fields from this model to be edited in captions array:
-
-    "captions": [
-                    {
-                        "label": "Caption",
-                        "field": "label"
-                    },
-                    {
-                        "label": "Copy",
-                        "field": "text",
-                        "field_type": "text"
-                    }
-                ]            
-
-`order`
-
-Defines records order, `INT(11)`
-
-`select`
-
-User can choose one value from predefined set.
-
-You can define options for enum types:
-
-options: [ { value:"", label:"" }]
-
-or set another model as a source
-
-source: { model:"", "search": ["field_to_be_searched"], "search_strict":false }
-
-If you want to get values not full objects from options, add
-
-"settings": { "output":"value" }
-
-For large models you can use search field instead of select dropdown:
-
-input="search"
-
-
-`string`
-
-String (256 chars) type. If no type is defined this type
-is being used as a default one. The only exception is field
-name `id` which by default is integer.
-
-Additional settings:
-
-`(int) settings.length` - changes default size (of 256)
-`(bool) settings.code` - changes input field's font to Courier
-
-`table`
-
-Table view with multiple columns and rows.
-
-Settings:
-
-    settings.cols       int
-    settings.counter    boolean
-    settings.height       int
-    settings.wide   boolean
-    settings.style  enum (distinct)
-    settings.header array [{label,width,placeholder}]
-
-`text`
-
-Multi-line text type, no HTML.
-
-Additional settings:
-
-    settings: {"rows":integer}
-
-`uid`
-
-Automatacally generated UID with PHP's uniq()
-varchar(13)
-
-`video`
-
-Defines path to video (MP4) file.
-
-Destination paths is based on value of `folder`
-setting and `uid` field value:
-
-{folder}/{uid}.mp4
-
-
-## Additional field parameters:
-
-`auto`
-
-Updates field value on record save.
-
-Properties:
-
-`on_null (bool)` performs action only if field value is empty
-
-`pattern (string)` uses TWIG template to create value, using other fields from the same model
-
-`unique (bool)` checks if other record in this model have the same value, if yes - adds unique suffix
-
-`url (string)` converts value to URL-type string
-
-Example building unique URL string from object's title:
-
-    "auto": {
-                    "on_null": true,
-                    "pattern": "{{title}}",
-                    "unique": true,
-                    "url": true                
-                }
-
-`cms`
-
-Properties to be performed if object has beed loaded in the CMS only
-
-`.edit.remove (bool)` removes field from edit mode
-
-`hr`
-
-Boolean property (true|false) shows divider line above the field
-
-`list`
-
-Object setting visibility of the field value in page (list) view.
-Can be used with a shortcut as a string - defining list.type
-
-    {
-        "type": show|read|edit|order
-        "value": string
-        "width": integer
+        "model": "categories",
+        "search": ["name"]
     }
+}
+```
 
-Available values for `type`:
+### Multiple Selection
+```json
+{
+    "field": "tags",
+    "type": "checkboxes",
+    "source": {
+        "model": "tags",
+        "model_fields": ["label"]
+    }
+}
+```
 
-`show` shows value in the table view
+### Publish Toggle
+```json
+{
+    "field": "active",
+    "type": "boolean",
+    "cms": {
+        "label": "Publish",
+        "list": "edit"
+    }
+}
+```
 
-`read` reads value only withot showing it, use if want to use this value for Twig pattern in other fields
+## List View Options
 
-`edit` shows value in editable form, applicable only for boolean-type fields
+```json
+{
+    "cms": {
+        "list": "show"        // Show in list
+        "list": "read"        // Read but don't show
+        "list": "edit"        // Editable toggle (boolean)
+        "list": "order"       // Drag & drop (order type)
+        "list": {             // Custom display
+            "type": "show",
+            "value": "{{title}} - {{status}}",
+            "width": 30
+        }
+    }
+}
+```
 
-`order` for fields of type "order" - enabled drag&dtop sorting option
+## Button Types
 
-You can override record's view value with .value string which is using Twig template
-and record's data. You can also set field's width a percent of whole table width.
-If empty, default widths will be calculated based on field types.
+### Page Button (Navigate)
+```json
+{
+    "label": "Related Items",
+    "type": "page",
+    "icon": "reorder",
+    "page": "related_model,%id%"
+}
+```
 
+### Plugin Button
+```json
+{
+    "type": "plugin",
+    "plugin": "plugin_name",
+    "params": {
+        "key": "value"
+    }
+}
+```
 
-`search`
+## Structure Files
 
-Boolean property, shows record in filters tab in Page (list) mode
+### menu.json
+```json
+[
+    {
+        "label": "Content",
+        "submenu": [
+            {"label": "Pages", "page": "pages"}
+        ]
+    }
+]
+```
 
-`settings`
+### dashboard.json
+```json
+{
+    "type": "widgets",
+    "widgets": [
+        "hello",
+        {
+            "widget": "page",
+            "params": {"page": "pages", "icon": "article"}
+        }
+    ]
+}
+```
 
-Object with common settings for various types of fields.
+### authorization.json
+```json
+[
+    {
+        "id": "admin",
+        "label": "Administrator",
+        "models": ["pages", "media", "settings"]
+    }
+]
+```
+
+### model_tree.json
+```json
+{
+    "models": {
+        "pages": ["pages_modules"],
+        "interviews": ["sessions"]
+    }
+}
+```
+
+## Field Organization
+
+### Tabs
+```json
+{
+    "cms": {
+        "tab": "Content"
+    }
+}
+```
+
+### Sections
+```json
+{
+    "cms": {
+        "header": "Section Title",
+        "hr": true
+    }
+}
+```
+
+## Image List Display
+```json
+{
+    "cms": {
+        "list": {
+            "height": 110,
+            "src_blank": "blank169.png"
+        }
+    }
+}
+```
+
+## Search/Filter
+```json
+{
+    "cms": {
+        "search": true
+    }
+}
+```
+
+## Help Text
+```json
+{
+    "cms": {
+        "help": {
+            "text": "Helpful information",
+            "size": "full"
+        }
+    }
+}
+```
+
+## Environment Variables
+
+```bash
+# Database
+SQL_HOST=localhost
+SQL_USER=user
+SQL_PASS=password
+SQL_BASE=database
+
+# Security
+CLIENT_PASSWORD_SALT=salt
+CLIENT_KEY1=16charskey1
+CLIENT_KEY2=16charskey2
+
+# CMS
+CMS_CONFIG_DEBUG=true
+CMS_CONFIG_STRICT=false
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| CMS not loading | Check `uho-cms.json` exists |
+| Model not appearing | Verify JSON syntax, check table exists |
+| Plugin error | Check class name matches folder |
+| Image upload fails | Verify folder permissions, check path |
+| Field not showing | Check `cms.list` property |
+

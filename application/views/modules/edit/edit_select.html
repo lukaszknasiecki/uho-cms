@@ -1,4 +1,5 @@
-{% if field.input!='search' %}
+{# classic dropdown view #}
+{% if field.cms.input!='search' %}
 	{% if value.id %}{% set value=value.id %}{% endif %}
 	{% if value.values.id %}{% set value=value.values.id %}{% endif %}
 

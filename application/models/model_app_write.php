@@ -401,6 +401,7 @@ class model_app_write extends model_app
 						$data['uid']=uniqid();
 					}
 					
+					// CMS requested funcions
 
 					// for plugin (refresh), let's set rescale only
 					if (in_array($v['field'], $update_fields)) {
@@ -474,8 +475,8 @@ class model_app_write extends model_app
 
 					$source = $data[$v['field']];
 
-					if ($data['file'] && isset($data['filename_original']))
-						$data['filename_original'] = $data['file'];
+					if ($data['file'] && isset($data['settings']['filename_original']))
+						$data[$data['settings']['filename_original']] = $data['file'];
 
 					if (!empty($v['settings']['extension'])) $extension = $v['settings']['extension'];
 					else

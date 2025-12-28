@@ -42,7 +42,6 @@ class model_app_api_uploader
 
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'doc', 'docx', 'srt', 'mp4', 'wav', 'mp3'];
 
-
         $isCKEditor = isset($params['type']) && $params['type'] === 'ckeditor5';
         $isBinary = isset($params['type']) && $params['type'] === 'binary';
 

@@ -1278,8 +1278,8 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['help'] = ['text' => $v['help']];
                     $schema['fields'][$k]['help']['hidden'] = $hidden;
                 }
-                if ($schema['fields'][$k]['edit'] === false)
-                    $schema['fields'][$k]['disabled'] = true;
+                //if ($schema['fields'][$k]['edit'] === false)
+                //    $schema['fields'][$k]['disabled'] = true;
             }
 
         // update HTML media

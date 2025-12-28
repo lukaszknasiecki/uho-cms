@@ -1,4 +1,4 @@
-{% set layout=field.settings.layout %}{% if field.cms.small %}{% set layout='simple' %}{% endif %}
+{% set layout=field.cms.layout %}{% if field.cms.small %}{% set layout='simple' %}{% endif %}
 <div>
 <div id="{{field.cms_field}}_order" data-layout="{{layout}}" data-sortable="true" data-separator="div" data-input="{{field.cms_field}}" {% if layout=='simple' %}style="display:inline-block"{% else %}class="files serdelia-edit-images"{% endif %}>
 	{% for item in value.values %}	
