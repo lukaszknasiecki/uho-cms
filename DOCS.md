@@ -382,6 +382,7 @@ Each field consists of at least two parameters - `field` and `type`. Every field
         "edit" : false         // field is disabled for input        
     }
 }
+```
 
 ### Basic Types
 
