@@ -42,26 +42,7 @@
         {
             "label_PL": "Akcja",
             "label_EN": "Action",
-            "field": "action",
-            "type":"select",
-            "options": [
-                {
-                    "value": "login",
-                    "label": "Login"
-                },
-                {
-                    "value": "edit",
-                    "label": "Edit"
-                },
-                {
-                    "value": "remove",
-                    "label": "Remove"
-                },
-                {
-                    "value": "logout",
-                    "label": "Logout"
-                }
-            ],
+            "field": "action",            
             "list":"show",
             "edit": false,
             "search": true
