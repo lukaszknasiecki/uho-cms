@@ -288,8 +288,9 @@ class serdelia_plugin_import_cover
                 if ($vv)
                     foreach ($vv as $k => $v)
                         if ($v['type'] == 'video/mp4' && isset($v['width'])) {
-                            $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link_secure']];
+                            $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
                         }
+                        
             }
         }
 
