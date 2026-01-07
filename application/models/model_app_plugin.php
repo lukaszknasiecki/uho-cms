@@ -50,6 +50,7 @@ class model_app_plugin extends model_app
 
 		// Access control
 		$page = $params['page'] ?? '';			
+		$page_single=explode(',', $page)[0];
 		$plugin = $params['plugin'] ?? '';
 		$plugin = preg_replace('/[^a-zA-Z0-9_-]/', '', $plugin); // Only alphanumeric, dash, underscore
 		
@@ -65,7 +66,7 @@ class model_app_plugin extends model_app
 			exit("auth::error::1::app_plugin::{$page}::{$plugin}");
 		}
 
-		$schema=$this->apporm->getJsonModelSchemaWithPageUpdate($page);
+		$schema=$this->apporm->getJsonModelSchemaWithPageUpdate($page_single);
 
 		if (isset($params['record'])) $buttons=$schema['buttons_edit'];
 			else $buttons=$schema['buttons_page'];
