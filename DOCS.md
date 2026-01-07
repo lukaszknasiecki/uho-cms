@@ -4,16 +4,18 @@ Complete guide to creating and configuring uho-cms instances.
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Configuration Structure](#configuration-structure)
-4. [Core Configuration Files](#core-configuration-files)
-5. [Page/Model Configuration](#pagemodel-configuration)
-6. [Field Types](#field-types)
-7. [Plugins](#plugins)
-8. [Structure Files](#structure-files)
-9. [Best Practices](#best-practices)
+
+ 1. [Overview](#overview)
+ 2. [Installation](#installation)
+ 3. [Configuration Structure](#configuration-structure)
+ 4. [Core Configuration Files](#core-configuration-files)
+ 5. [Page/Model Configuration](#pagemodel-configuration)
+ 6. [Field Types](#field-types)
+ 7. [Plugins](#plugins)
+ 8. [Structure Files](#structure-files)
+ 9. [Best Practices](#best-practices)
 10. [Examples](#examples)
+
 
 ---
 
@@ -23,10 +25,11 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
 
 ### Key Concepts
 
-- **CMS Core**: Located in `/cms` folder, contains the framework and core functionality
-- **Configuration Folder**: Located in `/cms_config` folder, contains all project-specific configurations
-- **Multi-Instance Support**: Can manage multiple CMS instances from a single core installation
-- **Model-Driven**: Each content type is defined as a "model" with fields, layouts, and behaviors
+* **CMS Core**: Located in `/cms` folder, contains the framework and core functionality
+* **Configuration Folder**: Located in `/cms_config` folder, contains all project-specific configurations
+* **Multi-Instance Support**: Can manage multiple CMS instances from a single core installation
+* **Model-Driven**: Each content type is defined as a "model" with fields, layouts, and behaviors
+
 
 ---
 
@@ -36,6 +39,7 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
 
 The CMS core is located in the `/cms` folder. To set up a new CMS instance:
 
+
 1. Ensure the `/cms` folder contains the core CMS files
 2. Run `composer install` in the `/cms` directory to install dependencies
 3. Create a configuration folder (e.g., `/cms_config`) in your project root
@@ -43,10 +47,11 @@ The CMS core is located in the `/cms` folder. To set up a new CMS instance:
 ### 2. Root Configuration File
 
 Create a configuration file in your project root. The CMS looks for either:
-- `uho-cms.json` (preferred)
-- `sunship-cms.json` (fallback)
 
-**Example `uho-cms.json`:**
+* `uho-cms.json` (preferred)
+* `sunship-cms.json` (fallback)
+
+**Example** `uho-cms.json`:
 
 ```json
 {
@@ -60,11 +65,11 @@ Create a configuration file in your project root. The CMS looks for either:
 
 **Configuration Options:**
 
-- `CMS_CONFIG_DEBUG`: Enable/disable debug mode (boolean)
-- `CMS_CONFIG_PREFIX`: URL prefix for CMS access (default: "cms")
-- `CMS_CONFIG_FOLDERS`: Comma-separated list of configuration folder names (default: "cms_config")
-- `CMS_CONFIG_LANG`: Default language code (default: "en")
-- `CMS_CONFIG_THEME`: Theme mode - "light" or "dark" (default: "light")
+* `CMS_CONFIG_DEBUG`: Enable/disable debug mode (boolean)
+* `CMS_CONFIG_PREFIX`: URL prefix for CMS access (default: "cms")
+* `CMS_CONFIG_FOLDERS`: Comma-separated list of configuration folder names (default: "cms_config")
+* `CMS_CONFIG_LANG`: Default language code (default: "en")
+* `CMS_CONFIG_THEME`: Theme mode - "light" or "dark" (default: "light")
 
 **Environment Variable Support:**
 
@@ -109,8 +114,11 @@ https://yoursite.com/cms
 ```
 
 On first access, you'll be prompted to:
+
+
 1. Select a project (if multiple configuration folders are defined)
 2. Set up the admin password
+
 
 ---
 
@@ -152,6 +160,7 @@ cms_config/
     └── model_tree.json        # Model relationships
 ```
 
+
 ---
 
 ## Core Configuration Files
@@ -182,12 +191,13 @@ $cfg = [
 
 **Configuration Options:**
 
-- `title`: Display name for the CMS
-- `logotype`: Boolean - show logotype in CMS header
-- `favicon`: Boolean - use favicon
-- `debug`: Enable debug mode (from environment variable)
-- `strict_schema`: Enable strict schema validation
-- `app_languages`: Array of supported language codes
+* `title`: Display name for the CMS
+* `logotype`: Boolean - show logotype in CMS header
+* `favicon`: Boolean - use favicon
+* `debug`: Enable debug mode (from environment variable)
+* `strict_schema`: Enable strict schema validation
+* `app_languages`: Array of supported language codes
+
 
 ---
 
@@ -223,14 +233,14 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 
 #### Top-Level Properties
 
-- **`table`**: Database table name (required)
-- **`label`**: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
-- **`order`**: Default sort field(s), comma-separated for multiple fields
-- **`model`**: Object defining how records of this schema are displayed (supports Twig templates) in other models
-- **`layout`**: List view layout configuration
-- **`fields`**: Array of field definitions
-- **`buttons_page`**: Array of buttons shown in list view
-- **`buttons_edit`**: Array of buttons shown in edit view
+* `table`: Database table name (required)
+* `label`: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
+* `order`: Default sort field(s), comma-separated for multiple fields
+* `model`: Object defining how records of this schema are displayed (supports Twig templates) in other models
+* `layout`: List view layout configuration
+* `fields`: Array of field definitions
+* `buttons_page`: Array of buttons shown in list view
+* `buttons_edit`: Array of buttons shown in edit view
 
 #### Page title (label) configuration
 
@@ -286,7 +296,7 @@ Each page can have custom buttons which can execute custom (or CMS-based) pugins
             "icon": "icon-name",
             "type": "plugin",         // "plugin" or "page"
             "plugin": "plugin_name",
-            "hidden": false,          // Hide from non-admins
+            "hidden": false,
             "params": {
                 "key": "value"
             }
@@ -363,19 +373,19 @@ Each field in the `fields` array defines a database column and its CMS behavior:
 }
 ```
 
-**Field `cms` Properties:**
+**Field** `cms` Properties:
 
-- `label`: Display label for the field
-- `required`: Field is required
-- `list`: Visibility in list view - `"show"`, `"read"`, `"edit"`, `"order"`, or object with `type`, `value`, `width`
-- `search`: Include in search/filter panel
-- `tab`: Group field in a named tab
-- `hr`: Show horizontal divider above field
-- `header`: Show section header above field
-- `on_demand`: Only display when explicitly requested
-- `edit.remove`: Hide field from edit form
-- `help`: Show help text with field
-- `auto`: Auto-generate field value (see Auto Fields section)
+* `label`: Display label for the field
+* `required`: Field is required
+* `list`: Visibility in list view - `"show"`, `"read"`, `"edit"`, `"order"`, or object with `type`, `value`, `width`
+* `search`: Include in search/filter panel
+* `tab`: Group field in a named tab
+* `hr`: Show horizontal divider above field
+* `header`: Show section header above field
+* `on_demand`: Only display when explicitly requested
+* `edit.remove`: Hide field from edit form
+* `help`: Show help text with field
+* `auto`: Auto-generate field value (see Auto Fields section)
 
 **List View Options:**
 
@@ -392,6 +402,7 @@ Each field in the `fields` array defines a database column and its CMS behavior:
     }
 }
 ```
+
 
 ---
 
@@ -419,6 +430,7 @@ Each field consists of at least two parameters - `field` and `type`. Every field
 ### Basic Types
 
 #### `string`
+
 Default type, Text field, 256 characters by default.
 
 ```json
@@ -440,6 +452,7 @@ Default type, Text field, 256 characters by default.
 ```
 
 #### `boolean`
+
 Checkbox/boolean field.
 
 ```json
@@ -454,6 +467,7 @@ Checkbox/boolean field.
 ```
 
 #### `text`
+
 Multi-line text field (no HTML).
 
 ```json
@@ -471,6 +485,7 @@ Multi-line text field (no HTML).
 ```
 
 #### `json`
+
 Multi-line text field in JSON format.
 
 ```json
@@ -486,6 +501,7 @@ Multi-line text field in JSON format.
 ```
 
 #### `html`
+
 Rich text editor field (CKEditor). It's based on CKEditor5, which you can enhance
 with your own toolbars, classes and styles in `/cms_config/ckeditor5` folder.
 
@@ -496,7 +512,7 @@ with your own toolbars, classes and styles in `/cms_config/ckeditor5` folder.
     "cms": {
         "width": 8,          // Bootstrap column width (1-12)
         "tall": true,        // Tall Edit Area
-        "style":"standard"   // One of available toolbar styles
+        "style": "standard"   // One of available toolbar styles
     },
     "settings": {
         "wysiwyg": "ckeditor5", // ckeditor5 is a default editor
@@ -505,6 +521,7 @@ with your own toolbars, classes and styles in `/cms_config/ckeditor5` folder.
 ```
 
 #### `integer`
+
 Integer number (INT(11) in database).
 
 ```json
@@ -515,6 +532,7 @@ Integer number (INT(11) in database).
 ```
 
 #### `float`
+
 Floating-point number.
 
 ```json
@@ -529,6 +547,7 @@ Floating-point number.
 ```
 
 #### `date`
+
 Date field (YYYY-mm-dd format).
 
 ```json
@@ -543,6 +562,7 @@ Date field (YYYY-mm-dd format).
 ```
 
 #### `datetime`
+
 Date and time field (YYYY-mm-dd H:i:s format).
 
 ```json
@@ -557,6 +577,7 @@ Date and time field (YYYY-mm-dd H:i:s format).
 ```
 
 #### `uid`
+
 Automatically generated unique identifier (varchar(13)).
 
 ```json
@@ -572,6 +593,7 @@ Automatically generated unique identifier (varchar(13)).
 ### Selection Types
 
 #### `select`
+
 Single selection from options or another model.
 
 **Static Options:**
@@ -631,6 +653,7 @@ Single selection from options or another model.
 ```
 
 #### `checkboxes`
+
 Multiple selection from another model (no fixed order).
 
 ```json
@@ -652,6 +675,7 @@ Multiple selection from another model (no fixed order).
 ```
 
 #### `elements`
+
 Multiple selection from another model (with fixed order).
 
 ```json
@@ -677,6 +701,7 @@ Multiple selection from another model (with fixed order).
 ### Media Types
 
 #### `image`
+
 Image upload with multiple sizes. Creates virtual schema (no SQL field).
 CMS is using phpThumb library and by default `uid` field to create unique filenames.
 
@@ -722,7 +747,9 @@ CMS is using phpThumb library and by default `uid` field to create unique filena
     }
 }
 ```
+
 #### `file`
+
 File upload.
 
 ```json
@@ -750,6 +777,7 @@ File upload.
 ```
 
 #### `video`
+
 Video file upload (MP4).
 
 ```json
@@ -766,6 +794,7 @@ Video file upload (MP4).
 Files are stored as: `{folder}/{uid}.mp4`
 
 #### `media`
+
 Attach media from another model.
 
 ```json
@@ -805,11 +834,11 @@ Attach media from another model.
 
 **Media Types:**
 
-- `image`: Image files
-- `video`: Video files
-- `audio`: Audio files
-- `file`: Other files
-- `youtube`/`vimeo`: Stores video's UIDs and thumbnails if available
+* `image`: Image files
+* `video`: Video files
+* `audio`: Audio files
+* `file`: Other files
+* `youtube`/`vimeo`: Stores video's UIDs and thumbnails if available
 
 For YouTube and Vimeo you need to specify access keys in ENVs to get covers
 and/or sources (Vimeo):
@@ -827,6 +856,7 @@ Fields used to store the data:
 ### Other Types
 
 #### `hidden`
+
 Fiels is not shown in the CMS, but it's value is available for other fields
 as a possible source of patter fills.
 
@@ -851,6 +881,7 @@ Defines record ordering (INT(11) in database). Enables drag-and-drop sorting.
 ```
 
 #### `plugin`
+
 Creates plugin button as a mirror of any plugin defined in `buttons_edit` array.
 Useful if you want to visually attach plugin to some field and hide top plugin button.
 
@@ -891,6 +922,7 @@ Table view with multiple columns and rows.
 ```
 
 #### `url`
+
 String for storing URLs.
 
 ```json
@@ -904,6 +936,7 @@ String for storing URLs.
 ```
 
 #### `virtual`
+
 Field used for copy to clipboard.
 
 ```json
@@ -937,15 +970,16 @@ Field values can be automatically generate values using the `auto` property:
 }
 ```
 
+
 ---
 
 ## Plugins
 
 Plugins extend CMS functionality with custom PHP code. Each plugin is a folder in `cms_config/plugins/` containing:
 
-- `plugin.json`: Plugin metadata
-- `plugin.php`: PHP class implementation
-- `plugin.html`: Optional HTML template
+* `plugin.json`: Plugin metadata
+* `plugin.php`: PHP class implementation
+* `plugin.html`: Optional HTML template
 
 ### Plugin Structure
 
@@ -998,12 +1032,14 @@ class serdelia_plugin_your_plugin_name
 Class name must follow pattern: `serdelia_plugin_{folder_name}`
 
 Replace hyphens and spaces with underscores. Example:
-- Folder: `clip-update` → Class: `serdelia_plugin_clip_update`
-- Folder: `my_plugin` → Class: `serdelia_plugin_my_plugin`
+
+* Folder: `clip-update` → Class: `serdelia_plugin_clip_update`
+* Folder: `my_plugin` → Class: `serdelia_plugin_my_plugin`
 
 ### Using Plugins
 
 Plugins can be called from:
+
 
 1. **Page buttons** (list view)
 2. **Edit buttons** (edit view)
@@ -1071,6 +1107,7 @@ $item = $this->cms->getJsonModel('model_name', ['id' => $id], true);
 $this->cms->putJsonModel('model_name', ['active' => 1], ['id' => $id]);
 ```
 
+
 ---
 
 ## Structure Files
@@ -1110,10 +1147,10 @@ Defines the CMS navigation menu.
 
 **Menu Properties:**
 
-- `label`: Menu item label
-- `page`: Model/page to link to (format: `"model_name"` or `"model_name,id"`)
-- `submenu`: Array of nested menu items
-- `auth`: Required authorization preset (see authorization.json)
+* `label`: Menu item label
+* `page`: Model/page to link to (format: `"model_name"` or `"model_name,id"`)
+* `submenu`: Array of nested menu items
+* `auth`: Required authorization preset (see authorization.json)
 
 ### dashboard.json
 
@@ -1145,14 +1182,14 @@ Defines dashboard widgets shown on CMS home page.
 
 **Widget Types:**
 
-- `"hello"`: Welcome message widget
-- `{"widget": "page", ...}`: Link to a model/page
+* `"hello"`: Welcome message widget
+* `{"widget": "page", ...}`: Link to a model/page
 
 **Page Widget Parameters:**
 
-- `page`: Model name
-- `icon`: Material icon name
-- `image`: Field name to use as widget image
+* `page`: Model name
+* `icon`: Material icon name
+* `image`: Field name to use as widget image
 
 ### authorization.json
 
@@ -1180,9 +1217,9 @@ Defines user permission presets.
 
 **Authorization Properties:**
 
-- `id`: Unique identifier for the preset
-- `label`: Display name
-- `models`: Array of model names this preset can access
+* `id`: Unique identifier for the preset
+* `label`: Display name
+* `models`: Array of model names this preset can access
 
 **Using Authorization:**
 
@@ -1218,57 +1255,59 @@ Defines parent-child relationships between models.
 
 This creates navigation relationships where child models are accessible from parent model edit pages.
 
+
 ---
 
 ## Best Practices
 
 ### 1. Naming Conventions
 
-- **Model files**: Use lowercase with underscores: `my_model.json`
-- **Database tables**: Match model names exactly
-- **Field names**: Use snake_case: `first_name`, `publish_date`
-- **Plugin folders**: Use lowercase with hyphens: `my-plugin`
+* **Model files**: Use lowercase with underscores: `my_model.json`
+* **Database tables**: Match model names exactly
+* **Field names**: Use snake_case: `first_name`, `publish_date`
+* **Plugin folders**: Use lowercase with hyphens: `my-plugin`
 
 ### 2. Field Organization
 
-- Use `tab` to group related fields
-- Use `hr: true` to visually separate sections
-- Use `header` for section titles
-- Place most important fields first
+* Use `tab` to group related fields
+* Use `hr: true` to visually separate sections
+* Use `header` for section titles
+* Place most important fields first
 
 ### 3. Image Handling
 
-- Always use `uid` field for image filenames
-- Define appropriate sizes for your use case
-- Enable WebP generation for better performance
-- Use `src_blank` for list view placeholders
+* Always use `uid` field for image filenames
+* Define appropriate sizes for your use case
+* Enable WebP generation for better performance
+* Use `src_blank` for list view placeholders
 
 ### 4. Performance
 
-- Use `list: "read"` for fields needed in templates but not displayed
-- Use `on_demand: true` for rarely-edited fields
-- Define appropriate `order` for list views
-- Use `search: true` only for fields that need filtering
+* Use `list: "read"` for fields needed in templates but not displayed
+* Use `on_demand: true` for rarely-edited fields
+* Define appropriate `order` for list views
+* Use `search: true` only for fields that need filtering
 
 ### 5. Security
 
-- Never expose sensitive data in list views
-- Use `hidden: true` for admin-only buttons
-- Validate plugin inputs
-- Use prepared statements in plugin queries
+* Never expose sensitive data in list views
+* Use `hidden: true` for admin-only buttons
+* Validate plugin inputs
+* Use prepared statements in plugin queries
 
 ### 6. Localization
 
-- Use language-specific labels: `label_EN`, `label_PL`
-- Define language arrays in config.php
-- Use Twig templates for dynamic labels
+* Use language-specific labels: `label_EN`, `label_PL`
+* Define language arrays in config.php
+* Use Twig templates for dynamic labels
 
 ### 7. Relationships
 
-- Use `model_tree.json` to define clear parent-child relationships
-- Use `elements` for ordered relationships
-- Use `checkboxes` for unordered multi-select
-- Consider performance when loading related models
+* Use `model_tree.json` to define clear parent-child relationships
+* Use `elements` for ordered relationships
+* Use `checkboxes` for unordered multi-select
+* Consider performance when loading related models
+
 
 ---
 
@@ -1276,7 +1315,7 @@ This creates navigation relationships where child models are accessible from par
 
 ### Example 1: Simple Blog Post Model
 
-**File: `cms_config/pages/articles.json`**
+**File:** `cms_config/pages/articles.json`
 
 ```json
 {
@@ -1384,7 +1423,7 @@ This creates navigation relationships where child models are accessible from par
 
 ### Example 2: Model with Relationships
 
-**File: `cms_config/pages/products.json`**
+**File:** `cms_config/pages/products.json`
 
 ```json
 {
@@ -1448,7 +1487,7 @@ This creates navigation relationships where child models are accessible from par
 
 ### Example 3: Custom Plugin
 
-**File: `cms_config/plugins/export_data/plugin.json`**
+**File:** `cms_config/plugins/export_data/plugin.json`
 
 ```json
 {
@@ -1459,7 +1498,7 @@ This creates navigation relationships where child models are accessible from par
 }
 ```
 
-**File: `cms_config/plugins/export_data/plugin.php`**
+**File:** `cms_config/plugins/export_data/plugin.php`
 
 ```php
 <?php
@@ -1503,6 +1542,7 @@ class serdelia_plugin_export_data
 }
 ```
 
+
 ---
 
 ## Additional Resources
@@ -1526,23 +1566,27 @@ Then, add CSS styles in `cms_config/ckeditor5/config.css`:
 ### Assets
 
 Place CMS assets in `cms_config/assets/`:
-- `logotype.png`: CMS logo
-- `blank.png`: Placeholder image
-- `blank169.png`: 16:9 placeholder
+
+* `logotype.png`: CMS logo
+* `blank.png`: Placeholder image
+* `blank169.png`: 16:9 placeholder
 
 ### Logs and Temp Folders
 
 The CMS automatically creates:
-- `{config_folder}-logs/`: Error logs
-- `{config_folder}-temp/`: Temporary uploads
+
+* `{config_folder}-logs/`: Error logs
+* `{config_folder}-temp/`: Temporary uploads
 
 These are created automatically on first CMS access.
+
 
 ---
 
 ## Troubleshooting
 
 ### CMS Not Loading
+
 
 1. Check `uho-cms.json` exists in project root
 2. Verify `cms_config` folder exists
@@ -1551,12 +1595,14 @@ These are created automatically on first CMS access.
 
 ### Models Not Appearing
 
+
 1. Verify JSON syntax in page configuration files
 2. Check database table exists
 3. Ensure field types match database columns
 4. Check authorization.json includes model
 
 ### Plugins Not Working
+
 
 1. Verify class name matches folder name pattern
 2. Check PHP syntax errors
@@ -1565,10 +1611,12 @@ These are created automatically on first CMS access.
 
 ### Image Upload Issues
 
+
 1. Verify folder paths are absolute
 2. Check folder permissions (write access)
 3. Ensure `uid` field exists in model
 4. Verify image size configurations
+
 
 ---
 
@@ -1577,4 +1625,3 @@ These are created automatically on first CMS access.
 This documentation covers the essential aspects of configuring uho-cms. The CMS is highly flexible and configuration-driven, allowing you to create custom content management solutions without modifying core code.
 
 For additional support or advanced configurations, refer to the core CMS code in `/cms` or consult the framework documentation.
-

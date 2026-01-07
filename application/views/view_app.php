@@ -79,11 +79,12 @@ class view_app extends _uho_view
     public function getHtml($data)
     {
       
+      $this->setTemplatePrefix('view_app_');
       $data['content']=$this->getContentHtml($data['content'],$data['view']);
-
+      
       // render whole page
-      if ($this->renderHtmlRoot)
-      {
+      if ($this->getRenderHtmlRoot())
+      {        
         $html=$this->getTwig('',$data);
       }
       // render content only

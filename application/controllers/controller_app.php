@@ -224,7 +224,7 @@ class controller_app extends _uho_controller
         }
 
         // Control rendering root HTML
-        $this->view->renderHtmlRoot = (!$this->data['fullscreen'] && !$this->route->isAjax());
+        $this->view->setRenderHtmlRoot(!$this->data['fullscreen'] && !$this->route->isAjax());
 
         // Search URL and logout URL
         if ($this->model->url_search) {
