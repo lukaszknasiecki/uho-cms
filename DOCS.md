@@ -5,6 +5,7 @@ Complete guide to creating and configuring uho-cms instances.
 ## Table of Contents
 
 
+
  1. [Overview](#overview)
  2. [Installation](#installation)
  3. [Configuration Structure](#configuration-structure)
@@ -16,8 +17,6 @@ Complete guide to creating and configuring uho-cms instances.
  9. [Best Practices](#best-practices)
 10. [Examples](#examples)
 
-
----
 
 ## Overview
 
@@ -31,13 +30,18 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
 * **Model-Driven**: Each content type is defined as a "model" with fields, layouts, and behaviors
 
 
----
-
 ## Installation
 
 ### 1. Core Installation
 
 The CMS core is located in the `/cms` folder. To set up a new CMS instance:
+
+
+
+
+
+
+
 
 
 1. Ensure the `/cms` folder contains the core CMS files
@@ -116,11 +120,16 @@ https://yoursite.com/cms
 On first access, you'll be prompted to:
 
 
+
+
+
+
+
+
+
 1. Select a project (if multiple configuration folders are defined)
 2. Set up the admin password
 
-
----
 
 ## Configuration Structure
 
@@ -161,8 +170,6 @@ cms_config/
 ```
 
 
----
-
 ## Core Configuration Files
 
 ### config.php
@@ -198,8 +205,6 @@ $cfg = [
 * `strict_schema`: Enable strict schema validation
 * `app_languages`: Array of supported language codes
 
-
----
 
 ## Page/Model Configuration
 
@@ -403,8 +408,6 @@ Each field in the `fields` array defines a database column and its CMS behavior:
 }
 ```
 
-
----
 
 ## Field Types
 
@@ -750,7 +753,7 @@ CMS is using phpThumb library and by default `uid` field to create unique filena
 
 #### `file`
 
-File upload.
+File upload - by default filename is created from uid field with added extension.
 
 ```json
 {
@@ -758,10 +761,8 @@ File upload.
     "type": "file",
     "settings": {
         "folder": "/public/upload/files",       // folder to upload files
-        "filename_original": "filename",        // file to store original filename
         "size": "size",                          // field to store file size
         "hashable": false,                      // if you want to enable option to hash/dehash files
-        "extension": "docx",                    // extension for single-extension fields
         "extensions": ["docx", "pdf"],          // list of supported extensions for multi-extension fields
         "extension_field": "ext"                // field to store file's extension,        
     },
@@ -773,8 +774,33 @@ File upload.
         ]
 
     }
+},
+{
+    "field":"ext",
+    "type":"string"
 }
 ```
+
+You can also store files with their original filenames, you will need additional field to store that filename. Additionally you can specify just one extenstion, then you won’t need separate extension field.
+
+```json
+{
+    "field": "file",
+    "type": "file",
+    "settings": {
+        "folder": "/public/upload/files",       // folder to upload files
+        "filename_original": "filename_org",        // field to store original filename
+        "filename":"{{filename_org}}",              // pattern to create filename
+        "extension": "docx"                    // extension for single-extension fields
+     }
+},
+{
+    "field":"filename_org",
+    "type":"string"
+}
+```
+
+#### 
 
 #### `video`
 
@@ -971,8 +997,6 @@ Field values can be automatically generate values using the `auto` property:
 ```
 
 
----
-
 ## Plugins
 
 Plugins extend CMS functionality with custom PHP code. Each plugin is a folder in `cms_config/plugins/` containing:
@@ -1041,6 +1065,13 @@ Replace hyphens and spaces with underscores. Example:
 Plugins can be called from:
 
 
+
+
+
+
+
+
+
 1. **Page buttons** (list view)
 2. **Edit buttons** (edit view)
 3. **Field actions**
@@ -1107,8 +1138,6 @@ $item = $this->cms->getJsonModel('model_name', ['id' => $id], true);
 $this->cms->putJsonModel('model_name', ['active' => 1], ['id' => $id]);
 ```
 
-
----
 
 ## Structure Files
 
@@ -1256,8 +1285,6 @@ Defines parent-child relationships between models.
 This creates navigation relationships where child models are accessible from parent model edit pages.
 
 
----
-
 ## Best Practices
 
 ### 1. Naming Conventions
@@ -1308,8 +1335,6 @@ This creates navigation relationships where child models are accessible from par
 * Use `checkboxes` for unordered multi-select
 * Consider performance when loading related models
 
-
----
 
 ## Examples
 
@@ -1543,8 +1568,6 @@ class serdelia_plugin_export_data
 ```
 
 
----
-
 ## Additional Resources
 
 ### CKEditor Configuration
@@ -1581,11 +1604,16 @@ The CMS automatically creates:
 These are created automatically on first CMS access.
 
 
----
-
 ## Troubleshooting
 
 ### CMS Not Loading
+
+
+
+
+
+
+
 
 
 1. Check `uho-cms.json` exists in project root
@@ -1596,12 +1624,26 @@ These are created automatically on first CMS access.
 ### Models Not Appearing
 
 
+
+
+
+
+
+
+
 1. Verify JSON syntax in page configuration files
 2. Check database table exists
 3. Ensure field types match database columns
 4. Check authorization.json includes model
 
 ### Plugins Not Working
+
+
+
+
+
+
+
 
 
 1. Verify class name matches folder name pattern
@@ -1612,13 +1654,18 @@ These are created automatically on first CMS access.
 ### Image Upload Issues
 
 
+
+
+
+
+
+
+
 1. Verify folder paths are absolute
 2. Check folder permissions (write access)
 3. Ensure `uid` field exists in model
 4. Verify image size configurations
 
-
----
 
 ## Conclusion
 

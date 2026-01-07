@@ -475,12 +475,12 @@ class model_app_write extends model_app
 
 					$source = $data[$v['field']];
 
-					if ($data['file'] && isset($data['settings']['filename_original']))
-						$data[$data['settings']['filename_original']] = $data['file'];
-
+					if ($source && isset($v['settings']['filename_original']))
+						$data[$v['settings']['filename_original']] = pathinfo($source, PATHINFO_FILENAME);
+				
 					if (!empty($v['settings']['extension'])) $extension = $v['settings']['extension'];
 					else
-							if ($data['extension']) $extension = $data['extension'];
+						if ($data['extension']) $extension = $data['extension'];
 					elseif ($source) {
 						$extension = strtolower(array_pop(explode('.', $source)));
 					} else $extension = '';

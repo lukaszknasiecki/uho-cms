@@ -1,0 +1,33 @@
+{% if exported %}
+	<div class="alert alert-success">
+		[[icon::done]]
+		{{translate.exported}} {{exported}},
+	</div>
+		
+	<a class="btn btn-primary"  href="{{download.source}}" download="{{download.filename}}">[[icon::download]] {{translate.download}}</a><br><br>
+
+	{% endif %}
+	{% if errors %}
+	<div class="alert alert-danger">
+		[[icon::warning]]
+		{% for error in errors %} {% if loop.index>1 %}<br>{% endif %}
+		{% if translate['error_'~error] %}{{translate['error_'~error]}}{% else %}{{error}}{% endif %} {% endfor %}
+	</div>
+{% endif %}
+
+{% if not exported %}
+<div class="alert alert-info">
+	[[icon::info-outline]] {{translate.description}}
+	<br>Records to export: {{count}}
+</div>
+	<form action="" method="POST">
+		{% for field in fields %}
+		<div class="checkbox">
+			<label><input type="checkbox" name="f_{{field.field}}" checked>&nbsp; {{field.label}}</label>
+		  </div>
+		{% endfor %}
+<br>
+
+		<button type="submit" name="submit" class="btn btn-danger">[[icon::download]] {{translate.submit}}</button>
+		</form>
+			{% endif %}

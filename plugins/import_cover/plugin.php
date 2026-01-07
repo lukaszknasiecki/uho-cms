@@ -153,7 +153,6 @@ class serdelia_plugin_import_cover
                         }
                     }
 
-
                     if (!empty($vimeo['duration'])) {
                         $duration = $vimeo['duration'];
                     }
@@ -182,7 +181,7 @@ class serdelia_plugin_import_cover
         // ------------------------------------------------------------------------------------
 
         if ($title || $cover || $sources) {
-
+            
             $data = ['id' => $record['id']];
             if ($params['field_title'] && $title && !$record[$params['field_title']]) {
                 $data[$params['field_title']] = $title;
@@ -290,7 +289,6 @@ class serdelia_plugin_import_cover
                         if ($v['type'] == 'video/mp4' && isset($v['width'])) {
                             $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
                         }
-                        
             }
         }
 

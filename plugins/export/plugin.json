@@ -1,0 +1,27 @@
+{
+    "icon":"download",
+    "pl":
+    {
+        "title": "Eksport",
+        "description":"Zaznacz pola, które chcesz wypełnić.",
+        "skip_first_line":"Zignoruj pierwszy rząd",
+        "error_nothing_checked":"Zaznacz choć jedno pole do eksportu.",
+        "error_no_data":"Nie znaleziono żadnych danych",
+        "error_sql":"Błąd SQL",
+        "submit":"Uruchom eksport",
+        "exported":"Wyeksportowane rekordy: ",
+        "back":"Powrót"
+    },
+    "en":
+    {
+        "title": "Export",
+        "description":"Please, check the fields to export.",
+        "error_nothing_checked":"Please, check at least one field.",
+        "error_no_data":"No data to export found.",
+        "error_sql":"SQL error, sorry.",
+        "submit":"Proceed with export",
+        "download":"Download CSV file",
+        "exported":"Exported records: ",
+        "back":"Back"
+    }    
+}

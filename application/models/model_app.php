@@ -2908,7 +2908,8 @@ class model_app extends _uho_model
             'table',
             'media',
             'plugin',
-            'video'
+            'video',
+            'blocks'
         ];
 
         foreach ($schema['fields'] as $k => $v) {
