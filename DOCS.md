@@ -4,8 +4,6 @@ Complete guide to creating and configuring uho-cms instances.
 
 ## Table of Contents
 
-
-
  1. [Overview](#overview)
  2. [Installation](#installation)
  3. [Configuration Structure](#configuration-structure)
@@ -16,7 +14,6 @@ Complete guide to creating and configuring uho-cms instances.
  8. [Structure Files](#structure-files)
  9. [Best Practices](#best-practices)
 10. [Examples](#examples)
-
 
 ## Overview
 
@@ -707,6 +704,7 @@ Multiple selection from another model (with fixed order).
 
 Image upload with multiple sizes. Creates virtual schema (no SQL field).
 CMS is using phpThumb library and by default `uid` field to create unique filenames.
+By default all images are converted do JPG and WEBP (optional).
 
 ```json
 {
@@ -719,6 +717,51 @@ CMS is using phpThumb library and by default `uid` field to create unique filena
         "filename_field": "filename",       // field to store original filename
         "change_uid_on_upload": false,      // change UID on every image change/upload
         "sizes": "image_sizes",             // json field to store JSON with all image sizes
+        "webp": true                        // add webp format
+    },
+    "images": [                             // list of sizes/folders
+        {
+            "folder": "original",           // first folder - to store original image
+            "label": "Original image"
+        },
+        {
+            "folder": "desktop",            // subfolder name
+            "label": "Desktop",             // cms label
+            "width": 1200,                  // max width
+            "height": 800,                  // max height
+            "crop": true,               // use to force fixed ratio
+            "retina": true              // create retina (x2) images, in desktop_x2 folder
+        },
+        {
+            "folder": "mobile",
+            "label": "Mobile",
+            "width": 640,
+            "height": 480,
+            "crop": true
+        }
+    ],
+    "cms": {
+        "list": {
+            "height": 110,              // image height in CMS preview
+            "src_blank": "blank169.png" // blank file to be shown if no image is present, uses /cms_config/assets folder as a root
+        }
+    }
+}
+```
+
+You can also keep original image types, which is convenient for transparent images (like PNG).
+
+```json
+{
+    "field": "image",
+    "type": "image",
+    "settings": {
+        "folder": "/public/upload/images",  // root folder for uploads
+        "folder_preview": "thumb",          // preview folder to be used in CMS for thumbnails
+        "filename": "%uid%",                // filename template
+        "filename_field": "filename",       // field to store original filename
+        "extensions": [ "png"],             // allowed extensions
+        "extension_field": "extension",     // field to store original extension
         "webp": true                        // add webp format
     },
     "images": [                             // list of sizes/folders

@@ -443,8 +443,9 @@ class model_app_write extends model_app
 					elseif ($data[$v['field']]) {
 						$r = $this->imageUpload($v, $data, $data[$v['field']], false, null, 'image', $backup_record_data);
 						if (!$r['result'] && $r['errors']) $errors = array_merge($errors, $r['errors']);
-						elseif ($r['extension'] && isset($v['extension_field'])) {
-							$data[$v['extension_field']] = $r['extension'];
+						elseif ($r['extension'] && isset($v['settings']['extension_field'])) {
+							$data[$v['settings']['extension_field']] = $r['extension'];
+
 						}
 					}
 
