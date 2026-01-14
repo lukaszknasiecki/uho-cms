@@ -33,14 +33,6 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
 
 The CMS core is located in the `/cms` folder. To set up a new CMS instance:
 
-
-
-
-
-
-
-
-
 1. Ensure the `/cms` folder contains the core CMS files
 2. Run `composer install` in the `/cms` directory to install dependencies
 3. Create a configuration folder (e.g., `/cms_config`) in your project root
@@ -115,14 +107,6 @@ https://yoursite.com/cms
 ```
 
 On first access, you'll be prompted to:
-
-
-
-
-
-
-
-
 
 1. Select a project (if multiple configuration folders are defined)
 2. Set up the admin password
@@ -259,7 +243,7 @@ the parent model from the URL.
     "helper_models": {
         "page": {
             "model": "pages",
-            "parent": "{{params.1}}"
+            "parent": "{{p.1}}"     // url params, in this case - parent's id
         }
     }
 }
@@ -970,22 +954,28 @@ Table view with multiple columns and rows.
     "field": "schedule",
     "type": "table",
     "settings": {
-        "cols": 3,
-        "counter": true,
-        "height": 300,
-        "wide": false,
+        "cols": 3,                          // columns count
         "style": "distinct",
-        "header": [
+        "header": [                         // header shows table header and sets columns count
             {
-                "label": "Time",
-                "width": 30,
-                "placeholder": "HH:MM"
+                "label": "Time",            // column header
+                "width": 30,                // column width in % of table width
+                "placeholder": "HH:MM"      // row placeholder for this column
             },
             {
-                "label": "Event",
+                "label": "Text",
+                "type": "html",             // row type, string is default, allowed: "string|html"
                 "width": 70
             }
         ]
+    },
+    "cms": {
+        "counter": true,                    // if set to true, row numbers are visible
+        "height": 300,                      // row height in pixels
+        "wide": false,                      // if true - table takes 100% of screen width    
+        "style": "json",                    // available: json|distinct
+        "placeholders" : ["A", "B"],        // placeholders for each column
+        "widths": [30,50,70]                // width of each column (%)
     }
 }
 ```
@@ -1039,8 +1029,15 @@ Field values can be automatically generate values using the `auto` property:
 }
 ```
 
-
 ## Plugins
+
+Plugins extend CMS functionality. You can write your own plugins and/or use predefined ones:
+
+* `import_cover`: imports cover images from videos - including mp4, vimeo and youtube, including additional fields (like video titles, vimeo mp4 sources etc.)
+
+You can find documentation for each predefined plugin in its class file: `/cms/plugins/{name}/plugin.php`
+
+## Custom Plugins
 
 Plugins extend CMS functionality with custom PHP code. Each plugin is a folder in `cms_config/plugins/` containing:
 
@@ -1107,14 +1104,6 @@ Replace hyphens and spaces with underscores. Example:
 
 Plugins can be called from:
 
-
-
-
-
-
-
-
-
 1. **Page buttons** (list view)
 2. **Edit buttons** (edit view)
 3. **Field actions**
@@ -1137,6 +1126,12 @@ Plugins can be called from:
             "params": {
                 "url": "/{{slug}}?preview=true"
             }
+        },
+        {
+            "type": "plugin",
+            "plugin": "auto_update",
+            "hidden": true,             // hide from the button view
+            "on_update": true          // run on record update
         }
     ]
 }

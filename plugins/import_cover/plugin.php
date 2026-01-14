@@ -5,6 +5,39 @@ use Vimeo\Vimeo;
 /**
  * Serdelia built-in plugin to import covers from MP4/VIMEO/YOUTUBE
  * and any other metadata available like subtitles, video sources etc.
+ *
+ * Methods:
+ * - __construct($cms, $params, $parent) - Standard Serdelia Plugin Constructor
+ * 
+ * - getData() - Main plugin-method, returns data for View module
+ * 
+ * - youtubeGet($id, $key = null) - Gets Youtube cover image via YouTube API
+ * - vimeoGet($id, $keys = null, $subtitles = false) - Loads Vimeo cover via simple V2 api
+ * - getVimeoFilenameAdvanced($id, $keys, $subtitles = false) - Gets MP4 filenames via Vimeo API
+ * 
+ * $params object structure
+ *  - type          mp4|youtube|vimeo
+ *  - field_mp4     json field to show video sources, mostly used for vimeo
+ *  - field_video       field storing mp4 video (video)
+ *  - field_duration    field storing video duration (integer)
+ *  - field_poster      field storing video cover (image)
+ *  - field_poster_timestamp    field storing video timestamp from which to take cover screenshot, for vimeo
+ *                              with sources it will use FFMPEG not cover provided by vimeo
+ *  - field_youtube     field storing youtube id (string)
+ *  - field_vimeo       field storing vimeo id (string)
+ *  - field_vtt         field storing vtt (file type)
+ *  - field_title       field storing video title (string)
+ * 
+ * Example:
+ *  {
+ *      "type": "plugin",
+ *      "plugin": "import_cover",
+ *      "params":
+ *       {
+ *              "field_vimeo":"vimeo_id",
+ *              "field_poster":"image
+ *        }
+ *  }
  */
 
 use Huncwot\UhoFramework\_uho_fx;
@@ -68,16 +101,14 @@ class serdelia_plugin_import_cover
 
         $params = array_merge($params, $params['params']);
 
-
-        //if (!$params['field_title']) $params['field_title'] = 'label';
-        //$params['field_image']='image';
         if (!$params['field_mp4']) $params['field_mp4'] = 'source';
-        //if (!$params['field_poster']) return ['result' => false, 'message' => 'field_poster not defined'];
 
         $title = '';
         $cover = '';
         $sources = '';
         $duration = 0;
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $cover_to_remove=null;
 
         // ------------------------------------------------------------------------------------
 
@@ -85,7 +116,6 @@ class serdelia_plugin_import_cover
 
             case "mp4":
 
-                $root = $_SERVER['DOCUMENT_ROOT'];
 
                 $video = $root . explode('?', $record[$params['field_video']]['src'])[0];
                 $image = $record[$params['field_poster']];
@@ -96,7 +126,6 @@ class serdelia_plugin_import_cover
                 if ($video && $image_original) {
 
                     $cmd = "-i $video -vframes 1 -y -ss " . str_replace(',', '.', $position) . " $image_original";
-
                     $this->parent->ffmpeg($cmd);
 
                     $result = file_exists($image_original);
@@ -138,7 +167,30 @@ class serdelia_plugin_import_cover
                     */
                     if ($params['field_title'] && $vimeo['title'] && !$record[$params['field_title']])
                         $title = $vimeo['title'];
+
+                    /*
+                        vimeo poster
+                    */
                     if ($vimeo['image']) $cover = $vimeo['image'];
+
+                    /*
+                        vimeo poster via ffmpeg
+                    */
+
+                    if (isset($params['field_poster_timestamp']) && $record[$params['field_poster_timestamp']] && isset($vimeo['mp4'][0]['src']))
+                    {
+                        $image_temp = '/cms_config-temp/'.uniqid().'.jpg';
+                        $mp4=$vimeo['mp4'][0]['src'];
+                        $cmd = "-ss " . $record[$params['field_poster_timestamp']] . " -i \"".$mp4."\" -frames:v 1 ".$root.$image_temp;
+                        $this->parent->ffmpeg($cmd);
+                        if (_uho_fx::file_exists($image_temp))
+                            {
+                                $cover = $image_temp;
+                                $cover_to_remove=$root.$image_temp;
+                            }
+                            else $cover=null;
+
+                    }
 
                     /*
                         sources
@@ -181,7 +233,7 @@ class serdelia_plugin_import_cover
         // ------------------------------------------------------------------------------------
 
         if ($title || $cover || $sources) {
-            
+
             $data = ['id' => $record['id']];
             if ($params['field_title'] && $title && !$record[$params['field_title']]) {
                 $data[$params['field_title']] = $title;
@@ -212,6 +264,7 @@ class serdelia_plugin_import_cover
             }
 
             $this->cms->putJsonModel($params['page'], $data);
+            if ($cover_to_remove) unlink($cover_to_remove);
         }
 
         // ----------------------------------------------------------------
@@ -237,6 +290,7 @@ class serdelia_plugin_import_cover
     private function vimeoGet($id, $keys = null, $subtitles = false)
     {
         //echo('<!-- vimeoGet -->');
+        
         if ($keys) return $this->getVimeoFilenameAdvanced($id, $keys, $subtitles);
         else {
             $json = _uho_fx::fileCurl('http://vimeo.com/api/v2/video/' . $id . '.json');
@@ -260,7 +314,7 @@ class serdelia_plugin_import_cover
 
         $lib = new Vimeo($keys['client'], $keys['secret']);
         $lib->setToken($keys['token']);
-
+        $id=explode('/',$id)[0];
         $data = $lib->request('/videos/' . $id);
 
         if (isset($data['body']['error'])) {

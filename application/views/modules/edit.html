@@ -121,7 +121,7 @@
             style="{% if not field.type in non_inline %}padding-left:0{% endif %}">
             {% include 'modules/edit/edit_'~field.type~'.html' with
             {'field':field,'value':record[field.field],'lang':lang,'langs':langs } %}
-            {% if field.cms.on_demand %}
+            {% if field.cms.on_demand and field.cms.edit is not same as(false) %}
             <div class="input-group-append">
               <div class="input-group-text">
                 <input type="checkbox" aria-label="" class="serdelia-on-demand" data-field="{{field.cms_field}}">

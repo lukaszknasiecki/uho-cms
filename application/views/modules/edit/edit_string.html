@@ -1,5 +1,14 @@
 {% if field.cms.rows %}
 <textarea style="{% if field.cms.style=='json' %}font-family:Courier;font-size:11px;{% endif %}{% if field.cms.wide %}width:100%;padding:20px;{% endif %}" type="text" name="{{field.cms_field}}" class="form-control serdelia-edit-field" {% if field.cms.rows=='medium' or (field.cms.style=='json' and not field.cms.rows) %}rows=10{% elseif field.cms.rows+1>1 %}rows={{field.cms.rows}}{% endif %} id="{{field.cms_field}}" {% if field.cms.required %}required{% endif %}{% if field.cms.on_demand or field.cms.edit is same as(false) %}readonly{% endif %}{% if field.cms.max %} maxlength="{{field.cms.max}}"{% endif %}>{{value}}</textarea>
 {% else %}
-<input {% if field.cms.auto.url or field.cms.code %}style="font-family:Courier"{% endif %} {% include 'modules/edit/subview_settings.html' with field %}{% if field.settings.pattern %}pattern="{{field.settings.pattern}}"{% endif %}{% if field.cms.placeholder is same as true %}placeholder="{{field.label}}"{% elseif field.cms.placeholder %}placeholder="{{field.cms.placeholder}}"{% endif %} type="text" name="{{field.cms_field}}" class="form-control serdelia-edit-field"  id="{{field.cms_field}}" value="{{value}}" {% if field.cms.required %}required{% endif %}{% if field.cms.on_demand or field.cms.edit is same as(false) %}readonly{% endif %}>
+<input 
+    {% if field.cms.auto.url or field.cms.code %}style="font-family:Courier"{% endif %}
+    {% include 'modules/edit/subview_settings.html' with field %}
+    {% if field.settings.pattern %}pattern="{{field.settings.pattern}}"{% endif %}
+    {% if field.cms.placeholder is same as true %}placeholder="{{field.label}}"
+        {% elseif field.cms.placeholder %}placeholder="{{field.cms.placeholder}}"{% endif %}
+    type="text" name="{{field.cms_field}}" class="form-control serdelia-edit-field"
+    id="{{field.cms_field}}" value="{{value}}"
+    {% if field.cms.required %} required{% endif %}
+    {% if field.cms.on_demand or field.cms.edit is same as(false) %} readonly{% endif %}>
 {% endif %}

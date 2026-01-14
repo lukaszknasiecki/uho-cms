@@ -55,9 +55,9 @@ class serdelia_plugin_refresh
 
         // add auto-fields
         foreach ($schema['fields'] as $k => $v) {
-            if (is_array($v['label'])) $v['label'] = $v['label']['edit'];
+            if (is_array($v['cms']['label'])) $v['cms']['label'] = $v['cms']['label']['edit'];
             if ($v['auto'] || in_array($v['type'], ['image']))
-                $fields[] = ['type' => 'field', 'field' => $v['field'], 'label' => $v['label'], 'id' => 'i' . ++$id];
+                $fields[] = ['type' => 'field', 'field' => $v['field'], 'label' => $v['cms']['label'], 'id' => 'i' . ++$id];
         }
 
         // POST

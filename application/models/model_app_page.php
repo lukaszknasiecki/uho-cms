@@ -595,8 +595,21 @@ class model_app_page extends model_app
 
 		// Restrict actions for unauthorized users.
 		if (!in_array($auth, [2, 3])) {
-			$schema['disable'] = array_merge($schema['disable'] ?? [], ['add', 'remove', 'edit']);
+			if ($auth==1) $remove=['add', 'remove'];
+				else $remove=['add', 'remove', 'edit'];
+			$schema['disable'] = array_merge($schema['disable'] ?? [], $remove);
 			$schema['enable'] = array_merge($schema['enable'] ?? [], ['view']);
+		}
+
+		// Remove editable fields in list
+		if (!in_array($auth, [2, 3])) {
+			foreach ($schema['fields'] as $k=>$v)
+			{
+				if (isset($v['cms']['list']) && $v['cms']['list']=='edit')
+					$schema['fields'][$k]['cms']['list']='show';
+				if (!empty($v['list']['type']) && $v['list']['type']=='edit')
+					$schema['fields'][$k]['list']['type']='show';
+			}
 		}
 
 		return $schema;

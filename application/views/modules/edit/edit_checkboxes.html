@@ -9,7 +9,7 @@
             style="margin:8px 0 0 0{% if field.cms.small %};font-size:10px{% endif %}">
             {% endif %}
             <label><input type="checkbox" class="serdelia-edit-field" style="margin-right:5px"
-                    name="{{field.cms_field}}[]" value="{{item.value}}" {% if value[item.value] %}checked{% endif %} />
+                    name="{{field.cms_field}}[]" value="{{item.value}}" {% if value[item.value] %}checked{% endif %} {% if field.cms.edit is same as(false) %} disabled{% endif %} />
                 {{item.label|raw}}</label>
         </div>
         {% endfor %}

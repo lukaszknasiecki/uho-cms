@@ -1,8 +1,9 @@
-<div id="{{field.field}}_files" data-sortable="true" data-separator="div" data-input="{{field.field}}_order" class="files serdelia-edit-images" {% if field.cms.wide %}style="width:800px"{% endif %}>{% apply spaceless %}
-{% set ids=[] %}
+<div id="{{field.field}}_files" data-sortable="true" data-separator="div" data-input="{{field.field}}_order"
+    class="files serdelia-edit-images" {% if field.cms.wide %}style="width:800px" {% endif %}>{% apply spaceless %}
+    {% set ids=[] %}
     {% for item in value %}
     {% set ids=ids|merge([item.id]) %}
-        {% include 'modules/edit/edit_media_item.html' with {'item':item,'field':field,disabled:field.disabled} %}
+    {% include 'modules/edit/edit_media_item.html' with {'item':item,'field':field,disabled:field.disabled} %}
     {% endfor %}
     {% endapply %}
 </div>
@@ -10,29 +11,35 @@
 {% if type is iterable %}{% set type=type.type %}{% endif %}
 <div id="{{field.field}}_placeholders_{{type}}" style="display:none" data-type="{{type}}">
     {% set item = {'id':'%id%','image':{'original':'%image%','desktop':'%image%'},'type':type } %}
-    {% include 'modules/edit/edit_media_item.html' with {'item':item,'field':field,'placeholder':true,disabled:field.disabled} %}
+    {% include 'modules/edit/edit_media_item.html' with
+    {'item':item,'field':field,'placeholder':true,disabled:field.disabled} %}
 </div>
 {% endfor %}
-{% if not field.disabled %}
-    <div class="serdelia-drag-upload" data-field="{{field.field}}">
-        {% for type in field.source.types %}   
-        {% if type is iterable %}
-            {% set type_params=type %}
-            {% set type=type.type %}            
-        {% endif %}
-        {% if translate['media_add_'~type][1] %}        
-        <span class="btn btn-success fileinput-button serdelia-edit-images-{{type}}" data-type="{{type}}" style="margin-bottom:8px">
-        <i class="mdi mdi-{{translate['media_add_'~type][0]}} pull-left"></i>&nbsp;<span>{{translate['media_add_'~type][1]}}</span>
-            {% if type=='image' or type=='video' or type=='file' or type=='audio' or type=='panorama' %}<input class="filemultiupload filemultiupload_{{type}}" id="{{field.field}}" data-type="{{type}}" type="file" name="files[]" multiple {% if type_params.extensions %}data-extensions="{{type_params.extensions|join('|')}}"{% endif %}>{% endif %}
-        </span>
-        {% endif %}
-        {% endfor %}
-        <div id="{{field.field}}_progress" class="progress" style="display:none;margin-top:10px;;margin-bottom:0px">
-        <div class="progress-bar progress-bar-success"></div>
-        </div>
-    </div>
+{% if not field.disabled and field.cms.edit is not same as(false) %}
+<div class="serdelia-drag-upload" data-field="{{field.field}}">
+    {% for type in field.source.types %}
+    {% if type is iterable %}
+    {% set type_params=type %}
+    {% set type=type.type %}
     {% endif %}
-    <!-- The container for the uploaded files -->
-    <input type="hidden" id="{{field.field}}_filename"  data-captions='' style="width:100%" name="{{field.cms_field}}[filename]"> 
-    <input id="{{field.field}}_order" name="{{field.cms_field}}[order]" value="{{ids|join(',')}}" type="hidden">
-    
+    {% if translate['media_add_'~type][1] %}
+    <span class="btn btn-success fileinput-button serdelia-edit-images-{{type}}" data-type="{{type}}"
+        style="margin-bottom:8px">
+        <i
+            class="mdi mdi-{{translate['media_add_'~type][0]}} pull-left"></i>&nbsp;<span>{{translate['media_add_'~type][1]}}</span>
+        {% if type=='image' or type=='video' or type=='file' or type=='audio' or type=='panorama' %}<input
+            class="filemultiupload filemultiupload_{{type}}" id="{{field.field}}" data-type="{{type}}" type="file"
+            name="files[]" multiple {% if type_params.extensions
+            %}data-extensions="{{type_params.extensions|join('|')}}" {% endif %}>{% endif %}
+    </span>
+    {% endif %}
+    {% endfor %}
+    <div id="{{field.field}}_progress" class="progress" style="display:none;margin-top:10px;;margin-bottom:0px">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+</div>
+{% endif %}
+<!-- The container for the uploaded files -->
+<input type="hidden" id="{{field.field}}_filename" data-captions='' style="width:100%"
+    name="{{field.cms_field}}[filename]">
+<input id="{{field.field}}_order" name="{{field.cms_field}}[order]" value="{{ids|join(',')}}" type="hidden">

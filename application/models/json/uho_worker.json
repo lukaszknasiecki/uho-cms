@@ -1,30 +1,99 @@
 {
-    "label_EN":"Worker Queue",
-    "label_PL":"Worker - Kolejka zadań",
+    "label_EN": "Worker Queue",
+    "label_PL": "Worker - Kolejka zadań",
     "table": "uho_worker",
-    "disable":["add","remove"],
-    "order":"date_created",
-    "buttons_page":
-    [
-        {"plugin":"uho_worker_clear"},
-        {"plugin":"uho_worker_errors"}
+    "disable": [
+        "add",
+        "remove"
     ],
-    "fields" :
-    [
-        { "field":"id","label":"Id","list":true,"edit":false},
-        { "field":"date_created","label":"Created","list":true},
-        { "field":"date_completed","label":"Processed","list":true,"edit":false},
-        { "field":"action","label":"Action","list":true,"edit":false},
-        { "field":"status","label":"Status","list":true,"edit":false,"search":true,"type":"select",
-            "options":
-            [
-                {"value":"waiting","label_PL":"oczekująca","label_EN":"waiting"},
-                {"value":"success","label_PL":"zakończona","label_EN":"completed"},
-                {"value":"error","label_PL":"błędna","label_EN":"error"},
-                {"value":"processing","label_PL":"procesowana","label_EN":"processing"},
-                {"value":"disabled","label_PL":"dezaktywowana","label_EN":"disabled"}
-            ]    
+    "order": "date_created",
+    "buttons_page": [
+        {
+            "plugin": "uho_worker_clear"
         },
-        { "field":"message","label":"Message","list":true,"edit":false,"type":"text"}
+        {
+            "plugin": "uho_worker_errors"
+        }
+    ],
+    "fields": [
+        {
+            "field": "id",
+            "cms": {
+                "label": "Id",
+                "list": "show",
+                "edit": false
+            }
+        },
+        {
+            "field": "date_created",
+            "type": "datetime",
+            "cms": {
+                "label": "Created",
+                "list": "show"
+            }
+        },
+        {
+            "field": "date_completed",
+            "type": "datetime",
+            "cms": {
+                "label": "Processed",
+                "list": "show",
+                "edit": false
+            }
+        },
+        {
+            "field": "action",
+            "cms": {
+                "label": "Action",
+                "list": "show",
+                "edit": false
+            }
+        },
+        {
+            "field": "status",
+            "type": "select",
+            "options": [
+                {
+                    "value": "waiting",
+                    "label_PL": "oczekująca",
+                    "label_EN": "waiting"
+                },
+                {
+                    "value": "success",
+                    "label_PL": "zakończona",
+                    "label_EN": "completed"
+                },
+                {
+                    "value": "error",
+                    "label_PL": "błędna",
+                    "label_EN": "error"
+                },
+                {
+                    "value": "processing",
+                    "label_PL": "procesowana",
+                    "label_EN": "processing"
+                },
+                {
+                    "value": "disabled",
+                    "label_PL": "dezaktywowana",
+                    "label_EN": "disabled"
+                }
+            ],
+            "cms": {
+                "label": "Status",
+                "list": true,
+                "edit": false,
+                "search": true
+            }
+        },
+        {
+            "field": "message",
+            "type": "text",
+            "cms": {
+                "label": "Message",
+                "list": "show",
+                "edit": false
+            }
+        }
     ]
 }

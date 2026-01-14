@@ -1917,9 +1917,10 @@ class model_app extends _uho_model
         if ($rescale_only) {
             $original = $dir . $field['images'][0]['folder'] . '/' . $destination_filename;
             if (!file_exists($original))
-                $errors[] = 'model_app_write::source file not found::' . $source;
+                $errors[] = 'model_app_write::source file not found::' . $filename;
         } else {
-            if (substr($filename, 0, 4) == 'http') {
+            if (substr($filename, 0, 4) == 'http')
+            {
                 $source = $full_filename;
             } else {
                 if ($filename[0] == '/')
@@ -1934,7 +1935,7 @@ class model_app extends _uho_model
         }
 
         if (!$errors)
-            foreach ($field['images'] as $k => $v) {
+            foreach ($field['images'] as $v) {
                 // folder
                 $folder = $dir . $v['folder'];
                 $folder = $this->getTwigFromHtml($folder, $data);
@@ -1954,6 +1955,7 @@ class model_app extends _uho_model
                 if (!$v['width'] && !$v['height']) {
                     if (!$rescale_only) {
                         // 
+                        
                         $this->uploadCopy($source, $destination);
                         if (!$this->file_exists($destination))
                             return (['result' => false, 'errors' => ['Could not copy [' . $source . ' to ' . $destination . ']']]);

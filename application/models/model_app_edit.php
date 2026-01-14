@@ -140,7 +140,7 @@ class model_app_edit extends model_app
 
 		if ($this->view) {
 			foreach ($schema['fields'] as &$field) {
-				$field['edit'] = false;
+				$field['cms']['edit'] = false;
 			}
 		}
 

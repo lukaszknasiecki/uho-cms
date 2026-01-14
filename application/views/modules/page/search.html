@@ -11,7 +11,7 @@
     {% if item.options %}
       <select id="{{item.field_search}}" name="{{item.field_search}}" {% if item.searched %}class="form-control" {% else %}class="form-control serdelia_page_search-control" disabled="disabled"{% endif %}>
         {% for option in item.options %}
-                  <option value="{{option.value}}" {% if item.searched==option.value %}selected{% endif %}>{{option.label}}</option>
+                  <option value="{{option.value}}" {% if item.searched==option.value %}selected{% endif %}>{% if option.label %}{{option.label}}{% else %}{{option.value}}{% endif %}</option>
         {% endfor %}
         </select>
     {% elseif item.type=='boolean' %}

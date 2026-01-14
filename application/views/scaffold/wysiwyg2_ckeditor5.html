@@ -18,12 +18,20 @@
 
 		editors.forEach((node, index) => {
 			var style=$(editors[index]).data('style');
-			if (!style) style='default';			
+			if (!style) style='default';
+			var isReadonly = $(editors[index]).prop('readonly') || $(editors[index]).attr('readonly') !== undefined;
+
 			ClassicEditor
 				.create(node, CKEditor5_Configs[style])
 				.then(editor => {
-					
+
 					CKEditors5[$(editors[index]).attr('name')] = editor;
+
+					// Make editor non-editable if textarea has readonly attribute
+					if (isReadonly) {
+						editor.enableReadOnlyMode('readonly-textarea');
+					}
+
 					editor.model.document.on('change:data', (evt, data) => {
 						Apps.Edit.changeField();
 					})
@@ -77,5 +85,10 @@
 	.ck .media {
 		width: 640px !important;
 		height: auto !important;
+	}
+
+	.ck-editor[aria-disabled="true"] .ck-content,
+	.ck-read-only {
+		background-color: #e9ecef !important;
 	}
 </style>
