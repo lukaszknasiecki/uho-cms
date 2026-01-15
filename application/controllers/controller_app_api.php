@@ -26,8 +26,8 @@ class controller_app_api extends controller_app
             }
 
             // Configure ORM with available languages
-            $this->model->apporm->setLangs($langs);
-            $this->model->apporm->changeLang($langs[0]); // Default to the first language
+            $this->model->apporm->setLanguages($langs);
+            $this->model->apporm->setLanguage($langs[0]); // Default to the first language
         }
 
         // Determine API action from route or POST parameters

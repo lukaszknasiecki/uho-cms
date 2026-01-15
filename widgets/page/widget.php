@@ -58,13 +58,11 @@ class serdelia_widget_page
 
         $model = explode('?', $model)[0];
 
-        $this->orm->setHaltOnError(false);
         $schema = $this->parent->getSchema($model);
         
 
         if (!$schema)
         {
-            $this->orm->setHaltOnError(true);
             return ['result' => false];
         }
 
@@ -101,8 +99,6 @@ class serdelia_widget_page
                 $image = $i;
             }
         }
-
-        $this->orm->setHaltOnError(true);
 
         return ['result' => true, 'all' => $all, 'active' => $active, 'icon' => @$this->params['icon'], 'label' => $schema['label'], 'image' => $image, 'url' => '/page/' . $this->params['model']];
     }

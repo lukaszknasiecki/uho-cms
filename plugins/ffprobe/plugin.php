@@ -55,8 +55,10 @@ class serdelia_plugin_ffprobe
         elseif (isset($record[$p['audio']]['src'])) $src = $record[$p['audio']]['src'];
         else return ['result' => false];
 
-        $stream = $this->getStream($_SERVER['DOCUMENT_ROOT'] . $src);
-        
+        if (substr($src,0,4)!='http')
+            $src=$_SERVER['DOCUMENT_ROOT'].$src;
+
+        $stream = $this->getStream($src);
 
         if ($stream) {
             $output = [];
@@ -81,13 +83,17 @@ class serdelia_plugin_ffprobe
      * @return array
      */
 
+    private function getFFProbe($cmd)
+    {
+        $json=$this->parent->ffprobe($cmd);
+        if ($json) $json = json_decode($json, true);
+        return $json;
+    }
+
     private function getStream($file)
     {
-        $stream = null;
-        $cmd = '-v quiet -print_format json -show_format -show_streams ' . $file;        
-        $json = $this->parent->ffprobe($cmd);
-        
-        if ($json) $json = json_decode($json, true);
+        $json = $this->getFFProbe('-v quiet -print_format json -show_format -show_streams ' . $file);
+                
         if ($json) {
             if (isset($json['streams']))
             {
@@ -97,8 +103,18 @@ class serdelia_plugin_ffprobe
                 if (!$stream) $stream = _uho_fx::array_filter($json['streams'], 'codec_type', 'audio', ['first' => true]);
 
                 if (isset($stream['duration'])) $duration=$stream['duration'];
+
+                // alternative duration with packets
+                if (!$duration)
+                    {
+                        $data = $this->getFFProbe('-v quiet -print_format json -show_format -show_entries packet=pts_time -show_streams ' . $file);
+                        if (!empty($data['packets']))
+                            {
+                                $item=array_pop($data['packets']);
+                                if (!empty($item['pts_time'])) $duration=$item['pts_time'];
+                            }
+                    }
                 
-                //$stream=$json['streams'][0];
                 $stream = [
                     'width' => $stream['coded_width'],
                     'height' => $stream['coded_height'],

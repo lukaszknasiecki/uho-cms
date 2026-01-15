@@ -145,8 +145,7 @@ class model_app extends _uho_model
         }
 
         // --- Initialize ORM ---
-        $this->apporm = new _uho_orm($this, $this->sql, null, []);
-        $this->apporm->setDebug(true);
+        $this->apporm = new _uho_orm($this->sql, null, []);
         $this->apporm->setFilesDecache(true);
         $this->apporm->setImageSizes(false);
 
@@ -354,7 +353,7 @@ class model_app extends _uho_model
             if (isset($v['suffix']))
                 $langs[$k] = strtolower(substr($v['suffix'], 1));
 
-        $this->apporm->setLangs($langs);
+        $this->apporm->setLanguages($langs);
         foreach ($langs as $k => $v) {
             $langs[$k] = [
                 'lang' => $v,
