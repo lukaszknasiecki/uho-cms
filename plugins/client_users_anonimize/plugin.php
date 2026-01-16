@@ -35,7 +35,7 @@ class serdelia_plugin_client_users_anonimize
 
         if (_uho_fx::getGet('anonimize')) {
             $action = 'success';
-            $this->cms->putJsonModel($this->params['page'], ['id' => $user, 'email' => '', 'institution' => '', 'name' => 'Anonymous', 'surname' => '', 'uid' => '', 'status' => 'anonimized']);
+            $this->cms->put($this->params['page'], ['id' => $user, 'email' => '', 'institution' => '', 'name' => 'Anonymous', 'surname' => '', 'uid' => '', 'status' => 'anonimized']);
         }
 
 

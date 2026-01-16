@@ -35,7 +35,7 @@ class model_app_clients
 
         // Load additional settings if available
         if (isset($this->cms->sql)) {
-            $cfg_add = $this->cms->getJsonModel('cms_settings');
+            $cfg_add = $this->cms->get('cms_settings');
         }
         if (!empty($cfg_add)) {
             foreach ($cfg_add as $v) {
@@ -89,7 +89,7 @@ class model_app_clients
 
         // Log client activity
         if ($this->client->getClientId()) {
-            $this->cms->putJsonModel('cms_users_logs', [
+            $this->cms->put('cms_users_logs', [
                 'user' => $this->client->getClientId(),
                 'session' => intval($_SESSION['login_session_id']),
                 'datetime' => date('Y-m-d H:i:s'),
@@ -160,7 +160,7 @@ class model_app_clients
     }
 
     public function passwordReminder($email) {
-        $result = $this->cms->getJsonModel('users', ['email' => strtolower($email)], true);
+        $result = $this->cms->get('users', ['email' => strtolower($email)], true);
 
         if ($result) {
             if (!$result['email_key']) {
@@ -335,7 +335,7 @@ class model_app_clients
         if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $email = $this->cms->sqlSafe(strtolower($email));
             $email_hashed = $this->client->hash($email);
-            $exists = $this->cms->getJsonModel('newsletter_users', ['email' => $email], true);
+            $exists = $this->cms->get('newsletter_users', ['email' => $email], true);
 
             $mail = false;
             if (!$exists) {

@@ -28,7 +28,7 @@ class controller_app extends _uho_controller
 
         // Load additional CMS settings if using non-NoSQL clients
         if (!$this->model->clients->isNoSql()) {
-            $cfg_add = $this->model->getJsonModel('cms_settings');
+            $cfg_add = $this->model->get('cms_settings');
         } else {
             $cfg_add = [];
         }

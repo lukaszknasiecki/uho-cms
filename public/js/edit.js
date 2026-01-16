@@ -129,6 +129,42 @@ Apps.Edit = function($, window)
     $('#serdelia-submit-edit').prop('disabled', prop);
   },
 
+  validateFields = function (focusFirst=false)
+  {
+    var allValid = true;
+
+    var $textareas = $('textarea[data-json]');
+    $textareas.each(function() {
+      var content = $(this).val().trim();
+
+      if (content) {
+        try {
+          JSON.parse(content);
+        } catch (e) {
+          allValid = false;
+
+          if (focusFirst) {
+            var id = $(this)[0].id;
+            var $input = $(this);
+
+            // Remove any existing alert for this field
+            $('#'+id).prev('.alert-danger.serdelia-format-alert').remove();
+
+            // Add red Bootstrap alert box before the input
+            $input.before('<div class="alert alert-danger serdelia-format-alert" role="alert">Please, update this field to match valid format.</div>');
+
+            id = $('#'+id).parents('.tab-pane').attr('id');
+            $('[aria-controls="'+id+'"]').tab("show");
+            $(this).focus();
+            focusFirst = false;
+          }
+        }
+      }
+    });
+
+    return allValid;
+  },
+
   checkRequired = function (focusFirst=false)
   {
     var pass=true;
@@ -153,7 +189,9 @@ Apps.Edit = function($, window)
       }
     });
     return pass;
-  };
+  };  
+
+
 
   submitForm=function (event,action=null,url_after=null)
   {
@@ -188,6 +226,11 @@ Apps.Edit = function($, window)
       }
     });
     
+    if (!validateFields(true))
+    {
+      abort=true;
+    }
+
     if (abort)  return;
     if (event) event.preventDefault();
 
@@ -1877,7 +1920,7 @@ Apps.Edit = function($, window)
 
   init();
 
-  return { lightboxClose:lightboxClose, checkRequired:checkRequired, changeField: changeField,disableSubmits:disableSubmits, sourceSearchedClick:sourceSearchedClick, pairAdd:pairAdd, pairSelectEdit:pairSelectEdit, pairSelectUpdateInput:pairSelectUpdateInput, pairRemoveInputs:pairRemoveInputs, askSaveGo:askSaveGo, submitForm:submitForm, askSaveGoConfirm:askSaveGoConfirm, selectParentClear:selectParentClear, initQuill:initQuill,initCK:initCK, tableRowAdd:tableRowAdd };
+  return { lightboxClose:lightboxClose, validateFields:validateFields, checkRequired:checkRequired, changeField: changeField,disableSubmits:disableSubmits, sourceSearchedClick:sourceSearchedClick, pairAdd:pairAdd, pairSelectEdit:pairSelectEdit, pairSelectUpdateInput:pairSelectUpdateInput, pairRemoveInputs:pairRemoveInputs, askSaveGo:askSaveGo, submitForm:submitForm, askSaveGoConfirm:askSaveGoConfirm, selectParentClear:selectParentClear, initQuill:initQuill,initCK:initCK, tableRowAdd:tableRowAdd };
 
 }(jQuery, window);
 

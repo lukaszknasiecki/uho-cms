@@ -121,7 +121,7 @@ class model_app_write extends model_app
 			$update_fields = [];
 		} elseif (!empty($update_fields)) {
 			// Pre-fill data for auto-fields
-			$existing = $this->apporm->getJsonModel($model, ['id' => $id], true, null, null, ['additionalParams' => $modelParams]);
+			$existing = $this->apporm->get($model, ['id' => $id], true, null, null, ['additionalParams' => $modelParams]);
 			$data = array_merge($existing, $data);
 		}
 
@@ -189,7 +189,7 @@ class model_app_write extends model_app
 		// update values by sources, for pattern fills etc.
 		
 		$data_deep = $this->apporm->updateRecordSources($schema, $data);
-		$old_value = $this->apporm->getJsonModel($schema, ['id' => $id], true);
+		$old_value = $this->apporm->get($schema, ['id' => $id], true);
 		$update_fields_even_empty = [];
 
 		// $update_fields --> add UID if image exists
@@ -243,7 +243,7 @@ class model_app_write extends model_app
 							if (substr($v2, 0, 4) == 'new_' && $new[$v2]) {
 								$add = [$v['settings']['add'] => $new[$v2]];
 
-								$this->apporm->postJsonModel($v['source']['model'], $add);
+								$this->apporm->post($v['source']['model'], $add);
 								$vv[$k2] = $this->apporm->getInsertId();
 								if (!$vv[$k2]) unset($vv[$k2]);
 							}
@@ -351,7 +351,7 @@ class model_app_write extends model_app
 		// unique values
 		foreach ($schema['fields'] as $k => $v)
 			if (isset($v['unique']) && $v['unique']) {
-				$exists = $this->apporm->getJsonModel($model, ['id' => ['operator' => '!=', 'value' => $id], $v['field'] => $data[$v['field']]], true, null, null, ['additionalParams' => $params]);
+				$exists = $this->apporm->get($model, ['id' => ['operator' => '!=', 'value' => $id], $v['field'] => $data[$v['field']]], true, null, null, ['additionalParams' => $params]);
 				if ($exists)
 					return ['result' => false, 'message' => $v['label'] . ' - ' . str_replace('%value%', $data[$v['field']], $this->translate['unique_field'])];
 			}
@@ -625,7 +625,7 @@ class model_app_write extends model_app
 					foreach ($val as $k2 => $v2) {
 						$new_uid = null;
 						if (substr($v2, 0, 3) != 'new')
-							$old = $this->apporm->getJsonModel($v['source']['model'], ['id' => $v2], true);
+							$old = $this->apporm->get($v['source']['model'], ['id' => $v2], true);
 						else $old = null;
 
 						$cap = [];
@@ -700,7 +700,7 @@ class model_app_write extends model_app
 
 							$add = array_merge($add, $cap);
 
-							$r = $this->apporm->postJsonModel($v['source']['model'], $add);
+							$r = $this->apporm->post($v['source']['model'], $add);
 							if (!$r) return (['result' => false, 'message' => 'Last error on POST: ' . $this->apporm->getLastError()]);
 
 							$existing[] = $new_uid = $this->apporm->getInsertId();
@@ -719,11 +719,11 @@ class model_app_write extends model_app
 					}
 
 					if ($val) {
-						$r = $this->apporm->putJsonModel($v['source']['model'], $val, ['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id], true);
+						$r = $this->apporm->put($v['source']['model'], $val, ['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id], true);
 						if (!$r) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
 					}
 
-					$this->apporm->deleteJsonModel(
+					$this->apporm->delete(
 						$v['source']['model'],
 						[
 							'id' => ['operator' => '!=', 'value' => $existing],
@@ -752,12 +752,12 @@ class model_app_write extends model_app
 				if ($v['type'] == 'order')
 				{
 					if (@$v['default'] == 'first') {
-						$query = $this->apporm->getJsonModelFiltersQuery($schema);
+						$query = $this->apporm->getFiltersQuery($schema);
 						if ($query) $query = ' WHERE ' . implode(' && ', $query);
 						$this->queryOut('UPDATE ' . $schema['table'] . ' SET `' . $v['field'] . '`=`' . $v['field'] . '`+1 ' . $query);
 						$data[$v['field']] = 1;
 					} else {
-						$last = $this->apporm->getJsonModel($schema, $schema['filters'], true, $v['field'] . ' DESC');
+						$last = $this->apporm->get($schema, $schema['filters'], true, $v['field'] . ' DESC');
 						if ($last) $data[$v['field']] = $last[$v['field']] + 1;
 					}
 				} elseif (isset($v['default']) && $v['default'] === '%variable%') {
@@ -765,7 +765,7 @@ class model_app_write extends model_app
 				}
 
 
-			$result = $this->apporm->postJsonModel($schema, $data);
+			$result = $this->apporm->post($schema, $data);
 
 			$id_new = $id = $result;
 			if ($data['id']) $id_new = $id = $data['id'];
@@ -783,7 +783,7 @@ class model_app_write extends model_app
 			$data['id'] = $id;
 			$this->logsAdd('edit');
 
-			$result = $this->apporm->putJsonModel($schema, $data);
+			$result = $this->apporm->put($schema, $data);
 			if (!$result) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
 
 			$is_new_now = false;
@@ -793,18 +793,18 @@ class model_app_write extends model_app
 			foreach ($additional_post as $k => $v) {
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
-				$this->apporm->postJsonModel($v['model'], $v['value']);
+				$this->apporm->post($v['model'], $v['value']);
 			}
 
 		if ($additional_put)
 			foreach ($additional_put as $k => $v)
-				$this->apporm->putJsonModel($v['model'], $v['value'], $v['filter']);
+				$this->apporm->put($v['model'], $v['value'], $v['filter']);
 
 		if ($additional_delete)
 			foreach ($additional_delete as $k => $v) {
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
-				$this->apporm->deleteJsonModel($v['model'], $v['value'], true);
+				$this->apporm->delete($v['model'], $v['value'], true);
 			}
 
 		/*
@@ -836,7 +836,7 @@ class model_app_write extends model_app
 				$output = $class->getContentData(array('params' => $p, 'get' => []));
 			}
 
-			$data = $this->apporm->getJsonModel($model, ['id' => $id], true, null, null, ['additionalParams' => $params]);
+			$data = $this->apporm->get($model, ['id' => $id], true, null, null, ['additionalParams' => $params]);
 			$new = [];
 			foreach ($schema['fields'] as $k => $v) {
 				if ($v['cms']['auto'] && (!@$v['cms']['auto']['on_null'] || !$data[$v['field']])) {
@@ -846,7 +846,7 @@ class model_app_write extends model_app
 			}
 			if ($new) {
 				$new['id'] = $id;
-				$result = $this->apporm->putJsonModel($schema, $new, false, false, false);
+				$result = $this->apporm->put($schema, $new, false, false, false);
 				if (!$result) $errors[] = 'Error on PUT';
 			}
 		}
@@ -868,7 +868,7 @@ class model_app_write extends model_app
 
 	private function sortPage($schema, $field, $data)
 	{
-		$query = $this->apporm->getJsonModelFiltersQuery($schema);
+		$query = $this->apporm->getFiltersQuery($schema);
 		if ($query) $query = ' && ' . implode(' && ', $query);
 
 		$data = array_values($data);
@@ -981,7 +981,7 @@ class model_app_write extends model_app
 				}
 
 				$filter = [$field['field'] => $candidate];
-				$exists = $this->apporm->getJsonModel($schema['model_name'], $filter, true);
+				$exists = $this->apporm->get($schema['model_name'], $filter, true);
 				$i++;
 			} while ($exists);
 
@@ -1731,7 +1731,7 @@ class model_app_write extends model_app
 		$filter = [$parentKey => $parentId];
 
 		// Delete existing related rows
-		$this->apporm->deleteJsonModel($field['outside']['model'], $filter);
+		$this->apporm->delete($field['outside']['model'], $filter);
 
 		// Prepare new rows to insert
 		foreach ($data as $index => $row) {
@@ -1754,7 +1754,7 @@ class model_app_write extends model_app
 		}
 
 		// Insert the new data rows into the external model
-		$this->apporm->postJsonModel($field['outside']['model'], $data, true);
+		$this->apporm->post($field['outside']['model'], $data, true);
 	}
 
 	/**

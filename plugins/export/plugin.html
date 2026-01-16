@@ -23,7 +23,7 @@
 	<form action="" method="POST">
 		{% for field in fields %}
 		<div class="checkbox">
-			<label><input type="checkbox" name="f_{{field.field}}" checked>&nbsp; {{field.label}}</label>
+			<label><input type="checkbox" name="f_{{field.field}}" checked>&nbsp; {{field.cms.label}}</label>
 		  </div>
 		{% endfor %}
 <br>

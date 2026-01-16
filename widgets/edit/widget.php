@@ -44,11 +44,11 @@ class serdelia_widget_edit
         $model = $p[0];
         unset($p[0]);
         $model_params = $p;
-        $this->orm->getJsonModelSchema($model);
+        $this->orm->getSchema($model);
 
         if (is_numeric($this->params['record'])) $f = ['id' => $this->params['record']];
         else $f = ['slug' => $this->params['record']];
-        $first = $this->orm->getJsonModel($model, $f, true, null, null, ['additionalParams' => $model_params]);
+        $first = $this->orm->get($model, $f, true, null, null, ['additionalParams' => $model_params]);
 
         if (!$first) return ['result' => false];
 
@@ -56,7 +56,7 @@ class serdelia_widget_edit
             $first['title'] = $this->params['label'];
         elseif ($first['title' . $this->parent->lang_add]) $first['title'] = $first['title' . $this->parent->lang_add];
 
-        $modules = $this->orm->getJsonModel('pages_modules', ['parent' => $first['id']], false, null, null, ['count' => true]);
+        $modules = $this->orm->get('pages_modules', ['parent' => $first['id']], false, null, null, ['count' => true]);
 
         if ($this->params['image']) {
             $image = $first[$this->params['image']];

@@ -83,12 +83,12 @@ class serdelia_plugin_import_cover
 
         $this->cms->setFilesDecache(false);
 
-        $record = $this->cms->getJsonModel($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'page_update' => $params['params'], 'additionalParams' => $params['params']]);
+        $record = $this->cms->get($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'page_update' => $params['params'], 'additionalParams' => $params['params']]);
 
 
         if (!$record) return ['result' => false];
 
-        $schema = $this->parent->apporm->getJsonModelSchema($params['page']);
+        $schema = $this->parent->apporm->getSchema($params['page']);
 
         if (isset($record['uid']) && !$record['uid']) {
             $record['uid'] = uniqid();
@@ -263,7 +263,7 @@ class serdelia_plugin_import_cover
                 $added[] = 'duration_added';
             }
 
-            $this->cms->putJsonModel($params['page'], $data);
+            $this->cms->put($params['page'], $data);
             if ($cover_to_remove) unlink($cover_to_remove);
         }
 
@@ -271,9 +271,9 @@ class serdelia_plugin_import_cover
 
 
         if (isset($schema['model_all']))
-            $this->cms->putJsonModel($schema['model_all'], $data);
+            $this->cms->put($schema['model_all'], $data);
         else
-            $this->cms->putJsonModel($params['page'], $data);
+            $this->cms->put($params['page'], $data);
 
         $data = ['result' => true, 'fields' => $fields, 'errors' => $errors, 'success' => $added];
 

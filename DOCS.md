@@ -251,8 +251,7 @@ the parent model from the URL.
 
 #### List View - Layout Configuration
 
-The standard layout is in the form of a list. An additional layout type (grid) is available. You can use built-on HTML for grid cells (based on `list` properties) or define custom HTML using values record values stored in `record.values` object.
-You can enhabce `grid` layout with `cards` settings, showing a more structured view.
+The standard layout is in the form of a list. An additional layout type (grid) is available. You can use built-on HTML for grid cells (based on `list` properties) or define custom HTML using values record values stored in `record.values` object. You can enhance the `grid` layout with `cards` settings, showing a more structured view.
 
 ```json
 {
@@ -266,6 +265,28 @@ You can enhabce `grid` layout with `cards` settings, showing a more structured v
         }
     }
 }
+```
+
+For any field to be visible or accessible in the List View you need to set `cms.list` property,
+with one of available options:
+
+- `show` - shows field's value in the list view
+- `read` - reads field's value, so it can be used by other fields to render output
+
+You can also specify field's list view as a badge, i.e.:
+
+```json
+        {
+                    "type": "badge",
+                    "values":{                  // badge label based on value
+                        "0":"No Media",
+                        "1":"Media"
+                    },
+                    "colors":{                  // badge color based on value
+                        "0":"danger",
+                        "1":"success"
+                    }
+        }
 ```
 
 #### Buttons Configuration
@@ -345,6 +366,20 @@ Each field in the `fields` array defines a database column and its CMS behavior:
         "edit": {
             "remove": true           // Hide from edit form
         },
+        "toggle_fields": {          // Shows/Hides other fields based on this field's value
+                    "Video": {
+                        "show":["video","cover"],
+                        "hide":["text"]
+                    },
+                    "Audio": {
+                        "show":["audio"],
+                        "hide":["video","cover","text"]
+                    },
+                    "Text": {
+                        "show":["text"],
+                        "hide":["audio","video","cover"]
+                    }
+        },
         "help": {
             "text": "Help text",
             "size": "full"           // "full" or "small"
@@ -388,7 +423,21 @@ Each field in the `fields` array defines a database column and its CMS behavior:
     }
 }
 ```
+**List View Search Shortcuts:**
 
+You can add shortcuts buttons for quick filters. Usually you would use fields with search
+option enabled and create filters based on combination of those fields values. Those search
+fields use `s_` prefix in the URL and that's how you should use them in the `shortcuts` object:
+
+```json
+{
+    "shortcuts":
+        [
+            {"label":"Draft","color":"secondary","link":{"query":{"s_status":"draft"}}},
+            {"label":"Completed","color":"success","link":{"query":{"s_status":"completed"}}}
+        ]
+}
+```
 
 ## Field Types
 
@@ -1033,6 +1082,7 @@ Field values can be automatically generate values using the `auto` property:
 
 Plugins extend CMS functionality. You can write your own plugins and/or use predefined ones:
 
+* `api_single`: performs a REST api call using current record's data
 * `import_cover`: imports cover images from videos - including mp4, vimeo and youtube, including additional fields (like video titles, vimeo mp4 sources etc.)
 
 You can find documentation for each predefined plugin in its class file: `/cms/plugins/{name}/plugin.php`
@@ -1170,10 +1220,10 @@ $results = $this->cms->query('SELECT * FROM table WHERE id = ?', [$id]);
 $this->cms->queryOut('UPDATE table SET field = ? WHERE id = ?', [$value, $id]);
 
 // Get JSON model (with relationships)
-$item = $this->cms->getJsonModel('model_name', ['id' => $id], true);
+$item = $this->cms->get('model_name', ['id' => $id], true);
 
 // Put JSON model (update JSON cache)
-$this->cms->putJsonModel('model_name', ['active' => 1], ['id' => $id]);
+$this->cms->put('model_name', ['active' => 1], ['id' => $id]);
 ```
 
 

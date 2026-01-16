@@ -1,5 +1,7 @@
 <?php
 
+use Huncwot\UhoFramework\_uho_fx;
+
 /**
  * Serdelia built-in plugin to import data from CSV/JSON to a model.
  */
@@ -36,7 +38,7 @@ class serdelia_plugin_import
         $updated = [];
 
         // Load model schema for the target page
-        $schema = $this->cms->getJsonModelSchema($this->params['page']);
+        $schema = $this->cms->getSchema($this->params['page']);
         $fields = $schema['fields'];
         $submitted = [];
 
@@ -153,7 +155,7 @@ class serdelia_plugin_import
                     $ok = $bad = 0;
 
                     foreach ($data as $entry) {
-                        $success = $this->cms->putJsonModel($this->params['page'], $entry, [$key => $entry[$key]]);
+                        $success = $this->cms->put($this->params['page'], $entry, [$key => $entry[$key]]);
                         $success ? $ok++ : $bad++;
                     }
 
@@ -161,7 +163,7 @@ class serdelia_plugin_import
                     if ($bad) $errors[] = "Errors while updating: $bad";
                 } else {
                     // Insert new entries
-                    $success = $this->cms->postJsonModel($this->params['page'], $data, true);
+                    $success = $this->cms->post($this->params['page'], $data, true);
                     if ($success) {
                         $added[] = 'Added items: ' . count($data);
                     } else {
@@ -201,7 +203,7 @@ class serdelia_plugin_import
 
             // Handle dictionary (select) fields
             if ($fieldDef['type'] === 'select' && !empty($fieldDef['source']['model'])) {
-                $model = $this->cms->getJsonModel($fieldDef['source']['model']);
+                $model = $this->cms->get($fieldDef['source']['model']);
 
                 foreach ($data as $i => $row) {
                     $input = trim($row[$field] ?? '');
@@ -213,7 +215,7 @@ class serdelia_plugin_import
                         $data[$i][$field] = $match['id'];
                     } else {
                         // Insert new dictionary value
-                        $insertResult = $this->cms->postJsonModel($fieldDef['source']['model'], ['label' => $input]);
+                        $insertResult = $this->cms->post($fieldDef['source']['model'], ['label' => $input]);
                         if (!$insertResult) {
                             $errors[] = 'SQL: <code>' . $this->cms->getLastError() . '</code>';
                             $errors[] = "Error writing new dictionary field [$input] for [{$fieldDef['source']['model']}]";
@@ -222,7 +224,7 @@ class serdelia_plugin_import
 
                         // Get inserted ID and reload model
                         $data[$i][$field] = $this->cms->getInsertId();
-                        $model = $this->cms->getJsonModel($fieldDef['source']['model']);
+                        $model = $this->cms->get($fieldDef['source']['model']);
                         $message[] = "Added new dictionary field [$input] for [{$fieldDef['source']['model']}]";
                     }
                 }
@@ -232,7 +234,7 @@ class serdelia_plugin_import
         // Remove duplicates already in model
         $duplicates = 0;
         foreach ($data as $i => $row) {
-            if ($this->cms->getJsonModel($page, $row)) {
+            if ($this->cms->get($page, $row)) {
                 unset($data[$i]);
                 $duplicates++;
             }

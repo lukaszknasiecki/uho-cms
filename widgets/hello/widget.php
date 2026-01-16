@@ -34,7 +34,7 @@ class serdelia_widget_hello
     public function getData()
     {
 
-        $log = $this->orm->getJsonModel('cms_users_logs_logins', ['login' => $this->params['user']['login'], 'success' => 1], false, 'datetime DESC', '0,2');
+        $log = $this->orm->get('cms_users_logs_logins', ['login' => $this->params['user']['login'], 'success' => 1], false, 'datetime DESC', '0,2');
         if (isset($log[1])) {
             $translate = [
                 'pl' =>

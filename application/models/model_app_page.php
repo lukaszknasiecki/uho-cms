@@ -46,7 +46,6 @@ class model_app_page extends model_app
 				$f[$k] = $v;
 			}
 		}
-		
 
 		// Append filters to the URL if they exist
 		if (!empty($f)) {
@@ -149,7 +148,7 @@ class model_app_page extends model_app
 									$searchParams[$srcField] = $value;
 								}
 							}
-							$ids = $this->apporm->getJsonModel($field['source']['model'], $searchParams, false);
+							$ids = $this->apporm->get($field['source']['model'], $searchParams, false);
 							$vv = _uho_fx::array_extract($ids, 'id') ?: 0;
 						} else*/
 							if ($global_search && !empty($field['options']))
@@ -227,7 +226,7 @@ class model_app_page extends model_app
 		if ($global_search) {
 			$searchSchema = $schema;
 			$searchSchema['filters'] = $filters;
-			$filterSet = $this->apporm->getJsonModelFiltersQuery($searchSchema);
+			$filterSet = $this->apporm->getFiltersQuery($searchSchema);
 			$filters = $filterSet
 				? ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filterSet]]
 				: [];
@@ -242,12 +241,12 @@ class model_app_page extends model_app
 
 		// Fetch records
 
-		$all = $this->apporm->getJsonModel($schema, $filters, false, null, null, ['count' => true]);
+		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
 		$_SESSION['page_filters'][$model] = $filters;
 
 		$offset = ($page_nr - 1) * $this->paging['count'];
 		$limit = $this->paging['count'];
-		$records = $this->apporm->getJsonModel($schema, $filters, false, null, "$offset,$limit");
+		$records = $this->apporm->get($schema, $filters, false, null, "$offset,$limit");
 
 		if (!$global_search) {
 			$records = $this->apporm->filterResults($schema, $records, $filters_virtual, false);
@@ -296,9 +295,9 @@ class model_app_page extends model_app
 			}
 		}
 
-		// Paging and record HTML reformatting
+		// Paging
 		$paging = $this->getPaging($this->paging['count'], $page_nr, $all);
-
+		// record HTML reformatting
 		$records = $this->updateRecordsValues($schema, $records);
 
 		// Load translation JSON (if available)
@@ -837,7 +836,6 @@ class model_app_page extends model_app
 		foreach ($schema['fields'] as $field)
 			if (!empty($field['list']['value'])) {
 				foreach ($records as $k => $record) {
-
 					$records[$k]['values'][$field['field']] = $this->getTwigFromHtml($field['list']['value'], $record['values']);
 				}
 			}

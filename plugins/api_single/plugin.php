@@ -2,6 +2,17 @@
 
 /**
  * Serdelia built-in plugin to manage single API endpoint execution
+ * 
+ * Example:
+ * {
+ *           "type": "plugin",
+ *           "label": "Get Api",
+ *           "plugin": "api_single",
+ *           "params":{
+ *               "url":"/api/data/{{id}}"
+ *           }
+ *       }
+ * 
  */
 
 use Huncwot\UhoFramework\_uho_fx;

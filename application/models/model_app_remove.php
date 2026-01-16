@@ -61,14 +61,14 @@ class model_app_remove extends model_app
 		$filters = _uho_fx::fillPattern($schema['filters'], ['numbers' => $params]);
 		$filters['id'] = $id;
 
-		$exists = $this->apporm->getJsonModel($model, $filters, true);
+		$exists = $this->apporm->get($model, $filters, true);
 
 		// Backup record before deletion
 		$this->backupAdd($schema['table'], $id);
 
 		$result = false;
 		if ($exists) {
-			$result = $this->apporm->deleteJsonModel($model, $id);
+			$result = $this->apporm->delete($model, $id);
 		}
 
 		// Run any post-deletion plugins (if defined)
@@ -101,10 +101,10 @@ class model_app_remove extends model_app
 			$orderKey = $orderField['field'] ?? null;
 			unset($filters['id']);
 
-			$records = $this->apporm->getJsonModel($model, $filters);
+			$records = $this->apporm->get($model, $filters);
 			foreach ($records as $k => $record) {
 				if (($k + 1) !== (int)$record[$orderKey]) {
-					$this->apporm->putJsonModel($schema, [
+					$this->apporm->put($schema, [
 						$orderKey => $k + 1,
 						'id' => $record['id']
 					]);

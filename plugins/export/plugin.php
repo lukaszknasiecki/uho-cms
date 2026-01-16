@@ -4,6 +4,8 @@
  * Serdelia built-in plugin to export model instances
  */
 
+use Huncwot\UhoFramework\_uho_fx;
+
 class serdelia_plugin_export
 {
     var $cms;
@@ -30,12 +32,12 @@ class serdelia_plugin_export
     public function getData()
     {
         $errors = [];
-        $schema = $this->cms->getJsonModelSchema($this->params['page']);
+        $schema = $this->cms->getSchema($this->params['page']);
 
         $fields = $schema['fields'];
         $submitted = [];
         foreach ($fields as $k => $v)
-            if (in_array($v['type'], ['standard', 'boolean','date','datetime','text','media'])) {
+            if (in_array($v['type'], ['string', 'boolean','date','integer','datetime','text','media'])) {
                 if ($_POST['f_' . $v['field']])
                     $submitted[] = $v['field'];
             } else unset($fields[$k]);
@@ -48,10 +50,10 @@ class serdelia_plugin_export
 
         if (!$submitted)
         {
-            $count = $this->cms->getJsonModel($this->params['page'],$filters,false,null,null,['count'=>true]);
+            $count = $this->cms->get($this->params['page'],$filters,false,null,null,['count'=>true]);
         }
         elseif ($submitted) {
-            $data = $this->cms->getJsonModel($this->params['page'],$filters);
+            $data = $this->cms->get($this->params['page'],$filters);
             $count=count($data);
             
             if ($data)

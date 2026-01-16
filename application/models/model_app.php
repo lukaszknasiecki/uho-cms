@@ -214,8 +214,8 @@ class model_app extends _uho_model
             $this->s3->buildCache();
         }
 
-        $this->apporm->setUhoS3($this->s3);
-        $this->orm->setUhoS3($this->s3);
+        $this->apporm->setS3($this->s3);
+        $this->orm->setS3($this->s3);
     }
 
     /**
@@ -712,9 +712,9 @@ class model_app extends _uho_model
     {
 
         if ($model_update) {
-            $schema = $this->apporm->getJsonModelSchema([$model, $model_update], false, $params);
+            $schema = $this->apporm->getSchema([$model, $model_update], false, $params);
         } else
-            $schema = $this->apporm->getJsonModelSchema($model, false, $params);
+            $schema = $this->apporm->getSchema($model, false, $params);
 
         $schema['structure'] = $this->getAppStructure($model);
         if (!$schema['structure'])
@@ -845,7 +845,7 @@ class model_app extends _uho_model
                     // correct one                    
                     $v['record']=$this->getTwigFromHtml($v['record'],['p'=>$params['numbers']]);
                 }
-                $schema['helper_models'][$k] = $this->apporm->getJsonModel($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
+                $schema['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
             }
         }
 
@@ -1004,7 +1004,7 @@ class model_app extends _uho_model
 
                         foreach ($v['source_double'] as $k2 => $v2) {
                             if ($v2['model']) {
-                                $m = $this->apporm->getJsonModelSchema($v2['model']);
+                                $m = $this->apporm->getSchema($v2['model']);
                                 if ($m['model'])
                                     $v['source_double'][$k2] = array_merge($v['source_double'][$k2], $m['model']);
                                 if (is_array($m['label']))
@@ -1100,7 +1100,7 @@ class model_app extends _uho_model
                     case "media":
 
                         if ($v['media']['model']) {
-                            $sch = $this->apporm->getJsonModelSchema($v['media']['model']);
+                            $sch = $this->apporm->getSchema($v['media']['model']);
 
                             $im = _uho_fx::array_filter($sch['fields'], 'type', 'image', ['first' => true]);
                             $ff = _uho_fx::array_filter($sch['fields'], 'type', 'file', ['first' => true]);
@@ -1150,7 +1150,7 @@ class model_app extends _uho_model
                         if (isset($v['captions']))
                             foreach ($v['captions'] as $k2 => $v2)
                                 if (@$v2['source']['model']) {
-                                    $options = $this->apporm->getJsonModel($v2['source']['model']);
+                                    $options = $this->apporm->get($v2['source']['model']);
                                     foreach ($options as $k3 => $v3)
                                         if (!$v3['label'] && $v3['slug'])
                                             $options[$k3]['label'] = $v3['slug'];
@@ -1776,13 +1776,14 @@ class model_app extends _uho_model
     public function fileUploadModel($model, $field, $data, $source)
     {
         $result = ['result' => false];
-        $schema = $this->apporm->getJsonModelSchemaWithPageUpdate($model);
+        $schema = $this->apporm->getSchemaWithPageUpdate($model);
         if (!$schema)
             return ['result' => false, 'message' => 'Image schema not found'];
 
         $field_schema = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
 
-        if ($field_schema) {
+        if ($field_schema)
+        {
             $dest = $_SERVER['DOCUMENT_ROOT'] . $field_schema['settings']['folder'];
             if (!file_exists($dest)) mkdir($dest, 0775, true);
             $dest .= '/';
@@ -1817,7 +1818,7 @@ class model_app extends _uho_model
     {
 
         $result = ['result' => false];
-        $schema = $this->apporm->getJsonModelSchema($model);
+        $schema = $this->apporm->getSchema($model);
         if (!$schema)
             return ['result' => false, 'message' => 'Image schema not found'];
 
@@ -1846,7 +1847,7 @@ class model_app extends _uho_model
      */
     public function imageUpdateResize($model, $field, $record)
     {
-        $schema = $this->apporm->getJsonModelSchema($model);
+        $schema = $this->apporm->getSchema($model);
         if ($schema)
             $image_field = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
         else
@@ -1856,7 +1857,7 @@ class model_app extends _uho_model
         else
             return false;
 
-        $item = $this->apporm->getJsonModel($model, ['id' => $record], true);
+        $item = $this->apporm->get($model, ['id' => $record], true);
         if ($item && !empty($item[$field])) {
             $image = $item[$field];
             foreach ($image as $k => $v) {
@@ -1873,7 +1874,7 @@ class model_app extends _uho_model
             }
 
             if ($image) {
-                $this->apporm->putJsonModel($model, [$sizes => $image], ['id' => $record]);
+                $this->apporm->put($model, [$sizes => $image], ['id' => $record]);
                 return true;
             }
         }
@@ -2067,7 +2068,7 @@ class model_app extends _uho_model
         else
             if ($user) {
             if (!$this->auth_now) {
-                $auth = $this->apporm->getJsonModel('cms_users', ['id' => $user['id']], true);
+                $auth = $this->apporm->get('cms_users', ['id' => $user['id']], true);
 
                 if (!empty($auth['auth']))
                     $auth = explode(',', $auth['auth']);
@@ -2218,7 +2219,7 @@ class model_app extends _uho_model
                     if ($v[0] == '%') unset($schema['filters'][$k]);
 
 
-            $record = $this->apporm->getJsonModel($schema, ['id' => $id], true, null, null, ['replace_values' => $replace]);
+            $record = $this->apporm->get($schema, ['id' => $id], true, null, null, ['replace_values' => $replace]);
 
             if (!$record)
                 exit('model_app_edit::getSchemaForEdit::record not found [' . $id . ']');
@@ -2258,7 +2259,7 @@ class model_app extends _uho_model
                 }
 
                 if ($id)
-                    $record = $this->apporm->getJsonModel($schema, ['id' => $id], true);
+                    $record = $this->apporm->get($schema, ['id' => $id], true);
             }
 
 
@@ -2407,7 +2408,7 @@ class model_app extends _uho_model
             if (!$s['filters'])
                 $s['filters'] = [];
             $s['filters'] = $filters;
-            $filters = $this->apporm->getJsonModelFiltersQuery($s);
+            $filters = $this->apporm->getFiltersQuery($s);
             $filters = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filters]];
         }
 
@@ -2428,7 +2429,7 @@ class model_app extends _uho_model
     {
         $data = $this->query('SELECT * FROM ' . $page . ' WHERE id="' . $record . '"', true);
 
-        $this->postJsonModel('cms_backup', [
+        $this->post('cms_backup', [
             'data' => json_encode($data),
             'session' => @intval($_SESSION['login_session_id']),
             'page' => $page,
@@ -2445,7 +2446,7 @@ class model_app extends _uho_model
 
     public function backupRestore($id, $backup_current = true)
     {
-        $backup = $this->getJsonModel('cms_backup', ['id' => $id], true);
+        $backup = $this->get('cms_backup', ['id' => $id], true);
         if ($backup && $backup['data']) {
             if ($backup_current)
                 $this->backupAdd($backup['page'], $backup['record']);
@@ -2512,13 +2513,13 @@ class model_app extends _uho_model
             if (isset($record['field']))
                 $f['field'] = $record['field'];
 
-            $exists = $this->getJsonModel('cms_backup_media', $f, true, 'date DESC');
+            $exists = $this->get('cms_backup_media', $f, true, 'date DESC');
 
             if ($exists) {
-                $exists = $this->putJsonModel('cms_backup_media', ['date' => date('Y-m-d H:i:s')], ['id' => $exists['id']]);
+                $exists = $this->put('cms_backup_media', ['date' => date('Y-m-d H:i:s')], ['id' => $exists['id']]);
             } elseif (!$exists && @copy($file, $new) && file_exists($new)) {
                 $checksum = md5_file($new);
-                $r = $this->postJsonModel(
+                $r = $this->post(
                     'cms_backup_media',
                     [
                         'path' => $file,
@@ -2589,7 +2590,7 @@ class model_app extends _uho_model
     public function backupMediaRestore($id, $backup_current = true, $record = [])
     {
 
-        $backup = $this->getJsonModel('cms_backup_media', ['id' => $id], true);
+        $backup = $this->get('cms_backup_media', ['id' => $id], true);
         $message = '';
         $result = false;
 
@@ -2605,12 +2606,11 @@ class model_app extends _uho_model
 
             if ($result && $backup['model'] && $backup['record'] && $backup['field']) {
                 // get full schema
-                $schema = $this->apporm->getJsonModelSchemaWithPageUpdate($backup['model']);
+                $schema = $this->apporm->getSchemaWithPageUpdate($backup['model']);
                 // find a field
                 $field_schema = _uho_fx::array_filter($schema['fields'], 'field', $backup['field'], ['first' => true]);
                 if ($field_schema) {
-                    //$data=$this->apporm->getJsonModel($backup['model'],['id'=>$backup['record']],true,null,null,['skipSchemaFilters'=>true,'page_update'=>true]);
-                    $data = $this->apporm->getJsonModel($schema, ['id' => $backup['record']], true, null, null, ['skipSchemaFilters' => true]);
+                    $data = $this->apporm->get($schema, ['id' => $backup['record']], true, null, null, ['skipSchemaFilters' => true]);
                 } else
                     $data = null;
 

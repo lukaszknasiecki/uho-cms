@@ -66,7 +66,7 @@ class model_app_plugin extends model_app
 			exit("auth::error::1::app_plugin::{$page}::{$plugin}");
 		}
 
-		$schema=$this->apporm->getJsonModelSchemaWithPageUpdate($page_single);
+		$schema=$this->apporm->getSchemaWithPageUpdate($page_single);
 
 		if (isset($params['record'])) $buttons=$schema['buttons_edit'];
 			else $buttons=$schema['buttons_page'];

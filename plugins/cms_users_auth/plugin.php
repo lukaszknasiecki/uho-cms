@@ -49,11 +49,11 @@ class serdelia_plugin_cms_users_auth
                     if ($v['auth'] == $set) $set_preset = $v['label'];
 
 
-            $this->cms->putJsonModel('cms_users', ['auth' => $val, 'id' => $user, 'auth_label' => $set_preset]);
+            $this->cms->put('cms_users', ['auth' => $val, 'id' => $user, 'auth_label' => $set_preset]);
             $success = true;
         }
 
-        $auth = $this->cms->getJsonModel('cms_users', ['id' => $user], true);
+        $auth = $this->cms->get('cms_users', ['id' => $user], true);
         $auth = explode(',', $auth['auth']);
         foreach ($auth as $k => $v) {
             $v = explode('=', $v);

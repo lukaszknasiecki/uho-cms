@@ -33,7 +33,7 @@ class serdelia_plugin_refresh
         ini_set('memory_limit', '2048M');
 
         $model = $this->params['page'];
-        $schema = $this->cms->getJsonModelSchema($model);
+        $schema = $this->cms->getSchema($model);
         $type = 'list';
 
         // get fields
@@ -44,7 +44,7 @@ class serdelia_plugin_refresh
         if (!empty($_SESSION['page_filters'][$model])) $filters = $_SESSION['page_filters'][$model];
         else $filters = [];
 
-        $count_all = $this->cms->getJsonModel($this->params['page'], $filters, null, null, null, ['count' => true, 'additionalParams' => $this->params['params']]);
+        $count_all = $this->cms->get($this->params['page'], $filters, null, null, null, ['count' => true, 'additionalParams' => $this->params['params']]);
 
 
         // add edit plugins
@@ -78,7 +78,7 @@ class serdelia_plugin_refresh
             if ($f) {
 
                 $post = $_POST;
-                $count = $this->cms->getJsonModel($this->params['page'], $filters, null, null, null, ['count' => true, 'additionalParams' => $this->params['params']]);
+                $count = $this->cms->get($this->params['page'], $filters, null, null, null, ['count' => true, 'additionalParams' => $this->params['params']]);
                 if ($s_from) $count = $count - $s_from;
                 if ($limit && $count > $s_count) $count = $s_count;
 
@@ -97,7 +97,7 @@ class serdelia_plugin_refresh
                     $ajax = $this->params['url_serdelia'] . '/write/' . $this->params['page_with_params'] . '/';
                 }
 
-                $ids = $this->cms->getJsonModel($this->params['page'], $filters, null, null, $limit, ['additionalParams' => $this->params['params']]);
+                $ids = $this->cms->get($this->params['page'], $filters, null, null, $limit, ['additionalParams' => $this->params['params']]);
                 foreach ($ids as $k => $v)
                     $ids[$k] = $v['id'];
             }

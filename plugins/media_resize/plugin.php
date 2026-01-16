@@ -52,12 +52,12 @@ class serdelia_plugin_media_resize
     $field = _uho_fx::array_filter($field, 'field', $p['field'], ['first' => true]);
     if (!$field) exit('error::field[' . $p['field'] . '] not found');
 
-    $record = $this->cms->getJsonModel($schema, ['id' => $params['record']], true, null, null, ['additionalParams' => $params['params']]);
+    $record = $this->cms->get($schema, ['id' => $params['record']], true, null, null, ['additionalParams' => $params['params']]);
 
     if (!$record) return ['result' => false];
 
     if ($field['source']['model']) {
-      $m = $this->cms->getJsonModelSchema($field['source']['model']);
+      $m = $this->cms->getSchema($field['source']['model']);
       $field = _uho_fx::array_filter($m['fields'], 'type', 'image', ['first' => true]);
     }
 

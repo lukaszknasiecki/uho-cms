@@ -46,7 +46,7 @@ class serdelia_plugin_ffprobe
 
         if (!$params['record']) return ['result' => false];
         $this->cms->setFilesDecache(false);
-        $record = $this->cms->getJsonModel($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'additionalParams' => $params['params']]);
+        $record = $this->cms->get($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'additionalParams' => $params['params']]);
 
         if (!$record) return ['result' => false];
         $params = array_merge($params, $params['params']);
@@ -66,7 +66,7 @@ class serdelia_plugin_ffprobe
             if (isset($p['height']) && isset($stream['height'])) $output[$p['height']] = $stream['height'];
             if (isset($p['duration']) && isset($stream['duration']) && $stream['duration'] > 0) $output[$p['duration']] = $stream['duration'];
             if ($output) {
-                $this->parent->putJsonModel($params['page'], $output, ['id' => $record['id']]);
+                $this->parent->put($params['page'], $output, ['id' => $record['id']]);
                 $added[] = 'Well done!';
             }
         } else return ['result' => false, 'message' => 'Stream not found of FFPROBE undefined'];

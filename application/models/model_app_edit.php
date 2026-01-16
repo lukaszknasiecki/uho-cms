@@ -86,7 +86,7 @@ class model_app_edit extends model_app
 				if (is_string($v['record']))
 					$v['record']=str_replace('%'.$kk.'%', $vv, $v['record']);
 
-				$schema['helper_models'][$k]=$this->apporm->getJsonModel($v['model'], ['id'=>$v['record']],true);
+				$schema['helper_models'][$k]=$this->apporm->get($v['model'], ['id'=>$v['record']],true);
 			}*/
 			$replace = $record;
 			$replace['helper_models'] = $schema['helper_models'];
@@ -154,7 +154,7 @@ class model_app_edit extends model_app
 					if ($field) {
 						$modelInfo = $field['source_double'][$post['value'] - 1] ?? null;
 						if ($modelInfo) {
-							$result = $this->apporm->getJsonModelShort($modelInfo['model'], null, ['lang' => true]);
+							$result = $this->apporm->getShort($modelInfo['model'], null, ['lang' => true]);
 							foreach ($result as &$r) {
 								$r['value'] = $modelInfo['slug'] . ':' . $r['id'];
 								$label = is_array($r['_model_label']) ? $r['_model_label']['page'] : $r['_model_label'];
@@ -263,12 +263,12 @@ class model_app_edit extends model_app
 			if ($lang['active']) $langs[$lang['lang']] = true;
 		}
 
-		// Validate schema
-
+		// Validate schema - older version
+	    /*
 		$validator = $this->apporm->schemaValidate($schema);
 		if (!$validator['result']) {
 			exit(implode('<br>', $validator['errors']));
-		}
+		}*/
 
 		// Final return payload
 
@@ -369,7 +369,7 @@ class model_app_edit extends model_app
 		if (!$field) return ['result' => false, 'message' => 'field not found'];
 
 		$items = [];
-		$searchSchema = $this->apporm->getJsonModelSchema($field['source']['model']);
+		$searchSchema = $this->apporm->getSchema($field['source']['model']);
 		$searchFields = $field['source']['search'] ?? ['label'];
 		$filter = [];
 
@@ -389,7 +389,7 @@ class model_app_edit extends model_app
 			$filter = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $searchClauses]];
 		}
 
-		$items = $this->apporm->getJsonModel($field['source']['model'], $filter, false, null, '0,10');
+		$items = $this->apporm->get($field['source']['model'], $filter, false, null, '0,10');
 		foreach ($items as &$item) {
 			$item['label'] = $this->getTwigFromHtml($field['source']['label'], $item);
 			if (isset($searchSchema['model']['image'])) {

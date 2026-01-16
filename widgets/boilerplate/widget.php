@@ -31,7 +31,7 @@ class serdelia_widget_boilerplate
     {
         // in any widget you can retrieve any data you want from the ORM
         // and then use them in the output
-        $logs = $this->orm->getJsonModel('cms_users_logs_logins', ['success' => 1]);
+        $logs = $this->orm->get('cms_users_logs_logins', ['success' => 1]);
         if (isset($logs)) $amount = count($logs);
         else $amount = 0;
 

@@ -82,13 +82,13 @@ class serdelia_widget_page
 
         
         
-        $all = $this->orm->getJsonModel($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
+        $all = $this->orm->get($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
         if (_uho_fx::array_filter($schema['fields'], 'field', 'active')) {
             $f['active'] = 1;
-            $active = $this->orm->getJsonModel($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
+            $active = $this->orm->get($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
         } else $active = -1;
 
-        $first = $this->orm->getJsonModel($model, $f, true, null, null, ['additionalParams' => $model_params]);
+        $first = $this->orm->get($model, $f, true, null, null, ['additionalParams' => $model_params]);
         if ($this->params['image']) $image = $first[$this->params['image']];
         if (is_array($image)) {
             if ($this->params['image_folder']) $image = $image[$this->params['image_folder']];

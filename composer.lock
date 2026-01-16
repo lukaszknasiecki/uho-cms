@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4fca4ced8491f055e8853f05d0f6745",
+    "content-hash": "55d99b2e77b9977a5f90e7b9f62eea6d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.369.13",
+            "version": "3.369.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "bedc36250c92b8287be855a2d25427fb0e065483"
+                "reference": "7c62f41fb0460c3e5d5c1f70e93e726f1daa75f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/bedc36250c92b8287be855a2d25427fb0e065483",
-                "reference": "bedc36250c92b8287be855a2d25427fb0e065483",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7c62f41fb0460c3e5d5c1f70e93e726f1daa75f5",
+                "reference": "7c62f41fb0460c3e5d5c1f70e93e726f1daa75f5",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.369.13"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.369.15"
             },
-            "time": "2026-01-14T19:13:46+00:00"
+            "time": "2026-01-16T19:18:57+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -682,16 +682,16 @@
         },
         {
             "name": "google/gax",
-            "version": "v1.40.0",
+            "version": "v1.40.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/gax-php.git",
-                "reference": "1d3834d60b3f0794427c64d2b27d7c627fbba92c"
+                "reference": "80527b9779c3277c31c74d2fb7ff1ca990239163"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/1d3834d60b3f0794427c64d2b27d7c627fbba92c",
-                "reference": "1d3834d60b3f0794427c64d2b27d7c627fbba92c",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/80527b9779c3277c31c74d2fb7ff1ca990239163",
+                "reference": "80527b9779c3277c31c74d2fb7ff1ca990239163",
                 "shasum": ""
             },
             "require": {
@@ -733,9 +733,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/gax-php/issues",
-                "source": "https://github.com/googleapis/gax-php/tree/v1.40.0"
+                "source": "https://github.com/googleapis/gax-php/tree/v1.40.1"
             },
-            "time": "2025-12-04T18:45:15+00:00"
+            "time": "2026-01-16T19:54:08+00:00"
         },
         {
             "name": "google/grpc-gcp",
@@ -1506,16 +1506,16 @@
         },
         {
             "name": "lukaszknasiecki/uho-mvc",
-            "version": "0.0.5.1",
+            "version": "0.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lukaszknasiecki/uho-mvc.git",
-                "reference": "109319df2573b85b6159058f1925c955ec4262cc"
+                "reference": "e57eece64d76bbc2a88ea5b4c8906c64d091b121"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/109319df2573b85b6159058f1925c955ec4262cc",
-                "reference": "109319df2573b85b6159058f1925c955ec4262cc",
+                "url": "https://api.github.com/repos/lukaszknasiecki/uho-mvc/zipball/e57eece64d76bbc2a88ea5b4c8906c64d091b121",
+                "reference": "e57eece64d76bbc2a88ea5b4c8906c64d091b121",
                 "shasum": ""
             },
             "require": {
@@ -1549,9 +1549,9 @@
             "description": "PHP model-view-controller framework",
             "support": {
                 "issues": "https://github.com/lukaszknasiecki/uho-mvc/issues",
-                "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/0.0.5.1"
+                "source": "https://github.com/lukaszknasiecki/uho-mvc/tree/0.0.6"
             },
-            "time": "2026-01-15T12:50:28+00:00"
+            "time": "2026-01-16T23:49:39+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2817,12 +2817,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "94abd1c39b593f8ca7c52bc68d71a19aa41c1248"
+                "reference": "141e984c3e2a3a451a5d7f8b57ad46a70e930b21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/94abd1c39b593f8ca7c52bc68d71a19aa41c1248",
-                "reference": "94abd1c39b593f8ca7c52bc68d71a19aa41c1248",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/141e984c3e2a3a451a5d7f8b57ad46a70e930b21",
+                "reference": "141e984c3e2a3a451a5d7f8b57ad46a70e930b21",
                 "shasum": ""
             },
             "require": {
@@ -2889,7 +2889,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-14T21:27:11+00:00"
+            "time": "2026-01-16T12:48:36+00:00"
         },
         {
             "name": "vimeo/vimeo-api",
