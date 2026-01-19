@@ -46,9 +46,8 @@ class serdelia_widget_page
     {
 
         // depreceated
-        if (!empty($this->params['page']) && empty($this->params['model']))
-        {
-            $this->params['model']=$this->params['page'];
+        if (!empty($this->params['page']) && empty($this->params['model'])) {
+            $this->params['model'] = $this->params['page'];
         }
 
         $p = explode(',', $this->params['model']);
@@ -59,10 +58,9 @@ class serdelia_widget_page
         $model = explode('?', $model)[0];
 
         $schema = $this->parent->getSchema($model);
-        
 
-        if (!$schema)
-        {
+
+        if (!$schema) {
             return ['result' => false];
         }
 
@@ -80,12 +78,11 @@ class serdelia_widget_page
             }
         }
 
+        $all = $this->orm->get($model, $f, false, null, null, ['count' => ['type'=>'quick'], 'additionalParams' => $model_params]);
         
-        
-        $all = $this->orm->get($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
         if (_uho_fx::array_filter($schema['fields'], 'field', 'active')) {
             $f['active'] = 1;
-            $active = $this->orm->get($model, $f, false, null, null, ['count' => true, 'additionalParams' => $model_params]);
+            $active = $this->orm->get($model, $f, false, null, null, ['count' => ['type'=>'quick'], 'additionalParams' => $model_params]);
         } else $active = -1;
 
         $first = $this->orm->get($model, $f, true, null, null, ['additionalParams' => $model_params]);

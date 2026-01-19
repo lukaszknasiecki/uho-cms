@@ -719,7 +719,12 @@ class model_app_write extends model_app
 					}
 
 					if ($val) {
-						$r = $this->apporm->put($v['source']['model'], $val, ['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id], true);
+						$r = $this->apporm->put(
+							$v['source']['model'],
+							$val,
+							['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id],
+							true
+							);
 						if (!$r) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
 					}
 
@@ -846,7 +851,7 @@ class model_app_write extends model_app
 			}
 			if ($new) {
 				$new['id'] = $id;
-				$result = $this->apporm->put($schema, $new, false, false, false);
+				$result = $this->apporm->put($schema, $new, false, false);
 				if (!$result) $errors[] = 'Error on PUT';
 			}
 		}

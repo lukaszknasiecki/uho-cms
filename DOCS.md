@@ -221,7 +221,7 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 
 * `table`: Database table name (required)
 * `label`: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
-* `order`: Default sort field(s), comma-separated for multiple fields
+* `order`: Default order of field(s), comma-separated for multiple fields
 * `model`: Object defining how records of this schema are displayed (supports Twig templates) in other models
 * `layout`: List view layout configuration
 * `fields`: Array of field definitions
@@ -357,7 +357,7 @@ Each field in the `fields` array defines a database column and its CMS behavior:
         "code": false,
         "rows": 5
         "required": true,
-        "list": "show",              // "show", "read", "edit", "order", or object
+        "list": "show|read|edit|order|object",
         "search": true,              // Include in search filters
         "tab": "Tab Name",           // Group fields in tabs
         "hr": true,                  // Show divider above field
@@ -398,7 +398,12 @@ Each field in the `fields` array defines a database column and its CMS behavior:
 
 * `label`: Display label for the field
 * `required`: Field is required
-* `list`: Visibility in list view - `"show"`, `"read"`, `"edit"`, `"order"`, or object with `type`, `value`, `width`
+* `list`: Visibility in list view:
+  * `show`, shows field's value in the list
+  * `read`, reads field's value, to be used by other fields
+  * `edit`, for `boolean` type only, allows to edit field value directly in the list view
+  * `order`, for `order` type only, enables drag&drop feature
+  * `{type:"",value:"",width:""}`
 * `search`: Include in search/filter panel
 * `tab`: Group field in a named tab
 * `hr`: Show horizontal divider above field

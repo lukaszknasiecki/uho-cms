@@ -67,7 +67,7 @@ class model_app_edit extends model_app
 		} else $schema_validation = null;
 
 		$this->validateSchema($schema, $model);
-		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
+		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 
 
 		// Generate edit schema (populated with record data)
@@ -148,13 +148,14 @@ class model_app_edit extends model_app
 
 		if (!$this->view && isset($post['action'])) {
 			switch ($post['action']) {
+				/*
 				case "elements_double":
 					$result = [];
 					$field = _uho_fx::array_filter($schema['fields'], 'field', $post['field'], ['first' => true]);
 					if ($field) {
 						$modelInfo = $field['source_double'][$post['value'] - 1] ?? null;
 						if ($modelInfo) {
-							$result = $this->apporm->getShort($modelInfo['model'], null, ['lang' => true]);
+							$result = $this->apporm->getShort($modelInfo['model'], null);
 							foreach ($result as &$r) {
 								$r['value'] = $modelInfo['slug'] . ':' . $r['id'];
 								$label = is_array($r['_model_label']) ? $r['_model_label']['page'] : $r['_model_label'];
@@ -166,7 +167,7 @@ class model_app_edit extends model_app
 						}
 					}
 					exit(json_encode($result));
-					break;
+					break;*/
 
 				case "search_source":
 					$result = $this->apiSearchSource($schema, substr($post['field'], 2), $post['value']);

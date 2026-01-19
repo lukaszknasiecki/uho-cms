@@ -66,7 +66,7 @@ class model_app_page extends model_app
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
 		$schema=$this->getSchemaDepreceated($schema);
 		$this->validateSchema($schema, $model);
-		$this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert']);
+		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
 
 		// Execute plugin "on_load" hooks

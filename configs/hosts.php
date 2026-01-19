@@ -22,6 +22,7 @@ $cfg_domains = [
 		'sql_user' =>                                       getenv('SQL_USER'),
 		'sql_pass' =>                                       getenv('SQL_PASS'),
 		'sql_base' =>                                       getenv('SQL_BASE'),
+		'sql_debug' =>                                       getenv('SQL_DEBUG'),
 		'params'        =>
 		[
 			"ffmpeg"        =>                              getenv('FFMPEG_PATH'),

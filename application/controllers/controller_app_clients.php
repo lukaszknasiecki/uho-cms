@@ -23,10 +23,13 @@ class controller_app_clients
      * @param object $route Route handler instance
      */
     public function __construct($cfg, $model, $route)
-    {
+    {        
         $this->cfg   = $cfg;
         $this->model = $model;
         $this->route = $route;
+        if (isset($this->cfg['cms']['debug']) && in_array($this->cfg['cms']['debug'],[1,'true']))
+             $this->model->setDebugMode(true);
+
     }
 
     /**

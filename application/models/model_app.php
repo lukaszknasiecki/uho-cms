@@ -2218,7 +2218,6 @@ class model_app extends _uho_model
                 foreach ($schema['filters'] as $k => $v)
                     if ($v[0] == '%') unset($schema['filters'][$k]);
 
-
             $record = $this->apporm->get($schema, ['id' => $id], true, null, null, ['replace_values' => $replace]);
 
             if (!$record)
@@ -2255,7 +2254,7 @@ class model_app extends _uho_model
                 $schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
                 if ($validate) {
                     $this->validateSchema($schema, $model);
-                    $this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
+                    $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
                 }
 
                 if ($id)
@@ -2270,7 +2269,7 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['page_update'] = true;
         } elseif ($validate) {
             $this->validateSchema($schema, $model);
-            $this->apporm->creator($schema, ['create' => 'auto', 'update' => 'alert'], true);
+            $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], true);
         }
 
         // getting new schema updated with record values  ------------------------
@@ -2516,7 +2515,9 @@ class model_app extends _uho_model
             $exists = $this->get('cms_backup_media', $f, true, 'date DESC');
 
             if ($exists) {
-                $exists = $this->put('cms_backup_media', ['date' => date('Y-m-d H:i:s')], ['id' => $exists['id']]);
+                $exists = $this->put(
+                    'cms_backup_media',
+                    ['date' => date('Y-m-d H:i:s')], ['id' => $exists['id']]);
             } elseif (!$exists && @copy($file, $new) && file_exists($new)) {
                 $checksum = md5_file($new);
                 $r = $this->post(
@@ -2950,7 +2951,7 @@ class model_app extends _uho_model
 
             foreach ($tables as $k => $v) {
                 $schema = $this->getSchema($v, false);
-                $this->apporm->creator($schema, ['create' => "auto"]);
+                $this->apporm->sqlCreator($schema, ['create' => "auto"]);
             }
 
             $_SESSION['schemas_checked']++;
@@ -3042,6 +3043,7 @@ class model_app extends _uho_model
     public function setDebugMode($mode)
     {
         $this->debug_mode = $mode;
+        $this->orm->setDebug($mode);
     }
     public function getDebugMode()
     {
