@@ -117,11 +117,11 @@ class model_app_page extends model_app
 			if (
 				!in_array($field['type'], ['image', 'checkboxes', 'temp-elements']) &&
 				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
-			) {
+			) {				
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
-
+	
 				if (!$global_search) {
 					$schema['fields'][$k]['searched'] = $value;
 				}
@@ -139,6 +139,7 @@ class model_app_page extends model_app
 						$vv = $value ?: 0;
 						break;
 					case 'select':
+					case 'elements':
 						/*
 						$vv = [];
 						if (!$global_search && !empty($field['source']['model'])) {
@@ -221,6 +222,7 @@ class model_app_page extends model_app
 					];
 				}
 			}
+
 
 		// Convert global search to unified custom query
 		if ($global_search) {
@@ -755,7 +757,7 @@ class model_app_page extends model_app
 				]
 			];
 		}
-
+		
 		// Final update using plugin/customization hook
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}

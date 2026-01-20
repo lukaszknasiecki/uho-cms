@@ -881,8 +881,6 @@ You can also store files with their original filenames, you will need additional
 }
 ```
 
-#### 
-
 #### `video`
 
 Video file upload (MP4).

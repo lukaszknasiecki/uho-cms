@@ -23,7 +23,7 @@ class controller_app_clients
      * @param object $route Route handler instance
      */
     public function __construct($cfg, $model, $route)
-    {        
+    {                
         $this->cfg   = $cfg;
         $this->model = $model;
         $this->route = $route;
@@ -72,6 +72,7 @@ class controller_app_clients
         $subaction = $this->route->e(0); // Possibly a mistake — might need to use e(1)?
 
         // NoSQL disabled, no user logged in, and no admin created — force initial admin setup
+
         if (
             !$this->cfg['nosql'] &&
             $action !== 'build' &&

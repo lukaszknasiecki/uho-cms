@@ -146,7 +146,7 @@ class model_app extends _uho_model
 
         // --- Initialize ORM ---
         $this->apporm = new _uho_orm($this->sql, null, []);
-        $this->apporm->setFilesDecache(true);
+        $this->apporm->fileSetCacheBuster(true);
         $this->apporm->setImageSizes(false);
 
         // --- Determine CMS root folder ---
@@ -1444,10 +1444,12 @@ class model_app extends _uho_model
                         $json = @file_get_contents($this->cms_folder . '/plugins/' . $v['plugin'] . '/plugin.json');
                         if ($json)
                             $json = json_decode($json, true);
+                        
                         if (!$buttons[$k]['label'] && $json[$this->lang]['label'])
                             $buttons[$k]['label'] = $json[$this->lang]['label'];
                         if (!$buttons[$k]['icon'] && $json['icon'])
                             $buttons[$k]['icon'] = $json['icon'];
+                        
                     } else {
                         unset($buttons[$k]);
                     }

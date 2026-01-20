@@ -187,8 +187,8 @@ class model_app_write extends model_app
 		}
 
 		// update values by sources, for pattern fills etc.
-		
 		$data_deep = $this->apporm->updateRecordSources($schema, $data);
+		
 		$old_value = $this->apporm->get($schema, ['id' => $id], true);
 		$update_fields_even_empty = [];
 
@@ -203,10 +203,11 @@ class model_app_write extends model_app
 
 			
 		// value updates
-		foreach ($schema['fields'] as $k => $v) {
+		foreach ($schema['fields'] as $k => $v)
+		{
 			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']]))
-			{
-				$data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
+			{				
+				$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
 			}
 
 			switch ($v['type']) {
@@ -330,6 +331,7 @@ class model_app_write extends model_app
 			}
 		}
 
+		
 
 		foreach ($schema['fields'] as $k => $v)
 			if (
@@ -340,13 +342,13 @@ class model_app_write extends model_app
 				)
 				)
 			) {
-
 				if (in_array($v['field'], $update_fields_even_empty));
 				else {
 					unset($schema['fields'][$k]);
 					unset($schema['filters']);
 				}
 			}
+			
 
 		// unique values
 		foreach ($schema['fields'] as $k => $v)
@@ -782,12 +784,13 @@ class model_app_write extends model_app
 		} else
 
 		/*
-		** updating new record
-		*/ {
+		** updating  record
+		*/ {			
 			$this->backupAdd($schema['table'], $id);
 			$data['id'] = $id;
 			$this->logsAdd('edit');
-
+			$schema['fields']=array_values($schema['fields']);
+			
 			$result = $this->apporm->put($schema, $data);
 			if (!$result) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
 
