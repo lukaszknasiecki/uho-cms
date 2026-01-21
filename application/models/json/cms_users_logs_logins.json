@@ -20,37 +20,45 @@
     ],
     "fields": [
         {
-            "label_PL": "Data i godzina",
-            "label_EN": "Date",
             "field": "datetime",
             "type": "datetime",
-            "default":"{{now}}",
-            "list":"show",
-            "search": true,
-            "edit": false
+            "cms": {
+                "label_PL": "Data i godzina",
+                "label_EN": "Date",
+                "default": "{{now}}",
+                "list": "show",
+                "search": true,
+                "edit": false
+            }
         },
         {
-            "label": "Login",
             "field": "login",
-            "list":"show",
-            "search": true,
-            "edit": false
+            "cms": {
+                "label": "Login",
+                "list": "show",
+                "search": true,
+                "edit": false
+            }
         },
         {
-            "label": "IP",
             "field": "ip",
-            "list":"show",
-            "search": true,
-            "edit": false
+            "cms": {
+                "label": "IP",
+                "list": "show",
+                "search": true,
+                "edit": false
+            }
         },
         {
-            "label_PL": "Poprawne",
-            "label_EN": "Success",
             "field": "success",
-            "list":"show",
             "type": "boolean",
-            "search": true,
-            "edit": false
+            "cms": {
+                "label_PL": "Poprawne",
+                "label_EN": "Success",
+                "list": "show",                
+                "search": true,
+                "edit": false
+            }
         }
     ]
 }

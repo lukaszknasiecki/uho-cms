@@ -1,0 +1,10 @@
+{
+    "models": [
+        "cms_backup",
+        "cms_backup_media",
+        "cms_settings",
+        "cms_users",
+        "cms_users_logs",
+        "cms_users_logs_logins"
+    ]
+}

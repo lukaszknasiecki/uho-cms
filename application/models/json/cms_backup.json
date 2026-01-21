@@ -1,8 +1,7 @@
 {
     "table": "cms_backup",
     "order": "!date",
-    "label_PL": "Przywracane danych",
-    "label_EN": "Backup restore",
+    "label": "Backup restore",
     "disable": [
         "add",
         "remove",
@@ -26,42 +25,52 @@
     ],
     "fields": [
         {
-            "label": "Data",
             "field": "date",
             "type": "date",
-            "list": true,
-            "edit": false
+            "cms": {
+                "label": "Data",
+                "list": "show",
+                "edit": false
+            }
         },
         {
-            "label": "Sesja",
             "field": "session",
-            "list": true,
-            "edit": false,
+            "cms": {
+                "label": "Sesja",
+                "list": "show",
+                "edit": false
+            },
             "type": "select",
             "source": {
                 "model": "cms_users_logs_logins"
             }
         },
         {
-            "label_PL": "Strona",
-            "label_EN": "Page",
             "field": "page",
-            "list": true,
-            "edit": false,
-            "search": "strict"
+            "cms": {
+                "label_PL": "Strona",
+                "label_EN": "Page",
+                "list": "show",
+                "edit": false,
+                "search": "strict"
+            }
         },
         {
-            "label": "Rekord",
             "field": "record",
-            "list": true,
-            "edit": false,
-            "search": true
+            "cms": {
+                "label": "Rekord",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
         },
         {
-            "label": "Dane",
             "field": "data",
-            "edit": false,
-            "type": "json"
+            "type": "json",
+            "cms": {
+                "label": "Dane",
+                "edit": false                
+            }
         }
     ]
 }

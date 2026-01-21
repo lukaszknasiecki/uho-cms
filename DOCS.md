@@ -39,10 +39,9 @@ The CMS core is located in the `/cms` folder. To set up a new CMS instance:
 
 ### 2. Root Configuration File
 
-Create a configuration file in your project root. The CMS looks for either:
+Create a configuration file in your project root:
 
-* `uho-cms.json` (preferred)
-* `sunship-cms.json` (fallback)
+* `uho-cms.json`
 
 **Example** `uho-cms.json`:
 
@@ -97,6 +96,13 @@ CMS_CONFIG_STRICT=false
 PHP=/usr/bin/php
 INT_API_TOKEN=your_token_here
 ```
+
+Now, you can build tables in your database, you can also skip that point, then tables
+will be built on first CMS run.
+
+Example (using `cms_config/.env` as your ENV file path)
+
+`vendor/lukaszknasiecki/uho-mvc/bin/schema-build cms_config/.env cms/application/models/_schemas.json cms/application/models/json`
 
 ### 4. Access the CMS
 

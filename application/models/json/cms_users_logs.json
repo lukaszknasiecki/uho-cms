@@ -9,43 +9,51 @@
     ],
     "fields": [
         {
-            "label_PL": "Data i czas",
-            "label_EN": "Date",
+            "cms": {
+                "default": "{{now}}",
+                "list": "show",
+                "edit": false,
+                "search": true,
+                "label_PL": "Data i czas",
+                "label_EN": "Date"
+            },
             "field": "datetime",
-            "type": "datetime",
-            "default":"{{now}}",
-            "list":"show",
-            "edit": false,
-            "search": true
+            "type": "datetime"
         },
         {
-            "label_PL": "Identyfikator sesji",
-            "label_EN": "Session ID",
             "field": "session",
             "type": "integer",
-            "list":"show",
-            "edit": false,
-            "search": true
+            "cms": {
+                "label_PL": "Identyfikator sesji",
+                "label_EN": "Session ID",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
         },
         {
-            "label_PL": "Użytkownik",
-            "label_EN": "User",
             "field": "user",
             "type": "select",
             "source": {
                 "model": "cms_users"
             },
-            "list":"show",
-            "edit": false,
-            "search": true
+            "cms": {
+                "label_PL": "Użytkownik",
+                "label_EN": "User",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
         },
         {
-            "label_PL": "Akcja",
-            "label_EN": "Action",
-            "field": "action",            
-            "list":"show",
-            "edit": false,
-            "search": true
+            "field": "action",
+            "cms": {
+                "label_PL": "Akcja",
+                "label_EN": "Action",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
         }
     ]
 }
