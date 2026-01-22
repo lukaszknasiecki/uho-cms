@@ -45,8 +45,8 @@ class serdelia_plugin_ffprobe
 
 
         if (!$params['record']) return ['result' => false];
-        $this->cms->setFilesDecache(false);
-        $record = $this->cms->get($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'additionalParams' => $params['params']]);
+        $this->cms->fileSetCacheBuster(false);
+        $record = $this->cms->get($params['page'], ['id' => $params['record']], true, null, null, ['skipSchemaFilters' => true, 'additionalParams' => $params['params']]);
 
         if (!$record) return ['result' => false];
         $params = array_merge($params, $params['params']);

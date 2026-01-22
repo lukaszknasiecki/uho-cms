@@ -22,6 +22,9 @@
         {
             "field": "datetime",
             "type": "datetime",
+            "settings":{
+                "default": "{{now}}"
+            },
             "cms": {
                 "label_PL": "Data i godzina",
                 "label_EN": "Date",

@@ -38,6 +38,7 @@ project_root/
 ## Configuration Files
 
 ### uho-cms.json
+
 ```json
 {
   "CMS_CONFIG_DEBUG": true,
@@ -48,6 +49,7 @@ project_root/
 ```
 
 ### cms_config/config.php
+
 ```php
 <?php
 $cfg = [
@@ -61,7 +63,7 @@ $cfg = [
 ## Field Types Cheat Sheet
 
 | Type | Description | Example |
-|------|-------------|---------|
+|----|----|----|
 | `boolean` | Checkbox | Active, published |
 | `checkboxes` | Multiple choice | Tags |
 | `date` | Date (YYYY-mm-dd) | Publish date |
@@ -84,6 +86,7 @@ $cfg = [
 ## Common Field Patterns
 
 ### Required Text Field
+
 ```json
 {
     "field": "title",
@@ -96,6 +99,7 @@ $cfg = [
 ```
 
 ### Auto-Generated Slug
+
 ```json
 {
     "field": "slug",
@@ -113,6 +117,7 @@ $cfg = [
 ```
 
 ### Image with Sizes
+
 ```json
 {
     "field": "image",
@@ -129,6 +134,7 @@ $cfg = [
 ```
 
 ### Select from Model
+
 ```json
 {
     "field": "category_id",
@@ -141,6 +147,7 @@ $cfg = [
 ```
 
 ### Multiple Selection
+
 ```json
 {
     "field": "tags",
@@ -153,6 +160,7 @@ $cfg = [
 ```
 
 ### Publish Toggle
+
 ```json
 {
     "field": "active",
@@ -185,6 +193,7 @@ $cfg = [
 ## Button Types
 
 ### Page Button (Navigate)
+
 ```json
 {
     "label": "Related Items",
@@ -195,6 +204,7 @@ $cfg = [
 ```
 
 ### Plugin Button
+
 ```json
 {
     "type": "plugin",
@@ -208,6 +218,7 @@ $cfg = [
 ## Structure Files
 
 ### menu.json
+
 ```json
 [
     {
@@ -220,6 +231,7 @@ $cfg = [
 ```
 
 ### dashboard.json
+
 ```json
 {
     "type": "widgets",
@@ -234,6 +246,7 @@ $cfg = [
 ```
 
 ### authorization.json
+
 ```json
 [
     {
@@ -245,6 +258,7 @@ $cfg = [
 ```
 
 ### model_tree.json
+
 ```json
 {
     "models": {
@@ -257,6 +271,7 @@ $cfg = [
 ## Field Organization
 
 ### Tabs
+
 ```json
 {
     "cms": {
@@ -266,6 +281,7 @@ $cfg = [
 ```
 
 ### Sections
+
 ```json
 {
     "cms": {
@@ -276,6 +292,7 @@ $cfg = [
 ```
 
 ## Image List Display
+
 ```json
 {
     "cms": {
@@ -288,6 +305,7 @@ $cfg = [
 ```
 
 ## Search/Filter
+
 ```json
 {
     "cms": {
@@ -297,6 +315,7 @@ $cfg = [
 ```
 
 ## Help Text
+
 ```json
 {
     "cms": {
@@ -330,10 +349,11 @@ CMS_CONFIG_STRICT=false
 ## Troubleshooting
 
 | Issue | Solution |
-|-------|----------|
+|----|----|
 | CMS not loading | Check `uho-cms.json` exists |
 | Model not appearing | Verify JSON syntax, check table exists |
 | Plugin error | Check class name matches folder |
 | Image upload fails | Verify folder permissions, check path |
 | Field not showing | Check `cms.list` property |
+
 

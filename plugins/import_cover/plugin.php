@@ -81,23 +81,29 @@ class serdelia_plugin_import_cover
         if (!$params['record']) return ['result' => false];
         if (isset($params['params']['page'])) $params['page'] = $params['params']['page'];
 
-        $this->cms->setFilesDecache(false);
+        $this->cms->fileSetCacheBuster(false);
 
-        $record = $this->cms->get($params['page'], ['id' => $params['record']], true, null, null, ['skip_filters' => true, 'page_update' => $params['params'], 'additionalParams' => $params['params']]);
-
+        $record = $this->cms->get(
+            $params['page'],
+            ['id' => $params['record']],
+            true,
+            null,
+            null,
+            [
+                'skipSchemaFilters' => true,
+                'page_update' => $params['params'],
+                'additionalParams' => $params['params']
+            ]
+            );
 
         if (!$record) return ['result' => false];
 
         $schema = $this->parent->apporm->getSchema($params['page']);
 
-        if (isset($record['uid']) && !$record['uid']) {
+        if (isset($record['uid']) && empty($record['uid'])) {
             $record['uid'] = uniqid();
-
-
-
             $this->parent->queryOut('UPDATE ' . $schema['table'] . ' SET uid="' . $record['uid'] . '" WHERE id=' . $params['record']);
         }
-
 
         $params = array_merge($params, $params['params']);
 
