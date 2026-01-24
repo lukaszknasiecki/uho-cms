@@ -46,25 +46,32 @@
     ],
     "fields": [
         {
-            "label": "Widget",
             "field": "widget",
-            "list": true,
-            "settings":{"style":"json"}
-        },
-        
-        {
-            "field":"label",
-            "label":"Copy",
-            "list":true
+            "cms": {
+                "style": "json",
+                "label": "Widget",
+                "list": "show"
+            }
         },
         {
-            "field":"icon",
-            "label":"Icon",
-            "list":true
+            "field": "label",
+            "cms": {
+                "label": "Copy",
+                "list": "show"
+            }
         },
         {
-            "field":"page",
-            "label":"Page"
+            "field": "icon",
+            "cms": {
+                "label": "Icon",
+                "list": "show"
+            }
+        },
+        {
+            "field": "page",
+            "cms": {
+                "label": "Page"
+            }
         }
     ]
 }

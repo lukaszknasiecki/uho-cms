@@ -3,16 +3,20 @@
     "order": "slug",
     "fields": [
         {
-            "label_PL": "Klucz",
-            "label_EN": "Key",
-            "field": "slug",
-            "list": true
+            "cms": {
+                "label_PL": "Klucz",
+                "label_EN": "Key",
+                "list": "show"
+            },
+            "field": "slug"
         },
         {
-            "label_PL": "Wartość",
-            "label_EN": "Value",
-            "field": "value",
-            "list": true
+            "cms": {
+                "label_PL": "Wartość",
+                "label_EN": "Value",
+                "list": "show"
+            },
+            "field": "value"
         }
     ]
 }

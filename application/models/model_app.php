@@ -713,6 +713,7 @@ class model_app extends _uho_model
 
         if ($model_update) {
             $schema = $this->apporm->getSchema([$model, $model_update], false, $params);
+            
         } else
             $schema = $this->apporm->getSchema($model, false, $params);
 
@@ -805,6 +806,7 @@ class model_app extends _uho_model
             $schema['fields'] = $f;
         }
 
+        
 
         // adding default values for CMS if not present
         foreach ($schema['fields'] as $k => $v)
@@ -1197,12 +1199,21 @@ class model_app extends _uho_model
                             array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
                         }
 
-
                         // add default
                         if ($is_new && $v['cms']['default']) {
 
-                            $v['cms']['default'] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'numbers' => $params, 'params' => ['cms_user' => 1]]);
-                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'], ['params' => ['cms_user' => $this->getUser()['id']]]);
+                            $v['cms']['default'] = $this->fillPattern($v['cms']['default'], [
+                                'keys' => $record, 
+                                'numbers' => $params, 
+                                'params' => ['cms_user' => 1]]);
+                            
+                            $twig_params=$params;
+                            $twig_params['cms_user'] = $this->getUser()['id'];
+
+                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'], [
+                                'params' => $twig_params,
+                                'numbers' => $params
+                                ]);
 
                             $record[$v['field']] = $v['cms']['default'];
                         }
@@ -2238,11 +2249,16 @@ class model_app extends _uho_model
         // plugins on create
         $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
 
-        // changing schema according to record values ------------------------
+        /*
+         changing schema according to record values
+        */
+
         if ($schema['page_update']) {
+
             if (!is_array($schema['page_update']))
                 $schema['page_update'] = ['file' => $schema['page_update']];
-            // fields which cause update
+            
+            // get fields which cause update
             $fields = _uho_fx::excludeTagsFromText($schema['page_update']['file'], '{{', '}}');
 
             foreach ($fields as $k => $v)
@@ -2252,16 +2268,22 @@ class model_app extends _uho_model
             if ($record)
                 $schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $record);
 
-            if ($schema['page_update']['file'] && $record) {
+            if ($schema['page_update']['file'] && $record)
+            {
                 $schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
+             
                 if ($validate) {
-                    $this->validateSchema($schema, $model);
+                    
+                    $this->validateSchema($schema, $model);                    
+                    
                     $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
                 }
 
                 if ($id)
                     $record = $this->apporm->get($schema, ['id' => $id], true);
             }
+
+            
 
 
             // marking fields which cause update to launch askSaveGo popup after change
@@ -2270,6 +2292,7 @@ class model_app extends _uho_model
                     if (in_array($v['field'], $fields))
                         $schema['fields'][$k]['page_update'] = true;
         } elseif ($validate) {
+            
             $this->validateSchema($schema, $model);
             $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], true);
         }
@@ -2874,7 +2897,9 @@ class model_app extends _uho_model
 
     private function halt($message)
     {
-        exit('<pre>' . $message . '</pre>');
+        if (is_array($message))
+            exit('<pre>' . implode('<br>',$message) . '</pre>');
+            else exit('<pre>' . $message . '</pre>');
     }
 
     /*
@@ -2888,7 +2913,12 @@ class model_app extends _uho_model
             if (!$name) $name = 'unknown';
             $this->halt('No schema found for model: ' . $name);
         }
+                    
 
+        $response = $this->apporm->validateSchema($schema, true);
+        if (!empty($response['errors'])) $this->halt($response['errors']);
+
+        /*
         if (empty($schema['table'])) $this->halt('No table defined for model: ' . $name);
         if (empty($schema['fields'])) $this->halt('No fields array defined for model: ' . $name);
 
@@ -2925,12 +2955,12 @@ class model_app extends _uho_model
 
             switch ($type) {
                 case "image":
-                    if (empty($v['settings']['folder'])) $this->halt('No .settings.folder specified image type field: ' . $field);
+                    if (empty($v['settings']['folder'])) $this->halt('No image.settings.folder specified for: ' . $field);
                     if (empty($v['images']) || !is_array($v['images'])) $this->halt('No .images array for image type field: ' . $field);
 
                     break;
             }
-        }
+        }*/
     }
 
     /*
@@ -3016,7 +3046,7 @@ class model_app extends _uho_model
     {
         $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden','hr','search','tab'];
         
-        $cms_fields_both = ['list','label'];
+        $cms_fields_both = [];//['list','label'];
 
         foreach ($schema['fields'] as $k => $field)
         {

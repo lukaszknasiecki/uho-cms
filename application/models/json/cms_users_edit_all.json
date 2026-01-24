@@ -1,28 +1,147 @@
 {
     "table": "cms_users",
-    "order":"name",
-    "model":{"label":"{{name}}"},
-    "filters":{"admin":"0"},
-    "buttons_edit":
-    [
-        {"label_PL":"Ustaw hasło","label_EN":"Set password","type":"plugin","icon":"fingerprint","plugin":"cms_users_password"},
-        {"label_PL":"Ustaw poziom dostępu","label_EN":"Set authorization level","type":"plugin","icon":"lock","plugin":"cms_users_auth"},
-        {"label_PL":"Blokada","label_EN":"Lock","type":"plugin","icon":"lock-open","plugin":"cms_users_lock"}
+    "order": "name",
+    "model": {
+        "label": "{{name}}"
+    },
+    "filters": {
+        "admin": "0"
+    },
+    "buttons_edit": [
+        {
+            "label_PL": "Ustaw hasło",
+            "label_EN": "Set password",
+            "type": "plugin",
+            "icon": "fingerprint",
+            "plugin": "cms_users_password"
+        },
+        {
+            "label_PL": "Ustaw poziom dostępu",
+            "label_EN": "Set authorization level",
+            "type": "plugin",
+            "icon": "lock",
+            "plugin": "cms_users_auth"
+        },
+        {
+            "label_PL": "Blokada",
+            "label_EN": "Lock",
+            "type": "plugin",
+            "icon": "lock-open",
+            "plugin": "cms_users_lock"
+        }
     ],
-    "fields" :
-    [
-        {"field":"name","label_PL":"Imię","label_EN":"Name","list":true,"required":true},
-        {"field":"login","label":"Login","unique":true,"required":true,"list":true},
-        {"field":"password","label":"Password","hidden":true},
-        {"field":"salt","label":"Salt","hidden":true},
-        {"field":"auth","label":"Auth","hidden":true,"hash":"11z"},
-        {"field":"auth_label","label_PL":"Zestaw uprawnień","label_EN":"Permissions set","edit":false,"list":true},
-        {"field":"status","label":"Status","type":"select","edit":false},
-        {"field":"date_set","label_PL":"Data utworzenia","label_EN":"Created","type":"datetime","default":"{{now}}","edit":false},
-        {"field":"hide_menu","label_PL":"Ukryj menu","label_EN":"Hide menu","type":"boolean"},
-        {"field":"admin","label":"Admin","hidden":true,"type":"boolean"},
-        {"field":"bad_login","label_EN":"Current bad login attempts","edit":false,"label_PL":"Aktualna ilość błędnych prób logowania"},
-        {"field":"edit_all","label":"Edit All","type":"hidden"},
-        {"field":"locked","type":"boolean","list":true,"label_EN":"Locked","label_PL":"Blokada konta","hidden":true}
+    "fields": [
+        {
+            "field": "name",
+            "cms": {
+                "label_PL": "Imię",
+                "label_EN": "Name",
+                "list": "show",
+                "required": true
+            }
+        },
+        {
+            "field": "login",
+            "cms": {
+                "label": "Login",
+                "unique": true,
+                "required": true,
+                "list": "show"
+            }
+        },
+        {
+            "field": "password",
+            "cms": {
+                "label": "Password",
+                "hidden": true
+            }
+        },
+        {
+            "field": "salt",
+            "cms": {
+                "label": "Salt",
+                "hidden": true
+            }
+        },
+        {
+            "field": "auth",
+            "settings": {
+                "hash": "11z"
+            },
+            "cms": {
+                "label": "Auth",
+                "hidden": true
+            }
+        },
+        {
+            "field": "auth_label",
+            "cms": {
+                "label_PL": "Zestaw uprawnień",
+                "label_EN": "Permissions set",
+                "edit": false,
+                "list": "show"
+            }
+        },
+        {
+            "field": "status",
+            "type": "select",
+            "cms": {
+                "label": "Status",
+                "edit": false
+            }
+        },
+        {
+            "field": "date_set",
+            "type": "datetime",
+            "settings": {
+                "default": "{{now}}"
+            },
+            "cms": {
+                "label_PL": "Data utworzenia",
+                "label_EN": "Created",
+                "edit": false
+            }
+        },
+        {
+            "field": "hide_menu",
+            "type": "boolean",
+            "cms": {
+                "label_PL": "Ukryj menu",
+                "label_EN": "Hide menu"
+            }
+        },
+        {
+            "field": "admin",
+            "type": "boolean",
+            "cms": {
+                "label": "Admin",
+                "hidden": true
+            }
+        },
+        {
+            "field": "bad_login",
+            "cms": {
+                "label_EN": "Current bad login attempts",
+                "label_PL": "Aktualna ilość błędnych prób logowania",
+                "edit": false
+            }
+        },
+        {
+            "field": "edit_all",
+            "cms": {
+                "label": "Edit All",
+                "hidden": true
+            }
+        },
+        {
+            "field": "locked",
+            "type": "boolean",
+            "cms": {
+                "label_EN": "Locked",
+                "label_PL": "Blokada konta",
+                "list": "show",
+                "hidden": true
+            }
+        }
     ]
 }

@@ -72,7 +72,7 @@ class model_app_edit extends model_app
 
 		// Generate edit schema (populated with record data)
 
-		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);
+		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);		
 		$schema = $this->getSchemaDepreceated($schema);
 
 		// Update data with Helper Models
@@ -180,7 +180,7 @@ class model_app_edit extends model_app
 
 		$tabs = [];
 		foreach ($schema['fields'] as $field) {
-			if ($field['cms']['tab']) {
+			if (!empty($field['cms']['tab'])) {
 				$tabs[] = ['id' => count($tabs) + 1, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
 			if (!empty($tabs) && ($field['field'] || $field['type'] === 'plugin') && !$field['hidden'] && !in_array($field['type'], ['uid', 'order'])) {

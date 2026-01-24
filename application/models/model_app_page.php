@@ -65,6 +65,7 @@ class model_app_page extends model_app
 		// Load and validate schema
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
 		$schema=$this->getSchemaDepreceated($schema);
+		
 		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
@@ -93,8 +94,12 @@ class model_app_page extends model_app
 
 		$this->url_search = ['type' => 'url_now'];
 
+
+
 		// Filter and transform schema
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
+
+
 		$buttons = $this->getSchemaButtons($schema, $params);
 		$schema['fields'] = $this->updateSchemaLanguages($schema);
 		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);
@@ -396,8 +401,8 @@ class model_app_page extends model_app
 
 			// convert list to object if string
 
-			if (is_string($v['list']))
-				$schema['fields'][$k]['list'] = $v['list'] = ['type' => $v['list']];
+			if (@is_string($v['cms']['list']))
+				$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];
 
 			switch ($v['type']) {
 				case "select":
@@ -574,7 +579,7 @@ class model_app_page extends model_app
 	{
 		// Remove fields that are not marked to be listed.
 		foreach ($schema['fields'] as $k => $v) {
-			if (empty($v['list'])) {
+			if (empty($v['cms']['list'])) {
 				unset($schema['fields'][$k]);
 			}
 		}

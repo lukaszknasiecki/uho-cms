@@ -327,6 +327,12 @@ $cfg = [
 }
 ```
 
+## Schema Validation
+
+You can validate your schemas using `schema-validate` command of UHO-MVC framework, i.e.
+
+`vendor/lukaszknasiecki/uho-mvc/bin/schema-validate cms_config/models/json`
+
 ## Environment Variables
 
 ```bash

@@ -13,13 +13,13 @@
             "label": "before",
             "plugin": "serdelia_authorization_presets_before",
             "on_load": true,
-            "hidden":true
+            "hidden": true
         },
         {
             "label": "after",
             "plugin": "serdelia_authorization_presets_after",
             "on_update": true,
-            "hidden":true
+            "hidden": true
         }
     ],
     "buttons_edit": [
@@ -27,73 +27,81 @@
             "label": "before",
             "plugin": "serdelia_authorization_presets_before",
             "on_load": true,
-            "hidden":true
+            "hidden": true
         },
         {
             "label": "after",
             "plugin": "serdelia_authorization_presets_after",
             "on_update": true,
-            "hidden":true
+            "hidden": true
         }
     ],
-
     "fields": [
         {
-            "label": "Preset identifier",
             "field": "id",
-            "required":true,
-            "list": true,
-            "settings": {
+            "cms": {
+                "label": "Preset identifier",
+                "required": true,
+                "list": "show",
                 "style": "json"
             }
         },
         {
             "field": "label",
-            "label": "Preset name",
-            "list": true,
-            "required":true
+            "cms": {
+                "label": "Preset name",
+                "list": "show",
+                "required": true
+            }
         },
         {
             "field": "label_welcome",
-            "label": "Welcome copy",
-            "list": true,
-            "settings": {
+            "cms": {
+                "label": "Welcome copy",
+                "list": "show",
                 "style": "json"
             }
         },
         {
-            "field": "auth_1","hr":true,
-            "label": "Read-only models",
+            "field": "auth_1",
             "type": "elements",
-            "output":"string",
+            "settings": {
+                "output": "string"
+            },
             "source": {
                 "model": "serdelia_authorization"
             },
-            "settings": {
+            "cms": {
+                "hr": true,
+                "label": "Read-only models",
                 "style": "json"
             }
         },
         {
             "field": "auth_2",
-            "label": "Read / Write models",
             "type": "elements",
-            "output":"string",
+            "settings": {
+                "output": "string"
+            },
             "source": {
                 "model": "serdelia_authorization"
             },
-            "settings": {
+            "cms": {
+                "label": "Read / Write models",
                 "style": "json"
             }
         },
         {
             "field": "auth_3",
-            "label": "Admin models",
             "type": "elements",
-            "output":"string",
+            "settings": {
+                "output": "string"
+            },
             "source": {
                 "model": "serdelia_authorization"
             },
-            "settings": {
+            "cms": {
+                "label": "Admin models",
                 "style": "json"
             }
         }

@@ -1,9 +1,20 @@
 {
     "table": "cms_translate",
     "order": "slug",
-    "fields" :
-    [
-        { "label" : "Slug", "field": "slug", "xtype": "order", "list": true },
-        { "label" : "PL", "field": "label:lang", "list": true }
+    "fields": [
+        {
+            "field": "slug",
+            "cms": {
+                "label": "Slug",
+                "list": "show"
+            }
+        },
+        {
+            "field": "label:lang",
+            "cms": {
+                "label": "Label",
+                "list": "show"
+            }
+        }
     ]
 }

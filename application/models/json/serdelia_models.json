@@ -1,19 +1,22 @@
 {
     "table": "serdelia_models",
-    "label":
-    {
-        "page":"Serdelia Models",
-        "edit":"Serdelia Model: <code>{% if id %}{{id}}{% else %}new{% endif %}</code>"
+    "label": {
+        "page": "Serdelia Models",
+        "edit": "Serdelia Model: <code>{% if id %}{{id}}{% else %}new{% endif %}</code>"
     },
-    "disable":["remove"],
+    "disable": [
+        "remove"
+    ],
     "order": "id",
-    "model":{"label":"{{id}}"},
+    "model": {
+        "label": "{{id}}"
+    },
     "buttons_page": [
         {
             "label": "before",
             "plugin": "serdelia_models_before",
             "on_load": true,
-            "hidden":true
+            "hidden": true
         }
     ],
     "buttons_edit": [
@@ -21,110 +24,173 @@
             "label": "before",
             "plugin": "serdelia_models_before",
             "on_load": true,
-            "hidden":true
+            "hidden": true
         },
         {
             "label": "after",
             "plugin": "serdelia_models_after",
             "on_update": true,
-            "hidden":true
+            "hidden": true
         },
         {
             "label": "Delete",
             "plugin": "serdelia_models_remove",
-            "icon":"remove",
-            "class":"default"
+            "icon": "remove",
+            "class": "default"
         },
         {
-            "type":"page",
-            "icon":"edit",
-            "label":"Edit data",
+            "type": "page",
+            "icon": "edit",
+            "label": "Edit data",
             "page": "{{id}}",
-            "class":"default"
+            "class": "default"
         },
         {
-            "type":"page",
-            "icon":"table-rows",
-            "label":"Fields",
+            "type": "page",
+            "icon": "table-rows",
+            "label": "Fields",
             "page": "serdelia_models_fields,{{id}}"
         }
     ],
     "fields": [
         {
-            "tab":"Settings",
-            "label": "Model name",
             "field": "id",
-            "list": true,
-            "settings":{"style":"json"}
-        },
-        {"field":"model_name","label":"Parent model name","type":"select",
-            "null":true,"source":{"model":"serdelia_models"},
-            "settings":{"style":"json"}
-        },
-        {
-            "field":"table",
-            "label":"Table",
-            "list":true,
-            "type":"select",
-            "source":{"model":"serdelia_tables"},
-            "settings":{"style":"json"}
-        },        
-        {
-            "field":"order",
-            "label":"Default order",
-            "settings":{"style":"json"}
+            "cms": {
+                "tab": "Settings",
+                "label": "Model name",
+                "list": "show",
+                "style": "json"
+            }
         },
         {
-            "field":"filters","label":"Filters","type":"json","settings":{"rows":2}
+            "field": "model_name",
+            "type": "select",            
+            "source": {
+                "model": "serdelia_models"
+            },
+            "cms": {                
+                "label": "Parent model name",
+                "style": "json"
+            },
+            "settings":{
+                "null": true
+            }
         },
         {
-            "field":"page_update","label":"Page update","settings":{"style":"json"}
+            "field": "table",
+            "type": "select",
+            "source": {
+                "model": "serdelia_tables"
+            },
+            "cms": {
+                "label": "Table",
+                "list": "show",
+                "style": "json"
+            }
         },
         {
-            "field":"children",
-            "label":"Children models","type":"json","settings":{"rows":"small"}
+            "field": "order",
+            "cms": {
+                "label": "Default order",
+                "style": "json"
+            }
         },
         {
-            "tab":"User Interface",
-            "field":"label",
-            "list":true,
-            "label":"Label (page)"
+            "field": "filters",
+            "type": "json",
+            "cms": {
+                "label": "Filters",
+                "rows": 2
+            }
         },
         {
-            "field":"label_edit",
-            "label":"Label (edit)",
-            "settings":{"style":"json"}
+            "field": "page_update",
+            "cms": {
+                "label": "Page update",
+                "style": "json"
+            }
         },
         {
-            "field":"help","label":"Information copy","type":"text",
-            "settings":{"rows":3}
-        },
-
-        {
-            
-            "field":"disable","label":"Disable actions","type":"checkboxes",
-            "options":
-            [
-                {"label":"Add","value":"add"},
-                {"label":"Copy","value":"copy"},
-                {"label":"Remove","value":"remove"}
-            ]
-        },
-        
-        {
-            "field":"model",
-            "label":"Model shortview","type":"json","settings":{"rows":"small"}
+            "field": "children",
+            "type": "json",
+            "cms": {
+                "label": "Children models",
+                "rows": 5
+            }
         },
         {
-            "field":"layout","label":"Layout","type":"json","settings":{"rows":"small"}
+            "field": "label",
+            "cms": {
+                "tab": "User Interface",
+                "label": "Label (page)",
+                "list": "show"
+            }
         },
         {
-            "tab":"Status","field":"_status","list":true,"label":"Model health",
-            "list":{"html":"<span class='badge badge-{{value}}'>{{value}}</span>"}
+            "field": "label_edit",
+            "cms": {
+                "label": "Label (edit)",
+                "style": "json"
+            }
         },
         {
-            "field":"_status_info","type":"text"
+            "field": "help",
+            "type": "text",
+            "cms": {
+                "label": "Information copy",
+                "rows": 3
+            }
+        },
+        {
+            "field": "disable",
+            "type": "checkboxes",
+            "options": [
+                {
+                    "label": "Add",
+                    "value": "add"
+                },
+                {
+                    "label": "Copy",
+                    "value": "copy"
+                },
+                {
+                    "label": "Remove",
+                    "value": "remove"
+                }
+            ],
+            "cms": {
+                "label": "Disable actions"
+            }
+        },
+        {
+            "field": "model",
+            "type": "json",
+            "cms": {
+                "label": "Model shortview",
+                "rows": 5
+            }
+        },
+        {
+            "field": "layout",
+            "type": "json",
+            "cms": {
+                "label": "Layout",
+                "rows": 5
+            }
+        },
+        {
+            "field": "_status",
+            "cms": {
+                "tab": "Status",
+                "label": "Model health",
+                "list": {
+                    "html": "<span class='badge badge-{{value}}'>{{value}}</span>"
+                }
+            }
+        },
+        {
+            "field": "_status_info",
+            "type": "text"
         }
-        
     ]
 }

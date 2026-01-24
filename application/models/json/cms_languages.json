@@ -1,15 +1,36 @@
 {
     "table": "cms_languages",
     "order": "slug",
-    "buttons_page":
-    [
-        {"label":"Set languages","type":"plugin","icon":"fingerprint","plugin":"cms_languages_set"}
+    "buttons_page": [
+        {
+            "label": "Set languages",
+            "type": "plugin",
+            "icon": "fingerprint",
+            "plugin": "cms_languages_set"
+        }
     ],
-
-    "fields" :
-    [
-        { "label" : "Label", "field": "label", "list": true },
-        { "label" : "Slug", "field": "slug", "list": true },
-        { "label" : "Publikacja", "field": "active", "list": true,"type":"boolean" }
+    "fields": [
+        {
+            "field": "label",
+            "cms": {
+                "label": "Label",
+                "list": "show"
+            }
+        },
+        {
+            "field": "slug",
+            "cms": {
+                "label": "Slug",
+                "list": "show"
+            }
+        },
+        {
+            "field": "active",
+            "type": "boolean",
+            "cms": {
+                "label": "Publikacja",
+                "list": "show"
+            }
+        }
     ]
 }

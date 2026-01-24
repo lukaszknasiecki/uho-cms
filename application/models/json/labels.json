@@ -5,38 +5,43 @@
         {
             "field": "nr",
             "type": "order",
-            "list": "order",
-            "label": "Nr"
+            "cms": {
+                "label": "Nr",
+                "list": "order"
+            }
         },
         {
             "field": "question",
             "type": "select",
-            "cms": {
-                "edit": "remove"
-            },
             "source": {
                 "model": "questions"
             }
+            
         },
         {
             "field": "type",
-            "label": "Type",
-            "type":"select",
-            "list":true,
-            "source":
-            {
-                "model":"tasks_types"
+            "type": "select",
+            "source": {
+                "model": "tasks_types"
+            },
+            "cms": {
+                "label": "Type",
+                "list": "show"
             }
         },
         {
             "field": "name",
-            "label": "Name",
-            "list": true
+            "cms": {
+                "label": "Name",
+                "list": "show"
+            }
         },
         {
             "field": "task_question",
-            "label": "Task Question",
-            "list": true
+            "cms": {
+                "label": "Task Question",
+                "list": "show"
+            }
         }
     ]
 }

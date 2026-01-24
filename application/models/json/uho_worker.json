@@ -1,6 +1,6 @@
 {
-    "label_EN": "Worker Queue",
-    "label_PL": "Worker - Kolejka zadań",
+    "label": "Worker Queue",
+    
     "table": "uho_worker",
     "disable": [
         "add",

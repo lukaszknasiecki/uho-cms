@@ -8,7 +8,7 @@
   {% if not item.hidden and item.icon!='back' and item.icon!='back' %}
   <a href="{{item.url}}?mode=lightbox" {% if item.target %}target="{{item.target}}" {% endif %}><button
       class="btn btn-sm serdelia-lightbox-button {% if item.class %}btn-{{item.class}}{% else %}btn-primary{% endif %} {% if not item.target %}serdelia-edit-ask-save-go{% endif %}">[[icon::{{item.icon}},left]]{%
-      if translate[item.label] %}{{translate[item.label]}}{% else %}{{item.label}}{% endif %}</button></a>
+      if translate[item.cms.label] %}{{translate[item.cms.label]}}{% else %}{{item.cms.label}}{% endif %}</button></a>
   {% endif %}
   {% endfor %}#}
 {% endif %}
@@ -32,17 +32,17 @@
       <input type="hidden" name="_srdcsrftkn" value="{{csrf_token_value}}">
       {% if tabs %}
 
-      <input type="hidden" name="tab" id="hidden_tab" value="">
-      <ul class="nav nav-tabs" id="serdelia-edit-tabs" role="tablist">
+        <input type="hidden" name="tab" id="hidden_tab" value="">
+        <ul class="nav nav-tabs" id="serdelia-edit-tabs" role="tablist">
         {% for item in tabs %}
-        {% if not item.cms.hidden %}
-        <li id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item">
-          <a class="nav-link {% if item.active %}active{% endif %}" href="#tab{{loop.index}}"
-            aria-controls="tab{{loop.index}}" role="tab" data-toggle="tab">
-            {{item.label}}
-          </a>
-        </li>
-        {% endif %}
+          {% if not item.cms.hidden %}
+            <li id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item">
+              <a class="nav-link {% if item.active %}active{% endif %}" href="#tab{{loop.index}}"
+                aria-controls="tab{{loop.index}}" role="tab" data-toggle="tab">
+                {{item.label}}
+              </a>
+            </li>
+          {% endif %}
         {% endfor %}
       </ul>
 
@@ -53,27 +53,28 @@
         {% set iElementsNow=0 %}
 
         {% for field in schema.fields %}
-        {% if field.cms.tab %}
-        {% if iTab!=0 %}</div><!-- closeTab -->{% endif %}
-      <!-- openTab -->
-      <div role="tabpanel" class="tab-pane{% if tabs[iTab].active %} active{% endif %}" id="tab{{iTab+1}}"><br><br>
-        {% set iTab=iTab+1 %}
-        {% set iElementsNow=0 %}
-        {% endif %}
 
-        {% if field.type in ['variable','hidden','uid'] %}
-        {% include 'modules/edit/edit_hidden.html' with {'field':field,'value':record[field.field],'lang':lang } %}
-        {% elseif field.settings.hashable and field.value_hashed and (field.type!='file') %}
-        <div class="form-group row">
-          <label class="col-lg-2 col-form-label">{{field.label}}</label>
-          {% include 'modules/edit/edit_hashable.html' with {'field':field,'value':record[field.field],'lang':lang } %}
-        </div>
-        {% else %}
+          {% if field.cms.tab %}
+            {% if iTab!=0 %}</div><!-- closeTab -->{% endif %}
+            <!-- openTab -->
+            <div role="tabpanel" class="tab-pane{% if tabs[iTab].active %} active{% endif %}" id="tab{{iTab+1}}">
+            <br><br>
+            {% set iTab=iTab+1 %}
+            {% set iElementsNow=0 %}
+          {% endif %}
 
-        {% if not field.cms.hidden %}
-        {% if field.cms.hr and field.cms.hr is not same as ('down') and iElementsNow>0 %}
-        <hr>{% endif %}
-        {% endif %}
+          {% if field.type in ['variable','hidden','uid'] %}
+            {% include 'modules/edit/edit_hidden.html' with {'field':field,'value':record[field.field],'lang':lang } %}
+          {% elseif field.settings.hashable and field.value_hashed and (field.type!='file') %}
+          <div class="form-group row">
+            <label class="col-lg-2 col-form-label">{{field.cms.label}}</label>
+            {% include 'modules/edit/edit_hashable.html' with {'field':field,'value':record[field.field],'lang':lang } %}
+          </div>
+          {% else %}
+            {% if not field.cms.hidden %}
+            {% if field.cms.hr and field.cms.hr is not same as ('down') and iElementsNow>0 %}
+            <hr>{% endif %}
+          {% endif %}
 
         {% if field.cms.header %}
         <div class="form-group row">
@@ -90,9 +91,9 @@
 
         <div class="form-group row" data-edit-lang="{{field.lang}}" data-edit-field="{{field.cms_field}}" {% if
           field.cms.hidden %}style="display:none" {% endif %}>
-          {% if not field.label and field.cms.wide %}
+          {% if not field.cms.label and field.cms.wide %}
           {% else %}
-          <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.label}}{% if field.cms.required %}<sup>
+          <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.cms.label}}{% if field.cms.required %}<sup>
               *</sup>{% endif %}
             {% if field.lang and schema.langs|length>1 %}
             &nbsp;<span class="btn btn-xs btn-default serdelia-edit-fields-lang">{{field.lang}}</span>

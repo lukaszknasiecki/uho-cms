@@ -39,27 +39,31 @@
 
     "fields": [
         {
-            "label": "Identifier",
             "field": "id",
-            "list": true,
-            "settings": {
+            "cms": {
+                "label": "Identifier",
+                "list": "show",
                 "style": "json"
             }
         },
         {
             "field": "label",
-            "label": "Name",
-            "list": true
+            "cms": {
+                "label": "Name",
+                "list": "show"
+            }
         },
         {
             "field": "models",
-            "label": "Models",
             "type": "checkboxes",
-            "output":"string",
+            "settings": {
+                "output": "string"
+            },
             "source": {
                 "model": "serdelia_tables"
             },
-            "settings": {
+            "cms": {
+                "label": "Models",
                 "style": "json"
             }
         }
