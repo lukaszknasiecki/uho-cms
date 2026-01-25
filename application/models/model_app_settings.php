@@ -1,6 +1,7 @@
 <?php
 
 use Huncwot\UhoFramework\_uho_fx;
+
 require_once('model_app.php');
 
 /**
@@ -19,7 +20,7 @@ class model_app_settings extends model_app
 		$action = '';
 		$text = '';
 		$errors = [];
-		$success=[];
+		$success = [];
 		$admin = $this->isAdmin();
 		$url = explode('/', $params['url'] ?? '');
 
@@ -27,11 +28,13 @@ class model_app_settings extends model_app
 		$items = [
 			['label' => 'password_change', 'url' => ['type' => 'password_change']],
 			['label' => 'cache_clear', 'url' => ['type' => 'settings', 'subtype' => 'cache-clear']],
+			['label' => 'cms_schemas_validation', 'admin' => true, 'url' => ['type' => 'settings', 'subtype' => 'cms-schemas-validation']],
+			['label' => 'app_schemas_validation', 'admin' => true, 'url' => ['type' => 'settings', 'subtype' => 'app-schemas-validation']],
 			['label' => 's3_cache_build', 'url' => ['type' => 'settings', 'subtype' => 's3-cache-build']],
 			['label' => 's3_cache_check', 'url' => ['type' => 'settings', 'subtype' => 's3-cache-check']],
-			['label' => 'app_reports', 'url' => ['type' => 'settings', 'subtype' => 'app-reports'], 'admin' => true],
-			['label' => 'cms_reports', 'url' => ['type' => 'settings', 'subtype' => 'cms-reports'], 'admin' => true],
-			['label' => 'php_ini', 'url' => ['type' => 'settings', 'subtype' => 'php-ini'], 'admin' => true],
+			['label' => 'app_reports', 'admin' => true, 'url' => ['type' => 'settings', 'subtype' => 'app-reports'], 'admin' => true],
+			['label' => 'cms_reports', 'admin' => true, 'url' => ['type' => 'settings', 'subtype' => 'cms-reports'], 'admin' => true],
+			['label' => 'php_ini', 'admin' => true, 'url' => ['type' => 'settings', 'subtype' => 'php-ini'], 'admin' => true],
 		];
 
 		$action = $url[1] ?? '';
@@ -59,24 +62,27 @@ class model_app_settings extends model_app
 				phpinfo();
 				exit;
 
+			case 'cms-schemas-validation':
+				$text = $this->getSchemasValidation($this->apporm);
+				break;
+
+			case 'app-schemas-validation':
+				$text = $this->getSchemasValidation($this->orm);
+				break;
+
 			case 's3-cache-build':
-				if (isset($this->s3))
-				{
+				if (isset($this->s3)) {
 					$this->s3recache();
-					$success[]='s3_built';
-				}
-					else $errors[] = 's3_not_defined';
+					$success[] = 's3_built';
+				} else $errors[] = 's3_not_defined';
 				break;
 
 			case 's3-cache-check':
-				if (isset($this->s3))
-				{
-					$age=$this->s3->getCacheFileAge();
-					if ($age===false) $errors[]='s3 cache file time not found';
-						else $success[]='Cache age: '.$age.' min.';
-					
-				}
-				else $errors[] = 's3_not_defined';
+				if (isset($this->s3)) {
+					$age = $this->s3->getCacheFileAge();
+					if ($age === false) $errors[] = 's3 cache file time not found';
+					else $success[] = 'Cache age: ' . $age . ' min.';
+				} else $errors[] = 's3_not_defined';
 				break;
 
 			case 'app-reports':
@@ -103,25 +109,27 @@ class model_app_settings extends model_app
 			: [];
 
 
-		$time=time()-$_SESSION['serdelia_login_time'];
-		
-		if ($time>60) $time=intval($time/60).' min.'; else $time=$time.' s.';
-		
-		$logout=$this->getLogoutTime();
-		if ($logout && $logout/60==intval($logout/60)) $logout=intval($logout/60).'H'; elseif ($logout) $logout=$logout.' min.';
+		$time = time() - $_SESSION['serdelia_login_time'];
 
-		$info=$translations[$this->lang]['time_from_login'].': '.$time;
-		if ($logout) $info.=' (max='.$logout.')';
+		if ($time > 60) $time = intval($time / 60) . ' min.';
+		else $time = $time . ' s.';
+
+		$logout = $this->getLogoutTime();
+		if ($logout && $logout / 60 == intval($logout / 60)) $logout = intval($logout / 60) . 'H';
+		elseif ($logout) $logout = $logout . ' min.';
+
+		$info = $translations[$this->lang]['time_from_login'] . ': ' . $time;
+		if ($logout) $info .= ' (max=' . $logout . ')';
 
 		return [
 			'action' => $action,
-			'success'=>$success,
+			'success' => $success,
 			'errors' => $errors,
 			'translate' => $translations[$this->lang] ?? [],
 			'items' => $items,
 			'admin' => $admin,
 			'text' => $text,
-			'info'=>$info,
+			'info' => $info,
 			'result' => true
 		];
 	}
@@ -234,5 +242,78 @@ class model_app_settings extends model_app
 		}
 
 		return '<h5>Report</h5><hr>' . implode('<br>', $text);
+	}
+
+	/*
+		Validate current CMS schemas
+	*/
+
+	private function getSchemasValidation($orm): string
+	{
+		$results = [];
+		$paths = $orm->getRootPaths(true);
+
+		// Scan all root paths for JSON schema files
+		$schemaNames = [];
+		foreach ($paths as $path) {
+			$files = @scandir($path);
+			if ($files) {
+				foreach ($files as $file) {
+					if (pathinfo($file, PATHINFO_EXTENSION) === 'json') {
+						$name = pathinfo($file, PATHINFO_FILENAME);
+						if (!in_array($name, $schemaNames)) {
+							$schemaNames[] = $name;
+						}
+					}
+				}
+			}
+		}
+
+		sort($schemaNames);
+
+		// Validate each schema
+		foreach ($schemaNames as $name) {
+			$schema = $orm->getSchema($name);
+			if ($schema) {
+				$validation = $orm->schemaManager->validateSchema($schema);
+				$results[] = [
+					'name' => $name,
+					'valid' => empty($validation['errors']),
+					'errors' => $validation['errors'] ?? []
+				];
+			} else {
+				$results[] = [
+					'name' => $name,
+					'valid' => false,
+					'errors' => ['Schema could not be loaded']
+				];
+			}
+		}
+
+		// Build HTML output
+		$html = '<h5>Schemas Validation</h5><hr>';
+		$validCount = 0;
+		$invalidCount = 0;
+
+		foreach ($results as $result) {
+			if ($result['valid']) {
+				$validCount++;
+				$html .= '<code style="color:green">✓ ' . htmlspecialchars($result['name']) . '</code><br>';
+			} else {
+				$invalidCount++;
+				$html .= '<code style="color:red;font-weight:600">✗ ' . htmlspecialchars($result['name']) . '</code>';
+				if (!empty($result['errors'])) {
+					$html .= '<ul style="margin:5px 0 10px 20px;color:red">';
+					foreach ($result['errors'] as $error) {
+						$html .= '<li><small>' . htmlspecialchars($error) . '</small></li>';
+					}
+					$html .= '</ul>';
+				}
+			}
+		}
+
+		$html = '<p><b>Valid:</b> ' . $validCount . ' | <b>Invalid:</b> ' . $invalidCount . '</p>' . $html . '<br><br>';
+
+		return $html;
 	}
 }

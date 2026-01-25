@@ -4,6 +4,7 @@
 cache
 cache/*
 *.cache
+composer.lock
 
 reports
 reports/*

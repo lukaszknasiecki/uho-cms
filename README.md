@@ -83,6 +83,8 @@ $cfg = [
 | `uid` | Auto UID | Unique identifier |
 | `video` | Video upload | Video file |
 
+You can check full description of available files im DOCS.md file.
+
 ## Common Field Patterns
 
 ### Required Text Field
@@ -331,7 +333,7 @@ $cfg = [
 
 You can validate your schemas using `schema-validate` command of UHO-MVC framework, i.e.
 
-`vendor/lukaszknasiecki/uho-mvc/bin/schema-validate cms_config/models/json`
+`vendor/lukaszknasiecki/uho-mvc/bin/schema-validate cms_config/pages/`
 
 ## Environment Variables
 

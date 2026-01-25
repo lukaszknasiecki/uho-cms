@@ -3,6 +3,8 @@
     "header": "Ustawienia",
     "password_change": "Zmiana hasła",
     "cache_clear": "Wyczyść cache",
+    "cms_schemas_validation":"Walidacja modeli CMS",
+    "app_schemas_validation":"Walidacja modeli Aplikacji",
     "s3_not_defined": "S3 nie jest zdefinowane",
     "s3_built": "S3 Cache zostało zbudowane",
     "s3_cache_build": "Odświez cache S3",
@@ -17,6 +19,8 @@
   "en": {
     "header": "Settings",
     "password_change": "Password change",
+    "cms_schemas_validation":"CMS schemas validation",
+    "app_schemas_validation":"App schemas validation",
     "s3_not_defined": "S3 has been not set up",
     "s3_built": "S3 Cache has been refreshed",
     "s3_cache_build": "S3 assets refresh",
