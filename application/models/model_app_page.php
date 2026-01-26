@@ -233,7 +233,7 @@ class model_app_page extends model_app
 		if ($global_search) {
 			$searchSchema = $schema;
 			$searchSchema['filters'] = $filters;
-			$filterSet = $this->apporm->getFiltersQuery($searchSchema);
+			$filterSet = $this->apporm->getFiltersQueryArray($searchSchema);
 			$filters = $filterSet
 				? ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filterSet]]
 				: [];
@@ -401,10 +401,13 @@ class model_app_page extends model_app
 
 			// convert list to object if string
 
-			if (@is_string($v['cms']['list']))
-				$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];
+			if (!empty($v['cms']['list']) && is_string($v['cms']['list']))
+			{
+				$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];				
+			}
 
 			switch ($v['type']) {
+
 				case "select":
 					// Normalize option values for selects if source ID is present
 					if (!empty($v['source']['id'])) {
@@ -453,7 +456,11 @@ class model_app_page extends model_app
 				$schema['search'] = true;
 			}
 
+
+
 		}
+
+		
 
 		/*
      * Reorder fields if 'position_after' is defined
@@ -509,6 +516,8 @@ class model_app_page extends model_app
 				]
 			);
 		}
+
+
 
 		if (!$this->serdelia_schema_editor && $is_serdelia_table) {
 			exit('Schema edit not allowed on this domain');
@@ -587,6 +596,7 @@ class model_app_page extends model_app
 		// Apply schema transformations based on sources and page context.
 		$schema = $this->updateSchemaSources($schema);
 		$schema = $this->updateSchemaForPage($schema, $page_with_params, $params);
+				
 
 		// Adjust paging count based on field types or layout configuration.
 		if (_uho_fx::array_filter($schema['fields'], 'type', 'order')) {

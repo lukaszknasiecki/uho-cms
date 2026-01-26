@@ -1176,8 +1176,9 @@ class model_app extends _uho_model
                         }
 
                         // filter options
-                        if (isset($v['options']) && isset($v['filters'])) {
-                            $option_filters = $v['filters'];
+                        if (isset($v['options']) && !empty($v['cms']['filters']))
+                        {
+                            $option_filters = $v['cms']['filters'];
 
                             foreach ($option_filters as $kf => $vf) {
                                 $option_filters[$kf] = $this->getTwigFromHtml($vf, $original_record);
@@ -2432,7 +2433,7 @@ class model_app extends _uho_model
             if (!$s['filters'])
                 $s['filters'] = [];
             $s['filters'] = $filters;
-            $filters = $this->apporm->getFiltersQuery($s);
+            $filters = $this->apporm->getFiltersQueryArray($s);
             $filters = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filters]];
         }
 

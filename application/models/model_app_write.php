@@ -759,7 +759,7 @@ class model_app_write extends model_app
 				if ($v['type'] == 'order')
 				{
 					if (@$v['default'] == 'first') {
-						$query = $this->apporm->getFiltersQuery($schema);
+						$query = $this->apporm->getFiltersQueryArray($schema);
 						if ($query) $query = ' WHERE ' . implode(' && ', $query);
 						$this->queryOut('UPDATE ' . $schema['table'] . ' SET `' . $v['field'] . '`=`' . $v['field'] . '`+1 ' . $query);
 						$data[$v['field']] = 1;
@@ -876,7 +876,7 @@ class model_app_write extends model_app
 
 	private function sortPage($schema, $field, $data)
 	{
-		$query = $this->apporm->getFiltersQuery($schema);
+		$query = $this->apporm->getFiltersQueryArray($schema);
 		if ($query) $query = ' && ' . implode(' && ', $query);
 
 		$data = array_values($data);

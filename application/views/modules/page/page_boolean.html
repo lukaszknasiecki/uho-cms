@@ -1,4 +1,4 @@
-{% if field.list.type is same as ('edit') and field.cms.edit is not same as(false) %}
+{% if field.cms.list.type is same as ('edit') and field.cms.edit is not same as(false) %}
 	<input {% if hidden %}style="visibility:hidden"{% endif %} id="serdelia_record_activation_{{record.id}}" class="serdelia-updateField" data-update={"record":{{record.values.id}},"field":"{{field.field}}","value":"on","value_not":"0","type":"checkbox","page_reload":"{{page_reload}}"} type="checkbox" {% if value %}checked{% endif %}>
 {% else %}
 	<input type="checkbox" {% if value %}checked{% endif %} disabled>
