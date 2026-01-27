@@ -8,6 +8,13 @@
         value.size %} ({{value.size}}){% endif %}<br>{% endif %}
         {% if field.extensions %}<small>{{translate.fileFormats}}: {% if field.extensions
             %}{{field.extensions|join(',')|upper}}{% else %}{{field.extension|upper}}{% endif %}</small>{% endif %}
+        {% if value.metadata %}
+            <small>
+            {% for i in value.metadata %}
+                {{i.label}}: <code>{{i.value}}</code><br>
+            {% endfor %}
+            </small>
+        {% endif %}
     </div>
     {% if field.disabled or field.cms.edit is same as false %}
     {% else %}

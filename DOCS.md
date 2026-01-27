@@ -855,6 +855,10 @@ File upload - by default filename is created from uid field with added extension
     },
     "cms":
     {
+        "metadata":
+        [
+            "date_modified"                     // shows when file was last time modified
+        ],
         "auto":
         [
             {"type":"duration","field":"file_duration"} // fill other filed with file's calues, only duration (GetID3.playtime_seconds) is supported now

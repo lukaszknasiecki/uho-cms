@@ -27,7 +27,7 @@ class model_app extends _uho_model
      * mode = light|dark
      */
     public $mode = null;
-    private $debug_mode=false;
+    private $debug_mode = false;
     /**
      * current _uho_orm app instance
      */
@@ -43,7 +43,7 @@ class model_app extends _uho_model
     public $logs_folder;
     private $logoutTime;
     private $activityTime;
-    private $strict_schema=false;
+    private $strict_schema = false;
     /**
      * auth array decoded from authorization.json
      */
@@ -713,7 +713,6 @@ class model_app extends _uho_model
 
         if ($model_update) {
             $schema = $this->apporm->getSchema([$model, $model_update], false, $params);
-            
         } else
             $schema = $this->apporm->getSchema($model, false, $params);
 
@@ -742,9 +741,8 @@ class model_app extends _uho_model
             $params['keys'] = [];
         $params['keys']['user'] = $this->getUser()['id'];
 
-        if (isset($schema['filters']) && $schema['filters'] && isset($params))
-        {
-            $params['twig'] = ['cms_user' => $this->getUser(),'params'=>$params['numbers']];
+        if (isset($schema['filters']) && $schema['filters'] && isset($params)) {
+            $params['twig'] = ['cms_user' => $this->getUser(), 'params' => $params['numbers']];
             $schema['filters'] = $this->fillPattern($schema['filters'], $params);
         }
         if (isset($schema['layout']['iframe']) && $params)
@@ -806,7 +804,7 @@ class model_app extends _uho_model
             $schema['fields'] = $f;
         }
 
-        
+
 
         // adding default values for CMS if not present
         foreach ($schema['fields'] as $k => $v)
@@ -837,15 +835,13 @@ class model_app extends _uho_model
 
         // helper models
         if (isset($schema['helper_models'])) {
-            foreach ($schema['helper_models'] as $k => $v)
-            {                
-                if (isset($params['numbers']))
-                {
+            foreach ($schema['helper_models'] as $k => $v) {
+                if (isset($params['numbers'])) {
                     // depreceated %1% replace
                     foreach ($params['numbers'] as $kk => $vv)
                         $v['record'] = str_replace('%' . $kk . '%', $vv, $v['record']);
                     // correct one                    
-                    $v['record']=$this->getTwigFromHtml($v['record'],['p'=>$params['numbers']]);
+                    $v['record'] = $this->getTwigFromHtml($v['record'], ['p' => $params['numbers']]);
                 }
                 $schema['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
             }
@@ -997,9 +993,25 @@ class model_app extends _uho_model
                     case "file":
                         $src = isset($record[$v['field']]['src']) ? $record[$v['field']]['src'] : '';
                         $src = explode('?', $src)[0];
-                        $src = array_pop(explode('.', $src));
-                        if ($src)
-                            $record[$v['field']]['extension'] = $src;
+                        $ext = array_pop(explode('.', $src));
+                        $src = $src[0];
+                        if ($ext)
+                        {
+                            $record[$v['field']]['extension'] = $ext;
+                            if (!empty($v['cms']['metadata']))
+                            {
+                                $metadata = [];
+                                foreach ($v['cms']['metadata'] as $metadata_type)
+                                    switch ($metadata_type) {
+                                        case "date_modified":                                            
+                                            $mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $src);
+                                            if ($mtime) $metadata[$metadata_type]=['label'=>'Modified','value'=>date("Y-m-d H:i:s",$mtime)];
+                                            break;
+                                    }
+                                $record[$v['field']]['metadata']=$metadata;
+                            }
+                        }
+                        
                         break;
 
                     case "elements_double":
@@ -1176,8 +1188,7 @@ class model_app extends _uho_model
                         }
 
                         // filter options
-                        if (isset($v['options']) && !empty($v['cms']['filters']))
-                        {
+                        if (isset($v['options']) && !empty($v['cms']['filters'])) {
                             $option_filters = $v['cms']['filters'];
 
                             foreach ($option_filters as $kf => $vf) {
@@ -1204,17 +1215,18 @@ class model_app extends _uho_model
                         if ($is_new && $v['cms']['default']) {
 
                             $v['cms']['default'] = $this->fillPattern($v['cms']['default'], [
-                                'keys' => $record, 
-                                'numbers' => $params, 
-                                'params' => ['cms_user' => 1]]);
-                            
-                            $twig_params=$params;
+                                'keys' => $record,
+                                'numbers' => $params,
+                                'params' => ['cms_user' => 1]
+                            ]);
+
+                            $twig_params = $params;
                             $twig_params['cms_user'] = $this->getUser()['id'];
 
                             $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'], [
                                 'params' => $twig_params,
                                 'numbers' => $params
-                                ]);
+                            ]);
 
                             $record[$v['field']] = $v['cms']['default'];
                         }
@@ -1262,7 +1274,7 @@ class model_app extends _uho_model
 
                 // toggle -------------------------------------------------------
                 if ($v['cms']['toggle_fields']) {
-                    
+
                     $val = $record[$v['field']];
                     if (is_array($val))
                         $val = $val['values']['id'];
@@ -1277,8 +1289,7 @@ class model_app extends _uho_model
                             else if ($kk[0] == '!' && substr($kk, 1) != $val)
                                 $toggle_found = $kk;
 
-                        if ($toggle_found !== null)
-                        {
+                        if ($toggle_found !== null) {
                             $toggle = $toggle[$toggle_found];
                             if ($toggle['hide'])
                                 $hide = array_merge($hide, $toggle['hide']);
@@ -1347,9 +1358,8 @@ class model_app extends _uho_model
 
         if ($hide)
             foreach ($schema['fields'] as $k => $v)
-                if (in_array($v['field'], $hide))
-                {
-                    if (!isset($schema['fields'][$k]['cms'])) $schema['fields'][$k]['cms']=[];
+                if (in_array($v['field'], $hide)) {
+                    if (!isset($schema['fields'][$k]['cms'])) $schema['fields'][$k]['cms'] = [];
                     $schema['fields'][$k]['cms']['hidden'] = true;
                 }
 
@@ -1396,10 +1406,9 @@ class model_app extends _uho_model
         if ($buttons)
             foreach ($buttons as $k => $v)
                 // page button
-                if ($v['type'] == 'page')
-                {
+                if ($v['type'] == 'page') {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
-                    $v['page'] = $this->getTwigFromHtml($v['page'],$record);
+                    $v['page'] = $this->getTwigFromHtml($v['page'], $record);
 
                     if ($this->checkAuth($v['page'], [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
@@ -1416,7 +1425,7 @@ class model_app extends _uho_model
                 }
                 // plugins
                 elseif ($v['type'] == 'plugin' || isset($v['plugin'])) {
-                    
+
                     $buttons[$k]['type'] = 'plugin';
                     if ($v['params']) {
                         $v['params'] = $this->fillPattern($v['params'], ['keys' => $record, 'numbers' => $params]);
@@ -1456,12 +1465,11 @@ class model_app extends _uho_model
                         $json = @file_get_contents($this->cms_folder . '/plugins/' . $v['plugin'] . '/plugin.json');
                         if ($json)
                             $json = json_decode($json, true);
-                        
+
                         if (!$buttons[$k]['label'] && $json[$this->lang]['label'])
                             $buttons[$k]['label'] = $json[$this->lang]['label'];
                         if (!$buttons[$k]['icon'] && $json['icon'])
                             $buttons[$k]['icon'] = $json['icon'];
-                        
                     } else {
                         unset($buttons[$k]);
                     }
@@ -1758,15 +1766,13 @@ class model_app extends _uho_model
 
     public function ffmpeg($cmd)
     {
-        if ($this->config_params['ffmpeg'])
-        {
+        if ($this->config_params['ffmpeg']) {
             $ffmpeg = $this->config_params['ffmpeg'];
             $regex = '#^(ffmpeg|/(?:[a-zA-Z0-9._-]+/)*[a-zA-Z0-9._-]+)$#';
             if (!preg_match($regex, $ffmpeg)) return false;
-        }
-        else
+        } else
             $ffmpeg = 'ffmpeg';
-        
+
         if (isset($this->config_params['exec']) && $this->config_params['exec'] == 'exec')
             return exec($ffmpeg . ' ' . $cmd);
         else return shell_exec($ffmpeg . ' ' . $cmd);
@@ -1796,8 +1802,7 @@ class model_app extends _uho_model
 
         $field_schema = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
 
-        if ($field_schema)
-        {
+        if ($field_schema) {
             $dest = $_SERVER['DOCUMENT_ROOT'] . $field_schema['settings']['folder'];
             if (!file_exists($dest)) mkdir($dest, 0775, true);
             $dest .= '/';
@@ -1933,8 +1938,7 @@ class model_app extends _uho_model
             if (!file_exists($original))
                 $errors[] = 'model_app_write::source file not found::' . $filename;
         } else {
-            if (substr($filename, 0, 4) == 'http')
-            {
+            if (substr($filename, 0, 4) == 'http') {
                 $source = $full_filename;
             } else {
                 if ($filename[0] == '/')
@@ -1969,7 +1973,7 @@ class model_app extends _uho_model
                 if (!$v['width'] && !$v['height']) {
                     if (!$rescale_only) {
                         // 
-                        
+
                         $this->uploadCopy($source, $destination);
                         if (!$this->file_exists($destination))
                             return (['result' => false, 'errors' => ['Could not copy [' . $source . ' to ' . $destination . ']']]);
@@ -2258,7 +2262,7 @@ class model_app extends _uho_model
 
             if (!is_array($schema['page_update']))
                 $schema['page_update'] = ['file' => $schema['page_update']];
-            
+
             // get fields which cause update
             $fields = _uho_fx::excludeTagsFromText($schema['page_update']['file'], '{{', '}}');
 
@@ -2269,14 +2273,13 @@ class model_app extends _uho_model
             if ($record)
                 $schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $record);
 
-            if ($schema['page_update']['file'] && $record)
-            {
+            if ($schema['page_update']['file'] && $record) {
                 $schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
-             
+
                 if ($validate) {
-                    
-                    $this->validateSchema($schema, $model);                    
-                    
+
+                    $this->validateSchema($schema, $model);
+
                     $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
                 }
 
@@ -2284,7 +2287,7 @@ class model_app extends _uho_model
                     $record = $this->apporm->get($schema, ['id' => $id], true);
             }
 
-            
+
 
 
             // marking fields which cause update to launch askSaveGo popup after change
@@ -2293,7 +2296,7 @@ class model_app extends _uho_model
                     if (in_array($v['field'], $fields))
                         $schema['fields'][$k]['page_update'] = true;
         } elseif ($validate) {
-            
+
             $this->validateSchema($schema, $model);
             $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], true);
         }
@@ -2543,7 +2546,9 @@ class model_app extends _uho_model
             if ($exists) {
                 $exists = $this->put(
                     'cms_backup_media',
-                    ['date' => date('Y-m-d H:i:s')], ['id' => $exists['id']]);
+                    ['date' => date('Y-m-d H:i:s')],
+                    ['id' => $exists['id']]
+                );
             } elseif (!$exists && @copy($file, $new) && file_exists($new)) {
                 $checksum = md5_file($new);
                 $r = $this->post(
@@ -2899,8 +2904,8 @@ class model_app extends _uho_model
     private function halt($message)
     {
         if (is_array($message))
-            exit('<pre>' . implode('<br>',$message) . '</pre>');
-            else exit('<pre>' . $message . '</pre>');
+            exit('<pre>' . implode('<br>', $message) . '</pre>');
+        else exit('<pre>' . $message . '</pre>');
     }
 
     /*
@@ -2914,7 +2919,7 @@ class model_app extends _uho_model
             if (!$name) $name = 'unknown';
             $this->halt('No schema found for model: ' . $name);
         }
-                    
+
 
         $response = $this->apporm->validateSchema($schema, true);
         if (!empty($response['errors'])) $this->halt($response['errors']);
@@ -3045,12 +3050,11 @@ class model_app extends _uho_model
 
     public function getSchemaDepreceated($schema)
     {
-        $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden','hr','search','tab'];
-        
-        $cms_fields_both = [];//['list','label'];
+        $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden', 'hr', 'search', 'tab'];
 
-        foreach ($schema['fields'] as $k => $field)
-        {
+        $cms_fields_both = []; //['list','label'];
+
+        foreach ($schema['fields'] as $k => $field) {
             // copy those fields to . and .cms
             foreach ($cms_fields_both as $k2 => $cms_field) {
                 if (isset($field[$cms_field])) {
@@ -3090,5 +3094,4 @@ class model_app extends _uho_model
     {
         return $this->strict_schema;
     }
-
 }
