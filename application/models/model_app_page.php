@@ -418,8 +418,9 @@ class model_app_page extends model_app
 					break;
 
 				case "image":
+					
 					// Ensure list view for images is well-formed
-					if (isset($v['list']))
+					if (isset($v['cms']['list']))
 					{
 						$list=@$v['cms']['list'];
 						if (!$list) $list=$v['cms']['list'] = [];

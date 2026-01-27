@@ -3,7 +3,7 @@
   {% for item in schema.fields %}
   {% if item.cms.search %}
 <div class="form-group row">
-  <label for="{{item.field_search}}" class="col-lg-2 control-label" style="font-weight:normal">{{item.label}}{% if item.lang %} <small>{{item.lang|upper}}</small>{% endif %}</label>
+  <label for="{{item.field_search}}" class="col-lg-2 control-label" style="font-weight:normal">{{item.cms.label}}{% if item.lang %} <small>{{item.lang|upper}}</small>{% endif %}</label>
   <div class="col-md-1">
     <span type="button" data-field="{{item.field_search}}" class="serdelia_page_search-control-trigger btn btn-sm btn-default"><span class="mdi mdi-add"></span>
   </div>
