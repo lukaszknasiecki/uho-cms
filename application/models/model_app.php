@@ -991,10 +991,9 @@ class model_app extends _uho_model
                         break;
 
                     case "file":
-                        $src = isset($record[$v['field']]['src']) ? $record[$v['field']]['src'] : '';
+                        $src = isset($record[$v['field']]['src']) ? $record[$v['field']]['src'] : '';                        
                         $src = explode('?', $src)[0];
                         $ext = array_pop(explode('.', $src));
-                        $src = $src[0];
                         if ($ext)
                         {
                             $record[$v['field']]['extension'] = $ext;
