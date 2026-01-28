@@ -18,6 +18,8 @@
         "added_poster_added":"Cover has been updated",
         "added_subtitles_added":"Subtitles have been updated",
         "added_duration_added":"Duration have been updated",
+        "sources_added":"MP4 sources added",
+        "sources_progressive_added":"MP4 Progressive sources added",
         "added_sources_added":"MP4 Vimeo sources have been updated",
         "errors_poster_failed":"Cover import error",
         "errors_vimeo_not_found":"Vimeo file not found"

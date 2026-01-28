@@ -112,6 +112,7 @@ class serdelia_plugin_import_cover
         $title = '';
         $cover = '';
         $sources = '';
+        $sources_progressive='';
         $duration = 0;
         $root = $_SERVER['DOCUMENT_ROOT'];
         $cover_to_remove=null;
@@ -163,7 +164,11 @@ class serdelia_plugin_import_cover
 
                 if (empty($params['params'])) $params['params'] = $params;
 
-                if ($vimeo_id) $vimeo = $this->vimeoGet($vimeo_id, $this->parent->getApiKey('vimeo'), isset($params['params']['field_vtt']));
+                if ($vimeo_id) $vimeo = $this->vimeoGet(
+                    $vimeo_id,
+                    $this->parent->getApiKey('vimeo'),
+                    isset($params['params']['field_vtt'])
+                );
 
                 if (@$vimeo['error']) $errors[] = $vimeo['error'];
                 elseif ($vimeo) {
@@ -211,6 +216,16 @@ class serdelia_plugin_import_cover
                         }
                     }
 
+                    if ($params['field_mp4_progressive'] && $vimeo['mp4_progressive']) {
+                        $sources_progressive = $vimeo['mp4_progressive'];
+                        if (is_array($sources_progressive) && !empty($sources_progressive[0]) && !empty($sources_progressive[0]['src'])) {
+                            $sources_progressive = json_encode($sources_progressive, true);
+                        } else {
+                            $errors[] = 'Vimeo Progressive Sources not found';
+                            $sources_progressive = null;
+                        }
+                    }
+
                     if (!empty($vimeo['duration'])) {
                         $duration = $vimeo['duration'];
                     }
@@ -238,7 +253,7 @@ class serdelia_plugin_import_cover
 
         // ------------------------------------------------------------------------------------
 
-        if ($title || $cover || $sources) {
+        if ($title || $cover || $sources || $sources_progressive) {
 
             $data = ['id' => $record['id']];
             if ($params['field_title'] && $title && !$record[$params['field_title']]) {
@@ -264,6 +279,11 @@ class serdelia_plugin_import_cover
                 $data[$params['field_mp4']] = $sources;
                 $added[] = 'sources_added';
             }
+            if ($sources_progressive) {
+                $data[$params['field_mp4_progressive']] = $sources_progressive;
+                $added[] = 'sources_progressive_added';
+            }
+
             if ($duration && @$params['field_duration']) {
                 $data[$params['field_duration']] = $duration;
                 $added[] = 'duration_added';
@@ -295,7 +315,6 @@ class serdelia_plugin_import_cover
 
     private function vimeoGet($id, $keys = null, $subtitles = false)
     {
-        //echo('<!-- vimeoGet -->');
         
         if ($keys) return $this->getVimeoFilenameAdvanced($id, $keys, $subtitles);
         else {
@@ -334,22 +353,31 @@ class serdelia_plugin_import_cover
             if ($image) $image = array_pop($image);  // largest thumbnail
             if ($image) $image = $image['link'];
             $video = [];
-            $progressive = false;
-            if ($progressive) {
+            $video_progressive = [];
+
+            // progressive sources
+            
                 $vv = @$data['body']['play']['progressive'];
                 if ($vv)
                     foreach ($vv as $k => $v)
                         if ($v['type'] == 'video/mp4' && $v['width']) {
-                            $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
+                            $video_progressive[] = [
+                                'width' => $v['width'],
+                                'height' => $v['height'],
+                                'src' => $v['link'],
+                                'expire'=>$v['link_expiration_time']
+                                ];
                         }
-            } else {
+
+            // standard (full) sources
+            
                 $vv = @$data['body']['files'];
                 if ($vv)
                     foreach ($vv as $k => $v)
                         if ($v['type'] == 'video/mp4' && isset($v['width'])) {
                             $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
                         }
-            }
+            
         }
 
         // subtitles
@@ -365,7 +393,7 @@ class serdelia_plugin_import_cover
         }
         if (!$video) return  ['error' => 'ERROR OCCURED: No video sources have been found'];
         else {
-            $r = (['image' => $image, 'title' => $title, 'author' => $author, 'mp4' => $video, 'subtitles' => $subtitles, 'duration' => $duration]);
+            $r = (['image' => $image, 'title' => $title, 'author' => $author, 'mp4' => $video, 'mp4_progressive'=>$video_progressive, 'subtitles' => $subtitles, 'duration' => $duration]);
             return $r;
         }
     }
