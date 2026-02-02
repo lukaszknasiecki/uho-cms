@@ -857,7 +857,8 @@ File upload - by default filename is created from uid field with added extension
     {
         "metadata":
         [
-            "date_modified"                     // shows when file was last time modified
+            "date_modified",                     // shows when file was last time modified
+            "duration"                          // media duration, if env.FFPROBE_PATH path is specified
         ],
         "auto":
         [

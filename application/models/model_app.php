@@ -1006,6 +1006,14 @@ class model_app extends _uho_model
                                             $mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $src);
                                             if ($mtime) $metadata[$metadata_type]=['label'=>'Modified','value'=>date("Y-m-d H:i:s",$mtime)];
                                             break;
+                                        case "duration":                                            
+                                            $duration = $this->file_duration($_SERVER['DOCUMENT_ROOT'] . $src);
+                                            if ($duration)
+                                                $metadata[$metadata_type]=[
+                                                'label'=>'Duration',
+                                                'value'=>_uho_fx::dozeruj(intval($duration/(60*60)),2).':'._uho_fx::dozeruj(intval($duration/60)%60,2).':'._uho_fx::dozeruj($duration%60,2).' ('.$duration.'s)'
+                                            ];
+                                            break;
                                     }
                                 $record[$v['field']]['metadata']=$metadata;
                             }
@@ -1783,13 +1791,27 @@ class model_app extends _uho_model
      * @return mixed
      */
 
+    private function file_duration($filename)
+    {
+        if ($filename)
+        {
+            $data=$this->ffprobe('-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'.$filename.'"');
+            if (is_numeric($data)) return 1*$data; 
+        }        
+    }
+
     public function ffprobe($cmd)
     {
         if ($this->config_params['ffprobe'])
             $ffprobe = $this->config_params['ffprobe'];
         else
             $ffprobe = 'ffprobe';
-        return shell_exec($ffprobe . ' ' . $cmd);
+
+        $cmd=$ffprobe . ' ' . $cmd.' 2>&1';
+        //exec($cmd, $output, $retval);
+        //echo "Returned with status $retval and output:\n";
+        //print_r($output);
+        return shell_exec($cmd);
     }
 
     public function fileUploadModel($model, $field, $data, $source)
