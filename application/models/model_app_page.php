@@ -64,8 +64,9 @@ class model_app_page extends model_app
 
 		// Load and validate schema
 		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
-		$schema=$this->getSchemaDepreceated($schema);
-		
+		if (isset($schema['result']) && $schema['result']===false)
+			exit('<pre>'.$schema['message'].'</pre>');
+		$schema=$this->getSchemaDepreceated($schema);		
 		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
@@ -102,7 +103,7 @@ class model_app_page extends model_app
 
 		$buttons = $this->getSchemaButtons($schema, $params);
 		$schema['fields'] = $this->updateSchemaLanguages($schema);
-		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);
+		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);		
 		$schema = $this->updateSchemaRowWidth($schema);
 
 		// Determine current page number
@@ -253,6 +254,7 @@ class model_app_page extends model_app
 
 		$offset = ($page_nr - 1) * $this->paging['count'];
 		$limit = $this->paging['count'];
+		
 		$records = $this->apporm->get($schema, $filters, false, null, "$offset,$limit");
 
 		if (!$global_search) {
@@ -538,15 +540,19 @@ class model_app_page extends model_app
 	private function updateSchemaSorting(array $schema, ?string $sort, string $page_with_filters): array
 	{
 		// If sorting is provided (e.g., "field,ASC"), set it into the schema.
-		if ($sort) {
+		if ($sort)
+		{
 			[$field, $direction] = explode(',', $sort);
+			if (empty($direction)) $direction='ASC';
 			$schema['order'] = ['field' => $field, 'sort' => $direction];
 		}
+		
 
 		// Default sorting fallback to the first field if not defined.
 		if (empty($schema['order'])) {
-			$schema['order'] = $schema['fields'][0];
+			$schema['order'] = ['field'=>$schema['fields'][0]['field'],'sort'=>'ASC'];
 		}
+
 
 		// Ensure the order format is consistent (associative array).
 		if (!is_array($schema['order'])) {

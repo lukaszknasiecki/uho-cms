@@ -55,9 +55,7 @@
 					setProgress(progress,stepprogress,insteps);
 					if (result.message)
 					{
-						$('#errors').append('<li class="list-group-item">'+result.message+'</li>');
-						//alert('!');
-						//return;
+						$('#errors').append('<li class="list-group-item"><code>'+result.message+'</code></li>');
 					}
 					if (progress<count) runAjax();						
 					}			
