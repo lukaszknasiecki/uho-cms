@@ -1011,7 +1011,10 @@ class model_app extends _uho_model
                                             if ($duration)
                                                 $metadata[$metadata_type]=[
                                                 'label'=>'Duration',
-                                                'value'=>_uho_fx::dozeruj(intval($duration/(60*60)),2).':'._uho_fx::dozeruj(intval($duration/60)%60,2).':'._uho_fx::dozeruj($duration%60,2).' ('.$duration.'s)'
+                                                'value'=>_uho_fx::dozeruj(
+                                                    intval($duration/(60*60)),2).':'
+                                                    ._uho_fx::dozeruj(intval($duration/60)%60,2).':'
+                                                    ._uho_fx::dozeruj(intval($duration)%60,2).' ('.$duration.'s)'
                                             ];
                                             break;
                                     }
@@ -1501,8 +1504,10 @@ class model_app extends _uho_model
         }
 
         foreach ($array as $k => $v)
-            if ($v) {
+            if ($v)
+            {
                 $null = false;
+
                 if ($params['numbers'])
                     foreach ($params['numbers'] as $k2 => $v2)
                         if ($v == ('%' . $k2 . '%') && $v2 === null)
@@ -1525,6 +1530,8 @@ class model_app extends _uho_model
                             }
                         }
 
+                if (!empty($params['twig']))
+                    $array[$k] = $this->getTwigFromHtml($array[$k], $params['twig']);
 
                 if ($null)
                     $array[$k] = null;

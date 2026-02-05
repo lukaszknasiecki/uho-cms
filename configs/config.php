@@ -10,6 +10,7 @@ $cfg = [
     'application_url_prefix' => getenv('CMS_CONFIG_PREFIX'),
     'application_languages' => ['en'],
     'application_languages_url' => false,
+    'orm_version' =>                   getenv('UHO_ORM') ? getenv('UHO_ORM') : 1,
 
     'clients' =>
     [

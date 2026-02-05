@@ -248,7 +248,7 @@ class model_app_page extends model_app
 
 
 		// Fetch records
-
+	
 		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
 		$_SESSION['page_filters'][$model] = $filters;
 
