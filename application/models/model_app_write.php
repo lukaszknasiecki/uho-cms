@@ -728,6 +728,7 @@ class model_app_write extends model_app
 							true
 							);
 						if ($r===false) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
+							else $r=true;
 					}
 
 					$this->apporm->delete(
@@ -793,6 +794,7 @@ class model_app_write extends model_app
 			
 			$result = $this->apporm->put($schema, $data);
 			if ($result===false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
+				else $result=true;
 
 			$is_new_now = false;
 		}
