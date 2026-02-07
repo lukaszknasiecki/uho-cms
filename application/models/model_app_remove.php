@@ -69,6 +69,7 @@ class model_app_remove extends model_app
 		$result = false;
 		if ($exists) {
 			$result = $this->apporm->delete($model, $id);
+			if ($result!==false) $result=true;
 		}
 
 		// Run any post-deletion plugins (if defined)

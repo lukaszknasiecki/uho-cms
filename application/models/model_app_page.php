@@ -603,7 +603,9 @@ class model_app_page extends model_app
 		// Apply schema transformations based on sources and page context.
 		$schema = $this->updateSchemaSources($schema);
 		$schema = $this->updateSchemaForPage($schema, $page_with_params, $params);
-				
+		if (empty($schema['fields'])) {
+			exit('<pre>No fields to display in the list view. Please add fields[].cms.list in the schema configuration.</pre>');
+		}
 
 		// Adjust paging count based on field types or layout configuration.
 		if (_uho_fx::array_filter($schema['fields'], 'type', 'order')) {
