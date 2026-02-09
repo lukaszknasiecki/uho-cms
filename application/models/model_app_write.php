@@ -398,9 +398,9 @@ class model_app_write extends model_app
 						$data[$v['settings']['filename_field']]=$filename;
 					}
 
-					if (!empty($v['settings']['change_uid_on_upload']))
+					if (!empty($v['cms']['change_uid_on_upload']))
 					{
-						$data['uid']=uniqid();
+						$data[$v['cms']['change_uid_on_upload']]=uniqid();
 					}
 					
 					// CMS requested funcions
@@ -477,6 +477,11 @@ class model_app_write extends model_app
 				case "file":
 
 					$source = $data[$v['field']];
+
+					if (!empty($v['cms']['change_uid_on_upload']))
+					{
+						$data[$v['cms']['change_uid_on_upload']]=uniqid();
+					}
 
 					if ($source && isset($v['settings']['filename_original']))
 						$data[$v['settings']['filename_original']] = pathinfo($source, PATHINFO_FILENAME);

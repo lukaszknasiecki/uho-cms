@@ -787,6 +787,7 @@ By default all images are converted do JPG and WEBP (optional).
     "cms": {
         "list": {
             "height": 110,              // image height in CMS preview
+            "change_uid_on_upload": "uid"   // changes uid field on each upload (prevents overwriting)
             "src_blank": "blank169.png" // blank file to be shown if no image is present, uses /cms_config/assets folder as a root
         }
     }
@@ -855,6 +856,7 @@ File upload - by default filename is created from uid field with added extension
     },
     "cms":
     {
+        "change_uid_on_upload": "uid"   // changes uid field on each upload (prevents overwriting)
         "metadata":
         [
             "date_modified",                     // shows when file was last time modified
