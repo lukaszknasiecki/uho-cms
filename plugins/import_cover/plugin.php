@@ -94,7 +94,7 @@ class serdelia_plugin_import_cover
                 'page_update' => $params['params'],
                 'additionalParams' => $params['params']
             ]
-            );
+        );
 
         if (!$record) return ['result' => false];
 
@@ -112,10 +112,10 @@ class serdelia_plugin_import_cover
         $title = '';
         $cover = '';
         $sources = '';
-        $sources_progressive='';
+        $sources_progressive = '';
         $duration = 0;
         $root = $_SERVER['DOCUMENT_ROOT'];
-        $cover_to_remove=null;
+        $cover_to_remove = null;
 
         // ------------------------------------------------------------------------------------
 
@@ -188,19 +188,15 @@ class serdelia_plugin_import_cover
                         vimeo poster via ffmpeg
                     */
 
-                    if (isset($params['field_poster_timestamp']) && $record[$params['field_poster_timestamp']] && isset($vimeo['mp4'][0]['src']))
-                    {
-                        $image_temp = '/cms_config-temp/'.uniqid().'.jpg';
-                        $mp4=$vimeo['mp4'][0]['src'];
-                        $cmd = "-ss " . $record[$params['field_poster_timestamp']] . " -i \"".$mp4."\" -frames:v 1 ".$root.$image_temp;
+                    if (isset($params['field_poster_timestamp']) && $record[$params['field_poster_timestamp']] && isset($vimeo['mp4'][0]['src'])) {
+                        $image_temp = '/cms_config-temp/' . uniqid() . '.jpg';
+                        $mp4 = $vimeo['mp4'][0]['src'];
+                        $cmd = "-ss " . $record[$params['field_poster_timestamp']] . " -i \"" . $mp4 . "\" -frames:v 1 " . $root . $image_temp;
                         $this->parent->ffmpeg($cmd);
-                        if (_uho_fx::file_exists($image_temp))
-                            {
-                                $cover = $image_temp;
-                                $cover_to_remove=$root.$image_temp;
-                            }
-                            else $cover=null;
-
+                        if (_uho_fx::file_exists($image_temp)) {
+                            $cover = $image_temp;
+                            $cover_to_remove = $root . $image_temp;
+                        } else $cover = null;
                     }
 
                     /*
@@ -216,9 +212,10 @@ class serdelia_plugin_import_cover
                         }
                     }
 
-                    if ($params['field_mp4_progressive'] && $vimeo['mp4_progressive']) {
-                        $sources_progressive = $vimeo['mp4_progressive'];
-                        if (is_array($sources_progressive) && !empty($sources_progressive[0]) && !empty($sources_progressive[0]['src'])) {
+                    if ($params['field_mp4_play'] && $vimeo['mp4_play'])
+                    {
+                        $sources_progressive = $vimeo['mp4_play'];
+                        if (is_array($sources_progressive) && !empty($sources_progressive['progressive'][0]) && !empty($sources_progressive['progressive'][0]['src'])) {
                             $sources_progressive = json_encode($sources_progressive, true);
                         } else {
                             $errors[] = 'Vimeo Progressive Sources not found';
@@ -280,8 +277,8 @@ class serdelia_plugin_import_cover
                 $added[] = 'sources_added';
             }
             if ($sources_progressive) {
-                $data[$params['field_mp4_progressive']] = $sources_progressive;
-                $added[] = 'sources_progressive_added';
+                $data[$params['field_mp4_play']] = $sources_progressive;
+                $added[] = 'sources_play_added';
             }
 
             if ($duration && @$params['field_duration']) {
@@ -315,7 +312,7 @@ class serdelia_plugin_import_cover
 
     private function vimeoGet($id, $keys = null, $subtitles = false)
     {
-        
+
         if ($keys) return $this->getVimeoFilenameAdvanced($id, $keys, $subtitles);
         else {
             $json = _uho_fx::fileCurl('http://vimeo.com/api/v2/video/' . $id . '.json');
@@ -339,13 +336,12 @@ class serdelia_plugin_import_cover
 
         $lib = new Vimeo($keys['client'], $keys['secret']);
         $lib->setToken($keys['token']);
-        $id=explode('/',$id)[0];
+        $id = explode('/', $id)[0];
         $data = $lib->request('/videos/' . $id);
 
         if (isset($data['body']['error'])) {
             return ['error' => 'Error: ' . $data['body']['error'] . ' ' . $data['body']['developer_message']];
         } elseif ($data) {
-
             $title = @$data['body']['name'];
             $author = @$data['body']['user']['name'];
             $image = @$data['body']['pictures']['sizes'];
@@ -356,28 +352,36 @@ class serdelia_plugin_import_cover
             $video_progressive = [];
 
             // progressive sources
-            
-                $vv = @$data['body']['play']['progressive'];
-                if ($vv)
-                    foreach ($vv as $k => $v)
-                        if ($v['type'] == 'video/mp4' && $v['width']) {
-                            $video_progressive[] = [
-                                'width' => $v['width'],
-                                'height' => $v['height'],
-                                'src' => $v['link'],
-                                'expire'=>$v['link_expiration_time']
-                                ];
-                        }
+
+            $vv = @$data['body']['play']['progressive'];
+            if ($vv)
+                foreach ($vv as $k => $v)
+                    if ($v['type'] == 'video/mp4' && $v['width']) {
+                        $video_progressive[] = [
+                            'width' => $v['width'],
+                            'height' => $v['height'],
+                            'src' => $v['link'],
+                            'expire' => $v['link_expiration_time']
+                        ];
+                    }
+
+            // hls
+
+            if (!empty($data['body']['play']['hls'])) {
+                $hls = [
+                    'src' => $data['body']['play']['hls']['link'],
+                    'expire' => $data['body']['play']['hls']['link_expiration_time']
+                ];
+            } else $hls = null;
 
             // standard (full) sources
-            
-                $vv = @$data['body']['files'];
-                if ($vv)
-                    foreach ($vv as $k => $v)
-                        if ($v['type'] == 'video/mp4' && isset($v['width'])) {
-                            $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
-                        }
-            
+
+            $vv = @$data['body']['files'];
+            if ($vv)
+                foreach ($vv as $k => $v)
+                    if ($v['type'] == 'video/mp4' && isset($v['width'])) {
+                        $video[] = ['width' => $v['width'], 'height' => $v['height'], 'src' => $v['link']];
+                    }
         }
 
         // subtitles
@@ -393,7 +397,19 @@ class serdelia_plugin_import_cover
         }
         if (!$video) return  ['error' => 'ERROR OCCURED: No video sources have been found'];
         else {
-            $r = (['image' => $image, 'title' => $title, 'author' => $author, 'mp4' => $video, 'mp4_progressive'=>$video_progressive, 'subtitles' => $subtitles, 'duration' => $duration]);
+            $r = ([
+                'image' => $image,
+                'title' => $title,
+                'author' => $author,
+                'mp4' => $video,
+                'mp4_play' => [
+                    'progressive' => $video_progressive,
+                    'hls' => $hls
+                ],
+                'subtitles' => $subtitles,
+                'duration' => $duration
+            ]);
+            
             return $r;
         }
     }
