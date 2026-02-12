@@ -1709,17 +1709,25 @@ class model_app extends _uho_model
 
         if ($this->cache_folders) {
             foreach ($this->cache_folders as $k => $v) {
-                if (substr($v, 0, 4) == 'http') {
+                if (substr($v, 0, 4) == 'http')
+                {
                     $file_contents = _uho_fx::fileCurl($v);
                     if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                     else $r = null;
 
                     if (!$r || !$r['result']) {
-                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v));
+                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v),
+                            [
+                                'follow_location'=>true,
+                                'header' => [
+                                    "Accept: */*",
+                                    "User-Agent: Mozilla/5.0 (compatible; PHP-cURL)"
+                                ]
+                            ]
+                            );
                         if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                         else $r = null;
                     }
-
                     if (!$r || !$r['result']) {
                         $file_contents = file_get_contents($v, false, stream_context_create($arrContextOptions));
                         if (is_string($file_contents)) $r = @json_decode($file_contents, true);

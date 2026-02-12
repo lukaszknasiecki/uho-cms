@@ -64,7 +64,8 @@ class controller_app extends _uho_controller
             $this->model->backupSet(true);
         }
 
-        if (!empty($this->cfg['cms']['serdelia_cache_kill'])) {
+        if (!empty($this->cfg['cms']['serdelia_cache_kill']))
+        {
             $caches = [$this->cfg['cms']['serdelia_cache_kill']];
             if (!empty($this->cfg['cache_kill'])) {
                 $caches = array_merge($caches, $this->cfg['cache_kill']);
