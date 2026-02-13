@@ -659,7 +659,7 @@ class UploadHandler
 
     protected function gd_destroy_image_object($file_path) {
         $image = (isset($this->image_objects[$file_path])) ? $this->image_objects[$file_path] : null ;
-        return $image && imagedestroy($image);
+        return $image; // && imagedestroy($image);
     }
 
     protected function gd_imageflip($image, $mode) {
@@ -738,7 +738,7 @@ class UploadHandler
                     defined('IMG_FLIP_HORIZONTAL') ? IMG_FLIP_HORIZONTAL : 1
                 );
                 $new_img = imagerotate($tmp_img, 270, 0);
-                imagedestroy($tmp_img);
+                // imagedestroy($tmp_img);
                 break;
             case 6:
                 $new_img = imagerotate($src_img, 270, 0);
@@ -749,7 +749,7 @@ class UploadHandler
                     defined('IMG_FLIP_VERTICAL') ? IMG_FLIP_VERTICAL : 2
                 );
                 $new_img = imagerotate($tmp_img, 270, 0);
-                imagedestroy($tmp_img);
+                // imagedestroy($tmp_img);
                 break;
             case 8:
                 $new_img = imagerotate($src_img, 90, 0);

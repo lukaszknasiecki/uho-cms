@@ -862,7 +862,7 @@ class model_app_write extends model_app
 			if ($new) {
 				$new['id'] = $id;
 				$result = $this->apporm->put($schema, $new, false, false);
-				if ($result===false) $errors[] = 'Error on PUT';
+				if ($result===false) $errors[] = 'Error on PUT: '.$this->apporm->getLastError();
 					else $result=true;
 			}
 		}
