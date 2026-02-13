@@ -66,9 +66,10 @@ class controller_app extends _uho_controller
 
         if (!empty($this->cfg['cms']['serdelia_cache_kill']))
         {
+            $domain=$_SERVER['HTTP_HOST'];
             $caches = [$this->cfg['cms']['serdelia_cache_kill']];
-            if (!empty($this->cfg['cache_kill'])) {
-                $caches = array_merge($caches, $this->cfg['cache_kill']);
+            if (!empty($this->cfg['cache_kill'][$domain])) {
+                $caches = array_merge($caches, $this->cfg['cache_kill'][$domain]);
             }
             $this->model->setCacheKills($caches);
         }
