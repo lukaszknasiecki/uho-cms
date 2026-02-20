@@ -134,7 +134,9 @@ Apps.Page = function($, window)
           url,
           post,
           function(data) {
-            location.reload();
+            var data=JSON.parse(data);
+            if (data.result!=true) alert('ERROR::'+data.message);
+              else location.reload();
           }
         );
       }

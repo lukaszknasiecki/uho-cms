@@ -54,14 +54,13 @@ class model_app_remove extends model_app
 			return ['result' => false];
 		}
 
-		$schema = $this->getSchema($model);
+		$schema = $this->getSchema($model, false, ['numbers' => $params]);
 		$schema['filters'] = $schema['filters'] ?? [];
 
 		// Apply filters for record existence check
-		$filters = _uho_fx::fillPattern($schema['filters'], ['numbers' => $params]);
-		$filters['id'] = $id;
+		// $filters = _uho_fx::fillPattern($schema['filters'], ['numbers' => $params]);
 
-		$exists = $this->apporm->get($model, $filters, true);
+		$exists = $this->apporm->get($model, $schema['filters'], true);
 
 		// Backup record before deletion
 		$this->backupAdd($schema['table'], $id);

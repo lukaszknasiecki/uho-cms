@@ -1707,7 +1707,10 @@ class model_app extends _uho_model
             ),
         );
 
+        $i=0;
+
         if ($this->cache_folders) {
+            
             foreach ($this->cache_folders as $k => $v) {
                 if (substr($v, 0, 4) == 'http')
                 {
@@ -1725,7 +1728,10 @@ class model_app extends _uho_model
                                 ]
                             ]
                             );
-                        if (is_string($file_contents)) $r = @json_decode($file_contents, true);
+                        if (is_string($file_contents))
+                        {
+                            $r = @json_decode($file_contents, true);                            
+                        }
                         else $r = null;
                     }
                     if (!$r || !$r['result']) {
@@ -1736,10 +1742,13 @@ class model_app extends _uho_model
 
                     if (!$r || !$r['result'])
                         exit('Error perfoming cache clean at: ' . $v);
-                } else
+                        else $i++;
+                } else                
                     $this->sql->cacheKill($v, ['cache', 'sql']);
             }
         }
+
+        //if ($i) exit('cached killed: '.$i);
 
         if ($this->cache_plugin) {
             $path = $_SERVER['DOCUMENT_ROOT'] . $this->cfg_path . '/plugins/' . $this->cache_plugin . '/';

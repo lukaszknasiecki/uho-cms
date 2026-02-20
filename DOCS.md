@@ -849,14 +849,20 @@ File upload - by default filename is created from uid field with added extension
     "type": "file",
     "settings": {
         "folder": "/public/upload/files",       // folder to upload files
+        "filename": "{{filename}}",
+        "filename_original": "filename",
+
+        "extension": "pdf",                     // for static extension you just define it here
+
+        "extensions": ["docx", "pdf"],          // list of supported extensions for multi-extension fields
+        "extension_field": "ext",               // for multiple extensions you need file to store those values
+
         "size": "size",                          // field to store file size
         "hashable": false,                      // if you want to enable option to hash/dehash files
-        "extensions": ["docx", "pdf"],          // list of supported extensions for multi-extension fields
-        "extension_field": "ext"                // field to store file's extension,        
     },
     "cms":
     {
-        "change_uid_on_upload": "uid"   // changes uid field on each upload (prevents overwriting)
+        "change_uid_on_upload": "uid",   // changes uid field on each upload (prevents overwriting)
         "metadata":
         [
             "date_modified",                     // shows when file was last time modified
@@ -872,6 +878,10 @@ File upload - by default filename is created from uid field with added extension
 {
     "field":"ext",
     "type":"string"
+},
+{
+    "field":"file_duration",
+    "type":"integer"
 }
 ```
 
