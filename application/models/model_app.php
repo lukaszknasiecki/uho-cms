@@ -315,9 +315,9 @@ class model_app extends _uho_model
      * @return mixed
      */
 
-    public function getApiKey($key)
+    public function getApiKeys($section)
     {
-        return $this->api_keys[$key];
+        return $this->api_keys[$section];
     }
 
     /**

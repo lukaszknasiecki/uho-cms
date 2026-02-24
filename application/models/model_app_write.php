@@ -217,6 +217,7 @@ class model_app_write extends model_app
 					break;
 
 
+
 				case "variable":
 					$data[$v['field']] = $this->getAutoVariable($v['variable']);
 					break;
@@ -910,7 +911,10 @@ class model_app_write extends model_app
 				case "user":
 					$value = $this->clients->getClientId();
 					break;
-
+					
+				case "timestamp":
+					$value = date('Y-m-d H:i:s');
+					break;
 				default:
 					exit('Variable::getAutoVariable::not defined or unknown::' . $variable);
 			}
@@ -931,6 +935,7 @@ class model_app_write extends model_app
 	 */
 	private function updateAutoValue(array $field, array $schema, array $data, array $params)
 	{
+
 		// Simple case: direct auto-variable reference
 		if (is_string($field['cms']['auto'])) {
 			return $this->getAutoVariable($field['cms']['auto']);
