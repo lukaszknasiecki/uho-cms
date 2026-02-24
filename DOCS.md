@@ -611,11 +611,30 @@ Date and time field (YYYY-mm-dd H:i:s format).
 
 ```json
 {
-    "field": "created_at",
+    "field": "event_date_time",
     "type": "datetime",
     "settings":
     {
         "format":"ISO8601"      // ISO8601|UTC - reformats YYYY-MM-DD to ISO8601
+    }
+}
+```
+
+#### `timestamp`
+
+Date and time field (YYYY-mm-dd H:i:s format, converted to UTC timezone).
+
+```json
+{
+    "field": "created_at",
+    "type": "timestamp"
+},
+{
+    "field": "updated_at",
+    "type": "timestamp",
+    "cms":
+    {
+        "auto":"timestamp"      // updated field on every record change in the CMS
     }
 }
 ```
