@@ -332,8 +332,6 @@ class model_app_write extends model_app
 			}
 		}
 
-		
-
 		foreach ($schema['fields'] as $k => $v)
 			if (
 				($v['write'] === false) ||

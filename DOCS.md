@@ -1253,6 +1253,30 @@ $record_id = $this->params['record'];
 $action = $this->params['action'];
 ```
 
+### Predefined plug-ins:
+
+There is several of predefined plugins to use.
+
+**refresh**
+
+You can use this plug-in to refresh automatic/media fields in a batch,
+for all the records in the table, or only for the filtered one.
+
+This inculudes records with `cms.auto` enabled and records which allow
+resizing like images.
+
+```json
+{
+"buttons_page": [
+        {
+            "type": "refresh",
+            "plugin": "refresh"
+        }
+    ]
+}
+```
+
+
 ### Available CMS Methods
 
 Plugins have access to the CMS instance with methods like:
