@@ -86,7 +86,7 @@
             "type": "select",
             "cms": {
                 "label": "Status",
-                "edit": false,
+                
                 "default": "confirmed"
             },
             "options": [
