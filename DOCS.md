@@ -279,10 +279,14 @@ with one of available options:
 - `show` - shows field's value in the list view
 - `read` - reads field's value, so it can be used by other fields to render output
 
-You can also specify field's list view as a badge, i.e.:
+You can also specify field's list view to render as a bootstrap badge, i.e.:
 
 ```json
         {
+            "cms":
+            {
+                "list":
+                {            
                     "type": "badge",
                     "values":{                  // badge label based on value
                         "0":"No Media",
@@ -292,6 +296,23 @@ You can also specify field's list view as a badge, i.e.:
                         "0":"danger",
                         "1":"success"
                     }
+                }
+            }
+        }
+```
+
+```json
+        {
+            "cms":
+            {
+                "list":
+                {            
+                    "type": "badge",
+                    "color": "primary",
+                    "label": "Interviews",
+                    "break": true
+                }
+            }
         }
 ```
 
@@ -775,10 +796,8 @@ By default all images are converted do JPG and WEBP (optional).
     "type": "image",
     "settings": {
         "folder": "/public/upload/images",  // root folder for uploads
-        "folder_preview": "thumb",          // preview folder to be used in CMS for thumbnails
         "filename": "%uid%",                // filename template
         "filename_field": "filename",       // field to store original filename
-        "change_uid_on_upload": false,      // change UID on every image change/upload
         "sizes": "image_sizes",             // json field to store JSON with all image sizes
         "webp": true                        // add webp format
     },
@@ -821,7 +840,6 @@ You can also keep original image types, which is convenient for transparent imag
     "type": "image",
     "settings": {
         "folder": "/public/upload/images",  // root folder for uploads
-        "folder_preview": "thumb",          // preview folder to be used in CMS for thumbnails
         "filename": "%uid%",                // filename template
         "filename_field": "filename",       // field to store original filename
         "extensions": [ "png"],             // allowed extensions
@@ -844,12 +862,14 @@ You can also keep original image types, which is convenient for transparent imag
         {
             "folder": "mobile",
             "label": "Mobile",
+            "preview": true,                // use this as primary image in the CMS
             "width": 640,
             "height": 480,
             "crop": true
         }
     ],
     "cms": {
+        "color_background": "red",          // background color for transparent images
         "list": {
             "height": 110,              // image height in CMS preview
             "src_blank": "blank169.png" // blank file to be shown if no image is present, uses /cms_config/assets folder as a root

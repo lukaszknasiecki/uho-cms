@@ -940,7 +940,7 @@ class model_app extends _uho_model
                     switch ($v['type']) {
                         case "string":
                         case "text":
-                            if (substr($record[$v['field']], 0, 8) == '[HASHED]') $schema['fields'][$k]['value_hashed'] = true;
+                            if (!empty($record[$v['field']]) && substr($record[$v['field']], 0, 8) == '[HASHED]') $schema['fields'][$k]['value_hashed'] = true;
                             break;
                         case "file":
                             $filename = $_SERVER['DOCUMENT_ROOT'] . $record[$v['field']]['src'];
