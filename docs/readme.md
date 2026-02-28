@@ -9,9 +9,9 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
 ### Key Concepts
 
 * **CMS Core**: Located in `/cms` folder, contains the framework and core functionality
-* **Configuration Folder**: Located in `/cms_config` folder, contains all project-specific configurations
+* **Configuration Folder**: Located usually in `/cms_config` folder (name can be adjusted), contains all project-specific configurations
 * **Multi-Instance Support**: Can manage multiple CMS instances from a single core installation
-* **Model-Driven**: Each content type is defined as a "model" with fields, layouts, and behaviors
+* **Model-Driven**: Each model is defined as a separate schema file, with its fields, layouts, and behaviors
 
 ---
 
@@ -42,17 +42,17 @@ UHO-CMS is a content management system built on the UHO-MVC framework, utilizing
    - Other types: `hidden`, `order`, `plugin`, `table`, `url`, `virtual`
    - Auto fields
 
-5. [Plugins](plugins.md)
-   - Custom plugin structure and class naming
-   - Plugin parameters and available CMS methods
-   - Built-in plugins: `api_single`, `export`, `ffprobe`, `import`, `import_cover`, `media_resize`, `preview`, `refresh`, `test`
-   - User management plugins: `client_users_anonimize`, `client_users_password`, `cms_users_auth`, `cms_users_password`
-
-6. [Structure Files](structure.md)
+5. [Structure Files](structure.md)
    - `menu.json` — navigation
    - `dashboard.json` — widgets
    - `authorization.json` — permission presets
    - `model_tree.json` — parent-child relationships
+
+6. [Plugins](plugins.md)
+   - Custom plugin structure and class naming
+   - Plugin parameters and available CMS methods
+   - Built-in plugins: `api_single`, `export`, `ffprobe`, `import`, `import_cover`, `media_resize`, `preview`, `refresh`, `test`
+   - User management plugins: `client_users_anonimize`, `client_users_password`, `cms_users_auth`, `cms_users_password`
 
 7. [System Models](system-models.md)
    - User management: `cms_users`, `cms_users_logs`, `cms_users_logs_logins`

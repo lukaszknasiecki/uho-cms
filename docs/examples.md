@@ -24,12 +24,12 @@
             "field": "title",
             "type": "string",
             "settings": {
-                "length": 255
+                "length": 128
             },
             "cms": {
                 "label": "Title",
-                "required": true,
                 "list": "show",
+                "required": true,
                 "search": true
             }
         },
@@ -82,7 +82,7 @@
             "cms": {
                 "label": "Featured Image",
                 "list": {
-                    "height": 150
+                    "height": 100
                 }
             }
         },
