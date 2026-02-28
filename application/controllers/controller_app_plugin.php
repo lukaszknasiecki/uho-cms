@@ -62,13 +62,13 @@ class controller_app_plugin extends controller_app
         }
 
         $params['url_back'] = $url_back;
-        $params['url_serdelia'] = ["type"=>"home"];
+        $params['url_cms_home'] = ["type"=>"home"];
 
         // Update URLs based on current parameters
         $updatedUrls = $this->urlUpdate($params);
 
         $params['url_back_string']     = $updatedUrls['url_back'];
-        $params['url_serdelia']        = $updatedUrls['url_serdelia'];
+        $params['url_cms_home']        = $updatedUrls['url_cms_home'];
         $params['url_back_page']       = ['type' => 'page', 'page' => $params['page']];
 
         // Build a back URL string for navigation (to the page view)
@@ -80,7 +80,7 @@ class controller_app_plugin extends controller_app
 
         // Set config and filesystem paths
         $params['config_path']     = $this->cfg['config_folder'];
-        $params['serdelia_path']   = $_SERVER['DOCUMENT_ROOT'] . $updatedUrls['url_serdelia'];
+        $params['cms_path']   = $_SERVER['DOCUMENT_ROOT'] . $updatedUrls['url_cms_home'];
 
         // Fetch content data using the prepared parameters
         $data = [

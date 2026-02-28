@@ -80,7 +80,7 @@ class controller_app_clients
             !$this->clients->isLogged() &&
             !$this->clients->adminExists()
         ) {
-            $_SESSION['serdelia_project'] = $_SESSION['possible_serdelia_project'];
+            $_SESSION['uho_cms_project'] = $_SESSION['possible_uho_cms_project'];
             $this->route->redirect('create');
         }
 

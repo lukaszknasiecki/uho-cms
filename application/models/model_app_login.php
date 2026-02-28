@@ -31,6 +31,7 @@ class model_app_login extends model_app
 		$this->translate = json_decode(file_get_contents(__DIR__.'/model_app_login.json'),true);
 
 		$cfg = $this->getAvailableProjects();
+		
 		$logged = false;
 		$error = '';
 
@@ -39,13 +40,15 @@ class model_app_login extends model_app
 			isset($params['project'], $params['login_login'], $params['login_password']) &&
 			isset($cfg['projects'][intval($params['project']) - 1])
 		) {
+
 			$result = $this->clients->login($params['login_login'], $params['login_password']);
+			
 			if (!empty($result['result']))
 			{
 				$logged = true;
-				$_SESSION['serdelia_project'] = intval($params['project']);
-				$_SESSION['serdelia_login_time']   = time();
-				$_SESSION['serdelia_activity_time']= time();
+				$_SESSION['uho_cms_project'] = intval($params['project']);
+				$_SESSION['uho_cms_login_time']   = time();
+				$_SESSION['uho_cms_activity_time']= time();
 
 			} else {
 				$error = 'login_error';

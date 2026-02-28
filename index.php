@@ -146,13 +146,13 @@ class cms_sunship
         $cfg_folder = null;
         $cfg_project = null;
 
-        if (isset($_SESSION['serdelia_project']) || (isset($_POST['login_login']) && isset($_POST['project'])))
+        if (isset($_SESSION['uho_cms_project']) || (isset($_POST['login_login']) && isset($_POST['project'])))
         {
             
             $blank = false;
 
             // get current project array index
-            if (!empty($_SESSION['serdelia_project'])) $project = $_SESSION['serdelia_project'] - 1;
+            if (!empty($_SESSION['uho_cms_project'])) $project = $_SESSION['uho_cms_project'] - 1;
             else $project = intval($_POST['project']) - 1;
 
             // check if project per domain defined
@@ -173,7 +173,7 @@ class cms_sunship
                         'main' => $cfg_folder,
                         'pre' => [__DIR__ . '/configs']
                     ];
-                    $_SESSION['possible_serdelia_project'] = $project + 1;
+                    $_SESSION['possible_uho_cms_project'] = $project + 1;
                 }
             }
         }
@@ -215,8 +215,8 @@ class cms_sunship
         */
 
         if ($blank) {
-            unset($_SESSION['serdelia_project']);
-            unset($_SESSION['possible_serdelia_project']);
+            unset($_SESSION['uho_cms_project']);
+            unset($_SESSION['possible_uho_cms_project']);
 
             $cfg_file = [
                 'application_title' => 'app',

@@ -506,26 +506,6 @@ class model_app_page extends model_app
 		if (!isset($schema['buttons_page'])) {
 			$schema['buttons_page'] = [];
 		}
-
-		$is_serdelia_table = substr($schema['table'], 0, 9) == 'serdelia_';
-
-		if ($this->serdelia_schema_editor && !$is_serdelia_table) {
-			array_unshift(
-				$schema['buttons_page'],
-				[
-					'icon' => 'settings',
-					'url' => 'edit/serdelia_models/' . $schema['model_name'],
-					'class' => 'default serdelia-button-schema-edit'
-				]
-			);
-		}
-
-
-
-		if (!$this->serdelia_schema_editor && $is_serdelia_table) {
-			exit('Schema edit not allowed on this domain');
-		}
-
 		return $schema;
 	}
 

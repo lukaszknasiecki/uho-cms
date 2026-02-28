@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5.css">
+<link rel="stylesheet" href="{{cms_path}}/public/ckeditor5/ckeditor5.css">
 {% if scaffold.cfg.wysiwyg.css %}<link rel="stylesheet" href="{{scaffold.cfg.wysiwyg.css}}">{% endif %}
-{% if scaffold.cfg.mode=='dark' %}<link rel="stylesheet" href="{{serdelia_path}}/public/ckeditor5/ckeditor5-dark.css">{% endif %}
-<script src="{{serdelia_path}}/public/ckeditor5/ckeditor5.umd.js"></script>
-<script>var serdelia_path="{{serdelia_path}}"</script>
+{% if scaffold.cfg.mode=='dark' %}<link rel="stylesheet" href="{{cms_path}}/public/ckeditor5/ckeditor5-dark.css">{% endif %}
+<script src="{{cms_path}}/public/ckeditor5/ckeditor5.umd.js"></script>
+<script>var cms_path="{{cms_path}}"</script>
 {% if scaffold.cfg.wysiwyg.js %}
 	<script src="{{scaffold.cfg.wysiwyg.js}}?{{"now"|date("Y-m-d")}}"></script>
-	{% else %}<script src="{{serdelia_path}}/public/ckeditor5-config/config.js"></script>
+	{% else %}<script src="{{cms_path}}/public/ckeditor5-config/config.js"></script>
 {% endif %}
 
 <script>

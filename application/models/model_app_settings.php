@@ -109,7 +109,7 @@ class model_app_settings extends model_app
 			: [];
 
 
-		$time = time() - $_SESSION['serdelia_login_time'];
+		$time = time() - $_SESSION['uho_cms_login_time'];
 
 		if ($time > 60) $time = intval($time / 60) . ' min.';
 		else $time = $time . ' s.';

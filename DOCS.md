@@ -11,9 +11,12 @@ Complete guide to creating and configuring uho-cms instances.
  5. [Page/Model Configuration](#pagemodel-configuration)
  6. [Field Types](#field-types)
  7. [Plugins](#plugins)
+    - [Built-in Plugins](#built-in-plugins)
+    - [Plugin Button Properties](#plugin-button-properties)
  8. [Structure Files](#structure-files)
- 9. [Best Practices](#best-practices)
-10. [Examples](#examples)
+ 9. [System Models](#system-models)
+10. [Best Practices](#best-practices)
+11. [Examples](#examples)
 
 ## Overview
 
@@ -161,20 +164,34 @@ cms_config/
 
 ### config.php
 
-The main PHP configuration file located at `cms_config/config.php`:
+By default CMS is using `cms/configs/config.php` file.
+You can modify it with your own file located at `cms_config/config.php`, which will overwrite default properties:
 
 ```php
 <?php
 
 $cfg = [
-    'cms' => [
-        'title'          => 'Your CMS Title',
-        'logotype'       => true,              // Show logotype in CMS
-        'favicon'        => true,              // Use favicon
-        'debug'          => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),
-        'strict_schema'  => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
+    'cms' =>
+    [
+        'title'          => 'Your CMS Title',   // CMS title visible in  <title> tag
+        'logotype'       => true,               // Show logotype in CMS,  /cms_config/assets/logotype.png, default=FALSE
+        'favicon'        => true,               // Use favicon, /cms_config/assets/favicon.png, default=FALSE
+
+        'debug'          => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),    // enable CMS debug mode, validates schemas
+        'strict_schema'  => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),   // force strict schema, disabled depreceated support
+
         'app_languages'  => ['en'],            // Supported languages
-        'serdelia_cache_kill' => '/cache'      // Cache invalidation path
+        'cache' =>
+        [
+            [
+				'folder' => '/cache',
+				'extensions' => ['cache', 'sql']
+			],
+			[
+				'domain' => 'nature.ode.lh',
+				'url' => 'https://nature.ode.lh/api/cache_kill',
+			]
+        ]
     ],
     'plugins' => [
         'PHP'           => getEnv("PHP"),      // PHP executable path
@@ -182,6 +199,11 @@ $cfg = [
     ]
 ];
 ```
+
+Cache parameter is all about removing site's cache if CMS changed any data. You can remove cache
+files locally by setting up folder containng cache files and files extensions, attach those actions
+to a specific domain only, or choose to launch external URL call via CURL, if application is installed
+on other server than the CMS.
 
 **Configuration Options:**
 
@@ -330,6 +352,7 @@ Each page can have custom buttons which can execute custom (or CMS-based) pugins
             "icon": "icon-name",
             "type": "plugin",         // "plugin" or "page"
             "plugin": "plugin_name",
+            "class": "danger",        // Bootstrap button style: `"default"`, `"primary"`, `"success"`, `"warning"`, `"danger"`
             "hidden": false,
             "params": {
                 "key": "value"
@@ -362,6 +385,30 @@ Each page can have custom buttons which can execute custom (or CMS-based) pugins
             "params": {
                 "url": "/{{url}}?preview=true"
             }
+        }
+    ]
+}
+```
+
+In addition, `buttons_edit` accept lifecycle properties that control when and how they run.
+You can use `on_load` or `on_update` together with `hidden` for silent background execution. |
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `on_load` | `true` | Execute the plugin automatically when the page or edit form loads, before rendering. |
+| `on_update` | `true` | Execute the plugin automatically after a record is saved. |
+
+**Example — silent auto-run on load and after save:**
+
+```json
+{
+    "buttons_edit": [
+        {
+            "label": "Sync index",
+            "plugin": "index_sync",
+            "on_load": true,
+            "on_update": true,
+            "hidden": true
         }
     ]
 }
@@ -1145,12 +1192,7 @@ Field values can be automatically generate values using the `auto` property:
 
 ## Plugins
 
-Plugins extend CMS functionality. You can write your own plugins and/or use predefined ones:
-
-* `api_single`: performs a REST api call using current record's data
-* `import_cover`: imports cover images from videos - including mp4, vimeo and youtube, including additional fields (like video titles, vimeo mp4 sources etc.)
-
-You can find documentation for each predefined plugin in its class file: `/cms/plugins/{name}/plugin.php`
+Plugins extend CMS functionality. The CMS includes several built-in plugins (see [Built-in Plugins](#built-in-plugins) below) and supports custom plugins placed in `cms_config/plugins/`.
 
 ## Custom Plugins
 
@@ -1273,29 +1315,335 @@ $record_id = $this->params['record'];
 $action = $this->params['action'];
 ```
 
-### Predefined plug-ins:
+### Built-in Plugins
 
-There is several of predefined plugins to use.
+The CMS ships with a set of ready-to-use plugins. Reference them by name in any `buttons_page` or `buttons_edit` configuration.
 
-**refresh**
+---
 
-You can use this plug-in to refresh automatic/media fields in a batch,
-for all the records in the table, or only for the filtered one.
+#### `api_single`
 
-This inculudes records with `cms.auto` enabled and records which allow
-resizing like images.
+Executes a single HTTP request (GET or POST) against an internal or external URL. The URL supports Twig templating using the current record's values.
 
 ```json
 {
-"buttons_page": [
+    "buttons_edit": [
         {
-            "type": "refresh",
-            "plugin": "refresh"
+            "type": "plugin",
+            "plugin": "api_single",
+            "label": "Sync",
+            "params": {
+                "url": "/api/sync/{{id}}",
+                "method": "GET"
+            }
         }
     ]
 }
 ```
 
+**Params:**
+
+| Key | Description |
+|-----|-------------|
+| `url` | URL to call. Twig templates are resolved against current record. Relative URLs are made absolute automatically. |
+| `method` | HTTP method: `GET` (default) or `POST` |
+
+---
+
+#### `export`
+
+Exports the current model's records (respecting active filters) as a CSV file. The user selects which fields to include before downloading.
+
+```json
+{
+    "buttons_page": [
+        {
+            "plugin": "export",
+            "label": "Export"
+        }
+    ]
+}
+```
+
+Supported field types: `string`, `boolean`, `date`, `integer`, `datetime`, `text`, `media`.
+
+---
+
+#### `ffprobe`
+
+Reads technical metadata from a local or remote audio/video file using FFprobe and writes selected values (width, height, duration) back to record fields. Requires `FFPROBE_PATH` set in the environment.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "ffprobe",
+            "label": "Read metadata",
+            "params": {
+                "video": "field_video",
+                "duration": "field_duration",
+                "width": "field_width",
+                "height": "field_height"
+            }
+        }
+    ]
+}
+```
+
+**Params:**
+
+| Key | Description |
+|-----|-------------|
+| `video` | Field name containing the video file |
+| `audio` | Field name containing the audio file (alternative to `video`) |
+| `duration` | Field name to write the duration into |
+| `width` | Field name to write video width |
+| `height` | Field name to write video height |
+
+**Environment:**
+
+```bash
+FFPROBE_PATH=/opt/homebrew/bin/ffprobe
+```
+
+---
+
+#### `import`
+
+Imports records into a model from a CSV file upload or a pasted spreadsheet. Lets the user select which fields to map before running the import.
+
+```json
+{
+    "buttons_page": [
+        {
+            "plugin": "import",
+            "label": "Import"
+        }
+    ]
+}
+```
+
+Supported field types: `string`, `boolean`, `text`, `select`, `date`.
+
+---
+
+#### `import_cover`
+
+Imports cover images and metadata from MP4 files, Vimeo, or YouTube. Can populate title, poster image, duration, subtitles, and HLS/MP4 source URLs from Vimeo.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "import_cover",
+            "label": "Import cover",
+            "params": {
+                "field_vimeo": "vimeo_id",
+                "field_poster": "image",
+                "field_title": "title",
+                "field_duration": "duration"
+            }
+        }
+    ]
+}
+```
+
+**Params:**
+
+| Key | Description |
+|-----|-------------|
+| `field_mp4` | Field storing MP4 video source |
+| `field_video` | Field storing the video file |
+| `field_youtube` | Field storing the YouTube ID |
+| `field_vimeo` | Field storing the Vimeo ID |
+| `field_poster` | Image field to write the cover into |
+| `field_poster_timestamp` | Timestamp (seconds) for frame extraction |
+| `field_duration` | Integer field to write video duration |
+| `field_title` | String field to write the video title |
+| `field_vtt` | File field for subtitle/VTT track |
+
+---
+
+#### `media_resize`
+
+Opens an interactive crop/resize tool for a specific item in a `media`-type field. Can also extract a video frame as a cover image.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "media_resize",
+            "label": "Crop",
+            "params": {
+                "field": "media",
+                "nr": 0
+            }
+        }
+    ]
+}
+```
+
+**Params:**
+
+| Key | Description |
+|-----|-------------|
+| `field` | Name of the `media` field (default: `media`) |
+| `nr` | Zero-based index of the media item to edit (default: `0`) |
+
+---
+
+#### `preview`
+
+Opens a URL in an iframe panel inside the CMS. Useful for previewing the frontend page that corresponds to the record being edited. Supports opening in a new window.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "preview",
+            "label": "Preview",
+            "params": {
+                "url": "/article/{{slug}}"
+            }
+        }
+    ]
+}
+```
+
+---
+
+#### `refresh`
+
+Batch-processes all records in a model: re-evaluates `cms.auto` fields and re-generates image sizes. Supports record range filtering and respects active page filters.
+
+```json
+{
+    "buttons_page": [
+        {
+            "plugin": "refresh",
+            "label": "Refresh"
+        }
+    ]
+}
+```
+
+
+**Params:**
+
+| Key | Description |
+|-----|-------------|
+| `url` | URL to preview. Twig templates are resolved against the current record. |
+
+---
+
+#### `test`
+
+A minimal no-op plugin that returns `{ "result": true, "message": "All good!" }`. Useful as a starting template for new custom plugins.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "test",
+            "label": "Test"
+        }
+    ]
+}
+```
+
+---
+
+### _`uho_client` model based plugins
+
+Those plugins help to manage list of users created and maintained with `_uho_client` class.
+
+#### `client_users_anonimize`
+
+Irreversibly clears personal data from a client user record (email, name, institution, uid) and sets their status to `anonimized`. Requires confirmation.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "client_users_anonimize",
+            "label": "Anonymize",
+            "params": {
+                "record": "{{id}}",
+                "page": "users"
+            }
+        }
+    ]
+}
+```
+
+---
+
+#### `client_users_password`
+
+Same as `cms_users_password`, but for client-facing (front-end) user accounts. Requires additional `plugin_keys` configuration in `config.php`.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "client_users_password",
+            "label": "Change password",
+            "params": {
+                "record": "{{id}}"
+            }
+        }
+    ]
+}
+```
+
+---
+
+#### `cms_users_auth`
+
+Provides a UI to configure per-section authorization levels (off / read / write / admin) for a CMS user. Supports authorization presets defined in `authorization_presets.json`.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "cms_users_auth",
+            "label": "Authorization",
+            "params": {
+                "record": "{{id}}"
+            }
+        }
+    ]
+}
+```
+
+---
+
+#### `cms_users_password`
+
+Provides a form to set or auto-generate a password for a CMS user. Validates against configured minimum requirements.
+
+```json
+{
+    "buttons_edit": [
+        {
+            "type": "plugin",
+            "plugin": "cms_users_password",
+            "label": "Change password",
+            "params": {
+                "record": "{{id}}"
+            }
+        }
+    ]
+}
+```
 
 ### Available CMS Methods
 
@@ -1460,6 +1808,160 @@ Defines parent-child relationships between models.
 ```
 
 This creates navigation relationships where child models are accessible from parent model edit pages.
+
+
+## System Models
+
+The CMS ships with a set of built-in models accessible from the CMS interface. Their database tables are created automatically on first run. Those models are being use by `_uho_client` class and they can be added to your `structure/menu.json` like any custom models:
+
+```
+{
+        "label": "Admin",
+        "submenu": [
+            {
+                "label": "CMS Users",
+                "page": "cms_users"
+            },
+            {
+                "label": "CMS Action Log",
+                "page": "cms_users_logs"
+            },
+            {
+                "label": "CMS Logins Log",
+                "page": "cms_users_logs_logins"
+            }
+        ]
+    }
+```
+
+Here is the list of those models:
+
+### User Management
+
+#### `cms_users`
+
+The main list of CMS administrator accounts.
+
+| Field | Description |
+|-------|-------------|
+| `name` | Display name |
+| `login` | Login username |
+| `password` | Hashed password |
+| `auth` / `auth_label` | Serialized per-section authorization levels |
+| `status` | Account status |
+| `admin` | Admin flag |
+| `superadmin` | Superadmin flag — full access, ignores `auth` |
+| `email` | Email address |
+| `hide_menu` | Hide CMS sidebar (kiosk mode) |
+
+Use the `cms_users_password` and `cms_users_auth` plugins on edit buttons to manage passwords and permissions for each user.
+
+#### `cms_users_logs`
+
+Audit trail of CMS actions (page visits, record saves, deletions).
+
+| Field | Description |
+|-------|-------------|
+| `datetime` | Timestamp of the action |
+| `session` | Session identifier |
+| `user` | Username |
+| `action` | Action performed |
+
+#### `cms_users_logs_logins`
+
+Login attempt history, useful for security auditing.
+
+| Field | Description |
+|-------|-------------|
+| `datetime` | Timestamp |
+| `login` | Login used |
+| `ip` | IP address |
+| `success` | Whether login succeeded |
+
+---
+
+### CMS Configuration
+
+#### `cms_settings`
+
+Key-value store for arbitrary CMS configuration values. Useful for storing project-wide settings that need to be editable from the CMS without code changes.
+
+| Field | Description |
+|-------|-------------|
+| `slug` | Setting key |
+| `value` | Setting value |
+
+#### `cms_languages`
+
+Defines the languages available in the CMS interface and content.
+
+| Field | Description |
+|-------|-------------|
+| `label` | Human-readable language name |
+| `slug` | Language code (e.g. `en`, `pl`) |
+| `active` | Whether the language is enabled |
+
+#### `cms_translate`
+
+Translation strings for CMS labels and UI text across languages.
+
+| Field | Description |
+|-------|-------------|
+| `slug` | Translation key |
+| `label:lang` | Translated value (per language) |
+
+---
+
+### Data Management
+
+#### `cms_backup`
+
+Stores a record-level change log that can be used to restore previous field values.
+
+| Field | Description |
+|-------|-------------|
+| `date` | Timestamp of the change |
+| `session` | Session identifier |
+| `page` | Model/page name |
+| `record` | Record ID |
+| `data` | Serialized previous record data |
+
+#### `uho_worker`
+
+Background job queue. Plugins that trigger long-running tasks can push jobs here; a separate PHP worker process picks them up asynchronously.
+
+| Field | Description |
+|-------|-------------|
+| `date_created` | When the job was queued |
+| `date_completed` | When the job finished |
+| `action` | Job type / action name |
+| `status` | `pending`, `processing`, `done`, `error` |
+| `message` | Result or error message |
+
+To process the queue, run the worker via CLI (requires `PHP` env variable set):
+
+```bash
+php cms/worker.php
+```
+
+---
+
+### Adding System Models to Your Menu
+
+Any system model can be referenced in `structure/menu.json`:
+
+```json
+{
+    "label": "System",
+    "submenu": [
+        { "label": "Users",        "page": "cms_users" },
+        { "label": "Settings",     "page": "cms_settings" },
+        { "label": "Translations", "page": "cms_translate" },
+        { "label": "Backup log",   "page": "cms_backup" },
+        { "label": "Job queue",    "page": "uho_worker" }
+    ]
+}
+```
 
 
 ## Best Practices

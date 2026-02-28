@@ -25,7 +25,8 @@ class controller_app extends _uho_controller
         if (!empty($this->cfg['plugins'])) $this->model->setPluginsCfg($this->cfg['plugins']);        
         if (isset($this->cfg['cms']['debug']) && in_array($this->cfg['cms']['debug'],[1,'true']))
              $this->model->setDebugMode(true);
-        if (isset($this->cfg['cms']['strict_schema']) && $this->cfg['cms']['strict_schema']==1) $this->model->setStrictSchema(true);
+        if (isset($this->cfg['cms']['strict_schema']) && $this->cfg['cms']['strict_schema']==1)
+            $this->model->setStrictSchema(true);
 
         // Load additional CMS settings if using non-NoSQL clients
         if (!$this->model->clients->isNoSql()) {
@@ -50,7 +51,7 @@ class controller_app extends _uho_controller
                 $this->cfg['clients']['login_error_max'] = $c['clients_login_error_max'];
             }
             if (isset($c['session_time'])) {
-                $this->cfg['cms']['serdelia_logout_time'] = $c['session_time'];
+                $this->cfg['cms']['uho_cms_logout_time'] = $c['session_time'];
             }
         }
 
@@ -64,23 +65,25 @@ class controller_app extends _uho_controller
             $this->model->backupSet(true);
         }
 
-        if (!empty($this->cfg['cms']['serdelia_cache_kill']))
+        $caches = $this->cfg['cms']['cache'] ?? [];
+
+        if ($caches)
         {
-            $domain=$_SERVER['HTTP_HOST'];
-            $caches = [$this->cfg['cms']['serdelia_cache_kill']];
-            if (!empty($this->cfg['cache_kill'][$domain])) {
-                $caches = array_merge($caches, $this->cfg['cache_kill'][$domain]);
-            }
-            $this->model->setCacheKills($caches);
+            foreach ($caches as $k => $v)
+            if (!empty($v['domain'] && $v['domain']!==$_SERVER['HTTP_HOST']))
+                unset($caches[$k]);
         }
 
-        if (!empty($this->cfg['cms']['serdelia_cache_kill_plugin'])) {
-            $this->model->setCacheKillPlugin($this->cfg['cms']['serdelia_cache_kill_plugin']);
+        if ($caches) $this->model->setCacheKills(array_values($caches));
+
+        if (!empty($this->cfg['cms']['cms_cache_kill_plugin'])) {
+            $this->model->setCacheKillPlugin($this->cfg['cms']['cms_cache_kill_plugin']);
         }
 
         if (!empty($this->cfg['cms']['keys'])) {
             $this->model->setAppOrmKeys($this->cfg['cms']['keys']);            
         }
+        
         if (!empty($this->cfg['cms']['serdelia_keys'])) {
             $this->model->setSerdeliaOrmKeys($this->cfg['cms']['serdelia_keys']);            
         }
@@ -120,11 +123,6 @@ class controller_app extends _uho_controller
             $this->model->loadMenu();
         }
 
-        // Enable Serdelia schema editor if configured
-        if (!empty($this->cfg['serdelia_schema_editor'])) {
-            $this->model->setSerdeliaSchemaEditor();
-        }
-
         // Configure WYSIWYG editor settings
         /*
         switch ($this->cfg['cms']['wysiwyg']['type']) {
@@ -136,17 +134,17 @@ class controller_app extends _uho_controller
         }*/
         $this->model->setWysiwyg($this->cfg['cms']['wysiwyg']);
 
-        if (empty($this->cfg['cms']['serdelia_logout_time']) && $this->cfg['cms']['serdelia_logout_time']!==0)
-            $this->cfg['cms']['serdelia_logout_time']=60;
-        if (empty($this->cfg['cms']['serdelia_activity_time']) && $this->cfg['cms']['serdelia_activity_time']!==0)
-            $this->cfg['cms']['serdelia_activity_time']=15;
+        if (empty($this->cfg['cms']['uho_cms_logout_time']) && $this->cfg['cms']['uho_cms_logout_time']!==0)
+            $this->cfg['cms']['uho_cms_logout_time']=60;
+        if (empty($this->cfg['cms']['uho_cms_activity_time']) && $this->cfg['cms']['uho_cms_activity_time']!==0)
+            $this->cfg['cms']['uho_cms_activity_time']=15;
 
         /*
             Logout if time TOTAL time have passed
         */
-        if (isset($this->cfg['cms']['serdelia_logout_time']))
+        if (isset($this->cfg['cms']['uho_cms_logout_time']))
         {
-            $this->model->setLogoutTime($this->cfg['cms']['serdelia_logout_time']);
+            $this->model->setLogoutTime($this->cfg['cms']['uho_cms_logout_time']);
             if (!$this->model->checkLogoutTime())
             {
                 $uri=$this->route->getUrl('logout?action=max_time_expired');
@@ -157,9 +155,9 @@ class controller_app extends _uho_controller
         /*
             Logout if time ACTIVITY time have passed
         */
-        if (isset($this->cfg['cms']['serdelia_activity_time']))
+        if (isset($this->cfg['cms']['uho_cms_activity_time']))
         {
-            $this->model->setActivityTime($this->cfg['cms']['serdelia_activity_time']);
+            $this->model->setActivityTime($this->cfg['cms']['uho_cms_activity_time']);
             if (!$this->model->checkActivityTime())
             {
                 $uri=$this->route->getUrl('logout?action=activity_time');
@@ -181,7 +179,7 @@ class controller_app extends _uho_controller
         $this->data['development'] = false;
         $this->data['head'] = $this->model->headGet();
         $this->data['head']['http'] = $this->route->getDomain();
-        $this->data['serdelia_path'] = rtrim($this->model->cms_path, '/');
+        $this->data['cms_path'] = rtrim($this->model->cms_path, '/');
         $this->data['translate'] = $this->model->getTranslate();
 
         // Scaffold setup (page layout, CSS, menus, etc.)
@@ -243,17 +241,17 @@ class controller_app extends _uho_controller
         {
             $this->data['scaffold']['logout_expired'] = null;
         }
-        elseif (!empty($this->cfg['cms']['serdelia_activity_time']))
+        elseif (!empty($this->cfg['cms']['uho_cms_activity_time']))
         {
-            $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['serdelia_activity_time']-2;
+            $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['uho_cms_activity_time']-2;
         }
 
         /*
             if max logout time is sooner than activity time
         */
-        if ($this->cfg['cms']['serdelia_logout_time'])
+        if ($this->cfg['cms']['uho_cms_logout_time'])
         {
-            $time=$this->model->getLeftLogoutTime($this->cfg['cms']['serdelia_logout_time']);
+            $time=$this->model->getLeftLogoutTime($this->cfg['cms']['uho_cms_logout_time']);
             if ($time>0)
             {
                 $time=$time-2;

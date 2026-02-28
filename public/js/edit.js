@@ -554,13 +554,13 @@ Apps.Edit = function($, window)
       $(this).addClass('btn-default')
       $(this).removeClass('btn-primary');
       $('[data-edit-lang='+lang+']').hide();
-      document.cookie="serdelia_editlang_"+lang+"=0;path=/;domain="+window.location.host+";expires="+d.toUTCString();
+      document.cookie="uho_cms_editlang_"+lang+"=0;path=/;domain="+window.location.host+";expires="+d.toUTCString();
     } else
     {
       $(this).removeClass('btn-default')
       $(this).addClass('btn-primary'); 
       $('[data-edit-lang='+lang+']').fadeTo( "fast" , 1);//show();
-      document.cookie="serdelia_editlang_"+lang+"=1;path=/;domain="+window.location.host+";expires="+d.toUTCString();
+      document.cookie="uho_cms_editlang_"+lang+"=1;path=/;domain="+window.location.host+";expires="+d.toUTCString();
     }
      
   },
@@ -590,7 +590,7 @@ Apps.Edit = function($, window)
         var cookie=0;
     }
 
-    var name="serdelia_edit_help_"+$("#"+serdeliaFormName).data('page')+'_'+banner.data('field');
+    var name="uho_cms_edit_help_"+$("#"+serdeliaFormName).data('page')+'_'+banner.data('field');
     var cookie=name+"="+cookie+";path=/;domain="+window.location.host+";expires="+d.toUTCString();
     
     document.cookie=cookie;

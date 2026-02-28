@@ -21,7 +21,7 @@ class model_app_create extends model_app
         $cfg = $this->getAvailableProjects();
 
         if (!$cfg) {
-            _uho_fx::halt('model_app_create::serdelia_config not found');
+            _uho_fx::halt('model_app_create::uho-cms config not found');
         }
 
         $created = false;

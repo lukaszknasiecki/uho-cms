@@ -17,7 +17,7 @@ class controller_app_api extends controller_app
     public function getData(): void
     {
         // Optional language configuration for ORM based on CMS config
-        if (!empty($this->cfg['cms']['serdelia_languages_url'])) {
+        if (!empty($this->cfg['cms']['cms_languages_url'])) {
 
             // Retrieve available languages and normalize their shortcuts
             $langs = $this->cfg['cms']['app_languages'];

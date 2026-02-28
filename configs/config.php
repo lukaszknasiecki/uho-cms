@@ -10,7 +10,7 @@ $cfg = [
     'application_url_prefix' => getenv('CMS_CONFIG_PREFIX'),
     'application_languages' => ['en'],
     'application_languages_url' => false,
-    'orm_version' =>                   getenv('UHO_ORM') ? getenv('UHO_ORM') : 1,
+    'orm_version' =>getenv('UHO_ORM') ? getenv('UHO_ORM') : 1,
 
     'clients' =>
     [
@@ -21,6 +21,10 @@ $cfg = [
         'max_bad_login' =>    5                                       //  maximum invalid logins before locking the website
     ],
     'plugins' => [
+
+		'PHP' => getEnv("PHP") ?? null,
+		'INT_API_TOKEN' => getEnv("INT_API_TOKEN") ?? null,
+
         'client' =>
         [
             'client_model' => 'client_users',
@@ -37,15 +41,15 @@ $cfg = [
         'logotype'       =>   false,
         'favicon'       =>   false,
 
-        'serdelia_languages_url'  =>    false,                        //  add language string in serdelia URL      		
         'debug' => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),
         'strict_schema' => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
+
         'serdelia_keys' => [
             getenv('CLIENT_KEY1'),
             getenv('CLIENT_KEY2')
         ],
 
-        'serdelia_cache_kill'      =>  null,                    //  set cache folder of your website, so after any change in the CMS this folder will be cleared by the CMS (all files will be removed!)
+        'cache'      =>  null,
         'app_languages'             => []
     ]
 

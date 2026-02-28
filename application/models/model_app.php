@@ -65,13 +65,13 @@ class model_app extends _uho_model
     /**
  
      */
-    public $cms_path = '/serdelia';
+    public $cms_path = '';
 
     /*
         DIR to CMS folder
         for file loading
     */
-    public $cms_folder = '/root/serdelia';
+    public $cms_folder = '';
 
     /**
      * Array of folders to clear via cache_kill
@@ -118,11 +118,7 @@ class model_app extends _uho_model
      * search url variable
      */
     var $url_search = '';
-    /**
-     * allow schema edit
-     * 
-     */
-    var $serdelia_schema_editor = false;
+
     /**
      * Init function
      * @return null
@@ -187,8 +183,6 @@ class model_app extends _uho_model
                 $this->app_structure = $this->convertAppStructure($structureJson);
             }
 
-            // Ensure placeholder entry exists
-            $this->app_structure['models']['serdelia_models'] = ['serdelia_models_fields' => []];
         }
 
         // --- Optional image conversion engine config ---
@@ -358,7 +352,7 @@ class model_app extends _uho_model
             $langs[$k] = [
                 'lang' => $v,
                 'lang_add' => '_' . strtoupper($v),
-                'active' => @$_COOKIE['serdelia_editlang_' . $v]
+                'active' => @$_COOKIE['uho_cms_editlang_' . $v]
             ];
             if ($langs[$k]['active'])
                 $one_active = true;
@@ -765,7 +759,8 @@ class model_app extends _uho_model
 
             foreach ($schema['fields'] as $k => $v) {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['langs'] as $k2 => $v2) {
+                    foreach ($schema['langs'] as $k2 => $v2)
+        {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
@@ -1309,12 +1304,13 @@ class model_app extends _uho_model
 
 
                 // help ---------------------------------------------
-                if ($v['help']) {
-                    $c = 'serdelia_edit_help_' . $schema['model_name'] . '_' . $v['cms_field'];
+                if (!empty($v['cms']['help']))
+                {
+                    $c = 'uho_cms_edit_help_' . $schema['model_name'] . '_' . $v['cms_field'];
                     $hidden = (@$_COOKIE[$c] == 1);
-                    if (!is_array($v['help']))
-                        $schema['fields'][$k]['help'] = ['text' => $v['help']];
-                    $schema['fields'][$k]['help']['hidden'] = $hidden;
+                    if (!is_array($v['cms']['help']))
+                        $schema['fields'][$k]['cms']['help'] = ['text' => $v['cms']['help']];
+                    $schema['fields'][$k]['cms']['help']['hidden'] = $hidden;
                 }
                 //if ($schema['fields'][$k]['edit'] === false)
                 //    $schema['fields'][$k]['disabled'] = true;
@@ -1711,15 +1707,17 @@ class model_app extends _uho_model
 
         if ($this->cache_folders) {
             
-            foreach ($this->cache_folders as $k => $v) {
-                if (substr($v, 0, 4) == 'http')
+            foreach ($this->cache_folders as $k => $v)
+            {
+                // url based
+                if (!empty($v['url']))
                 {
-                    $file_contents = _uho_fx::fileCurl($v);
+                    $file_contents = _uho_fx::fileCurl($v['url']);
                     if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                     else $r = null;
 
                     if (!$r || !$r['result']) {
-                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v),
+                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v['url']),
                             [
                                 'follow_location'=>true,
                                 'header' => [
@@ -1734,8 +1732,9 @@ class model_app extends _uho_model
                         }
                         else $r = null;
                     }
-                    if (!$r || !$r['result']) {
-                        $file_contents = file_get_contents($v, false, stream_context_create($arrContextOptions));
+                    if (!$r || !$r['result'])
+                    {
+                        $file_contents = file_get_contents($v['url'], false, stream_context_create($arrContextOptions));
                         if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                         else $r = null;
                     }
@@ -1743,8 +1742,10 @@ class model_app extends _uho_model
                     if (!$r || !$r['result'])
                         exit('Error perfoming cache clean at: ' . $v);
                         else $i++;
-                } else                
-                    $this->sql->cacheKill($v, ['cache', 'sql']);
+                } elseif (!empty($v['folder']) && !empty($v['extensions']))
+                {
+                    $this->sql->cacheKill($v['folder'], $v['extensions']);
+                }
             }
         }
 
@@ -2857,14 +2858,6 @@ class model_app extends _uho_model
         $this->tempKill('serdelia/temp/upload/thumbnail', ['jpg', 'png', 'gif', 'jpeg']);
     }
 
-    /**
-     * Sets internal flag for whether current user is a schema editor.
-     */
-    public function setSerdeliaSchemaEditor(): void
-    {
-        $user = $this->getUser();
-        $this->serdelia_schema_editor = !empty($user['edit_all']);
-    }
 
     /**
      * Checks if the current user has admin privileges.
@@ -3052,36 +3045,36 @@ class model_app extends _uho_model
 
     public function checkLogoutTime()
     {
-        if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return true;
-        $time = intval((time() - $_SESSION['serdelia_login_time']) / 60);
+        if (empty($this->logoutTime) || empty($_SESSION['uho_cms_login_time'])) return true;
+        $time = intval((time() - $_SESSION['uho_cms_login_time']) / 60);
         if ($time < $this->logoutTime) return true;
         else {
-            $_SESSION['serdelia_login_time'] = null;
+            $_SESSION['uho_cms_login_time'] = null;
             return false;
         }
     }
 
     public function checkActivityTime()
     {
-        if (empty($this->activityTime) || empty($_SESSION['serdelia_activity_time'])) {
-            $_SESSION['serdelia_activity_time'] = time();
+        if (empty($this->activityTime) || empty($_SESSION['uho_cms_activity_time'])) {
+            $_SESSION['uho_cms_activity_time'] = time();
             return true;
         }
 
-        $time = (time() - $_SESSION['serdelia_activity_time']) / 60;
+        $time = (time() - $_SESSION['uho_cms_activity_time']) / 60;
         if ($time < $this->activityTime) {
-            $_SESSION['serdelia_activity_time'] = time();
+            $_SESSION['uho_cms_activity_time'] = time();
             return true;
         } else {
-            $_SESSION['serdelia_activity_time'] = null;
+            $_SESSION['uho_cms_activity_time'] = null;
             return false;
         }
     }
 
     public function getLeftLogoutTime($max_time_min)
     {
-        if (empty($this->logoutTime) || empty($_SESSION['serdelia_login_time'])) return null;
-        $time_passed_seconds = intval((time() - $_SESSION['serdelia_login_time']));
+        if (empty($this->logoutTime) || empty($_SESSION['uho_cms_login_time'])) return null;
+        $time_passed_seconds = intval((time() - $_SESSION['uho_cms_login_time']));
         $time_passed_min = 1 + intval($time_passed_seconds / 60);
         if ($time_passed_min < $max_time_min) return $max_time_min - $time_passed_min;
         else return 0;
