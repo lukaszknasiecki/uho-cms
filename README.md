@@ -1,7 +1,7 @@
 # UHO-CMS Quick Reference
 
 Quick reference guide for common uho-cms configuration tasks.
-Please, read full documentation in `DOCS.md` file of this repository.
+Please, read full documentation in `/docs` folder.
 
 ## Setup Checklist
 

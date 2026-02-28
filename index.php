@@ -20,8 +20,6 @@ class cms_sunship
         */
 
         $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/uho-cms.json';
-        if (!file_exists($cfg_src))
-            $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
 
         if (file_exists($cfg_src)) {
             $cfg = file_get_contents($cfg_src);
