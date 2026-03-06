@@ -134,7 +134,6 @@ class model_app extends _uho_model
     public function init(): void
     {
 
-
         // --- Set error logging for SQL ---
         if (isset($this->sql)) {
             $this->sql->setErrorFolder(folder_logs);
@@ -182,7 +181,6 @@ class model_app extends _uho_model
             if ($structureJson) {
                 $this->app_structure = $this->convertAppStructure($structureJson);
             }
-
         }
 
         // --- Optional image conversion engine config ---
@@ -759,8 +757,7 @@ class model_app extends _uho_model
 
             foreach ($schema['fields'] as $k => $v) {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['langs'] as $k2 => $v2)
-        {
+                    foreach ($schema['langs'] as $k2 => $v2) {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
@@ -986,37 +983,37 @@ class model_app extends _uho_model
                         break;
 
                     case "file":
-                        $src = isset($record[$v['field']]['src']) ? $record[$v['field']]['src'] : '';                        
+                        $src = isset($record[$v['field']]['src']) ? $record[$v['field']]['src'] : '';
                         $src = explode('?', $src)[0];
                         $ext = array_pop(explode('.', $src));
-                        if ($ext)
-                        {
+                        if ($ext) {
                             $record[$v['field']]['extension'] = $ext;
-                            if (!empty($v['cms']['metadata']))
-                            {
+                            if (!empty($v['cms']['metadata'])) {
                                 $metadata = [];
                                 foreach ($v['cms']['metadata'] as $metadata_type)
                                     switch ($metadata_type) {
-                                        case "date_modified":                                            
+                                        case "date_modified":
                                             $mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $src);
-                                            if ($mtime) $metadata[$metadata_type]=['label'=>'Modified','value'=>date("Y-m-d H:i:s",$mtime)];
+                                            if ($mtime) $metadata[$metadata_type] = ['label' => 'Modified', 'value' => date("Y-m-d H:i:s", $mtime)];
                                             break;
-                                        case "duration":                                            
+                                        case "duration":
                                             $duration = $this->file_duration($_SERVER['DOCUMENT_ROOT'] . $src);
                                             if ($duration)
-                                                $metadata[$metadata_type]=[
-                                                'label'=>'Duration',
-                                                'value'=>_uho_fx::dozeruj(
-                                                    intval($duration/(60*60)),2).':'
-                                                    ._uho_fx::dozeruj(intval($duration/60)%60,2).':'
-                                                    ._uho_fx::dozeruj(intval($duration)%60,2).' ('.$duration.'s)'
-                                            ];
+                                                $metadata[$metadata_type] = [
+                                                    'label' => 'Duration',
+                                                    'value' => _uho_fx::dozeruj(
+                                                        intval($duration / (60 * 60)),
+                                                        2
+                                                    ) . ':'
+                                                        . _uho_fx::dozeruj(intval($duration / 60) % 60, 2) . ':'
+                                                        . _uho_fx::dozeruj(intval($duration) % 60, 2) . ' (' . $duration . 's)'
+                                                ];
                                             break;
                                     }
-                                $record[$v['field']]['metadata']=$metadata;
+                                $record[$v['field']]['metadata'] = $metadata;
                             }
                         }
-                        
+
                         break;
 
                     case "elements_double":
@@ -1304,8 +1301,7 @@ class model_app extends _uho_model
 
 
                 // help ---------------------------------------------
-                if (!empty($v['cms']['help']))
-                {
+                if (!empty($v['cms']['help'])) {
                     $c = 'uho_cms_edit_help_' . $schema['model_name'] . '_' . $v['cms_field'];
                     $hidden = (@$_COOKIE[$c] == 1);
                     if (!is_array($v['cms']['help']))
@@ -1500,8 +1496,7 @@ class model_app extends _uho_model
         }
 
         foreach ($array as $k => $v)
-            if ($v)
-            {
+            if ($v) {
                 $null = false;
 
                 if ($params['numbers'])
@@ -1703,37 +1698,33 @@ class model_app extends _uho_model
             ),
         );
 
-        $i=0;
+        $i = 0;
 
         if ($this->cache_folders) {
-            
-            foreach ($this->cache_folders as $k => $v)
-            {
+
+            foreach ($this->cache_folders as $k => $v) {
                 // url based
-                if (!empty($v['url']))
-                {
+                if (!empty($v['url'])) {
                     $file_contents = _uho_fx::fileCurl($v['url']);
                     if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                     else $r = null;
 
                     if (!$r || !$r['result']) {
-                        $file_contents = _uho_fx::fileCurl(str_replace('https', 'http', $v['url']),
+                        $file_contents = _uho_fx::fileCurl(
+                            str_replace('https', 'http', $v['url']),
                             [
-                                'follow_location'=>true,
+                                'follow_location' => true,
                                 'header' => [
                                     "Accept: */*",
                                     "User-Agent: Mozilla/5.0 (compatible; PHP-cURL)"
                                 ]
                             ]
-                            );
-                        if (is_string($file_contents))
-                        {
-                            $r = @json_decode($file_contents, true);                            
-                        }
-                        else $r = null;
+                        );
+                        if (is_string($file_contents)) {
+                            $r = @json_decode($file_contents, true);
+                        } else $r = null;
                     }
-                    if (!$r || !$r['result'])
-                    {
+                    if (!$r || !$r['result']) {
                         $file_contents = file_get_contents($v['url'], false, stream_context_create($arrContextOptions));
                         if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                         else $r = null;
@@ -1741,9 +1732,8 @@ class model_app extends _uho_model
 
                     if (!$r || !$r['result'])
                         exit('Error perfoming cache clean at: ' . $v);
-                        else $i++;
-                } elseif (!empty($v['folder']) && !empty($v['extensions']))
-                {
+                    else $i++;
+                } elseif (!empty($v['folder']) && !empty($v['extensions'])) {
                     $this->sql->cacheKill($v['folder'], $v['extensions']);
                 }
             }
@@ -1818,11 +1808,10 @@ class model_app extends _uho_model
 
     private function file_duration($filename)
     {
-        if ($filename)
-        {
-            $data=$this->ffprobe('-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'.$filename.'"');
-            if (is_numeric($data)) return 1*$data; 
-        }        
+        if ($filename) {
+            $data = $this->ffprobe('-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "' . $filename . '"');
+            if (is_numeric($data)) return 1 * $data;
+        }
     }
 
     public function ffprobe($cmd)
@@ -1832,7 +1821,7 @@ class model_app extends _uho_model
         else
             $ffprobe = 'ffprobe';
 
-        $cmd=$ffprobe . ' ' . $cmd.' 2>&1';
+        $cmd = $ffprobe . ' ' . $cmd . ' 2>&1';
         //exec($cmd, $output, $retval);
         //echo "Returned with status $retval and output:\n";
         //print_r($output);
@@ -2962,49 +2951,6 @@ class model_app extends _uho_model
         $response = $this->apporm->validateSchema($schema, true);
         if (!empty($response['errors'])) $this->halt($response['errors']);
 
-        /*
-        if (empty($schema['table'])) $this->halt('No table defined for model: ' . $name);
-        if (empty($schema['fields'])) $this->halt('No fields array defined for model: ' . $name);
-
-        $types = [
-            'string',
-            'text',
-            'order',
-            'boolean',
-            'date',
-            'datetime',
-            'integer',
-            'float',
-            'image',
-            'select',
-            'uid',
-            'html',
-            'elements',
-            'checkboxes',
-            'json',
-            'file',
-            'table',
-            'media',
-            'plugin',
-            'video',
-            'blocks'
-        ];
-
-        foreach ($schema['fields'] as $k => $v) {
-            $type = isset($v['type']) ? $v['type'] : "string";
-            $field = isset($v['field']) ? $v['field'] : null;
-
-            if (!in_array($type, $types)) $this->halt('Unknown type for item# ' . ($k + 1) . ': ' . $type);
-            if ($type != 'plugin' && !$field) $this->halt('No field specified for item# ' . ($k + 1));
-
-            switch ($type) {
-                case "image":
-                    if (empty($v['settings']['folder'])) $this->halt('No image.settings.folder specified for: ' . $field);
-                    if (empty($v['images']) || !is_array($v['images'])) $this->halt('No .images array for image type field: ' . $field);
-
-                    break;
-            }
-        }*/
     }
 
     /*
@@ -3034,56 +2980,81 @@ class model_app extends _uho_model
         }
     }
 
-    public function setLogoutTime($time)
+    public function setLogoutTime($activity_minutes, $total_minutes)
     {
-        $this->logoutTime = $time;
+
+        if (!$activity_minutes) $activity_minutes = 60*24;
+        if (!$total_minutes) $total_minutes = 60*24;
+
+        setcookie('uho_cms_logout_time_login', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_time_activity', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+
+        setcookie('uho_cms_logout_max_activity', $activity_minutes * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_max_logout_time', $total_minutes * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
     }
-    public function setActivityTime($time)
+
+    public function setActivityTime()
     {
-        $this->activityTime = $time;
+        setcookie('uho_cms_logout_time_activity', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
     }
 
     public function checkLogoutTime()
     {
-        if (empty($this->logoutTime) || empty($_SESSION['uho_cms_login_time'])) return true;
-        $time = intval((time() - $_SESSION['uho_cms_login_time']) / 60);
-        if ($time < $this->logoutTime) return true;
-        else {
-            $_SESSION['uho_cms_login_time'] = null;
-            return false;
+        return true;
+        if (empty($_COOKIE['uho_cms_logout_max_logout_time'])) return true;
+        return (time() < $_COOKIE['uho_cms_logout_max_logout_time']);
+    }
+
+    public function getTimeFromLogin($type = null)
+    {
+        $initial = $_COOKIE['uho_cms_logout_time_login'] ?? null;
+        if ($initial) {
+            $r = time() - $initial;
+            if ($type == 'string')
+                return gmdate("H:i:s", $r);
+            else
+                return $r;
         }
     }
+
+    public function getTimeSessionToLogout($type = null)
+    {
+        $end = $_COOKIE['uho_cms_logout_time_login'] + $_COOKIE['uho_cms_logout_max_logout_time'];
+        $r = $end - time();
+        if ($type == 'string') {
+            return gmdate("H:i:s", $r);
+        } else return $r;
+    }
+
+    public function getTimeMaxSession($type = null)
+    {
+        $r = $_COOKIE['uho_cms_logout_max_logout_time'];
+        if ($type == 'string') {
+            return round($r/60).' min.';
+        } else return $r;
+    }
+
+    public function getTimeMaxNonActivity($type = null)
+    {
+        $r = $_COOKIE['uho_cms_logout_max_activity'];
+        if ($type == 'string') {
+            return round($r/60).' min.';
+        } else return $r;
+    }
+
+    
+
+    public function getTimeActivityToLogout($type = null)
+    {
+        $end = $_COOKIE['uho_cms_logout_time_activity'] + $_COOKIE['uho_cms_logout_max_activity'];
+        return $end - time();
+    }
+
 
     public function checkActivityTime()
     {
-        if (empty($this->activityTime) || empty($_SESSION['uho_cms_activity_time'])) {
-            $_SESSION['uho_cms_activity_time'] = time();
-            return true;
-        }
-
-        $time = (time() - $_SESSION['uho_cms_activity_time']) / 60;
-        if ($time < $this->activityTime) {
-            $_SESSION['uho_cms_activity_time'] = time();
-            return true;
-        } else {
-            $_SESSION['uho_cms_activity_time'] = null;
-            return false;
-        }
-    }
-
-    public function getLeftLogoutTime($max_time_min)
-    {
-        if (empty($this->logoutTime) || empty($_SESSION['uho_cms_login_time'])) return null;
-        $time_passed_seconds = intval((time() - $_SESSION['uho_cms_login_time']));
-        $time_passed_min = 1 + intval($time_passed_seconds / 60);
-        if ($time_passed_min < $max_time_min) return $max_time_min - $time_passed_min;
-        else return 0;
-    }
-
-
-    public function getLogoutTime()
-    {
-        return $this->logoutTime;
+        $end = $_COOKIE['uho_cms_logout_time_activity'] + $_COOKIE['uho_cms_logout_max_activity'];
+        return (time() < $end);
     }
 
     public function getSchemaDepreceated($schema)

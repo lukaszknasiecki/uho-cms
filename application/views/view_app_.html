@@ -7,14 +7,6 @@
   {% include 'scaffold/bootstrap.html' %}
   {% include 'scaffold/css.html' %}
 
-  {% if scaffold.logout_expired %}
-  <script>
-    setTimeout(function () {
-      alert('{% if lang=='pl' %}Niedługo zostaniesz wylogowany{% else %}You will be logged out soon{% endif %}');
-    }, {{ scaffold.logout_expired * 1000 * 60 }});
-  </script>
-  {% endif %}
-
 </head>
 
 <body class="no-menu theme-{{scaffold.mode}}" data-base-path="{{url_base}}">

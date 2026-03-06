@@ -17,6 +17,9 @@ class model_app_settings extends model_app
 	 */
 	public function getContentData($params = null): array
 	{
+
+        $this->setActivityTime();
+
 		$action = '';
 		$text = '';
 		$errors = [];
@@ -109,17 +112,12 @@ class model_app_settings extends model_app
 			: [];
 
 
-		$time = time() - $_SESSION['uho_cms_login_time'];
+		$time = $this->getTimeFromLogin('string');
+		$logout = $this->getTimeSessionToLogout('string');
 
-		if ($time > 60) $time = intval($time / 60) . ' min.';
-		else $time = $time . ' s.';
-
-		$logout = $this->getLogoutTime();
-		if ($logout && $logout / 60 == intval($logout / 60)) $logout = intval($logout / 60) . 'H';
-		elseif ($logout) $logout = $logout . ' min.';
-
-		$info = $translations[$this->lang]['time_from_login'] . ': ' . $time;
-		if ($logout) $info .= ' (max=' . $logout . ')';
+		$info=[];
+		$info []=  '<b>'.$translations[$this->lang]['time_from_login'] . ': ' . $time.', '.$translations[$this->lang]['time_left'] . ': ' . $logout.'</b>';
+		$info []=  $translations[$this->lang]['time_max_session'] . ': ' . $this->getTimeMaxSession('string').', '.$translations[$this->lang]['time_max_nonactivity'] . ': ' . $this->getTimeMaxNonActivity('string');
 
 		return [
 			'action' => $action,

@@ -70,7 +70,10 @@ $cfg = [
                 'domain' => 'nature.ode.lh',
                 'url' => 'https://nature.ode.lh/api/cache_kill',
             ]
-        ]
+        ],
+
+        'uho_cms_logout_time' => 120,           // max CMS session in minutes, default is 60, 0 to set max time of 24H
+		'uho_cms_activity_time' => 30           // max CMS non-activity time in minutes, default is 15, 0 to set max time of 24H
     ],
     'plugins' => [
         'PHP'           => getEnv("PHP"),      // PHP executable path

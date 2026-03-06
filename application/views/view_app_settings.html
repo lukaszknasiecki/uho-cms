@@ -9,7 +9,7 @@
         <div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
                 <div class="container serdelia-page">
                         {% if info %}
-                                <p>{{info}}</p>
+                                <p>{{info|join('<br>')|raw}}</p>
                         {% endif %}
                         <div class="card-columns" style="margin-top:10px">
 

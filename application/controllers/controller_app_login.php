@@ -18,6 +18,7 @@ class controller_app_login extends controller_app
      */
     public function getContentData()
     {
+    
         // Attempt to retrieve login result from the model using POST data
         $data = [
             'view'    => 'login',
@@ -26,6 +27,10 @@ class controller_app_login extends controller_app
 
         // If login was successful, redirect to the homepage
         if (!empty($data['content']['logged'])) {
+            $this->model->setLogoutTime(
+                $this->cfg['cms']['uho_cms_activity_time'],
+                $this->cfg['cms']['uho_cms_logout_time']
+            );
             $this->route->redirect('');
         }
 

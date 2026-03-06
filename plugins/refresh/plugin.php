@@ -91,10 +91,10 @@ class serdelia_plugin_refresh
                 foreach ($f as $k => $v)
                     if ($v['type'] == 'field') $fields_mod[] = $v['field'];
                     else if ($v['type'] == 'plugin')
-                        $plugins_mod[] = $this->params['url_serdelia'] . '/plugin-edit/' . $this->params['page_with_params'] . '/%id%/' . $v['plugin'] . '?params=' . urlencode(json_encode($v['params']));
-
+                        $plugins_mod[] = $this->params['url_cms_home'] . 'plugin-edit/' . $this->params['page_with_params'] . '/%id%/' . $v['plugin'] . '?params=' . urlencode(json_encode($v['params']));
+                
                 if ($fields_mod) {
-                    $ajax = $this->params['url_serdelia'] . '/write/' . $this->params['page_with_params'] . '/';
+                    $ajax = $this->params['url_cms_home'] . 'write/' . $this->params['page_with_params'] . '/';
                 }
 
                 $ids = $this->cms->get($this->params['page'], $filters, null, null, $limit, ['additionalParams' => $this->params['params']]);

@@ -33,6 +33,9 @@ class model_app_page extends model_app
 	 */
 	public function getContentData($params = null)
 	{
+
+        $this->setActivityTime();
+
 		// Extract page info and GET parameters
 		$page = explode('/', $params['url']);
 		$get = $params['get'];
@@ -99,7 +102,6 @@ class model_app_page extends model_app
 
 		// Filter and transform schema
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
-
 
 		$buttons = $this->getSchemaButtons($schema, $params);
 		$schema['fields'] = $this->updateSchemaLanguages($schema);

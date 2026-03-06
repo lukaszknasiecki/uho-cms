@@ -31,6 +31,9 @@
     "php_ini": "PHP settings",
     "no_access": "You are not authorized to perform this action",
     "no_reports": "No reports found",
-    "time_from_login":"Time since login"
+    "time_from_login":"Time since login",
+    "time_left":"Session time left",
+    "time_max_session":"Max session time",
+    "time_max_nonactivity":"Max non-activity time"
   }
 }

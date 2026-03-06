@@ -28,6 +28,7 @@ class model_app_edit extends model_app
 	public function getContentData($params = null)
 	{
 
+        $this->setActivityTime();
 		$this->translate = json_decode(file_get_contents(__DIR__ . '/model_app_edit.json'), true);
 
 		$translate = $this->getTranslateByLang($this->lang);
@@ -317,15 +318,15 @@ class model_app_edit extends model_app
 			// Bind plugin metadata
 			if ($v['type'] === 'plugin') {
 				$plugin = null;
-				if (!empty($v['settings']['plugin'])) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'plugin', $v['settings']['plugin']);
-				} elseif (!empty($v['settings']['page'])) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'page', $v['settings']['page']);
+				if (!empty($v['cms']['plugin'])) {
+					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'plugin', $v['cms']['plugin']);
+				} elseif (!empty($v['cms']['page'])) {
+					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'page', $v['cms']['page']);
 				}
 
 				if ($plugin) {
 					$plugin = array_values($plugin);
-					$nr = ($v['plugin_nr'] ?? 1) - 1;
+					$nr = ($v['cms']['plugin_nr'] ?? 1) - 1;
 					$plugin = $plugin[$nr];
 
 					$schema['fields'][$k]['url'] = $plugin['url'];

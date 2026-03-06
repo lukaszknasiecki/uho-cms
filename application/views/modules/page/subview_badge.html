@@ -1,7 +1,7 @@
 {% apply spaceless %}
 {% if list.values %}
     {% if list.values[value] %}
-    <span class='badge badge-{% if value %}{% if list.colors[1] %}{{list.colors[1]}}{% elseif list.colors[value] %}{{list.colors[value]}} %}{% else %}success{% endif %}{% else %}{% if list.colors[0] %}{{list.colors[0]}}{% else %}secondary{% endif %}{% endif %}'>{{ list.values[value] }}</span>
+    <span class='badge badge-{% if value %}{% if list.colors[value] %}{{list.colors[value]}}{% elseif list.colors[1] %}{{list.colors[1]}}{% else %}success{% endif %}{% else %}{% if list.colors[0] %}{{list.colors[0]}}{% else %}secondary{% endif %}{% endif %}'>{{ list.values[value] }}</span>
     {% endif %}
 {% else %}
 {% if list.label %}<small>{{list.label}}</small>&nbsp;{% endif %}<span class='badge badge-{{list.color}}'>{{value}}</span>

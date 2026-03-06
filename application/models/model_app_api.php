@@ -35,6 +35,8 @@ class model_app_api extends model_app
             case "s3":
             case "uploader":
             case "cors_copy":
+            case "timer":
+
                 require_once("api/model_app_api_" . $action . ".php");
                 $className = 'model_app_api_' . $action;
                 $handler = new $className($this, []);
