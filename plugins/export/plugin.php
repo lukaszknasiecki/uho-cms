@@ -37,7 +37,7 @@ class serdelia_plugin_export
         $fields = $schema['fields'];
         $submitted = [];
         foreach ($fields as $k => $v)
-            if (in_array($v['type'], ['string', 'boolean','date','integer','datetime','text','media'])) {
+            if (in_array($v['type'], ['string', 'boolean', 'date', 'integer', 'datetime', 'text', 'media','select'])) {
                 if ($_POST['f_' . $v['field']])
                     $submitted[] = $v['field'];
             } else unset($fields[$k]);
@@ -45,26 +45,26 @@ class serdelia_plugin_export
         if ($_POST && !$submitted)
             $errors[] = 'nothing_checked';
 
-        if (!empty($_SESSION['page_filters'][$this->params['page']])) $filters=$_SESSION['page_filters'][$this->params['page']];
-            else $filters=[];
+        if (!empty($_SESSION['page_filters'][$this->params['page']])) $filters = $_SESSION['page_filters'][$this->params['page']];
+        else $filters = [];
 
-        if (!$submitted)
-        {
-            $count = $this->cms->get($this->params['page'],$filters,false,null,null,['count'=>true]);
-        }
-        elseif ($submitted) {
-            $data = $this->cms->get($this->params['page'],$filters);
-            $count=count($data);
-            
-            if ($data)
-            {
-                    
-                foreach ($data as $k=>$v)
-                foreach ($v as $kk=>$vv)
-                if (empty($_POST['f_'.$kk]))
-                    unset($data[$k][$kk]);
+        if (!$submitted) {
+            $count = $this->cms->get($this->params['page'], $filters, false, null, null, ['count' => true]);
+        } elseif ($submitted) {
+            $data = $this->cms->get($this->params['page'], $filters);
+            $count = count($data);
 
-                $path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->params['serdelia_path']);
+            if ($data) {
+
+
+                foreach ($data as $k => $v)
+                    foreach ($v as $kk => $vv)
+                        if (empty($_POST['f_' . $kk]))
+                            unset($data[$k][$kk]);
+
+                if (!empty($this->params['serdelia_path']))
+                    $path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->params['serdelia_path']);
+
                 $f = '/temp/' . uniqid() . '.csv';
                 $exported =  count($data);
                 $download = [
@@ -72,23 +72,19 @@ class serdelia_plugin_export
                     'filename' => $this->params['page'] . '-' . date('Y-m-d-H:i:s') . '.csv'
                 ];
 
-                $dest=$this->params['serdelia_path'] . $f;
-                
+                $dest = $this->params['serdelia_path'] . $f;
+
                 $f = fopen($dest, 'w');
-                
 
                 header("Content-type: text/csv");
-header("Cache-Control: no-store, no-cache");
-header('Content-Disposition: attachment; filename="data.csv"');
+                header("Cache-Control: no-store, no-cache");
+                header('Content-Disposition: attachment; filename="data.csv"');
                 $f = fopen('php://output', 'w');
-                
-                if (!$f)
-                {
-                    $errors[]='Cannot write to: '.$dest;
-                    $exported=0;
-                }
-                else
-                {
+
+                if (!$f) {
+                    $errors[] = 'Cannot write to: ' . $dest;
+                    $exported = 0;
+                } else {
                     // header
                     $header = [];
                     foreach ($data[0] as $k => $v)
@@ -96,49 +92,47 @@ header('Content-Disposition: attachment; filename="data.csv"');
                     fputcsv($f, $header);
                     $http = 'https://' . $_SERVER['HTTP_HOST'];
 
-                foreach ($data as $fields) {
-                    foreach ($fields as $k => $v) {
-                        $field = _uho_fx::array_filter($schema['fields'], 'field', $k, ['first' => true]);
-                        if ($field && $field['type']) {
-                            switch ($field['type']) {
-                                case "select":
-                                    if (is_array($v))
-                                    {
-                                        if (isset($v['label'])) $v=$v['label'];
-                                            else $v=array_shift($v);
-                                    }
-                                    
-                                    break;
-                                case "media":
-                                    $val = [];
-                                    foreach ($v as $k2 => $v2) {
-                                        switch ($v2['type']) {
-                                            case "file":
-                                                $val[] = $http . $v2['file']['src'];
-                                                break;
+                    foreach ($data as $fields) {
+                        foreach ($fields as $k => $v) {
+                            $field = _uho_fx::array_filter($schema['fields'], 'field', $k, ['first' => true]);
+                            if ($field && $field['type']) {
+                                switch ($field['type']) {
+                                    case "select":
+                                        if (is_array($v)) {
+                                            if (isset($v['label'])) $v = $v['label'];
+                                            else $v = array_shift($v);
                                         }
-                                    }
-                                    $v = implode(chr(13).chr(10), $val);
-                                    break;
+
+                                        break;
+                                    case "media":
+                                        $val = [];
+                                        foreach ($v as $k2 => $v2) {
+                                            switch ($v2['type']) {
+                                                case "file":
+                                                    $val[] = $http . $v2['file']['src'];
+                                                    break;
+                                            }
+                                        }
+                                        $v = implode(chr(13) . chr(10), $val);
+                                        break;
+                                }
+                                $fields[$k] = $v;
                             }
-                            $fields[$k] = $v;
                         }
+
+                        fputcsv($f, $fields);
                     }
-                    
-                    fputcsv($f, $fields);
-                }
 
 
-                fclose($f);
-                exit();
+                    fclose($f);
+                    exit();
                 }
             } else $errors[] = 'no_data';
         }
 
 
-        $data = ['result' => true, 'count'=>$count,'fields' => $fields, 'errors' => $errors, 'exported' => $exported, 'download' => $download];
+        $data = ['result' => true, 'count' => $count, 'fields' => $fields, 'errors' => $errors, 'exported' => $exported, 'download' => $download];
 
         return $data;
     }
-
 }
