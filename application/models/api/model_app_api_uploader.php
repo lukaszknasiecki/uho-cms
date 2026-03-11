@@ -44,6 +44,7 @@ class model_app_api_uploader
 
         $isCKEditor = isset($params['type']) && $params['type'] === 'ckeditor5';
         $isBinary = isset($params['type']) && $params['type'] === 'binary';
+        $isEditorJs = isset($params['type']) && $params['type'] === 'editorjs';
         $isEditorJsCarousel = isset($params['type']) && $params['type'] === 'carousel_editorjs';
 
         require_once(__DIR__ . '/../../library/uploader/UploadHandler.php');
@@ -87,9 +88,10 @@ class model_app_api_uploader
         }
 
         // Handle binary upload
-        if ($isBinary || $isEditorJsCarousel) {
-            //if ($isEditorJsCarousel) $field='image'; else 
-            $field='upload';
+        if ($isBinary || $isEditorJsCarousel || $isEditorJs) {
+
+            if ($isEditorJs) $field='image'; else 
+                $field='upload';
 
             $filename = $_FILES[$field]['name'] ?? '';
             $filename = preg_replace('/[^a-zA-Z0-9._-]/', '', $filename); // Sanitize
@@ -128,7 +130,7 @@ class model_app_api_uploader
                 $message = "Error moving file from ".$source_filename.' to '.$uploadDir . $filename;
             }
 
-            if ($isEditorJsCarousel)
+            if ($isEditorJs || $isEditorJsCarousel)
                 $result=[
                      'success' => $result,
                      'message'=>$message,

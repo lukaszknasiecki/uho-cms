@@ -387,14 +387,25 @@ class model_app_write extends model_app
 
 				case "blocks":
 
-					if (!empty($v['settings']['media'])) {
-						$r = $this->blocksMediaUpdate($data[$v['field']], $schema['model_name'], $v['settings']['media'], $v);
+					$json=json_decode($data[$v['field']], true);
 
-						$data[$v['field']] = $r['json'];
-						$additional_post = array_merge($additional_post, $r['post']);
-						$additional_put = array_merge($additional_put, $r['put']);
-						$additional_delete = array_merge($additional_delete, $r['delete']);
+					if ($json)
+					{
+						if (!empty($v['settings']['media']))
+						{
+							$r = $this->blocksMediaUpdate($json, $schema['model_name'], $v['settings']['media'], $v);
+							$data[$v['field']] = $r['json'];
+							$additional_post = array_merge($additional_post, $r['post']);
+							$additional_put = array_merge($additional_put, $r['put']);
+							$additional_delete = array_merge($additional_delete, $r['delete']);
+						} 
 					}
+					else
+					{
+						// avoid invalid json
+						unset($data[$v['field']]);
+					}
+
 
 					break;
 
@@ -2045,23 +2056,34 @@ class model_app_write extends model_app
 					IMAGE BLOCK
 				*/
 				case "image":
+
 					$img = $block['data']['file']['url'] ?? null;
+					$dir=explode('/', $img)[1];
 					
-					if (substr($img, 0, 5) == 'data:') {
-						// base64 --> is new, let's upload
+					$base64=substr($img, 0, 5) == 'data:';
+					$tempdir=('/'.$dir==$this->temp_path);
+					
+					if ($base64 || $tempdir) {
+						
 						$uid = uniqid();
 						$image_type = 'image';
+
+						if ($base64) $params=['source_base64' => $img];
+						else $params=['source' => $img];
 
 						$upload_result = $this->imageUpload(
 								$image_field,
 								['uid' => $uid],
 								$uid,
 								false,
-								['source_base64' => $img],
+								$params,
 								$image_type
 							);
 
-						if (!empty($upload_result['result'])) {
+						if (
+							!empty($upload_result['result'])
+							&& !empty($upload_result['images'][0])
+						) {
 							$existing_uids[]= $uid;
 							$json['blocks'][$k]['data']['file']['url'] = $upload_result['images'][0];
 							$new_media[] = [

@@ -69,6 +69,13 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
       image: {
         class: ImageTool,
         config: {
+          endpoints: {
+            byFile: document.body.dataset.basePath + "/api/uploader?type=editorjs", // upload file to server
+            //byUrl: '/api/fetchImage',   // optional: fetch by URL
+          }
+        },
+        /* base64 image - discarded because of size limitations, but left here for reference
+        config: {
           uploader: {
             uploadByUrl(url) {
               return Promise.resolve({ success: 1, file: { url } });
@@ -81,7 +88,7 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
               });
             },
           },
-        },
+        },*/
       },
     },
     placeholder: 'Start writing…',
