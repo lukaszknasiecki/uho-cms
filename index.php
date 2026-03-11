@@ -4,9 +4,20 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Huncwot\UhoFramework\_uho_application;
 use Huncwot\UhoFramework\_uho_fx;
+use Huncwot\UhoFramework\_uho_load_env;
 
 class cms_sunship
 {
+
+    public function loadEnvs($folder)
+    {
+        if (file_exists($folder . '/.env'))
+        {            
+            $env_loader = new _uho_load_env($folder . '/.env');
+            $env_loader->load();
+        }
+        
+    }
 
     private function getAvailableProjects()
     {
@@ -167,6 +178,7 @@ class cms_sunship
                 {
                     $cfg_project = $cfg_root['projects'][$project];
                     $cfg_folder = $_SERVER['DOCUMENT_ROOT'] . '/' . $cfg_root['projects'][$project]['folder'];
+                    $this->loadEnvs($cfg_folder);
                     $cfg_file = [
                         'main' => $cfg_folder,
                         'pre' => [__DIR__ . '/configs']

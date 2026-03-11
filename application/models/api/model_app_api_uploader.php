@@ -44,6 +44,7 @@ class model_app_api_uploader
 
         $isCKEditor = isset($params['type']) && $params['type'] === 'ckeditor5';
         $isBinary = isset($params['type']) && $params['type'] === 'binary';
+        $isEditorJsCarousel = isset($params['type']) && $params['type'] === 'carousel_editorjs';
 
         require_once(__DIR__ . '/../../library/uploader/UploadHandler.php');
 
@@ -86,27 +87,60 @@ class model_app_api_uploader
         }
 
         // Handle binary upload
-        if ($isBinary) {
+        if ($isBinary || $isEditorJsCarousel) {
+            //if ($isEditorJsCarousel) $field='image'; else 
+            $field='upload';
 
-            $filename = $_FILES['upload']['name'] ?? '';
+            $filename = $_FILES[$field]['name'] ?? '';
             $filename = preg_replace('/[^a-zA-Z0-9._-]/', '', $filename); // Sanitize
             
-            $source_filename = $_FILES['upload']['tmp_name'] ?? '';
+            $source_filename = $_FILES[$field]['tmp_name'] ?? '';            
             $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             $filename=uniqid().'.'.$extension;
+
+            $message='';
+            $url='';
             
-            // Whitelist allowed extensions            
-            if (!in_array($extension, $allowedExtensions)) {
-                return ['result' => false, 'message' => "File type not allowed"];
+            if (!file_exists($source_filename) || filesize($source_filename) === 0)
+            {
+                $result=false;
+                $message = "File not found";
+            } else
+            if (!in_array($extension, $allowedExtensions))
+            {
+                $result=false;
+                $message = "File type not allowed";
+            } else
+            if (!$this->checkMime($source_filename,$extension))
+            {
+                $result=false;
+                $message = "File Mime type wrong";
+            } else
+            if ($filename && copy($source_filename, $uploadDir . $filename))
+            {
+                $url = $uploadUrlLocal . $filename;
+                $result=true;
+                $message = "moving file from ".$source_filename.' to '.$uploadDir . $filename;
+                //echo json_encode(['url' => $url]);
+            } else
+            {
+                $result=false;
+                $message = "Error moving file from ".$source_filename.' to '.$uploadDir . $filename;
             }
 
-            if (!$this->checkMime($source_filename,$extension))
-                exit(); //return ['result' => false, 'message' => 'mime type wrong'];
-            if ($filename && copy($source_filename, $uploadDir . $filename)) {
-                $url = $uploadUrlLocal . $filename;
-                echo json_encode(['url' => $url]);
-            }
-            exit;
+            if ($isEditorJsCarousel)
+                $result=[
+                     'success' => $result,
+                     'message'=>$message,
+                     'file' => [
+                         'url' => $url
+                     ]
+                ];
+            else
+                $result=['result' => $result, 'url' => $url,'message'=>$message];
+
+            exit(json_encode($result));
+
         }
 
         // Use general UploadHandler for standard uploads

@@ -18,6 +18,7 @@
   {{content|raw}}
 
   {% if scaffold.logged %}
+    {% include 'scaffold/blocks.html' %}
     {% include 'scaffold/wysiwyg1.html' with {editor:scaffold.cfg.wysiwyg} %}
     {% include 'scaffold/js1.html' %}
     {% include 'scaffold/wysiwyg2.html' with {editor:scaffold.cfg.wysiwyg} %}

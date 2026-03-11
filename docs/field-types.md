@@ -114,6 +114,26 @@ with your own toolbars, classes and styles in `/cms_config/ckeditor5` folder.
 }
 ```
 
+You can integrate `html` field with media to add/manage inline images:
+
+```json
+{
+    "field": "news_content",
+    "type": "html",
+    "cms": {
+        "width": 8,           // Bootstrap column width (1-12)
+        "tall": true,         // Tall Edit Area
+        "style": "standard"   // One of available toolbar styles
+    },
+    "settings": {
+        "media": "media",      // Connected Media field
+        "media_field": "news"   // Overwrite current model name with this field in media model
+    }
+}
+```
+
+
+
 ### `integer`
 
 Integer number (INT(11) in database).
@@ -316,6 +336,24 @@ Multiple selection from another model (with fixed order).
 ---
 
 ## Media Types
+
+### `blocks`
+
+Rich text editor built with blocks (https://github.com/editor-js).
+Blocks are defined in JSON file aligned with EditorJS schema.
+
+```json
+{
+    "field": "content",
+    "type": "blocks",
+    "cms": {
+        "wide": true   // One of available toolbar styles
+    },
+    "settings": {
+        "media": "media_field"  // connected media model - field of type `media`
+    }
+}
+```
 
 ### `image`
 

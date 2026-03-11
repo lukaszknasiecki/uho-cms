@@ -188,7 +188,7 @@ class model_app_write extends model_app
 
 		// update values by sources, for pattern fills etc.
 		$data_deep = $this->apporm->updateRecordSources($schema, $data);
-		
+
 		$old_value = $this->apporm->get($schema, ['id' => $id], true);
 		$update_fields_even_empty = [];
 
@@ -201,12 +201,10 @@ class model_app_write extends model_app
 			}
 
 
-			
+
 		// value updates
-		foreach ($schema['fields'] as $k => $v)
-		{
-			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']]))
-			{				
+		foreach ($schema['fields'] as $k => $v) {
+			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])) {
 				$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
 			}
 
@@ -260,7 +258,7 @@ class model_app_write extends model_app
 					break;
 
 				case "boolean":
-					
+
 					if ($data[$v['field']] == 'off') $data[$v['field']] = 0;
 					elseif ($data[$v['field']] == 'on') $data[$v['field']] = 1;
 
@@ -274,8 +272,7 @@ class model_app_write extends model_app
 					if ($v['output'] == 'string') $iDigits = 0;
 
 					$val = [];
-					if ($data[$v['field']])
-					{
+					if ($data[$v['field']]) {
 						foreach ($data[$v['field']] as $k2 => $v2)
 							if ($iDigits && is_numeric($v2))
 								$val[] = _uho_fx::dozeruj($v2, $iDigits);
@@ -347,7 +344,7 @@ class model_app_write extends model_app
 					unset($schema['filters']);
 				}
 			}
-			
+
 
 		// unique values
 		foreach ($schema['fields'] as $k => $v)
@@ -371,8 +368,7 @@ class model_app_write extends model_app
 		$additional_delete = [];
 
 
-		foreach ($schema['fields'] as $k => $v)
-		{
+		foreach ($schema['fields'] as $k => $v) {
 
 			$backup_record_data['field'] = $v['field'];
 			switch ($v['type']) {
@@ -389,19 +385,30 @@ class model_app_write extends model_app
 
 					break;
 
+				case "blocks":
+
+					if (!empty($v['settings']['media'])) {
+						$r = $this->blocksMediaUpdate($data[$v['field']], $schema['model_name'], $v['settings']['media'], $v);
+
+						$data[$v['field']] = $r['json'];
+						$additional_post = array_merge($additional_post, $r['post']);
+						$additional_put = array_merge($additional_put, $r['put']);
+						$additional_delete = array_merge($additional_delete, $r['delete']);
+					}
+
+					break;
+
 				case "image":
 
-					$filename=$data[$v['field']];
-					if ($filename && !empty($v['settings']['filename_field']))
-					{
-						$data[$v['settings']['filename_field']]=$filename;
+					$filename = $data[$v['field']];
+					if ($filename && !empty($v['settings']['filename_field'])) {
+						$data[$v['settings']['filename_field']] = $filename;
 					}
 
-					if (!empty($v['cms']['change_uid_on_upload']))
-					{
-						$data[$v['cms']['change_uid_on_upload']]=uniqid();
+					if (!empty($v['cms']['change_uid_on_upload'])) {
+						$data[$v['cms']['change_uid_on_upload']] = uniqid();
 					}
-					
+
 					// CMS requested funcions
 
 					// for plugin (refresh), let's set rescale only
@@ -432,7 +439,7 @@ class model_app_write extends model_app
 					if ($data[$v['field'] . '_rescale'] == 'on') {
 						$filename = $data[$v['field']];
 						if (is_array($filename)) $filename = ''; // refresh plugin only
-						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);						
+						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
 					}
 					// recompress
@@ -446,7 +453,6 @@ class model_app_write extends model_app
 						if (!$r['result'] && $r['errors']) $errors = array_merge($errors, $r['errors']);
 						elseif ($r['extension'] && isset($v['settings']['extension_field'])) {
 							$data[$v['settings']['extension_field']] = $r['extension'];
-
 						}
 					}
 
@@ -477,14 +483,13 @@ class model_app_write extends model_app
 
 					$source = $data[$v['field']];
 
-					if (!empty($v['cms']['change_uid_on_upload']))
-					{
-						$data[$v['cms']['change_uid_on_upload']]=uniqid();
+					if (!empty($v['cms']['change_uid_on_upload'])) {
+						$data[$v['cms']['change_uid_on_upload']] = uniqid();
 					}
 
 					if ($source && isset($v['settings']['filename_original']))
 						$data[$v['settings']['filename_original']] = pathinfo($source, PATHINFO_FILENAME);
-				
+
 					if (!empty($v['settings']['extension'])) $extension = $v['settings']['extension'];
 					else
 						if ($data['extension']) $extension = $data['extension'];
@@ -528,13 +533,11 @@ class model_app_write extends model_app
 						else $video_uploaded = true;
 					}
 
-					if ($data[$v['field'] . '_cover'] == 'on' || $video_uploaded)
-					{
+					if ($data[$v['field'] . '_cover'] == 'on' || $video_uploaded) {
 						$position = floatval($data[$v['field'] . '_video']);
 						$cover_field = !empty($v['settings']['field_cover']) ? $v['settings']['field_cover'] : null;
-						if ($cover_field) $cover_field=_uho_fx::array_filter($schema['fields'],'field',$cover_field,['first'=>true]);
-						if ($cover_field)
-						{
+						if ($cover_field) $cover_field = _uho_fx::array_filter($schema['fields'], 'field', $cover_field, ['first' => true]);
+						if ($cover_field) {
 							$r = $this->videoCover($v, $cover_field, $data, $position);
 						}
 					}
@@ -730,9 +733,9 @@ class model_app_write extends model_app
 							$val,
 							['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id],
 							true
-							);
-						if ($r===false) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
-							else $r=true;
+						);
+						if ($r === false) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
+						else $r = true;
 					}
 
 					$this->apporm->delete(
@@ -756,13 +759,11 @@ class model_app_write extends model_app
 		** adding new record
 		*/
 
-		if ($id == 'new')
-		{
+		if ($id == 'new') {
 			// setting up proper order value
 
 			foreach ($schema['fields'] as $k => $v)
-				if ($v['type'] == 'order')
-				{
+				if ($v['type'] == 'order') {
 					if (@$v['default'] == 'first') {
 						$query = $this->apporm->getFiltersQueryArray($schema);
 						if ($query) $query = ' WHERE ' . implode(' && ', $query);
@@ -790,15 +791,15 @@ class model_app_write extends model_app
 
 		/*
 		** updating  record
-		*/ {			
+		*/ {
 			$this->backupAdd($schema['table'], $id);
 			$data['id'] = $id;
 			$this->logsAdd('edit');
-			$schema['fields']=array_values($schema['fields']);
-			
+			$schema['fields'] = array_values($schema['fields']);
+
 			$result = $this->apporm->put($schema, $data);
-			if ($result===false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
-				else $result=true;
+			if ($result === false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
+			else $result = true;
 
 			$is_new_now = false;
 		}
@@ -831,22 +832,23 @@ class model_app_write extends model_app
 
 		$plugins = array_merge($plugins1, $plugins2);
 
-		if ($plugins && !$update_fields)
-		{
+		if ($plugins && !$update_fields) {
 			require_once("model_app_plugin.php");
 
 			$class = new model_app_plugin($this->sql, $lang);
 			$class->setParent($this);
 			$class->setCfgPath($this->cfg_path);
-			$class->apporm=$this->apporm;
+			$class->apporm = $this->apporm;
 
-			foreach ($plugins as $k => $v)
-			{
+			foreach ($plugins as $k => $v) {
 				$p = [
 					'page' => $model,
 					'page_with_params' => $page_with_params,
 					'params' => $v['params'],
-					'record' => $id, 'plugin' => $v['plugin'], 'orm' => $this->apporm];
+					'record' => $id,
+					'plugin' => $v['plugin'],
+					'orm' => $this->apporm
+				];
 				$output = $class->getContentData(array('params' => $p, 'get' => []));
 			}
 
@@ -861,8 +863,8 @@ class model_app_write extends model_app
 			if ($new) {
 				$new['id'] = $id;
 				$result = $this->apporm->put($schema, $new, false, false);
-				if ($result===false) $errors[] = 'Error on PUT: '.$this->apporm->getLastError();
-					else $result=true;
+				if ($result === false) $errors[] = 'Error on PUT: ' . $this->apporm->getLastError();
+				else $result = true;
 			}
 		}
 
@@ -909,7 +911,7 @@ class model_app_write extends model_app
 				case "user":
 					$value = $this->clients->getClientId();
 					break;
-					
+
 				case "timestamp":
 					$value = date('Y-m-d H:i:s');
 					break;
@@ -1131,11 +1133,10 @@ class model_app_write extends model_app
 			$temp_filename = uniqid() . '.' . $ext;
 			copy($filename, $this->upload_path . $temp_filename);
 			// check mime
-        	$finfo = new finfo(FILEINFO_MIME_TYPE);
-        	$realMime = $finfo->file($this->upload_path . $temp_filename);
-			if ($realMime) $realMime=explode('/',$realMime)[0];
-			if (!$realMime || $realMime!='image')
-			{
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$realMime = $finfo->file($this->upload_path . $temp_filename);
+			if ($realMime) $realMime = explode('/', $realMime)[0];
+			if (!$realMime || $realMime != 'image') {
 				unlink($this->upload_path . $temp_filename);
 				return ['result' => false, 'errors' => ['Mime type should be image']];
 			}
@@ -1172,6 +1173,15 @@ class model_app_write extends model_app
 			$filename = basename($filename);
 		} elseif (!empty($params['source'])) {
 			$filename = basename($params['source']);
+		} elseif (!empty($params['source_base64'])) {
+			$source_filename = $this->upload_path . uniqid() . '.jpg';
+			$data_base64 = explode(',', $params['source_base64']);
+			if (count($data_base64) == 2) {
+				file_put_contents($source_filename, base64_decode($data_base64[1]));
+				$filename = basename($source_filename);
+			} else {
+				return ['result' => false, 'errors' => ['Invalid base64 image data']];
+			}
 		}
 
 		// --- Handle rescale-only mode
@@ -1208,7 +1218,7 @@ class model_app_write extends model_app
 			}
 
 			if (!file_exists($source)) {
-				$errors[] = "model_app_write::imageUpload2::source file not found::{$source}";
+				$errors[] = "model_app_write::imageUpload2::[" . $field['field'] . "]::source file not found::{$source}";
 			} else {
 				$checksum = @md5_file($source);
 				$source_image_size = getimagesize($source);
@@ -1238,14 +1248,12 @@ class model_app_write extends model_app
 				$original = $source ?? $field['images'][0]['destination'];
 
 				// No resize — just copy original
-				if (empty($variant['width']) && empty($variant['height']) && !$rescale_only)
-				{
+				if (empty($variant['width']) && empty($variant['height']) && !$rescale_only) {
 					$this->backup_media_copy($source, $destination, $record);
 					if ($this->s3) $source_to_remove = $source;
 					continue;
 				}
-				if (empty($variant['width']) && empty($variant['height']) && $rescale_only)
-				{
+				if (empty($variant['width']) && empty($variant['height']) && $rescale_only) {
 					continue;
 				}
 
@@ -1259,8 +1267,7 @@ class model_app_write extends model_app
 				if ($params) $variant = array_merge($variant, $params);
 
 				$crop = null;
-				if (!empty($params['crop'][$variant['id']]))
-				{
+				if (!empty($params['crop'][$variant['id']])) {
 					[$x1, $y1, $w, $h] = $params['crop'][$variant['id']];
 					$crop = ['x1' => $x1, 'y1' => $y1, 'width' => $w, 'height' => $h];
 				}
@@ -1272,8 +1279,7 @@ class model_app_write extends model_app
 				}
 
 				// --- Perform image conversion ---
-				if ($extension !== 'svg')
-				{
+				if ($extension !== 'svg') {
 					if ($this->s3) {
 						$temp_destination = $this->s3GetTempFilename();
 						$r = _uho_thumb::convert($filename, $source, $temp_destination, $variant, true, 1, $crop);
@@ -1292,16 +1298,14 @@ class model_app_write extends model_app
 					}
 
 					// --- Handle retina (@2x) variant ---
-					if (!empty($variant['retina']))
-					{
+					if (!empty($variant['retina'])) {
 						$variant['width']  = $variant['width'] ? $variant['width'] * 2 : null;
 						$variant['height'] = $variant['height'] ? $variant['height'] * 2 : null;
 
 						if ($this->s3) {
 							$temp_destination = $this->s3GetTempFilename();
 							$r = _uho_thumb::convert($filename, $source, $temp_destination, $variant, true, 1, $crop);
-							if ($r['result'])
-							{
+							if ($r['result']) {
 								$this->s3->copy($temp_destination, $destination_retina);
 								$webp_dest_x2 = $this->jpg2webp($destination_retina);
 								if ($variant['webp'] && !empty($r['webp'])) {
@@ -1820,7 +1824,7 @@ class model_app_write extends model_app
 	 * @return boolean
 	 */
 
-	public function file_exists($f) :bool
+	public function file_exists($f): bool
 	{
 		if ($this->s3) return $this->s3->file_exists($f);
 		else return file_exists($f);
@@ -1879,7 +1883,7 @@ class model_app_write extends model_app
 
 		// --- STEP 1: Process newly uploaded temp images ---
 
-		$search=$this->temp_path . '/upload';
+		$search = $this->temp_path . '/upload';
 
 		$max = 100;
 		while (strpos(' ' . $html, $search) && $max-- > 0) {
@@ -1889,7 +1893,7 @@ class model_app_write extends model_app
 
 			$uid = uniqid();
 			$source = $_SERVER['DOCUMENT_ROOT'] . substr($html, $i1, $i2 - $i1);
-			
+
 			$image_type = 'image';
 
 			$upload_result = $this->imageUpload($image_field, ['uid' => $uid], $uid, false, ['source' => $source], $image_type);
@@ -1900,7 +1904,7 @@ class model_app_write extends model_app
 					'value' => [
 						'model'    => $parent_model,
 						'model_id' => '%record_id%',
-						'type'=>'image',
+						'type' => 'image',
 						'uid'      => $uid,
 						'extension' => $upload_result['extension']
 					]
@@ -2004,14 +2008,154 @@ class model_app_write extends model_app
 			}
 		}
 
-		$result=[
+		$result = [
 			'html'   => $html,
 			'post'   => $new_media,
 			'put'    => $updated_media,
 			'delete' => $deleted_media
 		];
 		//print_r($result);exit();
-		return $result; 
+		return $result;
+	}
+
+	/*
+		Uploading images and carousel images from EDITORJS
+		to media model
+	*/
+	private function blocksMediaUpdate($json, $parent_model, $media_model_name, $field): array
+	{
+		//$uho_media_replacer = !empty($field['settings']['media_field']);
+		$existing_uids=[];
+
+		$new_media = [];     // New images to upload
+		$updated_media = []; // Existing media metadata to update
+		$deleted_media = []; // Media records to remove
+
+		$media_model = $this->getSchema($media_model_name);
+		$image_field = _uho_fx::array_filter($media_model['fields'], 'field', 'image', ['first' => true]);
+
+		// --- STEP 1: Process newly uploaded temp images ---
+
+		if (!is_array($json)) $json = json_decode($json, true);
+
+		foreach ($json['blocks'] as $k => $block) {
+			switch ($block['type']) {
+
+				/*
+					IMAGE BLOCK
+				*/
+				case "image":
+					$img = $block['data']['file']['url'] ?? null;
+					
+					if (substr($img, 0, 5) == 'data:') {
+						// base64 --> is new, let's upload
+						$uid = uniqid();
+						$image_type = 'image';
+
+						$upload_result = $this->imageUpload(
+								$image_field,
+								['uid' => $uid],
+								$uid,
+								false,
+								['source_base64' => $img],
+								$image_type
+							);
+
+						if (!empty($upload_result['result'])) {
+							$existing_uids[]= $uid;
+							$json['blocks'][$k]['data']['file']['url'] = $upload_result['images'][0];
+							$new_media[] = [
+								'model' => $media_model_name,
+								'value' => [
+									'model'    => $parent_model,
+									'model_id' => '%record_id%',
+									'type' => 'image',
+									'uid'      => $uid,
+									'extension' => $upload_result['extension']
+								]
+							];
+						}
+					} else
+					{
+						// already uploaded previously, let's add to existing_uids to prevent deletion
+						$img=basename(explode('?', $img)[0]);
+						$img=explode('.', $img)[0];
+						if ($img) $existing_uids[]= $img;
+					}
+
+					break;
+
+				/*
+					CAROUSEL BLOCK
+				*/
+				case "carousel":
+
+					$items=$block['data'];
+
+					foreach ($items as $item_key => $item)
+					{
+
+						$img = $item['url'] ?? null;
+						$dir=explode('/', $img)[1];
+						if ('/'.$dir==$this->temp_path)
+						{
+							// it's a new image, let's upload
+							$uid = uniqid();
+							$image_type = 'image';
+
+							$upload_result = $this->imageUpload(
+									$image_field,
+									['uid' => $uid],
+									$uid,
+									false,
+									['source' => $img],
+									$image_type
+								);
+
+							if (!empty($upload_result['result'])) {
+								$existing_uids[]= $uid;
+								$json['blocks'][$k]['data'][$item_key]['url'] = $upload_result['images'][0];
+								$new_media[] = [
+									'model' => $media_model_name,
+									'value' => [
+										'model'    => $parent_model,
+										'model_id' => '%record_id%',
+										'type' => 'image',
+										'uid'      => $uid,
+										'extension' => $upload_result['extension']
+									]
+								];
+							}
+						} else
+						{
+							// already uploaded previously, let's add to existing_uids to prevent deletion
+							$img=basename(explode('?', $img)[0]);
+							$img=explode('.', $img)[0];
+							if ($img) $existing_uids[]= $img;
+						}
+					}
+					break;
+			}
+		}
+
+		$deleted_media[] = [
+			'model' => $media_model_name,
+			'value' => [
+				'model_id' => '%record_id%',
+				'uid' => ['operator' => '!=', 'value' => $existing_uids]
+			]
+		];
+
+
+		$result = [
+			'json'   => json_encode($json),
+			'post'   => $new_media,
+			'put'    => $updated_media,
+			'delete' => $deleted_media
+		];
+
+		return $result;
+
 	}
 
 	/**
@@ -2130,15 +2274,14 @@ class model_app_write extends model_app
 		}
 
 		// Generate the base filename
-		if (empty($field['settings']['filename'])) $destinationFilename=$data['uid'] . '.' . $extension;
-		else
-		{
+		if (empty($field['settings']['filename'])) $destinationFilename = $data['uid'] . '.' . $extension;
+		else {
 			if (isset($data['id'])) $destinationFilename =  str_replace('%id%', $data['id'], $field['settings']['filename']) . '.' . $extension;
-				else $destinationFilename =  $field['settings']['filename'] . '.' . $extension;
+			else $destinationFilename =  $field['settings']['filename'] . '.' . $extension;
 			if (isset($data['uid'])) $destinationFilename =  str_replace('%uid%', $data['uid'], $destinationFilename);
 		}
-		
-		
+
+
 
 		// Build destination paths for each image size (e.g., thumb, preview, etc.)
 		foreach ($field['images'] as $k => $imageConfig) {

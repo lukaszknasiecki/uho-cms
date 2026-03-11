@@ -1,0 +1,22 @@
+
+<div class="editorjs-editor-wrapper" data-destination="{{field.cms_field}}">
+  {#<div class="editorjs-toolbar">
+    <button data-block="paragraph">Paragraph</button>
+    <button data-block="header-1">H1</button>
+    <button data-block="header-2">H2</button>
+    <button data-block="header-3">H3</button>
+    <button data-block="header-4">H4</button>
+    <div class="separator"></div>
+    <button data-block="list-unordered">• List</button>
+    <button data-block="list-ordered">1. List</button>
+    <div class="separator"></div>
+    <button data-block="quote">" Quote</button>
+    <button data-block="code">&#60;/&#62; Code</button>
+    <button data-block="delimiter">— Divider</button>
+    <div class="separator"></div>
+    <button data-block="image">Image</button>
+  </div>#}
+  <div class="editorjs-editor"></div>
+</div>
+
+<textarea name="{{field.cms_field}}" id="{{field.cms_field}}" xstyle="width:100%;height:100%" style="display:none">{{value|json_encode}}</textarea>

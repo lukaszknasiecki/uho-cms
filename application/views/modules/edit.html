@@ -15,6 +15,7 @@
 <div
   class="{% if lightbox %}serdelia-body-edit-lightbox{% else %}serdelia-body-edit{% endif %} {% if schema_editor %}serdelia-body-edit-schema{% endif %}">
   <div class="container serdelia-edit">
+
     {% if schema_validation.errors|length>0 %}    
     <div class="alert alert-info" role="alert">
       <h5 class="alert-heading">This schema is not valid and should be updated.</h5>
@@ -30,6 +31,7 @@
       action="{{schema.url_write}}" data-page="{{schema.model_name}}" data-url-back="{{schema.url_back_form}}" {% if not
       record.id %}data-url-new={{schema.url_new}} {% endif %} method="POST" role="form">
       <input type="hidden" name="_srdcsrftkn" value="{{csrf_token_value}}">
+      
       {% if tabs %}
 
         <input type="hidden" name="tab" id="hidden_tab" value="">
@@ -62,7 +64,7 @@
             {% set iTab=iTab+1 %}
             {% set iElementsNow=0 %}
           {% endif %}
-
+          
           {% if field.type in ['variable','hidden','uid'] %}
             {% include 'modules/edit/edit_hidden.html' with {'field':field,'value':record[field.field],'lang':lang } %}
           {% elseif field.settings.hashable and field.value_hashed and (field.type!='file') %}
@@ -75,7 +77,7 @@
             {% if field.cms.hr and field.cms.hr is not same as ('down') and iElementsNow>0 %}
             <hr>{% endif %}
           {% endif %}
-
+        
         {% if field.cms.header %}
         <div class="form-group row">
           <label class="col-lg-2 col-form-label"></label>
