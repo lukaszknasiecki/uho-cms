@@ -33,11 +33,13 @@ class model_app_api_timer
     {
         $action=$params['action']??'';
         if ($action=='activity_renew')
-            $this->parent->setActivityTime();
-
+        {
+            $this->parent->resetActivityTime();
+            $this->parent->resetLogoutTime();
+        }
                 return [
                     'result'=>true,
-                    'activity_left' => $this->parent->getTimeActivityToLogout(),
+                    'activity_left' =>$this->parent->getTimeActivityToLogout(),
                     'session_left' => $this->parent->getTimeSessionToLogout()
                 ];
     }

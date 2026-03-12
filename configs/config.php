@@ -41,15 +41,17 @@ $cfg = [
         'logotype'       =>   false,
         'favicon'       =>   false,
 
-        'debug' => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),
-        'strict_schema' => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
+        'debug' => empty(getEnv("CMS_CONFIG_STRICT")) ? false : filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
+        'strict_schema' => empty(getEnv("CMS_CONFIG_STRICT")) ? true : filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
+
+        'logout_time' => getEnv("CMS_LOGOUT_TIME") ? getenv("CMS_LOGOUT_TIME") : 60,
+		'activity_time' => getEnv("CMS_ACTIVITY_TIME") ? getenv("CMS_ACTIVITY_TIME") : 15,
 
         'serdelia_keys' => [
             getenv('CLIENT_KEY1'),
             getenv('CLIENT_KEY2')
         ],
-
-        'cache'      =>  null,
+        'cache' => null,
         'app_languages'             => []
     ]
 

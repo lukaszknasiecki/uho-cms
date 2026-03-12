@@ -47,7 +47,7 @@ class model_app_plugin extends model_app
 	public function getContentData($input = null, bool $twig = true): ?array
 	{
 
-        $this->setActivityTime();
+        $this->resetActivityTime();
 		$params = $input['params'] ?? [];
 
 		// Access control

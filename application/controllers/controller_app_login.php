@@ -28,8 +28,8 @@ class controller_app_login extends controller_app
         // If login was successful, redirect to the homepage
         if (!empty($data['content']['logged'])) {
             $this->model->setLogoutTime(
-                $this->cfg['cms']['uho_cms_activity_time'],
-                $this->cfg['cms']['uho_cms_logout_time']
+                $this->cfg['cms']['activity_time'],
+                $this->cfg['cms']['logout_time']
             );
             $this->route->redirect('');
         }

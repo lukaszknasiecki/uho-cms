@@ -41,9 +41,23 @@ cms_config/
     └── model_tree.json        # Model relationships
 ```
 
+## ENV
+
+You can define some options using ENVs:
+
+| ENV | Description | Default |
+|-----|-------------|---------|
+| `CMS_PREFIX` | Folder where CMS is installed | `cms` |
+| `CMS_CONFIG_DEBUG` | Debug mode | `false` |
+| `CMS_CONFIG_STRICT` | Require strict schemas | `true` |
+| `CMS_LOGOUT_TIME` | Maximum CMS session time (in minutes) | `60` |
+| `CMS_ACTIVITY_TIME` | Maximum non-activity time in CMS (in minutes) | `15` |
+
+You can also use `config.php` (next section) to set those options, regardless of used environment.
+
 ## config.php
 
-By default CMS is using `cms/configs/config.php` file.
+By default CMS is using `cms/configs/config.php` file. You shoud define options here which are not connected to environment of the application.
 You can modify it with your own file located at `cms_config/config.php`, which will merge with default properties:
 
 ```php
@@ -56,8 +70,8 @@ $cfg = [
         'logotype'       => true,               // Show logotype in CMS, /cms_config/assets/logotype.png, default=FALSE
         'favicon'        => true,               // Use favicon, /cms_config/assets/favicon.png, default=FALSE
 
-        'debug'          => filter_var(getEnv("CMS_CONFIG_DEBUG"), FILTER_VALIDATE_BOOLEAN),    // enable CMS debug mode, validates schemas
-        'strict_schema'  => filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),   // force strict schema, disabled depreceated support
+        'debug'          => false,              // overwrites ENV.CMS_CONFIG_DEBUG
+        'strict_schema'  => false,              // overwrites ENV.CMS_CONFIG_STRICT
 
         'app_languages'  => ['en'],            // Supported languages
         'cache' =>
@@ -67,13 +81,14 @@ $cfg = [
                 'extensions' => ['cache', 'sql']
             ],
             [
-                'domain' => 'nature.ode.lh',
-                'url' => 'https://nature.ode.lh/api/cache_kill',
+                'domain' => 'cms.nature.com',
+                'url' => 'https://nature.com/api/cache-kill',
             ]
         ],
 
-        'uho_cms_logout_time' => 120,           // max CMS session in minutes, default is 60, 0 to set max time of 24H
-		'uho_cms_activity_time' => 30           // max CMS non-activity time in minutes, default is 15, 0 to set max time of 24H
+        'logout_time' => 120,           // overwrites ENV.CMS_LOGOUT_TIME
+		'activity_time' => 30           // overwrites ENV.CMS_ACTIVITY_TIME
+
     ],
     'plugins' => [
         'PHP'           => getEnv("PHP"),      // PHP executable path
@@ -96,6 +111,8 @@ on other server than the CMS.
 * `strict_schema`: Enable strict schema validation
 * `app_languages`: Array of supported languages
 * `cache`: Cache settings
+* `uho_cms_logout_time`
+* `uho_cms_activity_time`
 
 ## CKEditor Configuration
 

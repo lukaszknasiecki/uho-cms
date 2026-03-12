@@ -28,7 +28,7 @@ class model_app_edit extends model_app
 	public function getContentData($params = null)
 	{
 
-        $this->setActivityTime();
+        $this->resetActivityTime();
 		$this->translate = json_decode(file_get_contents(__DIR__ . '/model_app_edit.json'), true);
 
 		$translate = $this->getTranslateByLang($this->lang);

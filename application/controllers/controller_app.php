@@ -51,7 +51,7 @@ class controller_app extends _uho_controller
                 $this->cfg['clients']['login_error_max'] = $c['clients_login_error_max'];
             }
             if (isset($c['session_time'])) {
-                $this->cfg['cms']['uho_cms_logout_time'] = $c['session_time'];
+                $this->cfg['cms']['logout_time'] = $c['session_time'];
             }
         }
 
@@ -134,10 +134,10 @@ class controller_app extends _uho_controller
         }*/
         $this->model->setWysiwyg($this->cfg['cms']['wysiwyg']);
 
-        if (empty($this->cfg['cms']['uho_cms_logout_time']) && $this->cfg['cms']['uho_cms_logout_time']!==0)
-            $this->cfg['cms']['uho_cms_logout_time']=60;
-        if (empty($this->cfg['cms']['uho_cms_activity_time']) && $this->cfg['cms']['uho_cms_activity_time']!==0)
-            $this->cfg['cms']['uho_cms_activity_time']=15;
+        if (empty($this->cfg['cms']['logout_time']) && $this->cfg['cms']['logout_time']!==0)
+            $this->cfg['cms']['logout_time']=60;
+        if (empty($this->cfg['cms']['activity_time']) && $this->cfg['cms']['activity_time']!==0)
+            $this->cfg['cms']['activity_time']=15;
 
         /*
             Logout if time TOTAL time have passed
@@ -225,35 +225,6 @@ class controller_app extends _uho_controller
         }
             
         $this->data['scaffold']['url_logout'] = ['type' => 'logout'];
-
-
-        // Handle logout expiration time
-        /*        
-        if (strpos($_SERVER['HTTP_HOST'], '.lhh') !== false)
-        {
-            $this->data['scaffold']['logout_expired'] = null;
-        }
-        elseif (!empty($this->cfg['cms']['uho_cms_activity_time']))
-        {
-            $this->data['scaffold']['logout_expired'] = $this->cfg['cms']['uho_cms_activity_time']-2;
-        }*/
-
-        /*
-            if max logout time is sooner than activity time
-        */
-        /*
-        if ($this->cfg['cms']['uho_cms_logout_time'])
-        {
-            $time=$this->model->getLeftLogoutTime($this->cfg['cms']['uho_cms_logout_time']);
-            if ($time>0)
-            {
-                $time=$time-2;
-                if ($time<1) $time=1;
-            }
-            if ($time>0 && $time<$this->data['scaffold']['logout_expired'])
-                    $this->data['scaffold']['logout_expired']=$time;
-        }
-        */
 
         // Various URLs for scaffold
         //$this->data['scaffold']['url_logout_expired'] = ['type' => 'logout_expired'];

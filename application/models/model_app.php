@@ -2980,24 +2980,53 @@ class model_app extends _uho_model
         }
     }
 
-    public function setLogoutTime($activity_minutes, $total_minutes)
+     public function setLogoutTime($activity_minutes=null, $total_minutes=null)
     {
 
         if (!$activity_minutes) $activity_minutes = 60*24;
         if (!$total_minutes) $total_minutes = 60*24;
 
+        setcookie('uho_cms_logout_duration_activity', $activity_minutes, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_duration_total', $total_minutes, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+
         setcookie('uho_cms_logout_time_login', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
         setcookie('uho_cms_logout_time_activity', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
 
-        setcookie('uho_cms_logout_max_activity', $activity_minutes * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_max_logout_time', $total_minutes * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        $this->resetActivityTime();
+        $this->resetLogoutTime();
+
     }
 
-    public function setActivityTime()
+    // sets time to logout after inactivity to NOW+ACTIVITY_MINUTES
+    public function resetActivityTime()
     {
-        setcookie('uho_cms_logout_time_activity', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_max_activity', time() +$_COOKIE['uho_cms_logout_duration_activity'] * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
     }
 
+    // sets time to logout after session to NOW+MAX_SESSION_MINUTES
+    public function resetLogoutTime()
+    {
+        setcookie('uho_cms_logout_max_logout_time', time()+$_COOKIE['uho_cms_logout_duration_total'] * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+    }
+
+    // return time in seconds to logout after inactivity
+    public function getTimeActivityToLogout($type = null)
+    {
+        $end = $_COOKIE['uho_cms_logout_max_activity'];
+        return $end - time();
+    }
+
+    // return time in seconds or string to logout after session expire
+    public function getTimeSessionToLogout($type = null)
+    {
+        $end = $_COOKIE['uho_cms_logout_max_logout_time'];
+        $r = $end - time();
+        if ($type == 'string') {
+            return gmdate("H:i:s", $r);
+        } else return $r;
+    }
+
+    // returns false is session expired
     public function checkLogoutTime()
     {
         return true;
@@ -3005,6 +3034,7 @@ class model_app extends _uho_model
         return (time() < $_COOKIE['uho_cms_logout_max_logout_time']);
     }
 
+    // returns time from login in seconds or string
     public function getTimeFromLogin($type = null)
     {
         $initial = $_COOKIE['uho_cms_logout_time_login'] ?? null;
@@ -3017,38 +3047,26 @@ class model_app extends _uho_model
         }
     }
 
-    public function getTimeSessionToLogout($type = null)
-    {
-        $end = $_COOKIE['uho_cms_logout_time_login'] + $_COOKIE['uho_cms_logout_max_logout_time'];
-        $r = $end - time();
-        if ($type == 'string') {
-            return gmdate("H:i:s", $r);
-        } else return $r;
-    }
 
     public function getTimeMaxSession($type = null)
-    {
-        $r = $_COOKIE['uho_cms_logout_max_logout_time'];
+    {        
+        $r = $_COOKIE['uho_cms_logout_duration_total'];
+        
         if ($type == 'string') {
-            return round($r/60).' min.';
+            return $r.' min.';
         } else return $r;
     }
 
     public function getTimeMaxNonActivity($type = null)
     {
-        $r = $_COOKIE['uho_cms_logout_max_activity'];
+        $r = $_COOKIE['uho_cms_logout_duration_activity'];
         if ($type == 'string') {
-            return round($r/60).' min.';
+            return $r.' min.';
         } else return $r;
     }
 
     
 
-    public function getTimeActivityToLogout($type = null)
-    {
-        $end = $_COOKIE['uho_cms_logout_time_activity'] + $_COOKIE['uho_cms_logout_max_activity'];
-        return $end - time();
-    }
 
 
     public function checkActivityTime()

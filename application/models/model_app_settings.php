@@ -18,7 +18,7 @@ class model_app_settings extends model_app
 	public function getContentData($params = null): array
 	{
 
-        $this->setActivityTime();
+        $this->resetActivityTime();
 
 		$action = '';
 		$text = '';

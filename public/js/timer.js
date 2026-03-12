@@ -18,7 +18,7 @@
     ].join(';');
 
     var msg = document.createElement('p');
-    msg.textContent = 'Your session will be ended in 60 seconds. Click to continue.';
+    msg.textContent = 'Your session will be ended in 60 seconds. Click to extend your session.';
     msg.style.cssText = 'margin:0 0 20px;font-size:16px;';
 
     var btn = document.createElement('button');
@@ -59,7 +59,8 @@
           window.location.href = basePath + '/logout?expired=activity';
           return;
         }
-        if (data.activity_left < 60) {
+        if (data.session_left < 60 || data.activity_left < 60)
+        {
           if (!popupVisible) createPopup();
         } else {
           if (popupVisible) removePopup();
