@@ -2980,20 +2980,37 @@ class model_app extends _uho_model
         }
     }
 
-    public function removeTimerCookies()
+
+    private function setTimerVar($name, $value)
     {
-        setcookie('uho_cms_logout_duration_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_duration_total', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_time_login', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_time_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_max_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_max_logout_time', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        //setcookie($name, $value, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        //$_COOKIE[$name] = $value;
+        $_SESSION[$name] = $value;
     }
 
-    private function setTimerCookie($name, $value)
+    private function removeTimerVar($name)
     {
-        setcookie($name, $value, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
-        $_COOKIE[$name] = $value;
+        /*
+        setcookie($name, '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        unset($_COOKIE[$name]);
+        */
+        unset($_SESSION[$name]);
+    }
+
+    private function getTimerVar($name)
+    {
+        // return $_COOKIE[$name] ?? null;
+        return $_SESSION[$name] ?? null;
+    }
+
+    public function removeTimerCookies()
+    {
+        $this->removeTimerVar('uho_cms_logout_duration_activity');
+        $this->removeTimerVar('uho_cms_logout_duration_total');
+        $this->removeTimerVar('uho_cms_logout_time_login');
+        $this->removeTimerVar('uho_cms_logout_time_activity');
+        $this->removeTimerVar('uho_cms_logout_max_activity');
+        $this->removeTimerVar('uho_cms_logout_max_logout_time');
     }
 
     public function setLogoutTime($activity_minutes=null, $total_minutes=null)
@@ -3002,10 +3019,10 @@ class model_app extends _uho_model
         if (!$activity_minutes) $activity_minutes = 60*24;
         if (!$total_minutes) $total_minutes = 60*24;
 
-        $this->setTimerCookie('uho_cms_logout_duration_activity', $activity_minutes);
-        $this->setTimerCookie('uho_cms_logout_duration_total', $total_minutes);
-        $this->setTimerCookie('uho_cms_logout_time_login', time());
-        $this->setTimerCookie('uho_cms_logout_time_activity', time());
+        $this->setTimerVar('uho_cms_logout_duration_activity', $activity_minutes);
+        $this->setTimerVar('uho_cms_logout_duration_total', $total_minutes);
+        $this->setTimerVar('uho_cms_logout_time_login', time());
+        $this->setTimerVar('uho_cms_logout_time_activity', time());
 
         $this->resetActivityTime();
         $this->resetLogoutTime();
@@ -3016,26 +3033,26 @@ class model_app extends _uho_model
     // sets time to logout after inactivity to NOW+ACTIVITY_MINUTES
     public function resetActivityTime()
     {
-        $this->setTimerCookie('uho_cms_logout_max_activity', time() +$_COOKIE['uho_cms_logout_duration_activity'] * 60);
+        $this->setTimerVar('uho_cms_logout_max_activity', time() +$this->getTimerVar('uho_cms_logout_duration_activity') * 60);
     }
 
     // sets time to logout after session to NOW+MAX_SESSION_MINUTES
     public function resetLogoutTime()
     {
-        $this->setTimerCookie('uho_cms_logout_max_logout_time', time()+$_COOKIE['uho_cms_logout_duration_total'] * 60);
+        $this->setTimerVar('uho_cms_logout_max_logout_time', time()+$this->getTimerVar('uho_cms_logout_duration_total') * 60);
     }
 
     // return time in seconds to logout after inactivity
     public function getTimeActivityToLogout($type = null)
     {
-        $end = $_COOKIE['uho_cms_logout_max_activity'];
+        $end = $this->getTimerVar('uho_cms_logout_max_activity');
         return $end - time();
     }
 
     // return time in seconds or string to logout after session expire
     public function getTimeSessionToLogout($type = null)
     {
-        $end = $_COOKIE['uho_cms_logout_max_logout_time'];
+        $end = $this->getTimerVar('uho_cms_logout_max_logout_time');
         $r = $end - time();
         if ($type == 'string') {
             return gmdate("H:i:s", $r);
@@ -3046,14 +3063,14 @@ class model_app extends _uho_model
     public function checkLogoutTime()
     {
         return true;
-        if (empty($_COOKIE['uho_cms_logout_max_logout_time'])) return true;
-        return (time() < $_COOKIE['uho_cms_logout_max_logout_time']);
+        if (empty($this->getTimerVar('uho_cms_logout_max_logout_time'))) return true;
+        return (time() < $this->getTimerVar('uho_cms_logout_max_logout_time'));
     }
 
     // returns time from login in seconds or string
     public function getTimeFromLogin($type = null)
     {
-        $initial = $_COOKIE['uho_cms_logout_time_login'] ?? null;
+        $initial = $this->getTimerVar('uho_cms_logout_time_login');
         if ($initial) {
             $r = time() - $initial;
             if ($type == 'string')
@@ -3066,7 +3083,7 @@ class model_app extends _uho_model
 
     public function getTimeMaxSession($type = null)
     {        
-        $r = $_COOKIE['uho_cms_logout_duration_total'];
+        $r = $this->getTimerVar('uho_cms_logout_duration_total');
         
         if ($type == 'string') {
             return $r.' min.';
@@ -3075,19 +3092,15 @@ class model_app extends _uho_model
 
     public function getTimeMaxNonActivity($type = null)
     {
-        $r = $_COOKIE['uho_cms_logout_duration_activity'];
+        $r = $this->getTimerVar('uho_cms_logout_duration_activity');
         if ($type == 'string') {
             return $r.' min.';
         } else return $r;
     }
 
-    
-
-
-
     public function checkActivityTime()
     {
-        $end = $_COOKIE['uho_cms_logout_time_activity'] + $_COOKIE['uho_cms_logout_max_activity'];
+        $end = $this->getTimerVar('uho_cms_logout_time_activity') + $this->getTimerVar('uho_cms_logout_max_activity');
         return (time() < $end);
     }
 
