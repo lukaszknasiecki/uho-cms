@@ -17,6 +17,7 @@ class model_app_logout extends model_app
 	{
 		// Perform logout via client
 		$this->clients->client->logout();
+		$this->removeTimerCookies();
 
 		// Load translations from external JSON
 		$translatePath = __DIR__ . '/model_app_logout.json';

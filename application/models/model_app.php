@@ -2980,33 +2980,49 @@ class model_app extends _uho_model
         }
     }
 
-     public function setLogoutTime($activity_minutes=null, $total_minutes=null)
+    public function removeTimerCookies()
+    {
+        setcookie('uho_cms_logout_duration_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_duration_total', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_time_login', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_time_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_max_activity', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+        setcookie('uho_cms_logout_max_logout_time', '', time() - 3600, "/", $_SERVER['HTTP_HOST']);
+    }
+
+    private function setTimerCookie($name, $value)
+    {
+        setcookie($name, $value, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        $_COOKIE[$name] = $value;
+    }
+
+    public function setLogoutTime($activity_minutes=null, $total_minutes=null)
     {
 
         if (!$activity_minutes) $activity_minutes = 60*24;
         if (!$total_minutes) $total_minutes = 60*24;
 
-        setcookie('uho_cms_logout_duration_activity', $activity_minutes, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_duration_total', $total_minutes, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
-
-        setcookie('uho_cms_logout_time_login', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
-        setcookie('uho_cms_logout_time_activity', time(), time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        $this->setTimerCookie('uho_cms_logout_duration_activity', $activity_minutes);
+        $this->setTimerCookie('uho_cms_logout_duration_total', $total_minutes);
+        $this->setTimerCookie('uho_cms_logout_time_login', time());
+        $this->setTimerCookie('uho_cms_logout_time_activity', time());
 
         $this->resetActivityTime();
         $this->resetLogoutTime();
+        
 
     }
 
     // sets time to logout after inactivity to NOW+ACTIVITY_MINUTES
     public function resetActivityTime()
     {
-        setcookie('uho_cms_logout_max_activity', time() +$_COOKIE['uho_cms_logout_duration_activity'] * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        $this->setTimerCookie('uho_cms_logout_max_activity', time() +$_COOKIE['uho_cms_logout_duration_activity'] * 60);
     }
 
     // sets time to logout after session to NOW+MAX_SESSION_MINUTES
     public function resetLogoutTime()
     {
-        setcookie('uho_cms_logout_max_logout_time', time()+$_COOKIE['uho_cms_logout_duration_total'] * 60, time() + 60 * 60 * 24, "/", $_SERVER['HTTP_HOST']);
+        $this->setTimerCookie('uho_cms_logout_max_logout_time', time()+$_COOKIE['uho_cms_logout_duration_total'] * 60);
     }
 
     // return time in seconds to logout after inactivity
