@@ -63,6 +63,7 @@ class controller_app_plugin extends controller_app
 
         $params['url_back'] = $url_back;
         $params['url_cms_home'] = ["type"=>"home"];
+        $params['cms_path'] = '/cms';
 
         // Update URLs based on current parameters
         $updatedUrls = $this->urlUpdate($params);
@@ -85,7 +86,9 @@ class controller_app_plugin extends controller_app
         // Fetch content data using the prepared parameters
         $data = [
             'nav'     => true,
+            'aaa='=>'aaa',
             'content' => $this->model->getContentData([
+                'aaa='=>'aaa',
                 'params' => $params,
                 'get'    => $this->get
             ])

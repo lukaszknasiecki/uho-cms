@@ -13,11 +13,12 @@ class serdelia_plugin_preview
      * @return null
      */
 
-    private $params;
+    private $params, $parent;
 
-    public function __construct(object $cms, array $params)
+    public function __construct(object $cms, array $params, object $parent = null)
     {
         $this->params = $params;
+        $this->parent = $parent;
     }
 
     /** Main plugin-method, returns data for View module
@@ -40,6 +41,13 @@ class serdelia_plugin_preview
         $url = str_replace('¿', '?', $url);
 
         if (!$url) return ['result' => false, 'message' => 'url_empty'];
-        return ['result' => true, 'src' => $url, 'fullscreen' => true, 'new_window' => $url, 'root_path' => $this->params['url_serdelia']];
+        return [
+            'result' => true,
+            'src' => $url,
+            'fullscreen' => true,
+            'new_window' => $url,
+            'cms_path' => $this->parent->cms_path,
+            'root_path' => $this->params['url_serdelia']
+        ];
     }
 }
