@@ -86,9 +86,7 @@ class controller_app_plugin extends controller_app
         // Fetch content data using the prepared parameters
         $data = [
             'nav'     => true,
-            'aaa='=>'aaa',
             'content' => $this->model->getContentData([
-                'aaa='=>'aaa',
                 'params' => $params,
                 'get'    => $this->get
             ])
