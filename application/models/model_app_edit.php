@@ -74,6 +74,8 @@ class model_app_edit extends model_app
 		// Generate edit schema (populated with record data)
 
 		$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post, true);		
+			
+		if ($id && !$record) exit('model_app_edit::record_not_found');
 		
 		$schema = $this->getSchemaDepreceated($schema);
 
@@ -90,8 +92,10 @@ class model_app_edit extends model_app
 
 				$schema['helper_models'][$k]=$this->apporm->get($v['model'], ['id'=>$v['record']],true);
 			}*/
+			
 			$replace = $record;
 			$replace['helper_models'] = $schema['helper_models'];
+			
 			$schema['label']['edit'] = $this->getTwigFromHtml($schema['label']['edit'], $replace);
 		}
 

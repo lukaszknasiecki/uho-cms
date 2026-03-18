@@ -2311,7 +2311,6 @@ class model_app extends _uho_model
         /*
          changing schema according to record values
         */
-
         if ($schema['page_update']) {
 
             if (!is_array($schema['page_update']))
@@ -2327,8 +2326,9 @@ class model_app extends _uho_model
             if ($record)
                 $schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $record);
 
-            if ($schema['page_update']['file'] && $record) {
-                $schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
+            if ($schema['page_update']['file'] && $record)
+            {
+                $schema = $this->getSchema($model, true, $params, ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
 
                 if ($validate) {
 

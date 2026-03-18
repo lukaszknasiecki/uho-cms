@@ -67,7 +67,7 @@ class model_app_write extends model_app
 
 		// --- Handle sorting request ---
 		if ($id === 'sort') {
-			$schema = $this->getSchema($model, true, ['numbers' => $modelParams]);
+			$schema = $this->getSchema($model, true, ['nested' => $modelParams]);
 
 			$result = $this->sortPage($schema, $_POST['field'], explode(',', $_POST['order']));
 			$this->cacheKill();
@@ -164,7 +164,7 @@ class model_app_write extends model_app
 
 		// schema update
 
-		$schema = $this->getSchema($model, true, ['numbers' => $params]);
+		$schema = $this->getSchema($model, true, ['nested' => $params]);
 		$schema = $this->getSchemaDepreceated($schema);
 
 		if ($schema['page_update']) {
@@ -183,7 +183,7 @@ class model_app_write extends model_app
 			if ($data_deep)
 				$schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $data_deep);
 
-			$schema = $this->getSchema($model, true, ['numbers' => $params], ['model' => $schema['page_update']['file']]);
+			$schema = $this->getSchema($model, true, ['nested' => $params], ['model' => $schema['page_update']['file']]);
 		}
 
 		// update values by sources, for pattern fills etc.
@@ -771,6 +771,7 @@ class model_app_write extends model_app
 		*/
 
 		if ($id == 'new') {
+
 			// setting up proper order value
 
 			foreach ($schema['fields'] as $k => $v)
