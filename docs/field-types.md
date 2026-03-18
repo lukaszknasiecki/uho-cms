@@ -253,6 +253,16 @@ Single selection from options or another model.
 }
 ```
 
+Alternative version on `options` property:
+
+```json
+      "options":
+      {
+          "draft":"Draft",
+          "published": "Published"
+      }
+```
+
 **From Another Model:**
 
 ```json

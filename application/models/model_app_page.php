@@ -66,7 +66,8 @@ class model_app_page extends model_app
 		if (!in_array($auth, [1, 2, 3])) exit('auth::error::[app_page]');
 
 		// Load and validate schema
-		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
+		
+		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 		if (isset($schema['result']) && $schema['result']===false)
 			exit('<pre>'.$schema['message'].'</pre>');
 		$schema=$this->getSchemaDepreceated($schema);		

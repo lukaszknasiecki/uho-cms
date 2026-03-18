@@ -729,14 +729,30 @@ class model_app extends _uho_model
             $schema['fields'][$k] = $this->extractTranslation($schema['fields'][$k], ['cms', 'label']);
 
         // filters
+
         if (!isset($params['keys']) || !$params['keys'])
             $params['keys'] = [];
         $params['keys']['user'] = $this->getUser()['id'];
 
-        if (isset($schema['filters']) && $schema['filters'] && isset($params)) {
-            $params['twig'] = ['cms_user' => $this->getUser(), 'params' => $params['numbers']];
+
+        if (isset($schema['filters']) && $schema['filters'] && isset($params))
+        {
+            $params['twig'] = [
+                'params'=>
+                [
+                    'system' => [
+                        'user' => $this->getUser()
+                    ],
+                    'nested' => $params['nested']
+                ]
+            ];
+
+            
             $schema['filters'] = $this->fillPattern($schema['filters'], $params);
+            
+
         }
+
         if (isset($schema['layout']['iframe']) && $params)
             $schema['layout']['iframe'] = $this->fillPattern($schema['layout']['iframe'], $params);
 
@@ -759,9 +775,9 @@ class model_app extends _uho_model
                 if ($v['field'] && strpos($v['field'], ':lang'))
                     foreach ($schema['langs'] as $k2 => $v2) {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
-                        $v['lang'] = $v2['lang'];
+                        $v['settings']['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
-                        $v['hidden'] = (!$v2['active']);
+                        $v['cms']['hidden'] = (!$v2['active']);
                         if ($k2 > 0 && $v['tab'])
                             unset($v['tab']);
                         if ($k2 != 0) {
@@ -783,7 +799,7 @@ class model_app extends _uho_model
                         if (strpos($v2['field'], ':lang')) foreach ($schema['langs'] as $k3 => $v3) {
                             $vv = $v2;
                             $vv['field'] = explode(':lang', $v2['field'])[0] . $v3['lang_add'];
-                            $vv['lang'] = $v3['lang'];
+                            $vv['settings']['lang'] = $v3['lang'];
                             $c[] = $vv;
                         }
                         else
@@ -1216,18 +1232,22 @@ class model_app extends _uho_model
                         // add default
                         if ($is_new && $v['cms']['default']) {
 
+                            // depreceated
                             $v['cms']['default'] = $this->fillPattern($v['cms']['default'], [
                                 'keys' => $record,
                                 'numbers' => $params,
                                 'params' => ['cms_user' => 1]
                             ]);
 
-                            $twig_params = $params;
-                            $twig_params['cms_user'] = $this->getUser()['id'];
-
-                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'], [
-                                'params' => $twig_params,
-                                'numbers' => $params
+                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'],
+                            [
+                                'params'=>
+                                [
+                                    'system'=>[
+                                        ['cms_user' => $this->getUser()['id']]
+                                    ],
+                                    'nested'=>$params
+                                ]
                             ]);
 
                             $record[$v['field']] = $v['cms']['default'];
@@ -1499,6 +1519,10 @@ class model_app extends _uho_model
             if ($v) {
                 $null = false;
 
+                /*
+
+                Deprecaate %params%
+
                 if ($params['numbers'])
                     foreach ($params['numbers'] as $k2 => $v2)
                         if ($v == ('%' . $k2 . '%') && $v2 === null)
@@ -1520,6 +1544,7 @@ class model_app extends _uho_model
                                 $array[$k] = $this->getTwigFromHtml($array[$k], $params['twig']);
                             }
                         }
+                */
 
                 if (!empty($params['twig']))
                     $array[$k] = $this->getTwigFromHtml($array[$k], $params['twig']);
@@ -2238,7 +2263,7 @@ class model_app extends _uho_model
     public function getSchemaForEdit($model, &$record, $params, $id, $post = null, $validate = false)
     {
 
-        $schema = $this->getSchema($model, true, ['numbers' => $params]);
+        $schema = $this->getSchema($model, true, $params    );
 
         // on_create defaults
         $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);

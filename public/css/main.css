@@ -1370,3 +1370,8 @@ a.widget:hover {
     
   }
 }
+
+textarea.form-control.serdelia-edit-field {
+  padding: 18px 26px;
+  font-size: 16px;
+}

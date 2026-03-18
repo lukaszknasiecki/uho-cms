@@ -53,7 +53,7 @@ class model_app_edit extends model_app
 
 		// Load base schema and prepare ORM
 
-		$schema = $this->getSchema($model, false, ['numbers' => $params, 'return_error' => true]);
+		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 
 		if ($this->getDebugMode()) {
 			if ($this->getStrictSchema()) $s = $schema;
@@ -73,7 +73,8 @@ class model_app_edit extends model_app
 
 		// Generate edit schema (populated with record data)
 
-		$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post, true);		
+		$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post, true);		
+		
 		$schema = $this->getSchemaDepreceated($schema);
 
 		// Update data with Helper Models
@@ -117,7 +118,7 @@ class model_app_edit extends model_app
 			}
 			// Refresh schema after plugin execution
 
-			$schema = $this->getSchemaForEdit($model, $record, $params, $id, $post);
+			$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post);
 		}
 
 		// Add backup URLs if applicable
