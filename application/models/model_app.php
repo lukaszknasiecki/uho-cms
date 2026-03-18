@@ -844,13 +844,7 @@ class model_app extends _uho_model
         // helper models
         if (isset($schema['helper_models'])) {
             foreach ($schema['helper_models'] as $k => $v) {
-                if (isset($params['numbers'])) {
-                    // depreceated %1% replace
-                    foreach ($params['numbers'] as $kk => $vv)
-                        $v['record'] = str_replace('%' . $kk . '%', $vv, $v['record']);
-                    // correct one                    
-                    $v['record'] = $this->getTwigFromHtml($v['record'], ['p' => $params['numbers']]);
-                }
+                $v['record'] = $this->getTwigFromHtml($v['record'], $params['twig']);
                 $schema['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
             }
         }
