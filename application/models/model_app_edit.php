@@ -138,6 +138,7 @@ class model_app_edit extends model_app
 		// Update schema with current state and permissions
 
 		$schema = $this->updateSchemaSources($schema, $record, $params);
+		
 		$schema = $this->updateSchemaAuth($schema);
 		$schema = $this->updateSchemaRecord($schema, $record, $params);
 		$record = $this->updateSchemaForEdit($schema, $page_with_params, $record, $translate, $params);

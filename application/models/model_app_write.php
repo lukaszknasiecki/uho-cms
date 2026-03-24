@@ -267,17 +267,19 @@ class model_app_write extends model_app
 				case "checkboxes":
 
 					$iDigits = 8;
-					if ($v['output'] == '4digits') $iDigits = 4;
-					if ($v['output'] == '6digits') $iDigits = 6;
-					if ($v['output'] == 'string') $iDigits = 0;
+					if ($v['settings']['output'] == '4digits') $iDigits = 4;
+					if ($v['settings']['output'] == '6digits') $iDigits = 6;
+					if ($v['settings']['output'] == 'string') $iDigits = 0;
 
 					$val = [];
+
 					if ($data[$v['field']]) {
 						foreach ($data[$v['field']] as $k2 => $v2)
 							if ($iDigits && is_numeric($v2))
 								$val[] = _uho_fx::dozeruj($v2, $iDigits);
 							elseif (!$iDigits && $v2 != 'off') $val[] = $v2;
 					}
+
 					$data[$v['field']] = implode(',', $val);
 
 					break;
