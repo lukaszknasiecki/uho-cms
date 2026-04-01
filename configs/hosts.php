@@ -5,6 +5,7 @@ if (getenv('S3_HOST'))
 		'host' =>	getenv('S3_HOST'),
 		'key' =>	getenv('S3_KEY'),
 		'secret' =>	getenv('S3_SECRET'),
+		'credentials' =>	getenv('S3_CREDENTIALS'),
 		'bucket' =>	getenv('S3_BUCKET'),
 		'region' =>	getenv('S3_REGION'),
 		'folder' =>	getenv('S3_FOLDER'),
