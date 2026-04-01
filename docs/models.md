@@ -50,7 +50,7 @@ You can define separate title for list and edit views. Moreover you can use `hel
     "helper_models": {
         "page": {
             "model": "pages",
-            "parent": "{{p.1}}"     // url params, in this case - parent's id
+            "parent": "{{params.nested.1}}"     // url params, in this case - parent's id
         }
     }
 }

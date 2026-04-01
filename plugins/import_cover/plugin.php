@@ -150,7 +150,7 @@ class serdelia_plugin_import_cover
 
             case "youtube":
 
-                $youtube = $this->youtubeGet($record[$params['field_youtube']], $this->parent->getApiKey('youtube'));
+                $youtube = $this->youtubeGet($record[$params['field_youtube']], $this->parent->getApiKeys('youtube'));
                 if (@$youtube['title']) $title = $youtube['title'];
                 if (@$youtube['image']) $cover = $youtube['image'];
 
@@ -166,7 +166,7 @@ class serdelia_plugin_import_cover
 
                 if ($vimeo_id) $vimeo = $this->vimeoGet(
                     $vimeo_id,
-                    $this->parent->getApiKey('vimeo'),
+                    $this->parent->getApiKeys('vimeo'),
                     isset($params['params']['field_vtt'])
                 );
 

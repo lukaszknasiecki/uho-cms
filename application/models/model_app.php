@@ -735,10 +735,9 @@ class model_app extends _uho_model
         $params['keys']['user'] = $this->getUser()['id'];
 
 
-        if (isset($schema['filters']) && $schema['filters'] && isset($params))
-        {
+        if (isset($schema['filters']) && $schema['filters'] && isset($params)) {
             $params['twig'] = [
-                'params'=>
+                'params' =>
                 [
                     'system' => [
                         'user' => $this->getUser()
@@ -747,10 +746,8 @@ class model_app extends _uho_model
                 ]
             ];
 
-            
-            $schema['filters'] = $this->fillPattern($schema['filters'], $params);
-            
 
+            $schema['filters'] = $this->fillPattern($schema['filters'], $params);
         }
 
         if (isset($schema['layout']['iframe']) && $params)
@@ -1233,16 +1230,18 @@ class model_app extends _uho_model
                                 'params' => ['cms_user' => 1]
                             ]);
 
-                            $v['cms']['default'] = $this->getTwigFromHtml($v['cms']['default'],
-                            [
-                                'params'=>
+                            $v['cms']['default'] = $this->getTwigFromHtml(
+                                $v['cms']['default'],
                                 [
-                                    'system'=>[
-                                        ['cms_user' => $this->getUser()['id']]
-                                    ],
-                                    'nested'=>$params
+                                    'params' =>
+                                    [
+                                        'system' => [
+                                            ['cms_user' => $this->getUser()['id']]
+                                        ],
+                                        'nested' => $params
+                                    ]
                                 ]
-                            ]);
+                            );
 
                             $record[$v['field']] = $v['cms']['default'];
                         }
@@ -1415,6 +1414,16 @@ class model_app extends _uho_model
     public function updateSchemaButtons($buttons, $schema, $record, $params, $get = null): array
     {
 
+        $params_twig = [
+            'params' =>
+            [
+                'system' => [
+                    'user' => $this->getUser()
+                ],
+                'nested' => $params
+            ]
+        ];
+        
         // buttons -----------------------------------------------
         if (!$buttons)
             $buttons = [];
@@ -1424,7 +1433,8 @@ class model_app extends _uho_model
                 // page button
                 if ($v['type'] == 'page') {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
-                    $v['page'] = $this->getTwigFromHtml($v['page'], $record);
+                    $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record,$params_twig));
+                    
 
                     if ($this->checkAuth($v['page'], [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
@@ -2257,7 +2267,7 @@ class model_app extends _uho_model
     public function getSchemaForEdit($model, &$record, $params, $id, $post = null, $validate = false)
     {
 
-        $schema = $this->getSchema($model, true, $params    );
+        $schema = $this->getSchema($model, true, $params);
 
         // on_create defaults
         $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
@@ -2326,8 +2336,7 @@ class model_app extends _uho_model
             if ($record)
                 $schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $record);
 
-            if ($schema['page_update']['file'] && $record)
-            {
+            if ($schema['page_update']['file'] && $record) {
                 $schema = $this->getSchema($model, true, $params, ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
 
                 if ($validate) {
@@ -2969,7 +2978,6 @@ class model_app extends _uho_model
 
         $response = $this->apporm->validateSchema($schema, true);
         if (!empty($response['errors'])) $this->halt($response['errors']);
-
     }
 
     /*
@@ -3032,11 +3040,11 @@ class model_app extends _uho_model
         $this->removeTimerVar('uho_cms_logout_max_logout_time');
     }
 
-    public function setLogoutTime($activity_minutes=null, $total_minutes=null)
+    public function setLogoutTime($activity_minutes = null, $total_minutes = null)
     {
 
-        if (!$activity_minutes) $activity_minutes = 60*24;
-        if (!$total_minutes) $total_minutes = 60*24;
+        if (!$activity_minutes) $activity_minutes = 60 * 24;
+        if (!$total_minutes) $total_minutes = 60 * 24;
 
         $this->setTimerVar('uho_cms_logout_duration_activity', $activity_minutes);
         $this->setTimerVar('uho_cms_logout_duration_total', $total_minutes);
@@ -3045,20 +3053,18 @@ class model_app extends _uho_model
 
         $this->resetActivityTime();
         $this->resetLogoutTime();
-        
-
     }
 
     // sets time to logout after inactivity to NOW+ACTIVITY_MINUTES
     public function resetActivityTime()
     {
-        $this->setTimerVar('uho_cms_logout_max_activity', time() +$this->getTimerVar('uho_cms_logout_duration_activity') * 60);
+        $this->setTimerVar('uho_cms_logout_max_activity', time() + $this->getTimerVar('uho_cms_logout_duration_activity') * 60);
     }
 
     // sets time to logout after session to NOW+MAX_SESSION_MINUTES
     public function resetLogoutTime()
     {
-        $this->setTimerVar('uho_cms_logout_max_logout_time', time()+$this->getTimerVar('uho_cms_logout_duration_total') * 60);
+        $this->setTimerVar('uho_cms_logout_max_logout_time', time() + $this->getTimerVar('uho_cms_logout_duration_total') * 60);
     }
 
     // return time in seconds to logout after inactivity
@@ -3101,11 +3107,11 @@ class model_app extends _uho_model
 
 
     public function getTimeMaxSession($type = null)
-    {        
+    {
         $r = $this->getTimerVar('uho_cms_logout_duration_total');
-        
+
         if ($type == 'string') {
-            return $r.' min.';
+            return $r . ' min.';
         } else return $r;
     }
 
@@ -3113,7 +3119,7 @@ class model_app extends _uho_model
     {
         $r = $this->getTimerVar('uho_cms_logout_duration_activity');
         if ($type == 'string') {
-            return $r.' min.';
+            return $r . ' min.';
         } else return $r;
     }
 
