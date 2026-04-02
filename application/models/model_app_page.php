@@ -99,13 +99,11 @@ class model_app_page extends model_app
 
 		$this->url_search = ['type' => 'url_now'];
 
-
-
 		// Filter and transform schema
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
 
 		$buttons = $this->getSchemaButtons($schema, $params);
-		$schema['fields'] = $this->updateSchemaLanguages($schema);
+		$schema['fields'] = $this->updateSchemaLanguagesSearch($schema);
 		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);		
 		$schema = $this->updateSchemaRowWidth($schema);
 
@@ -126,7 +124,7 @@ class model_app_page extends model_app
 			if (
 				!in_array($field['type'], ['image', 'checkboxes', 'temp-elements']) &&
 				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
-			) {				
+			) {
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
@@ -216,11 +214,12 @@ class model_app_page extends model_app
 
 					if ($field['type'] == 'boolean')
 					{
-						if ($this->lang == 'en') $no = 'No'; else $no = 'Nie';
-						if (!$label_value) $label_value = $field['label'];
-						if (!$value && $field['label_not']) $label_value = $field['label_not'];
-						elseif (!$value) $label_value = $no . '-' . $field['label'];
-					} elseif (!$label_value)  $label_value = $value;
+						if ($this->lang == 'en') $no = 'No'; else $no = 'Nie';						
+						if (!$label_value) $label_value = $field['cms']['label'];
+						if (!$value && $field['cms']['label_not']) $label_value = $field['cms']['label_not'];
+						elseif (!$value) $label_value = $no . '-' . $field['cms']['label'];
+					}
+					elseif (!$label_value)  $label_value = $value;
 
 
 					$filters_stack[] = [
@@ -396,9 +395,16 @@ class model_app_page extends model_app
 		}
 
 		/**
+		 * Search
+		 */
+		if (empty($schema['search'])) $schema['search']=[];
+
+		/**
 		 * Loop through all fields and normalize configuration
 		 */
-		foreach ($schema['fields'] as $k => $v) {
+		foreach ($schema['fields'] as $k => $v)
+		 {
+
 			// Override multilingual label
 			if (@is_array($v['label'])) {
 				$schema['fields'][$k]['label'] = $v['label']['page'];
@@ -408,8 +414,20 @@ class model_app_page extends model_app
 
 			if (!empty($v['cms']['list']) && is_string($v['cms']['list']))
 			{
-				$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];				
+				$v['cms']['list']=$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];				
+			} elseif (empty($v['cms']['list']))
+				$v['cms']['list']=$schema['fields'][$k]['cms']['list'] = [];
+
+			// Override search from schema.search array
+
+			if (in_array($v['field'], $schema['search']))
+			{
+				$schema['fields'][$k]['cms']['search'] = $v['cms']['search']=true;
+				if (empty($v['cms']['list']['type']))
+					$schema['fields'][$k]['cms']['list']['type']=$v['cms']['list']['type']='read';
+					
 			}
+
 
 			switch ($v['type']) {
 
@@ -458,15 +476,17 @@ class model_app_page extends model_app
 			}
 
 			// If any field has search enabled, set schema search flag
-			if (!empty($v['cms']['search'])) {
-				$schema['search'] = true;
+			if (!empty($v['cms']['search']))
+			{
+				if (!in_array($v['field'], $schema['search']))
+					$schema['search'][] = $v['field'];
+				
 			}
 
 
 
 		}
 
-		
 
 		/*
      * Reorder fields if 'position_after' is defined
@@ -586,6 +606,7 @@ class model_app_page extends model_app
 		// Apply schema transformations based on sources and page context.
 		$schema = $this->updateSchemaSources($schema);
 		$schema = $this->updateSchemaForPage($schema, $page_with_params, $params);
+		
 		if (empty($schema['fields'])) {
 			exit('<pre>No fields to display in the list view. Please add fields[].cms.list in the schema configuration.</pre>');
 		}
@@ -671,7 +692,7 @@ class model_app_page extends model_app
 	 * @param array $schema The schema containing fields and language definitions.
 	 * @return array Schema fields array with language-specific duplicates.
 	 */
-	private function updateSchemaLanguages(array $schema): array
+	private function updateSchemaLanguagesSearch(array $schema): array
 	{
 		$result = [];
 

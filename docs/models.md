@@ -56,7 +56,7 @@ You can define separate title for list and edit views. Moreover you can use `hel
 }
 ```
 
-## List View Layout Configuration
+## Page List Layout Configuration
 
 The standard layout is in the form of a list. An additional layout type (grid) is available. You can use built-on HTML for grid cells (based on `list` properties) or define custom HTML using values record values stored in `record.values` object. You can enhance the `grid` layout with `cards` settings, showing a more structured view.
 
@@ -67,6 +67,7 @@ The standard layout is in the form of a list. An additional layout type (grid) i
         "count": 100,                // Items per page
         "html": "Twig template: {{record.values.title}}",     // Custom HTML for grid items
         "settings": {
+            "width": 4,              // Bootstrap's grid width (2-6), default:2
             "cards": true,           // Use grid card layout
             "card_title": "title"    // Field to use as card title
         }

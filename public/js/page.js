@@ -18,7 +18,9 @@ Apps.Page = function($, window)
     $('.serdelia-edit-new-window').unbind('click').bind('click',newWindowClick);
     $('.serdelia-page-toggle-help').unbind('click').bind('click',changeToggleHelp);
 
-    setTimeout(function() 
+    
+
+    setTimeout(function()
     {
       var object=$('.serdelia-highlight');
       if (object && object.offset()) $('html,body').animate({scrollTop:object.offset().top-180}, 1000,"easeInOutQuint");
@@ -57,6 +59,7 @@ Apps.Page = function($, window)
     var f=$('#serdelia_page_search');
     if (!f.is(":visible"))
       {
+        $('html,body').animate({scrollTop: 0}, 600, 'easeOutQuint');
         f.show();
       }
       else
