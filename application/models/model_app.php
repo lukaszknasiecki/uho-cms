@@ -708,22 +708,24 @@ class model_app extends _uho_model
         } else
             $schema = $this->apporm->getSchema($model, false, $params);
 
-        $schema['structure'] = $this->getAppStructure($model);
-        if (!$schema['structure'])
-            $schema['structure'] = $this->getAppStructure($schema['table']);
+        $schema['cms']['structure'] = $this->getAppStructure($model);
+        if (!$schema['cms']['structure'])
+            $schema['cms']['structure'] = $this->getAppStructure($schema['table']);
 
-        if (isset($schema['layouts']) && $schema['layouts']) {
+        if (isset($schema['cms']['layouts']) && $schema['cms']['layouts']) {
             $now = intval(_uho_fx::getGet('layout'));
             if (!$now)
                 $now = 1;
-            $schema['layout'] = $schema['layouts'][$now - 1];
-            foreach ($schema['layouts'] as $k => $v) {
-                $schema['layouts'][$k]['active'] = (($k + 1) == $now);
-                $schema['layouts'][$k]['url'] = ['type' => 'url_now', 'getNew' => ['layout' => ($k + 1)]];
+            $schema['cms']['layout'] = $schema['cms']['layouts'][$now - 1];
+            foreach ($schema['cms']['layouts'] as $k => $v) {
+                $schema['cms']['layouts'][$k]['active'] = (($k + 1) == $now);
+                $schema['cms']['layouts'][$k]['url'] = ['type' => 'url_now', 'getNew' => ['layout' => ($k + 1)]];
             }
         }
 
         // translations
+        // TBD
+
         $schema = $this->extractTranslation($schema, ['label', 'buttons_edit', 'help']);
         foreach ($schema['fields'] as $k => $v)
             $schema['fields'][$k] = $this->extractTranslation($schema['fields'][$k], ['cms', 'label']);
@@ -735,7 +737,7 @@ class model_app extends _uho_model
         $params['keys']['user'] = $this->getUser()['id'];
 
 
-        if (isset($schema['filters']) && $schema['filters'] && isset($params)) {
+        if (isset($schema['cms']['filters']) && $schema['cms']['filters'] && isset($params)) {
             $params['twig'] = [
                 'params' =>
                 [
@@ -747,18 +749,18 @@ class model_app extends _uho_model
             ];
 
 
-            $schema['filters'] = $this->fillPattern($schema['filters'], $params);
+            $schema['cms']['filters'] = $this->fillPattern($schema['cms']['filters'], $params);
         }
 
-        if (isset($schema['layout']['iframe']) && $params)
-            $schema['layout']['iframe'] = $this->fillPattern($schema['layout']['iframe'], $params);
+        if (isset($schema['cms']['layout']['iframe']) && $params)
+            $schema['cms']['layout']['iframe'] = $this->fillPattern($schema['cms']['layout']['iframe'], $params);
 
-        $schema['langs'] = isset($this->appnow['langs']) ? $this->appnow['langs'] : [];
+        $schema['cms']['langs'] = isset($this->appnow['langs']) ? $this->appnow['langs'] : [];
 
         // field work
         foreach ($schema['fields'] as $k => $v) {
             if ($v['type'] == 'order')
-                $schema['sortable'] = ['field' => $v['field']];
+                $schema['cms']['sortable'] = ['field' => $v['field']];
             if (in_array($v['type'], ['file']) && !$v['field'])
                 $schema['fields'][$k]['field'] = 'fake_' . $v['type'] . ($k + 1);
         }
@@ -770,7 +772,7 @@ class model_app extends _uho_model
 
             foreach ($schema['fields'] as $k => $v) {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['langs'] as $k2 => $v2) {
+                    foreach ($schema['cms']['langs'] as $k2 => $v2) {
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['settings']['lang'] = $v2['lang'];
                         $v['cms_field'] = 'e_' . $v['field'];
@@ -793,7 +795,7 @@ class model_app extends _uho_model
 
                     $c = [];
                     foreach ($v['captions'] as $k2 => $v2)
-                        if (strpos($v2['field'], ':lang')) foreach ($schema['langs'] as $k3 => $v3) {
+                        if (strpos($v2['field'], ':lang')) foreach ($schema['cms']['langs'] as $k3 => $v3) {
                             $vv = $v2;
                             $vv['field'] = explode(':lang', $v2['field'])[0] . $v3['lang_add'];
                             $vv['settings']['lang'] = $v3['lang'];
@@ -839,20 +841,20 @@ class model_app extends _uho_model
             }
 
         // helper models
-        if (isset($schema['helper_models'])) {
-            foreach ($schema['helper_models'] as $k => $v) {
+        if (isset($schema['cms']['helper_models'])) {
+            foreach ($schema['cms']['helper_models'] as $k => $v) {
                 $v['record'] = $this->getTwigFromHtml($v['record'], $params['twig']);
-                $schema['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
+                $schema['cms']['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
             }
         }
 
-        if ($schema['helper_models']) {
+        if ($schema['cms']['helper_models']) {
             if (!isset($params['twig'])) $params['twig'] = [];
-            $params['twig']['helper_models'] = $schema['helper_models'];
+            $params['twig']['helper_models'] = $schema['cms']['helper_models'];
         }
 
-        if (isset($schema['label']['page'])) {
-            $schema['label']['page'] = $this->fillPattern($schema['label']['page'], $params);
+        if (isset($schema['cms']['label']['page'])) {
+            $schema['cms']['label']['page'] = $this->fillPattern($schema['cms']['label']['page'], $params);
         }
 
         return $schema;
@@ -896,22 +898,23 @@ class model_app extends _uho_model
 
     public function updateSchemaForEdit(&$schema, $page_with_params, $record, $translate, $params)
     {
-        if (is_array($schema['label'])) {
-            if (isset($schema['label']['edit']))
-                $schema['label'] = $schema['label']['edit'];
+        //print_r($schema);exit();
+        if (is_array($schema['cms']['label'])) {
+            if (isset($schema['cms']['label']['edit']))
+                $schema['cms']['label'] = $schema['cms']['label']['edit'];
             else
-                $schema['label'] = $schema['label']['page'];
+                $schema['cms']['label'] = $schema['cms']['label']['page'];
         }
 
-        if (!$schema['label'])
-            $schema['label'] = $this->getSchemaLabelFromMenu($page_with_params);
+        if (!$schema['cms']['label'])
+            $schema['cms']['label'] = $this->getSchemaLabelFromMenu($page_with_params);
         if (!$record)
             $record = [];
 
         $original_record = $r = $record;
         $r['params'] = $params;
-        if ($schema['label'])
-            $schema['label'] = $this->getTwigFromHtml($schema['label'], $r);
+        if ($schema['cms']['label'])
+            $schema['cms']['label'] = $this->getTwigFromHtml($schema['cms']['label'], $r);
 
         $hide = [];
 
@@ -1321,8 +1324,7 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['cms']['help'] = ['text' => $v['cms']['help']];
                     $schema['fields'][$k]['cms']['help']['hidden'] = $hidden;
                 }
-                //if ($schema['fields'][$k]['edit'] === false)
-                //    $schema['fields'][$k]['disabled'] = true;
+
             }
 
         // update HTML media
@@ -1423,7 +1425,7 @@ class model_app extends _uho_model
                 'nested' => $params
             ]
         ];
-        
+
         // buttons -----------------------------------------------
         if (!$buttons)
             $buttons = [];
@@ -1433,8 +1435,8 @@ class model_app extends _uho_model
                 // page button
                 if ($v['type'] == 'page') {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
-                    $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record,$params_twig));
-                    
+                    $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record, $params_twig));
+
 
                     if ($this->checkAuth($v['page'], [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
@@ -2268,9 +2270,11 @@ class model_app extends _uho_model
     {
 
         $schema = $this->getSchema($model, true, $params);
+        $schema = $this->getSchemaDepreceated($schema);
+
 
         // on_create defaults
-        $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
+        $plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_create', 1);
         if ($plugins) {
             require_once("model_app_plugin.php");
             $create_defaults = [];
@@ -2296,9 +2300,9 @@ class model_app extends _uho_model
             if ($post['action'] == 'field_value')
                 $replace = [substr($post['field'], 2) => $post['value']];
 
-            if (!empty($schema['filters']))
-                foreach ($schema['filters'] as $k => $v)
-                    if ($v[0] == '%') unset($schema['filters'][$k]);
+            if (!empty($schema['cms']['filters']))
+                foreach ($schema['cms']['filters'] as $k => $v)
+                    if ($v[0] == '%') unset($schema['cms']['filters'][$k]);
 
             $record = $this->apporm->get($schema, ['id' => $id], true, null, null, ['replace_values' => $replace]);
 
@@ -2316,7 +2320,7 @@ class model_app extends _uho_model
         }
 
         // plugins on create
-        $plugins = _uho_fx::array_filter($schema['buttons_edit'], 'on_create', 1);
+        $plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_create', 1);
 
         /*
          changing schema according to record values
@@ -2394,9 +2398,9 @@ class model_app extends _uho_model
             }
         }
 
-        if (!empty($schema['filters']))
-            foreach ($schema['filters'] as $k => $v)
-                if ($v[0] == '%') unset($schema['filters'][$k]);
+        if (!empty($schema['cms']['filters']))
+            foreach ($schema['cms']['filters'] as $k => $v)
+                if ($v[0] == '%') unset($schema['cms']['filters'][$k]);
 
 
         return $schema;
@@ -2503,8 +2507,8 @@ class model_app extends _uho_model
             $filters = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filters]];
         }
 
-        if ($schema['filters'])
-            $filters = array_merge($filters, $schema['filters']);
+        if ($schema['cms']['filters'])
+            $filters = array_merge($filters, $schema['cms']['filters']);
 
         return $filters;
     }
@@ -2748,8 +2752,11 @@ class model_app extends _uho_model
             return false;
 
         $schema = [
-            'label' => '<pre>' . $json_filename . '<pre>',
-            'help' => ['label' => $help],
+            'cms' =>
+            [
+                'label' => '<pre>' . $json_filename . '<pre>',
+                'help' => ['label' => $help]
+            ],
             'fields' => $fields
         ];
 
@@ -2798,8 +2805,11 @@ class model_app extends _uho_model
         foreach ($fields as $k => $v)
             $fields[$k]['cms_field'] = $v['field'];
         $schema = [
-            'label' => '<pre>' . $json_filename . '<pre>',
-            'help' => ['label' => $help],
+            'cms' =>
+            [
+                'label' => '<pre>' . $json_filename . '<pre>',
+                'help' => ['label' => $help]
+            ],
             'fields' => $fields,
             'url_back' => 'dupa',
             'url_back_form' => $url_back,
@@ -2824,7 +2834,7 @@ class model_app extends _uho_model
             }
         }
 
-        $schema['buttons_edit'] = [
+        $schema['cms']['buttons_edit'] = [
             ['label' => 'Back', "type" => "page", "icon" => "keyboard-backspace", "url" => $url_back]
         ];
 
@@ -3129,8 +3139,44 @@ class model_app extends _uho_model
         return (time() < $end);
     }
 
+    /*
+        Converts depreceted schema fields to new format
+    */
+
     public function getSchemaDepreceated($schema)
     {
+        // cms arrray
+
+        if (empty($schema['cms'])) $schema['cms'] = [];
+        $sections = [
+            'buttons_edit',
+            'buttons_page',
+            ['model','output'],
+            'disable',
+            'filters',
+            'label',
+            'help',
+            'helper_models',
+            'layout',
+            'layouts',
+            "output"
+        ];
+
+        foreach ($sections as $section)
+        {
+            if (is_array($section) && isset($schema[$section[0]]))
+                {                    
+                    $schema['cms'][$section[1]] = $schema[$section[0]];
+                    unset($schema[$section[0]]);
+                }
+            elseif (is_string($section) && isset($schema[$section]))
+            {
+                $schema['cms'][$section] = $schema[$section];
+                unset($schema[$section]);
+            }
+        }
+
+        // fields
         $cms_fields = ['auto', 'default', 'on_demand', 'required', 'edit', 'header', 'help', 'hidden', 'hr', 'search', 'tab'];
 
         $cms_fields_both = []; //['list','label'];

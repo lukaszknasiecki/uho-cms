@@ -1,6 +1,6 @@
 <div class="serdelia_page_search" id="serdelia_page_search">
   <form method="GET">
-    {% for search_field in schema.search %}
+    {% for search_field in schema.cms.search %}
     {% for item in schema.fields %}
     {% if search_field==item.field %}
     <div class="form-group row">

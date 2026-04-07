@@ -70,8 +70,8 @@ class model_app_plugin extends model_app
 
 		$schema=$this->apporm->getSchemaWithPageUpdate($page_single);
 
-		if (isset($params['record'])) $buttons=$schema['buttons_edit'];
-			else $buttons=$schema['buttons_page'];
+		if (isset($params['record'])) $buttons=$schema['cms']['buttons_edit'];
+			else $buttons=$schema['cms']['buttons_page'];
 		
 		if (!_uho_fx::array_filter($buttons,'plugin',$plugin))
 			exit("auth::error::2::app_plugin::{$page}::{$plugin}");

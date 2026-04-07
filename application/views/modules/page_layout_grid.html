@@ -1,9 +1,9 @@
 <div id="serdelia_page" data-url-write="{{schema.url_write}}" data-_srdcsrftkn="{{csrf_token_value}}"></div>
-<div id="gridList" data-separator="section" class="row{% if schema.layout.class %} {{schema.layout.class}}{% endif %}"
-  {% if schema.sortable %}data-sortable="true" data-field="{{schema.sortable.field}}" data-path="{{schema.url_sort}}" {%
+<div id="gridList" data-separator="section" class="row{% if schema.cms.layout.class %} {{schema.cms.layout.class}}{% endif %}"
+  {% if schema.cms.sortable %}data-sortable="true" data-field="{{schema.cms.sortable.field}}" data-path="{{schema.url_sort}}" {%
   endif %}>
 
-  {% set width=schema.layout.settings.width %}
+  {% set width=schema.cms.layout.settings.width %}
   {% if not width %}
   {% set width=2 %}
   {% endif %}
@@ -33,7 +33,7 @@
       {% endif %}
       {% if record.url_edit %}
       <a href="{% if record.url_click %}{{record.url_click}}{% else %}{{record.url_edit}}{% endif %}"
-        style="color:#000;text-decoration:none;{% if schema.sortable %}cursor:move{% endif %}" class="thumbnail widget">
+        style="color:#000;text-decoration:none;{% if schema.cms.sortable %}cursor:move{% endif %}" class="thumbnail widget">
         {% elseif record.url_view %}
         <a href="{% if record.url_click %}{{record.url_click}}{% else %}{{record.url_view}}{% endif %}"
           style="color:#000;text-decoration:none;" class="thumbnail">
@@ -41,15 +41,15 @@
           <a style="color:#000;text-decoration:none;" class="thumbnail">
             {% endif %}
             {% set html=[] %}
-            {% if schema.layout.settings.cards %}<div class='card' {% if schema.layout.settings.height
-              %}style='height:{{schema.layout.settings.height}}px' {% endif %}>
+            {% if schema.cms.layout.settings.cards %}<div class='card' {% if schema.cms.layout.settings.height
+              %}style='height:{{schema.cms.layout.settings.height}}px' {% endif %}>
               <div class='card-body'>{% endif %}
 
                 {% for item in schema.fields %}
                 {% if not item.list_hidden and item.type!='uid' and item.type!='order' %}
                 
                   {% if item.cms.list.type=='badge' %}
-                  {% if not schema.layout.html %}
+                  {% if not schema.cms.layout.html %}
                     {% include 'modules/page/subview_badge.html' with {'list':item.cms.list,'value':record.values[item.field] }
                   %}
                   {% else %}
@@ -57,8 +57,8 @@
                       {'list':item.cms.list,'value':record.values[item.field] })}) %}
                   {% endif %}
                 {% else %}
-                {% if not schema.layout.html %}
-                {% if schema.layout.settings.cards and item.field==schema.layout.settings.card_title %}
+                {% if not schema.cms.layout.html %}
+                {% if schema.cms.layout.settings.cards and item.field==schema.cms.layout.settings.card_title %}
                   {% set card_title=true %}{% else %}{% set card_title=null %}{% endif %}
                 
                 {% if card_title %}
@@ -77,11 +77,11 @@
                 {% endif %}
                 {% endfor %}
 
-                {% if schema.layout.html %}
-                {{ include(template_from_string(schema.layout.html)) }}
+                {% if schema.cms.layout.html %}
+                {{ include(template_from_string(schema.cms.layout.html)) }}
                 {% endif %}
 
-                {% if schema.layout.settings.cards %}
+                {% if schema.cms.layout.settings.cards %}
               </div>
             </div>{% endif %}
 
@@ -89,7 +89,7 @@
     </div>
   </section>
   {% endfor %}
-  {% if schema.layout.settings.cards %}
+  {% if schema.cms.layout.settings.cards %}
 </div>
 </div>{% endif %}
 </div>

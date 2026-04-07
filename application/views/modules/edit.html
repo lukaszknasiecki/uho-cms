@@ -1,10 +1,15 @@
 {% if not lightbox %}
-    {% include 'header/header.html' with {'label':schema.label,'langs':schema.langs,'type':'edit','buttons':schema.buttons_edit } %}
+    {% include 'header/header.html' with {
+      'label':schema.cms.label,
+      'langs':schema.cms.langs,
+      'type':'edit',
+      'buttons':schema.cms.buttons_edit }
+%}
 {% else %}
   <!-- lightbox -->
   <button class="btn btn-sm btn-primary serdelia-lightbox-closer serdelia-lightbox-closer-js"><span
       class="mdi mdi-close"></span></button>
-  {#{% for item in schema.buttons_edit %}
+  {#{% for item in schema.cms.buttons_edit %}
   {% if not item.hidden and item.icon!='back' and item.icon!='back' %}
   <a href="{{item.url}}?mode=lightbox" {% if item.target %}target="{{item.target}}" {% endif %}><button
       class="btn btn-sm serdelia-lightbox-button {% if item.class %}btn-{{item.class}}{% else %}btn-primary{% endif %} {% if not item.target %}serdelia-edit-ask-save-go{% endif %}">[[icon::{{item.icon}},left]]{%
@@ -98,7 +103,7 @@
           {% else %}
           <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.cms.label}}{% if field.cms.required %}<sup>
               *</sup>{% endif %}
-            {% if field.settings.lang and schema.langs|length>1 %}
+            {% if field.settings.lang and schema.cms.langs|length>1 %}
             &nbsp;<span class="btn btn-xs btn-default serdelia-edit-fields-lang">{{field.settings.lang}}</span>
             {% endif %}
             {% if field.cms.help %}

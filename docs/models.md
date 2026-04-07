@@ -7,11 +7,13 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 ```json
 {
     "table": "database_table_name",
-    "label": {
-        "page": "Display Name (List View)",
-        "edit": "Edit View Title (Twig template)"
-    },
     "order": "field_name",
+    "cms": {
+        "label": {
+            "page": "Display Name (List View)",
+            "edit": "Edit View Title (Twig template)"
+        }        
+    },
     "fields": [
         {
             "field": "field_name",
@@ -29,13 +31,23 @@ Each content type in the CMS is defined as a "model" using a JSON configuration 
 ## Top-Level Properties
 
 * `table`: Database table name (required)
-* `label`: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
 * `order`: Default order of field(s), comma-separated for multiple fields
-* `model`: Object defining how records of this schema are displayed (supports Twig templates) in other models
-* `layout`: List view layout configuration
-* `fields`: Array of field definitions
+* `fields`: Array of field definitions (required)
+
+## Cms object Properties
+
 * `buttons_page`: Array of buttons shown in list view
 * `buttons_edit`: Array of buttons shown in edit view
+* `disable`: Array of actions to disable (add, remove, edit)
+* `filters`: Fitlers attached to page view
+* `help`: Disclaimer copy
+* `helper_models`: Virtual data extracted from connected models
+* `label`: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
+* `layout`: List/Grid view layout configuration
+* `output`: Object defining how records of this schema are displayed (supports Twig templates) in other models
+* `search`: List of fields available for search
+* `shortcuts`: Shortcut buttons to popular filters
+* `sortable`: Enabled drag&drop sort in list view
 
 ## Page Title (label) Configuration
 
@@ -126,11 +138,14 @@ fields use `s_` prefix in the URL and that's how you should use them in the `sho
 
 ```json
 {
-    "shortcuts":
-        [
-            {"label":"Draft","color":"secondary","link":{"query":{"s_status":"draft"}}},
-            {"label":"Completed","color":"success","link":{"query":{"s_status":"completed"}}}
-        ]
+    "cms":
+    {
+        "shortcuts":
+            [
+                {"label":"Draft","color":"secondary","link":{"query":{"s_status":"draft"}}},
+                {"label":"Completed","color":"success","link":{"query":{"s_status":"completed"}}}
+            ]
+    }
 }
 ```
 

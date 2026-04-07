@@ -76,7 +76,7 @@ class model_app_page extends model_app
 		$schema = $this->updateSchemaAuth($schema);
 
 		// Execute plugin "on_load" hooks
-		$before = _uho_fx::array_filter($schema['buttons_page'] ?? [], 'on_load', 1);
+		$before = _uho_fx::array_filter($schema['cms']['buttons_page'] ?? [], 'on_load', 1);
 		if ($before) {
 			require_once "model_app_plugin.php";
 			foreach ($before as $plugin) {
@@ -119,7 +119,7 @@ class model_app_page extends model_app
 		$filters_stack = [];
 		$first = true;
 		$global_search = isset($get['query']);
-
+	
 		foreach ($schema['fields'] as $k => $field)
 			if (
 				!in_array($field['type'], ['image', 'checkboxes', 'temp-elements']) &&
@@ -147,18 +147,7 @@ class model_app_page extends model_app
 						break;
 					case 'select':
 					case 'elements':
-						/*
-						$vv = [];
-						if (!$global_search && !empty($field['source']['model'])) {
-							$searchParams = [];
-							if (!empty($field['source']['search']) && $field['source']['search_strict']) {
-								foreach ($field['source']['search'] as $srcField) {
-									$searchParams[$srcField] = $value;
-								}
-							}
-							$ids = $this->apporm->get($field['source']['model'], $searchParams, false);
-							$vv = _uho_fx::array_extract($ids, 'id') ?: 0;
-						} else*/
+					
 							if ($global_search && !empty($field['options']))
 							{
 								foreach ($field['options'] as $opt)
@@ -223,7 +212,7 @@ class model_app_page extends model_app
 
 
 					$filters_stack[] = [
-						'label' => $field['label'],
+						'label' => $field['label'] ?? $label_value,
 						'label_value' => $label_value,
 						'value' => $value,
 						'url' => ['type' => 'url_now', 'getRemove' => ['query', $searchKey]]
@@ -235,7 +224,8 @@ class model_app_page extends model_app
 		// Convert global search to unified custom query
 		if ($global_search) {
 			$searchSchema = $schema;
-			$searchSchema['filters'] = $filters;
+			$searchSchema['cms']['filters'] = $filters;
+			//TBD
 			$filterSet = $this->apporm->getFiltersQueryArray($searchSchema);
 			$filters = $filterSet
 				? ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filterSet]]
@@ -244,19 +234,20 @@ class model_app_page extends model_app
 		}
 
 		// Merge with schema-defined filters
-		if (!empty($schema['filters'])) {
-			$filters = array_merge($schema['filters'], $filters);
+		if (!empty($schema['cms']['filters'])) {
+			$filters = array_merge($schema['cms']['filters'], $filters);
 		}
 
 
 		// Fetch records
-	
+
 		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
 		$_SESSION['page_filters'][$model] = $filters;
 
 		$offset = ($page_nr - 1) * $this->paging['count'];
 		$limit = $this->paging['count'];
-		
+		$schema['order']=$schema['cms']['order'];
+
 		$records = $this->apporm->get($schema, $filters, false, null, "$offset,$limit");
 
 		if (!$global_search) {
@@ -275,18 +266,18 @@ class model_app_page extends model_app
 				'url_remove' => ['type' => 'remove', 'page' => $model, 'record' => $record['id'], 'params' => $params]
 			];
 
-			if (!empty($schema['layout']['link'])) {
-				$records[$i]['url_click'] = $this->getTwigFromHtml($schema['layout']['link'], $record);
+			if (!empty($schema['cms']['layout']['link'])) {
+				$records[$i]['url_click'] = $this->getTwigFromHtml($schema['cms']['layout']['link'], $record);
 			}
 
 			// Apply action restrictions
-			if (!empty($schema['disable']) && in_array('edit', $schema['disable'])) {
+			if (!empty($schema['cms']['disable']) && in_array('edit', $schema['cms']['disable'])) {
 				unset($records[$i]['url_edit']);
 			}
-			if (!empty($schema['disable']) && in_array('remove', $schema['disable'])) {
+			if (!empty($schema['cms']['disable']) && in_array('remove', $schema['cms']['disable'])) {
 				unset($records[$i]['url_remove']);
 			}
-			if (empty($schema['enable']) || !in_array('view', $schema['enable'])) {
+			if (empty($schema['cms']['enable']) || !in_array('view', $schema['cms']['enable'])) {
 				unset($records[$i]['url_view']);
 			}
 		}
@@ -360,44 +351,49 @@ class model_app_page extends model_app
 		// Save page identifier for use in rendering or labeling
 		$schema['page_with_params'] = $page_with_params;
 
-		// Update label from nested 'label.page' or fallback to label from menu
-		if (isset($schema['label']['page'])) {
-			$schema['label'] = $schema['label']['page'];
+		// Get order root to cms if empty
+		if (empty($schema['cms']['order']) && !empty($schema['order'])) {
+			$schema['cms']['order'] = $schema['order'];
 		}
-		if (!$schema['label']) {
-			$schema['label'] = $this->getSchemaLabelFromMenu($page_with_params);
+
+		// Update label from nested 'label.page' or fallback to label from menu
+		if (isset($schema['cms']['label']['page'])) {
+			$schema['cms']['label'] = $schema['cms']['label']['page'];
+		}
+		if (!$schema['cms']['label']) {
+			$schema['cms']['label'] = $this->getSchemaLabelFromMenu($page_with_params);
 		}
 
 		// Format and expand help section if defined
-		if (!empty($schema['help'])) {
-			if (!is_array($schema['help'])) {
-				$schema['help'] = ['label' => $schema['help']];
+		if (!empty($schema['cms']['help'])) {
+			if (!is_array($schema['cms']['help'])) {
+				$schema['cms']['help'] = ['label' => $schema['cms']['help']];
 			}
 
 			// Use cookie to check if help should be hidden
 			$hidden = (@$_COOKIE['serdelia_page_help_' . $schema['page_with_params']] == 1);
 
 			// Convert help text using Twig-like template engine
-			$schema['help']['label'] = $this->getTwigFromHtml($schema['help']['label'], ['params' => $params]);
-			$schema['help']['hidden'] = $hidden;
+			$schema['cms']['help']['label'] = $this->getTwigFromHtml($schema['cms']['help']['label'], ['params' => $params]);
+			$schema['cms']['help']['hidden'] = $hidden;
 		}
 
 		/**
 		 * Shortcuts
 		*/
 
-		if (isset($schema['shortcuts']))
+		if (isset($schema['cms']['shortcuts']))
 		{
-			foreach ($schema['shortcuts'] as $k=>$v)
+			foreach ($schema['cms']['shortcuts'] as $k=>$v)
 			{
-				$schema['shortcuts'][$k]['url']=['type'=>'url_now','get'=>@$v['link']['query']];
+				$schema['cms']['shortcuts'][$k]['url']=['type'=>'url_now','get'=>@$v['link']['query']];
 			}
 		}
 
 		/**
 		 * Search
 		 */
-		if (empty($schema['search'])) $schema['search']=[];
+		if (empty($schema['cms']['search'])) $schema['cms']['search']=[];
 
 		/**
 		 * Loop through all fields and normalize configuration
@@ -420,7 +416,7 @@ class model_app_page extends model_app
 
 			// Override search from schema.search array
 
-			if (in_array($v['field'], $schema['search']))
+			if (in_array($v['field'], $schema['cms']['search']))
 			{
 				$schema['fields'][$k]['cms']['search'] = $v['cms']['search']=true;
 				if (empty($v['cms']['list']['type']))
@@ -478,8 +474,8 @@ class model_app_page extends model_app
 			// If any field has search enabled, set schema search flag
 			if (!empty($v['cms']['search']))
 			{
-				if (!in_array($v['field'], $schema['search']))
-					$schema['search'][] = $v['field'];
+				if (!in_array($v['field'], $schema['cms']['search']))
+					$schema['cms']['search'][] = $v['field'];
 				
 			}
 
@@ -526,8 +522,8 @@ class model_app_page extends model_app
 		/*
 		     * Add schema editor button if user is allowed
      	*/
-		if (!isset($schema['buttons_page'])) {
-			$schema['buttons_page'] = [];
+		if (empty($schema['cms']['buttons_page'])) {
+			$schema['cms']['buttons_page'] = [];
 		}
 		return $schema;
 	}
@@ -547,27 +543,28 @@ class model_app_page extends model_app
 		{
 			[$field, $direction] = explode(',', $sort);
 			if (empty($direction)) $direction='ASC';
-			$schema['order'] = ['field' => $field, 'sort' => $direction];
+			$schema['cms']['order'] = ['field' => $field, 'sort' => $direction];
 		}
 		
 
 		// Default sorting fallback to the first field if not defined.
-		if (empty($schema['order'])) {
-			$schema['order'] = ['field'=>$schema['fields'][0]['field'],'sort'=>'ASC'];
+		if (empty($schema['cms']['order'])) {
+			$schema['cms']['order'] = ['field'=>$schema['fields'][0]['field'],'sort'=>'ASC'];
 		}
 
 
 		// Ensure the order format is consistent (associative array).
-		if (!is_array($schema['order'])) {
-			$schema['order'] = [
-				'field' => $schema['order']['field'],
-				'sort'  => $schema['order']['sort']
+		if (!is_array($schema['cms']['order']))
+		{
+			$schema['cms']['order'] = [
+				'field' => $schema['cms']['order'],
+				'sort'  => $order[1] ?? 'ASC'
 			];
 		}
 
 		// Add URL sorting links and modify field names with ",DESC" where needed.
 		foreach ($schema['fields'] as $k => $v) {
-			if ($v['field'] === $schema['order']['field'] && $schema['order']['sort'] !== 'DESC') {
+			if ($v['field'] === $schema['cms']['order']['field'] && $schema['cms']['order']['sort'] !== 'DESC') {
 				$v['field'] .= ',DESC';
 			}
 
@@ -614,21 +611,21 @@ class model_app_page extends model_app
 		// Adjust paging count based on field types or layout configuration.
 		if (_uho_fx::array_filter($schema['fields'], 'type', 'order')) {
 			$this->paging = ['count' => 1000];
-		} elseif (!empty($schema['layout']['type']) && $schema['layout']['type'] === 'grid') {
+		} elseif (!empty($schema['cms']['layout']['type']) && $schema['cms']['layout']['type'] === 'grid') {
 			$this->paging = ['count' => 50];
 		}
 
-		if (!empty($schema['layout']['count'])) {
-			$this->paging = ['count' => $schema['layout']['count']];
+		if (!empty($schema['cms']['layout']['count'])) {
+			$this->paging = ['count' => $schema['cms']['layout']['count']];
 		}
 
 		// Restrict actions for unauthorized users.
 		if (!in_array($auth, [2, 3])) {
 			if ($auth==1) $remove=['add', 'remove'];
 				else $remove=['add', 'remove', 'edit'];
-			$schema['disable'] = array_merge($schema['disable'] ?? [], $remove);
-			$schema['enable'] = array_merge($schema['enable'] ?? [], ['view']);
-		}
+			$schema['cms']['disable'] = array_merge($schema['cms']['disable'] ?? [], $remove);
+			$schema['cms']['enable'] = array_merge($schema['cms']['enable'] ?? [], ['view']);
+		}		
 
 		// Remove editable fields in list
 		if (!in_array($auth, [2, 3])) {
@@ -699,12 +696,12 @@ class model_app_page extends model_app
 		foreach ($schema['fields'] as $field) {
 			// If the field includes a :lang placeholder, create entries per language.
 			if (strpos($field['field'], ':lang') !== false) {
-				foreach ($schema['langs'] as $langData) {
+				foreach ($schema['cms']['langs'] as $langData) {
 					$localizedField = $field;
 					$localizedField['field'] = str_replace(':lang', $langData['lang_add'], $field['field']);
 					$localizedField['lang'] = $langData['lang'];
 
-					if (!empty($field['list']['languages']) || $langData === reset($schema['langs'])) {
+					if (!empty($field['list']['languages']) || $langData === reset($schema['cms']['langs'])) {
 						$result[] = $localizedField;
 					}
 				}
@@ -737,15 +734,15 @@ class model_app_page extends model_app
 		// Determine the 'back' button URL based on schema structure
 		$url = null;
 
-		if (($schema['structure']['parent']['parent_page'] ?? '') === 'null') {
-			$url = '';
-		} elseif (!empty($schema['structure']['parent']['page'])) {
+		if (($schema['cms']['structure']['parent']['parent_page'] ?? '') === 'null') {
+			$url = '/';
+		} elseif (!empty($schema['cms']['structure']['parent']['page'])) {
 			// Construct parent page URL from params
 			$p = $params;
 			$record = array_pop($p); // last param is considered the record ID
 			$url = [
 				'type'   => 'edit',
-				'page'   => $schema['structure']['parent']['parent_page'],
+				'page'   => $schema['cms']['structure']['parent']['parent_page'],
 				'params' => $p,
 				'record' => $record
 			];
@@ -764,17 +761,17 @@ class model_app_page extends model_app
 				'url'   => $url
 			];
 		}
+		
 
 		// Append any schema-defined buttons
-		if (!empty($schema['buttons_page']) && is_array($schema['buttons_page'])) {
-			$buttons = array_merge($buttons, $schema['buttons_page']);
+		if (!empty($schema['cms']['buttons_page']) && is_array($schema['cms']['buttons_page'])) {
+			$buttons = array_merge($buttons, $schema['cms']['buttons_page']);
 		}
 
 		// Add "add" button if it's not disabled
-		if (empty($schema['disable']) || !in_array('add', $schema['disable'], true))
-		{
-			
-			$addLabel = $schema['buttons_page_labels']['add'] ?? 'add';
+		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true))
+		{			
+			$addLabel = $schema['cms']['buttons_page_labels']['add'] ?? 'add';
 			$buttons[] = [
 				'label' => $addLabel,
 				'icon'  => 'add',
@@ -785,7 +782,6 @@ class model_app_page extends model_app
 				]
 			];
 		}
-		
 		// Final update using plugin/customization hook
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}

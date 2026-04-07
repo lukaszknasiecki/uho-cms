@@ -55,21 +55,22 @@ class model_app_edit extends model_app
 
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 
-		if ($this->getDebugMode()) {
+		if ($this->getDebugMode())
+		{
 			if ($this->getStrictSchema()) $s = $schema;
 			else $s = $this->getSchemaDepreceated($schema);
-			unset($s['structure']);
-			unset($s['langs']);
-			unset($s['sortable']);
+			unset($s['cms']['structure']);
+			unset($s['cms']['langs']);
+			unset($s['cms']['sortable']);
 			$schema_validation = $this->orm->validateSchema($s, $this->getStrictSchema());
 			if ($schema_validation['errors']) {
 				//$schema_validation['url']=['type'=>'url_now','get'=>['rebuild_schema'=>'1']];
 			}
 		} else $schema_validation = null;
 
-		$this->validateSchema($schema, $model);
+		$schema=$this->getSchemaDepreceated($schema);
+		$this->validateSchema($schema, $model);				
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
-
 
 		// Generate edit schema (populated with record data)
 
@@ -77,31 +78,19 @@ class model_app_edit extends model_app
 			
 		if ($id && !$record) exit('model_app_edit::record_not_found');
 		
-		$schema = $this->getSchemaDepreceated($schema);
 
 		// Update data with Helper Models
 
-		if (isset($schema['helper_models'])) {
-			/*
-			foreach ($schema['helper_models'] as $k=>$v)
-			{
-				if ($params)
-				foreach ($params as $kk=>$vv)
-				if (is_string($v['record']))
-					$v['record']=str_replace('%'.$kk.'%', $vv, $v['record']);
-
-				$schema['helper_models'][$k]=$this->apporm->get($v['model'], ['id'=>$v['record']],true);
-			}*/
-			
+		if (isset($schema['cms']['helper_models'])) {
 			$replace = $record;
-			$replace['helper_models'] = $schema['helper_models'];
+			$replace['helper_models'] = $schema['cms']['helper_models'];
 			
-			$schema['label']['edit'] = $this->getTwigFromHtml($schema['label']['edit'], $replace);
+			$schema['cms']['label']['edit'] = $this->getTwigFromHtml($schema['cms']['label']['edit'], $replace);
 		}
 
 		// Execute "on_load" plugins if configured
 
-		$before = _uho_fx::array_filter(@$schema['buttons_edit'], 'on_load', 1);
+		$before = _uho_fx::array_filter(@$schema['cms']['buttons_edit'], 'on_load', 1);
 		if ($before && $record) {
 			require_once("model_app_plugin.php");
 			foreach ($before as $v) {
@@ -129,7 +118,7 @@ class model_app_edit extends model_app
 
 		if (
 			$this->is_backup() && $id && $this->checkAuth($model, [3]) &&
-			(!isset($schema['disable']) || !in_array('backup', $schema['disable']))
+			(!isset($schema['cms']['disable']) || !in_array('backup', $schema['cms']['disable']))
 		) {
 			$schema['url_backup'] = "page/cms_backup?s_page={$schema['table']}&s_record={$id}";
 			$schema['url_backup_media'] = "page/cms_backup_media?s_page={$schema['table']}&s_record={$id}";
@@ -140,7 +129,7 @@ class model_app_edit extends model_app
 		$schema = $this->updateSchemaSources($schema, $record, $params);
 		
 		$schema = $this->updateSchemaAuth($schema);
-		$schema = $this->updateSchemaRecord($schema, $record, $params);
+		$schema = $this->updateSchemaRecord($schema, $record, $params);		
 		$record = $this->updateSchemaForEdit($schema, $page_with_params, $record, $translate, $params);
 
 		// Enforce view-only mode if required
@@ -261,8 +250,8 @@ class model_app_edit extends model_app
 
 		// Prepend back button
 
-		if (!$schema['buttons_edit']) $schema['buttons_edit'] = [];
-		array_unshift($schema['buttons_edit'], ['label' => 'back', 'url' => $schema['url_back'], 'icon' => 'back']);
+		if (empty($schema['cms']['buttons_edit'])) $schema['cms']['buttons_edit'] = [];
+		array_unshift($schema['cms']['buttons_edit'], ['label' => 'back', 'url' => $schema['url_back'], 'icon' => 'back']);
 
 		// Prepare available languages
 
@@ -303,11 +292,11 @@ class model_app_edit extends model_app
 	private function updateSchemaRecord($schema, $record, $params)
 	{
 		if (!$record) {
-			$schema['buttons_edit'] = [];
+			$schema['cms']['buttons_edit'] = [];
 		}
 
-		if ($schema['buttons_edit']) {
-			$schema['buttons_edit'] = $this->updateSchemaButtons($schema['buttons_edit'], $schema, $record, $params);
+		if ($schema['cms']['buttons_edit']) {
+			$schema['cms']['buttons_edit'] = $this->updateSchemaButtons($schema['cms']['buttons_edit'], $schema, $record, $params);
 		}
 
 		foreach ($schema['fields'] as $k => $v) {
@@ -325,9 +314,9 @@ class model_app_edit extends model_app
 			if ($v['type'] === 'plugin') {
 				$plugin = null;
 				if (!empty($v['cms']['plugin'])) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'plugin', $v['cms']['plugin']);
+					$plugin = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'plugin', $v['cms']['plugin']);
 				} elseif (!empty($v['cms']['page'])) {
-					$plugin = _uho_fx::array_filter($schema['buttons_edit'], 'page', $v['cms']['page']);
+					$plugin = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'page', $v['cms']['page']);
 				}
 
 				if ($plugin) {
@@ -400,8 +389,8 @@ class model_app_edit extends model_app
 		$items = $this->apporm->get($field['source']['model'], $filter, false, null, '0,10');
 		foreach ($items as &$item) {
 			$item['label'] = $this->getTwigFromHtml($field['source']['label'], $item);
-			if (isset($searchSchema['model']['image'])) {
-				$item['image'] = ['thumb' => $this->getTwigFromHtml($searchSchema['model']['image'], $item)];
+			if (isset($searchSchema['cms']['model']['image'])) {
+				$item['image'] = ['thumb' => $this->getTwigFromHtml($searchSchema['cms']['model']['image'], $item)];
 				if ($this->s3) $item['image']['thumb'] = $this->s3->getFilenameWithHost($item['image']['thumb']);
 			}
 		}

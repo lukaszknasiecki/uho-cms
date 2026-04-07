@@ -74,7 +74,7 @@ class model_app_write extends model_app
 			$this->logsAdd('sort');
 
 			// Post-sort plugin hooks
-			$afterHooks = _uho_fx::array_filter($schema['buttons_page'] ?? [], 'on_update', 1);
+			$afterHooks = _uho_fx::array_filter($schema['cms']['buttons_page'] ?? [], 'on_update', 1);
 
 			if ($afterHooks) {
 				require_once("model_app_plugin.php");
@@ -343,7 +343,7 @@ class model_app_write extends model_app
 				if (in_array($v['field'], $update_fields_even_empty));
 				else {
 					unset($schema['fields'][$k]);
-					unset($schema['filters']);
+					unset($schema['cms']['filters']);
 				}
 			}
 
@@ -766,7 +766,7 @@ class model_app_write extends model_app
 		}
 
 
-		if ($schema['filters']) $data = array_merge($schema['filters'], $data);
+		if ($schema['cms']['filters']) $data = array_merge($schema['cms']['filters'], $data);
 
 		/*
 		** adding new record
@@ -784,7 +784,7 @@ class model_app_write extends model_app
 						$this->queryOut('UPDATE ' . $schema['table'] . ' SET `' . $v['field'] . '`=`' . $v['field'] . '`+1 ' . $query);
 						$data[$v['field']] = 1;
 					} else {
-						$last = $this->apporm->get($schema, $schema['filters'], true, $v['field'] . ' DESC');
+						$last = $this->apporm->get($schema, $schema['cms']['filters'], true, $v['field'] . ' DESC');
 						if ($last) $data[$v['field']] = $last[$v['field']] + 1;
 					}
 				} elseif (isset($v['default']) && $v['default'] === '%variable%') {
@@ -840,8 +840,8 @@ class model_app_write extends model_app
 		** run auto-plugins		
 		*/
 
-		$plugins1 = _uho_fx::array_filter(@$schema['buttons_edit'], 'on_update', 1);
-		if ($is_new_now) $plugins2 = _uho_fx::array_filter(@$schema['buttons_edit'], 'on_add', 1);
+		$plugins1 = _uho_fx::array_filter(@$schema['cms']['buttons_edit'], 'on_update', 1);
+		if ($is_new_now) $plugins2 = _uho_fx::array_filter(@$schema['cms']['buttons_edit'], 'on_add', 1);
 		else $plugins2 = [];
 
 		$plugins = array_merge($plugins1, $plugins2);

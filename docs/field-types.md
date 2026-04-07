@@ -336,6 +336,7 @@ Multiple selection from another model (with fixed order).
     "source": {
         "model": "items",
         "model_fields": ["title", "description"],
+        "label": "{{title}} ({{description}})",     // you can also predefine it in destination model's cms.model object
         "filters": {
             "active": 1
         }

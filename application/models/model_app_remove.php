@@ -55,12 +55,11 @@ class model_app_remove extends model_app
 		}
 
 		$schema = $this->getSchema($model, false, ['numbers' => $params]);
-		$schema['filters'] = $schema['filters'] ?? [];
+		$schema['cms']['filters'] = $schema['cms']['filters'] ?? [];
 
 		// Apply filters for record existence check
-		// $filters = _uho_fx::fillPattern($schema['filters'], ['numbers' => $params]);
 
-		$exists = $this->apporm->get($model, $schema['filters'], true);
+		$exists = $this->apporm->get($model, $schema['cms']['filters'], true);
 
 		// Backup record before deletion
 		$this->backupAdd($schema['table'], $id);
@@ -72,10 +71,10 @@ class model_app_remove extends model_app
 		}
 
 		// Run any post-deletion plugins (if defined)
-		if (!empty($schema['buttons_page'])) {
+		if (!empty($schema['cms']['buttons_page'])) {
 			require_once("model_app_plugin.php");
 
-			$plugins = _uho_fx::array_filter($schema['buttons_page'], 'on_update', 1);
+			$plugins = _uho_fx::array_filter($schema['cms']['buttons_page'], 'on_update', 1);
 			foreach ($plugins as $pluginConfig) {
 				$class = new model_app_plugin($this->sql, $this->lang);
 				$class->setParent($this);
