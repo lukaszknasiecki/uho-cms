@@ -54,19 +54,21 @@ class model_app_remove extends model_app
 			return ['result' => false];
 		}
 
-		$schema = $this->getSchema($model, false, ['numbers' => $params]);
-		$schema['cms']['filters'] = $schema['cms']['filters'] ?? [];
+		$schema = $this->getSchema($model, false, ['nested' => $params]);
+		$filters = $schema['cms']['filters'] ?? [];
+		$filters['id']=$id;
 
-		// Apply filters for record existence check
+		$exists = $this->apporm->get($model, $filters, true);
 
-		$exists = $this->apporm->get($model, $schema['cms']['filters'], true);
+		//$exists = $this->apporm->get($model, ['id'=>$id], true);
 
 		// Backup record before deletion
 		$this->backupAdd($schema['table'], $id);
 
 		$result = false;
-		if ($exists) {
-			$result = $this->apporm->delete($model, $id);
+		if ($exists)
+		{
+			$result = $this->apporm->delete($model, ['id'=>$id]);
 			if ($result!==false) $result=true;
 		}
 
