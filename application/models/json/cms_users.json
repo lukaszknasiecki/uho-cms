@@ -1,33 +1,35 @@
 {
     "table": "cms_users",
     "order": "name",
-    "label": "CMS Users",
-    "model": {
-        "label": "{{name}}"
+    "cms": {
+        "label": "CMS Users",
+        "output": {
+            "label": "{{name}}"
+        },
+        "buttons_edit": [
+            {
+                "label_PL": "Ustaw hasło",
+                "label_EN": "Set password",
+                "type": "plugin",
+                "icon": "fingerprint",
+                "plugin": "cms_users_password"
+            },
+            {
+                "label_PL": "Ustaw poziom dostępu",
+                "label_EN": "Set authorization level",
+                "type": "plugin",
+                "icon": "lock",
+                "plugin": "cms_users_auth"
+            },
+            {
+                "label_PL": "Blokada",
+                "label_EN": "Lock",
+                "type": "plugin",
+                "icon": "lock-open",
+                "plugin": "cms_users_lock"
+            }
+        ]
     },
-    "buttons_edit": [
-        {
-            "label_PL": "Ustaw hasło",
-            "label_EN": "Set password",
-            "type": "plugin",
-            "icon": "fingerprint",
-            "plugin": "cms_users_password"
-        },
-        {
-            "label_PL": "Ustaw poziom dostępu",
-            "label_EN": "Set authorization level",
-            "type": "plugin",
-            "icon": "lock",
-            "plugin": "cms_users_auth"
-        },
-        {
-            "label_PL": "Blokada",
-            "label_EN": "Lock",
-            "type": "plugin",
-            "icon": "lock-open",
-            "plugin": "cms_users_lock"
-        }
-    ],
     "fields": [
         {
             "field": "name",
@@ -86,7 +88,6 @@
             "type": "select",
             "cms": {
                 "label": "Status",
-                
                 "default": "confirmed"
             },
             "options": [

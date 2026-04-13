@@ -1,5 +1,39 @@
 # Field Types
 
+## Table of Contents
+
+- [Basic Types](#basic-types)
+  - [`string`](#string)
+  - [`boolean`](#boolean)
+  - [`text`](#text)
+  - [`json`](#json)
+  - [`html`](#html)
+  - [`integer`](#integer)
+  - [`float`](#float)
+  - [`date`](#date)
+  - [`datetime`](#datetime)
+  - [`timestamp`](#timestamp)
+  - [`uid`](#uid)
+- [Selection Types](#selection-types)
+  - [`select`](#select)
+  - [`checkboxes`](#checkboxes)
+  - [`elements`](#elements)
+- [Media Types](#media-types)
+  - [`blocks`](#blocks)
+  - [`image`](#image)
+  - [`file`](#file)
+  - [`video`](#video)
+  - [`media`](#media)
+- [Other Types](#other-types)
+  - [`hidden`](#hidden)
+  - [`order`](#order)
+  - [`plugin`](#plugin)
+  - [`model`](#model)
+  - [`table`](#table)
+  - [`url`](#url)
+  - [`virtual`](#virtual)
+- [Auto Fields](#auto-fields)
+
 Each field consists of at least two parameters - `field` and `type`. Every field can have additional objects of `settings` (advanced parameters connected with field's type) and `cms` - object describing CMS-only parameters of this field, usually connected with its appearance in the CMS.
 
 ```json
@@ -644,6 +678,41 @@ Useful if you want to visually attach plugin to some field and hide top plugin b
     "plugin_nr": 1,             // if there is more than 1 plugin of this type, choose which one to use
     "page": "items"             // plugin name, if it's of page type, must match .page from buttons_edit
 }
+```
+
+### `model`
+
+Model view from another schema
+
+```json
+{
+            "field":"people",
+            "type": "model",
+            "settings":
+            {
+                "schema":"people",
+                "filters":{
+                    "division": "{{id}}"
+                },
+                "fields":["last_name","first_name"],                
+                "order":"last_name,first_name"
+            },
+            "cms": {
+                "label": "People",
+                "counter": true,
+                "table":
+                [
+                    {
+                        "label":"Last Name",
+                        "field":"last_name"
+                    },
+                    {
+                        "label":"Full Name",
+                        "value":"{{first_name}} {{last_name}}"
+                    }
+                ]
+            }
+        }
 ```
 
 ### `table`

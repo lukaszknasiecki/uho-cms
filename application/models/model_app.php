@@ -165,7 +165,11 @@ class model_app extends _uho_model
         $this->cfg_folder = $_SERVER['DOCUMENT_ROOT'] . $this->config_path;
 
         // --- Define the main ORM root path ---
-        $pagePath = $this->cfg_path . '/pages/';
+        $pagePath = $this->cfg_path . '/schemas/';
+        if (!_uho_fx::file_exists($pagePath)) {
+            $pagePath = $this->cfg_path . '/pages/';
+        }
+        
         $this->apporm->removeRootPaths();
         $this->apporm->addRootPath($pagePath);
         $this->apporm->addRootPath($this->cms_folder . '/application/models/json/');
@@ -2381,6 +2385,26 @@ class model_app extends _uho_model
                 $schema['fields'][$k]['edit'] = false;
 
             switch ($v['type']) {
+
+                case "model":
+
+                    // edits
+                    if (!empty($v['cms']['edit']))
+                        $schema['fields'][$k]['cms']['edit']['url_page'] = 'page/'.$this->getTwigFromHtml($v['cms']['edit']['page'], $record);
+                    
+                    // values
+                    foreach ($record[$v['field']] as $kk=>$vv)
+                    {
+                        $record[$v['field']][$kk]['_cms']=[];
+                        foreach ($v['cms']['table'] as $row)
+                        if (!empty($row['field'])) $record[$v['field']][$kk]['_cms'][]=$vv[$row['field']];
+                            else $record[$v['field']][$kk]['_cms'][]=$this->getTwigFromHtml($row['value'], $vv);
+                        
+                        
+                    }
+
+                    break;
+
                 case "image":
                     if (isset($v['settings']['cors']))
                         $schema['fields'][$k]['settings']['cors'] = [

@@ -2,7 +2,7 @@
 
 ## Example 1: Simple Blog Post Model
 
-**File:** `cms_config/pages/articles.json`
+**File:** `cms_config/schemas/articles.json`
 
 ```json
 {
@@ -112,7 +112,7 @@
 
 ## Example 2: Model with Relationships
 
-**File:** `cms_config/pages/products.json`
+**File:** `cms_config/schemas/products.json`
 
 ```json
 {

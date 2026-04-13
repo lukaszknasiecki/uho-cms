@@ -21,13 +21,13 @@
 
       </div>
       <div style="flex: 0 0 auto;">
-        {% if type=='page' %}
+        
           {% set length=0 %}
           {% for item in buttons %}{% if not item.hidden %}{% set length=length+5 %}
             {% if translate[item.label] %}{% set length=length+translate[item.label]|length %}{% elseif item.label %}{% set length=length+item.label|length%}{% endif %}{% endif %}
           {% endfor %}
-          {% if length>40 and paging.nav.pages %}{% set small=true %}{% endif %}
-        {% endif %}
+          {% if length>40 %}{% set small=true %}{% endif %}
+        
         {% for item in buttons %}
         {% if not item.hidden %}
           <a href="{{item.url}}" {% if item.target %}target="{{item.target}}"{% endif %}><button type="button" class="btn {% if small %}btn-sm{% endif %} {% if item.icon=='back' %}btn-default{% elseif item.class %}btn-{{item.class}}{% else %}btn-primary{% endif %} {% if not item.target %}serdelia-edit-ask-save-go{% endif %}">[[icon::{{item.icon}},left]]{% if translate[item.label] %}{{translate[item.label]}}{% elseif item.label %}{{item.label}}{% else %}&#8203;{% endif %}</button></a>

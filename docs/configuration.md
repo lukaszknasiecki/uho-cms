@@ -20,7 +20,13 @@ cms_config/
 ├── ckeditor5/                 # CKEditor 5 configuration
 │   ├── config.js
 │   └── config.css
-├── pages/                     # Model/Page configurations
+├── plugins/                   # Custom plugins
+│   ├── clip_update/
+│   │   ├── plugin.json
+│   │   ├── plugin.php
+│   │   └── plugin.html
+│   └── ...
+├── schemas/                     # Model/Page configurations
 │   ├── menu.json
 │   ├── pages.json
 │   ├── media.json
@@ -28,12 +34,6 @@ cms_config/
 │       ├── m_text.json
 │       ├── m_hero_home.json
 │       └── ...
-├── plugins/                   # Custom plugins
-│   ├── clip_update/
-│   │   ├── plugin.json
-│   │   ├── plugin.php
-│   │   └── plugin.html
-│   └── ...
 └── structure/                 # CMS structure files
     ├── menu.json              # Navigation menu
     ├── dashboard.json         # Dashboard widgets

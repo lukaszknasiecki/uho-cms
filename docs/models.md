@@ -1,6 +1,6 @@
-# Page / Model Configuration
+# Schemas / Model Configuration
 
-Each content type in the CMS is defined as a "model" using a JSON configuration file in the `pages/` folder. The filename (without `.json`) becomes the model name.
+Each content type in the CMS is defined as a "schema/model" using a JSON configuration file in the `schemas/` folder. The filename (without `.json`) becomes the model name.
 
 ## Basic Structure
 

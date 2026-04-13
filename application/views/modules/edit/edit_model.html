@@ -1,0 +1,33 @@
+<table class="table">
+  <thead>
+    <tr>
+   	{% if field.cms.counter %}
+   		<th class="serdelia-table-cell-nr"></th>
+   	{% endif %}
+    {% for item in field.cms.table %}
+      <th class="serdelia-table-cell" scope="col">{{item.label}}</th>
+    {% endfor %}
+    </tr>
+</thead>
+
+<tbody>	
+    {% set iRows=value|length %}
+    
+    {% for i in 1..iRows %}
+    <tr class="tr_data serdelia-table-tr">
+    	{% if field.cms.counter %}
+      	<td width="10px" class="serdelia-table-cell-nr"><span class="badge badge-secondary">{{i}}</span></td>
+    	{% endif %}
+
+      {% for v in 0..field.cms.table|length-1 %}
+          <td>
+            {{value[i-1]['_cms'][loop.index0]}}
+          </td>
+     	{% endfor %}       
+    </tr>
+    {% endfor %}
+</tbody>   
+</table>
+{% if field.cms.edit %}
+<a class="btn btn-primary" href="{{field.cms.edit.url_page}}">{% if field.cms.edit.label %}{{field.cms.edit.label}}{% else %}Edit{% endif %}</a>
+{% endif %}
