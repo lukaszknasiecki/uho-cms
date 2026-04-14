@@ -1,3 +1,4 @@
+{% if value %}
 <table class="table">
   <thead>
     <tr>
@@ -28,6 +29,9 @@
     {% endfor %}
 </tbody>   
 </table>
+{% else %}
+<br><em>There are no records in this table.</em><br><br>
+{% endif %}
 {% if field.cms.edit %}
-<a class="btn btn-primary" href="{{field.cms.edit.url_page}}">{% if field.cms.edit.label %}{{field.cms.edit.label}}{% else %}Edit{% endif %}</a>
+<a class="btn btn-default" href="{{field.cms.edit.url_page}}"><span class="mdi mdi-edit pull-left"></span>{% if field.cms.edit.label %}{{field.cms.edit.label}}{% else %}Edit{% endif %}</a>
 {% endif %}

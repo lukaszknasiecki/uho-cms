@@ -47,7 +47,7 @@ class model_app_edit extends model_app
 		if (!$this->checkAuth($model, [2, 3])) {
 			if ($this->checkAuth($model, [1])) $this->view = true;
 			else exit('auth::error::[app_edit]');
-		}
+		}		
 
 		$record = null;
 
@@ -55,6 +55,10 @@ class model_app_edit extends model_app
 
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 
+		// Access check
+		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
+
+		// Debuf mode
 		if ($this->getDebugMode())
 		{
 			if ($this->getStrictSchema()) $s = $schema;

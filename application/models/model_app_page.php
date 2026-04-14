@@ -65,8 +65,7 @@ class model_app_page extends model_app
 		$auth = $this->checkAuth($model);
 		if (!in_array($auth, [1, 2, 3])) exit('auth::error::[app_page]');
 
-		// Load and validate schema
-		
+		// Load and validate schema		
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 		if (isset($schema['result']) && $schema['result']===false)
 			exit('<pre>'.$schema['message'].'</pre>');
@@ -74,6 +73,10 @@ class model_app_page extends model_app
 		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
+
+		// Validate Access
+		if (!$this->checkAccessPage($schema, ['nested'=>$params])) exit('access::error::[app_page]');
+
 
 		// Execute plugin "on_load" hooks
 		$before = _uho_fx::array_filter($schema['cms']['buttons_page'] ?? [], 'on_load', 1);
@@ -238,9 +241,11 @@ class model_app_page extends model_app
 			$filters = array_merge($schema['cms']['filters'], $filters);
 		}
 
+		// Merge with Access Filters
+
+		$filters = array_merge($filters,$this->getAccessFilters($schema));
 
 		// Fetch records
-
 		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
 		$_SESSION['page_filters'][$model] = $filters;
 

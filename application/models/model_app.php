@@ -11,6 +11,7 @@ use Huncwot\UhoFramework\_uho_fx;
 use Huncwot\UhoFramework\_uho_thumb;
 
 require_once("model_app_clients.php");
+require_once(__DIR__."/../helpers/serdelia_access.php");
 
 class model_app extends _uho_model
 {
@@ -1436,11 +1437,15 @@ class model_app extends _uho_model
 
         if ($buttons)
             foreach ($buttons as $k => $v)
+            {
+
+                if (empty($v['label']) && $v['label' . $this->lang_add])
+                    $buttons[$k]['label'] = $v['label' . $this->lang_add];
+
                 // page button
                 if ($v['type'] == 'page') {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
                     $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record, $params_twig));
-
 
                     if ($this->checkAuth($v['page'], [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
@@ -1506,7 +1511,7 @@ class model_app extends _uho_model
                         unset($buttons[$k]);
                     }
                 }
-
+            }
 
         return $buttons;
     }
@@ -3245,4 +3250,51 @@ class model_app extends _uho_model
     {
         return $this->strict_schema;
     }
+
+    private function getAccessObject($schema_name, $name, $params=[])
+    {
+        require_once $_SERVER['DOCUMENT_ROOT'] . $this->cfg_path . '/access/access_' . $name.'.php';
+        $name='serdelia_access_'.$name;
+        return new $name($this->apporm, $schema_name, $params, $this);
+    }
+
+
+    public function getAccessFilters($schema)
+    {
+        if (empty($schema['cms']['access'])) return [];
+
+        $class=$this->getAccessObject($schema['table'],$schema['cms']['access']);
+        return $class->getFilters();
+        
+    }
+
+    public function checkAccessPage($schema,$params)
+    {
+        if (empty($schema['cms']['access'])) return true;
+        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
+        return $class->isAccessList();        
+    }
+
+    public function checkAccessEdit($schema,$params,$record_id)
+    {
+        if (empty($schema['cms']['access'])) return true;
+
+        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
+        return $class->isAccessRecord($record_id);
+        
+    }
+
+    public function getAccessWrite($schema,$params)
+    {
+        if (empty($schema['cms']['access'])) return [];
+
+        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
+        return $class->getAccessWrite();
+        
+    }
+
+
+
+
+
 }

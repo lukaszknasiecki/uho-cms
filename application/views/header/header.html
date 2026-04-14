@@ -26,7 +26,7 @@
           {% for item in buttons %}{% if not item.hidden %}{% set length=length+5 %}
             {% if translate[item.label] %}{% set length=length+translate[item.label]|length %}{% elseif item.label %}{% set length=length+item.label|length%}{% endif %}{% endif %}
           {% endfor %}
-          {% if length>40 %}{% set small=true %}{% endif %}
+          {% if length>60 %}{% set small=true %}{% endif %}
         
         {% for item in buttons %}
         {% if not item.hidden %}

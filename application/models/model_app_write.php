@@ -558,6 +558,21 @@ class model_app_write extends model_app
 					break;
 
 				/*
+					elements
+				*/
+
+				case "elements":
+				case "checkboxes":
+
+					if (is_string($data[$v['field']]))
+						$data[$v['field']]=explode(',',$data[$v['field']]);
+					if (@$field['settings']['output'] != 'string') 
+						foreach ($data[$v['field']] as $k2 => $v2)
+							$data[$v['field']][$k2]=intval($v2);
+
+					break;
+
+				/*
 					media type
 				*/
 
@@ -765,8 +780,21 @@ class model_app_write extends model_app
 			}
 		}
 
-
 		if ($schema['cms']['filters']) $data = array_merge($schema['cms']['filters'], $data);
+
+		$data=array_merge_recursive($data, $this->getAccessWrite($schema,['nested' => $params]));		
+
+		/*
+			cleaning double values
+		*/
+
+		foreach ($schema['fields'] as $k => $v)
+			switch ($v['type']) {
+				case "checkboxes":
+				case "elements":
+						$data[$v['field']] = array_values(array_unique($data[$v['field']]));
+					break;
+			}
 
 		/*
 		** adding new record

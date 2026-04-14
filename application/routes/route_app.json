@@ -6,6 +6,7 @@
         "404": "404",
         "api": "api",
         "create": "create",
+        "dashboard": "dashboard",
         "edit": "edit",
         "login": "login",
         "logout": "logout",
