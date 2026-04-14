@@ -271,6 +271,10 @@ class model_app_page extends model_app
 				'url_remove' => ['type' => 'remove', 'page' => $model, 'record' => $record['id'], 'params' => $params]
 			];
 
+			if (!empty($schema['cms']['nav']['page_edit'])) {
+				$records[$i]['url_edit'] = $this->fillPattern($schema['cms']['nav']['page_edit'], ['twig' => array_merge($record,['nested' => $record])]);
+			}
+
 			if (!empty($schema['cms']['layout']['link'])) {
 				$records[$i]['url_click'] = $this->getTwigFromHtml($schema['cms']['layout']['link'], $record);
 			}
@@ -754,8 +758,9 @@ class model_app_page extends model_app
 		}
 
 		// Override with explicit back page, if defined
-		if (!empty($schema['back']['page'])) {
-			$url = $schema['back']['page'];
+		if (!empty($schema['cms']['nav']['page_back'])) {
+			$url = $this->fillPattern($schema['cms']['nav']['page_back'], ['twig' => ['nested' => $params]]);
+
 		}
 
 		// Add "back" button if URL is defined

@@ -44,6 +44,7 @@ Each content type in the CMS is defined as a "schema/model" using a JSON configu
 * `helper_models`: Virtual data extracted from connected models
 * `label`: Object with `page` (list view title) and `edit` (edit view title, supports Twig)
 * `layout`: List/Grid view layout configuration
+* `nav`: Custom paths for navigation
 * `output`: Object defining how records of this schema are displayed (supports Twig templates) in other models
 * `search`: List of fields available for search
 * `shortcuts`: Shortcut buttons to popular filters
@@ -81,7 +82,7 @@ The standard layout is in the form of a list. An additional layout type (grid) i
         "settings": {
             "width": 4,              // Bootstrap's grid width (2-6), default:2
             "cards": true,           // Use grid card layout
-            "card_title": "title"    // Field to use as card title
+            "card_title": "title"    // Field to use as card title (larger font)
         }
     }
 }
@@ -146,6 +147,22 @@ fields use `s_` prefix in the URL and that's how you should use them in the `sho
                 {"label":"Completed","color":"success","link":{"query":{"s_status":"completed"}}}
             ]
     }
+}
+```
+
+## Custom navigation
+
+You can customize how navigation works, with custom paths:
+
+```json
+"cms": {
+        "access": "projects",
+        "nav":
+        {
+            "page_back":"dashboard/projects/{{nested.1}}",      // Page (list) mode - URL for back button
+            "page_edit":"dashboard/projects/{{id}}",            // Page (list) mode - URL for edit record
+            "edit_back":"dashboard/projects/{{id}}"             // Edit (record) mode - URL for back button
+        }
 }
 ```
 

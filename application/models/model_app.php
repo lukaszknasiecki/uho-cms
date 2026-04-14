@@ -11,7 +11,7 @@ use Huncwot\UhoFramework\_uho_fx;
 use Huncwot\UhoFramework\_uho_thumb;
 
 require_once("model_app_clients.php");
-require_once(__DIR__."/../helpers/serdelia_access.php");
+require_once(__DIR__ . "/../helpers/serdelia_access.php");
 
 class model_app extends _uho_model
 {
@@ -170,7 +170,7 @@ class model_app extends _uho_model
         if (!_uho_fx::file_exists($pagePath)) {
             $pagePath = $this->cfg_path . '/pages/';
         }
-        
+
         $this->apporm->removeRootPaths();
         $this->apporm->addRootPath($pagePath);
         $this->apporm->addRootPath($this->cms_folder . '/application/models/json/');
@@ -1329,7 +1329,6 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['cms']['help'] = ['text' => $v['cms']['help']];
                     $schema['fields'][$k]['cms']['help']['hidden'] = $hidden;
                 }
-
             }
 
         // update HTML media
@@ -1436,8 +1435,7 @@ class model_app extends _uho_model
             $buttons = [];
 
         if ($buttons)
-            foreach ($buttons as $k => $v)
-            {
+            foreach ($buttons as $k => $v) {
 
                 if (empty($v['label']) && $v['label' . $this->lang_add])
                     $buttons[$k]['label'] = $v['label' . $this->lang_add];
@@ -2395,17 +2393,14 @@ class model_app extends _uho_model
 
                     // edits
                     if (!empty($v['cms']['edit']))
-                        $schema['fields'][$k]['cms']['edit']['url_page'] = 'page/'.$this->getTwigFromHtml($v['cms']['edit']['page'], $record);
-                    
+                        $schema['fields'][$k]['cms']['edit']['url_page'] = 'page/' . $this->getTwigFromHtml($v['cms']['edit']['page'], $record);
+
                     // values
-                    foreach ($record[$v['field']] as $kk=>$vv)
-                    {
-                        $record[$v['field']][$kk]['_cms']=[];
+                    foreach ($record[$v['field']] as $kk => $vv) {
+                        $record[$v['field']][$kk]['_cms'] = [];
                         foreach ($v['cms']['table'] as $row)
-                        if (!empty($row['field'])) $record[$v['field']][$kk]['_cms'][]=$vv[$row['field']];
-                            else $record[$v['field']][$kk]['_cms'][]=$this->getTwigFromHtml($row['value'], $vv);
-                        
-                        
+                            if (!empty($row['field'])) $record[$v['field']][$kk]['_cms'][] = $vv[$row['field']];
+                            else $record[$v['field']][$kk]['_cms'][] = $this->getTwigFromHtml($row['value'], $vv);
                     }
 
                     break;
@@ -3180,7 +3175,7 @@ class model_app extends _uho_model
         $sections = [
             'buttons_edit',
             'buttons_page',
-            ['model','output'],
+            ['model', 'output'],
             'disable',
             'filters',
             'label',
@@ -3191,15 +3186,11 @@ class model_app extends _uho_model
             "output"
         ];
 
-        foreach ($sections as $section)
-        {
-            if (is_array($section) && isset($schema[$section[0]]))
-                {                    
-                    $schema['cms'][$section[1]] = $schema[$section[0]];
-                    unset($schema[$section[0]]);
-                }
-            elseif (is_string($section) && isset($schema[$section]))
-            {
+        foreach ($sections as $section) {
+            if (is_array($section) && isset($schema[$section[0]])) {
+                $schema['cms'][$section[1]] = $schema[$section[0]];
+                unset($schema[$section[0]]);
+            } elseif (is_string($section) && isset($schema[$section])) {
                 $schema['cms'][$section] = $schema[$section];
                 unset($schema[$section]);
             }
@@ -3251,10 +3242,10 @@ class model_app extends _uho_model
         return $this->strict_schema;
     }
 
-    private function getAccessObject($schema_name, $name, $params=[])
+    private function getAccessObject($schema_name, $name, $params = [])
     {
-        require_once $_SERVER['DOCUMENT_ROOT'] . $this->cfg_path . '/access/access_' . $name.'.php';
-        $name='serdelia_access_'.$name;
+        require_once $_SERVER['DOCUMENT_ROOT'] . $this->cfg_path . '/access/access_' . $name . '.php';
+        $name = 'serdelia_access_' . $name;
         return new $name($this->apporm, $schema_name, $params, $this);
     }
 
@@ -3263,38 +3254,32 @@ class model_app extends _uho_model
     {
         if (empty($schema['cms']['access'])) return [];
 
-        $class=$this->getAccessObject($schema['table'],$schema['cms']['access']);
+        $class = $this->getAccessObject($schema['table'], $schema['cms']['access']);
         return $class->getFilters();
-        
     }
 
-    public function checkAccessPage($schema,$params)
+    public function checkAccessPage($schema, $params)
     {
         if (empty($schema['cms']['access'])) return true;
-        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
-        return $class->isAccessList();        
+        $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
+        return $class->checkAccessList();
     }
 
-    public function checkAccessEdit($schema,$params,$record_id)
+    public function checkAccessEdit($schema, $params, $record_id)
     {
         if (empty($schema['cms']['access'])) return true;
 
-        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
+        $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
         return $class->isAccessRecord($record_id);
-        
     }
 
-    public function getAccessWrite($schema,$params)
+    public function getAccessWrite($schema, $params)
     {
         if (empty($schema['cms']['access'])) return [];
 
-        $class=$this->getAccessObject($schema['table'],$schema['cms']['access'],$params);
+        $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
         return $class->getAccessWrite();
-        
     }
-
-
-
 
 
 }

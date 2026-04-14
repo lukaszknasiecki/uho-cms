@@ -86,6 +86,45 @@ Defines dashboard widgets shown on CMS home page.
 
 ---
 
+## /dashboards
+
+You can define custom dashboards in `/dashboard` folder and redirect
+to them via custom routing in schema's `cms.nav` property.
+
+Here is sample custom dashboard, visible at `/cms/dashboard/projects`
+or `/cms/dashboard/projects/123` pages. You can use dashboards per schema
+or per model.
+
+```json
+{
+    "type": "widgets",
+    "widgets": [
+        {
+            "widget": "project"
+        },
+        {
+            "widget": "people",
+            "params": {
+                "icon": "people",
+                "label": "People",
+                "page": "people"
+            }
+        },
+        {
+            "widget": "categories",
+            "params": {
+                "icon": "category",
+                "label": "Categories",
+                "page": "categories"
+            }
+        }
+    ]
+}
+```
+
+
+---
+
 ## authorization.json
 
 Defines user permission presets.

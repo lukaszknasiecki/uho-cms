@@ -27,7 +27,7 @@ class serdelia_access
     {
     }
 
-    public function isAccessList()
+    public function checkAccessList()
     {
     }
 

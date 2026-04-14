@@ -30,72 +30,99 @@ class model_app_dashboard extends model_app
 	 */
 	public function getContentData($params = null, $url_base = '')
 	{
-		/*
+		$path = explode('/', $params['url']);
+		$params['record'] = intval(array_pop($path));
+		$dashboard_name = array_pop($path);
+
 		$this->url_base = str_replace('//', '/', $url_base . '/');
 
-		$uri = $this->cfg_folder . '/structure/dashboard.json';
+		$uri = $this->cfg_folder . '/dashboards/'.$dashboard_name.'.json';
 		$home = file_exists($uri) ? file_get_contents($uri) : null;
+		$home = json_decode($home, true);
 
-		if ($home) {
-			$home = json_decode($home, true);
-			if (!$home) exit('dashboard.json file corrupted');
-		} else {
-			$home = [
-				'type' => 'widgets',
-				'widgets' => ['widget' => 'hello']
-			];
+		foreach ($home['widgets'] as $k => $v) {
+			if (!is_array($v)) $v = ['widget' => $v];
+			if (empty($v['params'])) $v['params'] = [];
+			$v['params'] = array_merge($v['params'], $params);
+			$home['widgets'][$k] = $this->widgetGet($v, $params);
+
+			if (!$home['widgets'][$k]) {
+				unset($home['widgets'][$k]);
+			} elseif (!empty($home['widgets'][$k]['url'])) {
+				$url = explode('/', $home['widgets'][$k]['url']);
+				if (!$this->checkAuth($url[1])) {
+					unset($home['widgets'][$k]);
+				}
+			}
 		}
 
-		$sections = [];
-
-		switch ($home['type']) {
-			case "widgets":
-				
-				foreach ($home['widgets'] as $k => $v)
-				{
-					if (!is_array($v)) $v = ['widget' => $v];
-					$home['widgets'][$k] = $this->widgetGet($v);
-
-					if (!$home['widgets'][$k]) {
-						unset($home['widgets'][$k]);
-					} elseif (!empty($home['widgets'][$k]['url'])) {
-						$url = explode('/', $home['widgets'][$k]['url']);
-						if (!$this->checkAuth($url[1])) {
-							unset($home['widgets'][$k]);
-						}
-					}
-				}
-				break;
-
-			case "sections":
-				$sections = $home['sections'];
-
-				// Process each section's items
-				foreach ($sections as $k => $v) {
-					if ($v['items']) {
-						foreach ($v['items'] as $k2 => $v2) {
-							$v2 = $this->updateSectionItem($v2);
-							if ($v2) {
-								$sections[$k]['items'][$k2] = $v2;
-							} else {
-								unset($sections[$k]['items'][$k2]);
-							}
-						}
-					}
-				}
-
-				// Remove empty sections
-				foreach ($sections as $k => $v) {
-					if (empty($sections[$k]['items'])) {
-						unset($sections[$k]);
-					}
-				}
-				break;
-		}
-*/
 		return [
+			'widgets' => @$home['widgets']
 		];
 	}
 
+	/**
+	 * Loads and optionally renders a widget.
+	 *
+	 * @param array $widget Widget config (must include 'widget' key)
+	 * @param bool $render Whether to render HTML
+	 * @return array|false Widget data, or false if loading failed
+	 */
+	public function widgetGet($widget, $render = true)
+	{
+		$f = $widget['widget'];
+		$params = $widget['params'] ?? [];
+		$params['user'] = $this->getUser();
 
+		// Widget path lookup
+		$path = $this->cms_folder . '/widgets/' . $f . '/';
+		if (!file_exists($path . '/widget.php')) {
+			$path = $this->cfg_folder . '/widgets/' . $f . '/';
+		}
+
+		// Load and instantiate widget class
+		if (!file_exists($path . 'widget.php')) return false;
+
+		require_once $path . 'widget.php';
+		$widget_class = 'serdelia_widget_' . $f;
+
+		$params['lang'] = $this->lang;
+		$params['record'] = 1;
+
+		$class = new $widget_class($this->apporm, $params, $this);
+		$this->classes[$f] = $class;
+
+		// Load translations (widget.json)
+		$translate = [];
+		if (file_exists($path . 'widget.json')) {
+			$json = file_get_contents($path . 'widget.json');
+			$translateData = json_decode($json, true);
+			if ($translateData && isset($translateData[$this->lang])) {
+				$lang = $translateData[$this->lang];
+				unset($translateData['pl'], $translateData['en']);
+				$translate = array_merge($translateData, $lang);
+			}
+		}
+
+		// Get widget data
+		$data = $class->getData();
+		$data = array_merge($translate, $data);
+
+		// Render widget HTML if required
+		if (!empty($data['result']))
+		{
+			$html = file_exists($path . 'widget.html')
+				? file_get_contents($path . 'widget.html')
+				: file_get_contents($this->cms_folder . '/application/views/modules/widgets/_widget.html');
+
+			if ($render) {
+				$data['url_base'] = $this->url_base;
+				$data['url'] = _uho_fx::trim($data['url'], '/');
+				$data['text'] = $this->getTwigFromHtml($data['text'], $data);
+				$data['html'] = $this->getTwigFromHtml($html, $data);
+			}
+		}
+
+		return $data;
+	}
 }

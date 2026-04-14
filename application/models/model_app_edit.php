@@ -215,8 +215,8 @@ class model_app_edit extends model_app
 
 		// Set up schema navigation URLs
 
-		$schema['url_back'] = $schema['back']['edit']
-			? $this->fillPattern($schema['back']['edit'], ['keys' => $record, 'numbers' => $params])
+		$schema['url_back'] = $schema['cms']['nav']['edit_back']
+			? $this->fillPattern($schema['cms']['nav']['edit_back'], ['twig' => array_merge($record, ['nested' => $params])])
 			: ['type' => 'page', 'page' => $model, 'params' => $params];
 
 		if (isset($_SESSION['pages'][$page_with_params]['query']) && is_array($schema['url_back'])) {
@@ -229,6 +229,8 @@ class model_app_edit extends model_app
 			unset($query['highlight']);
 			$schema['url_back_form']['query'] = http_build_query($query);
 		}
+
+		
 
 		$schema['url_write'] = [
 			'type' => 'write',

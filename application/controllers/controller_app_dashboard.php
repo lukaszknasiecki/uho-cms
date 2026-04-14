@@ -23,11 +23,11 @@ class controller_app_dashboard extends controller_app
         $homeUrl = $this->route->getUrl('');
 
         // Retrieve content data using posted data and URL
-        $contentData = $this->model->getContentData($this->post, $homeUrl);
+        $contentData = $this->model->getContentData(['url'=>$this->route->getUrlNow()], $homeUrl);
 
         // Return data to be used in the view rendering
         return [
-            'view'    => 'home',     // View template to use
+            'view'    => 'dashboard',     // View template to use
             'nav'     => true,       // Show navigation
             'content' => $contentData
         ];
