@@ -36,7 +36,7 @@ class model_app_dashboard extends model_app
 
 		$this->url_base = str_replace('//', '/', $url_base . '/');
 
-		$uri = $this->cfg_folder . '/dashboards/'.$dashboard_name.'.json';
+		$uri = $this->cfg_folder . '/dashboards/' . $dashboard_name . '.json';
 		$home = file_exists($uri) ? file_get_contents($uri) : null;
 		$home = json_decode($home, true);
 
@@ -44,20 +44,19 @@ class model_app_dashboard extends model_app
 			if (!is_array($v)) $v = ['widget' => $v];
 			if (empty($v['params'])) $v['params'] = [];
 			$v['params'] = array_merge($v['params'], $params);
-			$home['widgets'][$k] = $this->widgetGet($v, $params);
+			$home['widgets'][$k] = $this->widgetGet($v);
 
 			if (!$home['widgets'][$k]) {
 				unset($home['widgets'][$k]);
 			} elseif (!empty($home['widgets'][$k]['url'])) {
 				$url = explode('/', $home['widgets'][$k]['url']);
-				if (!$this->checkAuth($url[1])) {
+				if (!$this->checkAuth($url[1]))
 					unset($home['widgets'][$k]);
-				}
 			}
 		}
 
 		return [
-			'widgets' => @$home['widgets']
+			'widgets' => $home['widgets']
 		];
 	}
 
@@ -73,7 +72,6 @@ class model_app_dashboard extends model_app
 		$f = $widget['widget'];
 		$params = $widget['params'] ?? [];
 		$params['user'] = $this->getUser();
-
 		// Widget path lookup
 		$path = $this->cms_folder . '/widgets/' . $f . '/';
 		if (!file_exists($path . '/widget.php')) {
@@ -87,7 +85,7 @@ class model_app_dashboard extends model_app
 		$widget_class = 'serdelia_widget_' . $f;
 
 		$params['lang'] = $this->lang;
-		$params['record'] = 1;
+		
 
 		$class = new $widget_class($this->apporm, $params, $this);
 		$this->classes[$f] = $class;
@@ -106,11 +104,10 @@ class model_app_dashboard extends model_app
 
 		// Get widget data
 		$data = $class->getData();
-		$data = array_merge($translate, $data);
+		if (!empty($data)) $data = array_merge($translate, $data);
 
 		// Render widget HTML if required
-		if (!empty($data['result']))
-		{
+		if (!empty($data['result'])) {
 			$html = file_exists($path . 'widget.html')
 				? file_get_contents($path . 'widget.html')
 				: file_get_contents($this->cms_folder . '/application/views/modules/widgets/_widget.html');

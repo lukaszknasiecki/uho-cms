@@ -782,7 +782,14 @@ class model_app_write extends model_app
 
 		if ($schema['cms']['filters']) $data = array_merge($schema['cms']['filters'], $data);
 
-		$data=array_merge_recursive($data, $this->getAccessWrite($schema,['nested' => $params]));		
+		$access_data=$this->getAccessWrite($schema,['nested' => $params]);
+
+		foreach ($access_data as $k => $v)
+			if (empty($data[$k])) $data[$k]=$v;
+			elseif (is_array($data[$k]) && is_array($v)) $data[$k]=array_merge($data[$k], $v);
+			elseif (is_array($data[$k])) $data[$k][]=$v;
+				else $data[$k]=$v;
+
 
 		/*
 			cleaning double values
