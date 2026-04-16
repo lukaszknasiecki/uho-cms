@@ -32,6 +32,7 @@ Each content type in the CMS is defined as a "schema/model" using a JSON configu
 
 * `table`: Database table name (required)
 * `order`: Default order of field(s), comma-separated for multiple fields
+* `schema_update`: Update current schema with another one
 * `fields`: Array of field definitions (required)
 
 ## Cms object Properties
@@ -49,6 +50,21 @@ Each content type in the CMS is defined as a "schema/model" using a JSON configu
 * `search`: List of fields available for search
 * `shortcuts`: Shortcut buttons to popular filters
 * `sortable`: Enabled drag&drop sort in list view
+
+## Schema update
+
+You can update current schema with another one, based on record's values, i.e.
+
+```json
+{
+    "schema_update":
+    {
+        "file": "modules/{{type}}"
+    }
+}
+```
+
+For field `type` with value "text", this will load schema from `modules/text.json`.
 
 ## Page Title (label) Configuration
 

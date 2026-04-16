@@ -53,7 +53,6 @@ class serdelia_plugin_api_single
         if (empty($this->input['url'])) $errors[]='error_no_action';
         else
         {
-
             // construct final url to call
             $url=$this->input['url'];
             $url_primary=$url=str_replace('&iquest;','?',$url);
@@ -66,8 +65,7 @@ class serdelia_plugin_api_single
             {
                 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')  || $_SERVER['SERVER_PORT'] == 443;
                 $https= $isHttps ? 'https' :'http';
-                $url = $https . '://'.$_SERVER['HTTP_HOST'].$url;                
-                
+                $url = $https . '://'.$_SERVER['HTTP_HOST'].$url;                                
             }
 
             // method

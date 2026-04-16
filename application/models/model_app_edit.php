@@ -58,7 +58,7 @@ class model_app_edit extends model_app
 		// Access check
 		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
 
-		// Debuf mode
+		// Debug mode
 		if ($this->getDebugMode())
 		{
 			if ($this->getStrictSchema()) $s = $schema;

@@ -48,8 +48,8 @@ class serdelia_plugin_refresh
 
 
         // add edit plugins
-        if ($schema['buttons_edit'])
-            foreach ($schema['buttons_edit'] as $k => $v)
+        if ($schema['cms']['buttons_edit'])
+            foreach ($schema['cms']['buttons_edit'] as $k => $v)
                 if ($v['type'] == 'plugin' && !in_array($v['plugin'], ['refresh', 'preview']))
                     $fields[] = ['type' => 'plugin', 'plugin' => $v['plugin'], 'label' => $v['label'] . ' (plug-in)', 'id' => 'i' . ++$id, 'params' => $v['params']];
 

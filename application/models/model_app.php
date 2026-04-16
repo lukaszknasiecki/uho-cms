@@ -710,6 +710,7 @@ class model_app extends _uho_model
 
         if ($model_update) {
             $schema = $this->apporm->getSchema([$model, $model_update], false, $params);
+            
         } else
             $schema = $this->apporm->getSchema($model, false, $params);
 
@@ -963,6 +964,7 @@ class model_app extends _uho_model
                 /*
                     Update schema by type
                 */
+
 
                 switch ($v['type']) {
                     case "image":
@@ -1265,11 +1267,30 @@ class model_app extends _uho_model
                         if (isset($v['settings']['config']))
                             $this->ckeditor_configs['e_' . $v['field']] = $v['settings']['config'];
 
+                    case "integer":
+                        if ($is_new && isset($v['settings']['default']))
+                        {
+                            
+                            $record[$v['field']] = $this->fillPatternTwig(
+                                $v['settings']['default'],
+                                [
+                                    'params'=>
+                                    [
+                                        'record' => $record,
+                                        'nested' => $params
+                                    ]
+                                ]);
+                                
+                        }
+
+                        break;
+
                     case "string":
                         if ($record[$v['field']] == '{{random32}}' && $v['cms']['default'] == '{{random32}}')
                             $record[$v['field']] = md5(uniqid());
-                        elseif ($is_new && $v['cms']['default']) {
-                            $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'numbers' => $params]);
+                        elseif ($is_new && $v['cms']['default'])
+                        {
+                            $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'nested' => $params]);
                         }
 
                         break;
@@ -1520,6 +1541,12 @@ class model_app extends _uho_model
      * @param array $params
      * @return array
      */
+
+    public function fillPatternTwig($string, $params)
+    {        
+        return $this->getTwigFromHtml($string, $params);
+        
+    }
 
     public function fillPattern($array, $params)
     {
@@ -2332,23 +2359,24 @@ class model_app extends _uho_model
         /*
          changing schema according to record values
         */
-        if ($schema['page_update']) {
+        if ($schema['schema_update']) {
 
-            if (!is_array($schema['page_update']))
-                $schema['page_update'] = ['file' => $schema['page_update']];
+            if (!is_array($schema['schema_update']))
+                $schema['schema_update'] = ['file' => $schema['schema_update']];
 
             // get fields which cause update
-            $fields = _uho_fx::excludeTagsFromText($schema['page_update']['file'], '{{', '}}');
+            $fields = _uho_fx::excludeTagsFromText($schema['schema_update']['file'], '{{', '}}');
 
             foreach ($fields as $k => $v)
                 $fields[$k] = array_shift(explode('.', $v));
 
-            // updating page_update
+            // updating schema_update
             if ($record)
-                $schema['page_update']['file'] = $this->getTwigFromHtml($schema['page_update']['file'], $record);
+                $schema['schema_update']['file'] = $this->getTwigFromHtml($schema['schema_update']['file'], $record);
 
-            if ($schema['page_update']['file'] && $record) {
-                $schema = $this->getSchema($model, true, $params, ['model' => $schema['page_update']['file'], 'position_after' => $schema['page_update']['position_after']]);
+            if ($schema['schema_update']['file'] && $record)
+            {
+                $schema = $this->getSchema($model, true, $params, ['model' => $schema['schema_update']['file'], 'position_after' => $schema['schema_update']['position_after']]);
 
                 if ($validate) {
 
@@ -2368,7 +2396,7 @@ class model_app extends _uho_model
             if ($fields)
                 foreach ($schema['fields'] as $k => $v)
                     if (in_array($v['field'], $fields))
-                        $schema['fields'][$k]['page_update'] = true;
+                        $schema['fields'][$k]['schema_update'] = true;
         } elseif ($validate) {
 
             $this->validateSchema($schema, $model);
