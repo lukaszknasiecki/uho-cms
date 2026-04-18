@@ -257,7 +257,9 @@ class serdelia_plugin_import_cover
                 $data[$params['field_title']] = $title;
                 $added[] = 'title_added';
             }
-            if ($params['field_poster'] && $cover) {
+
+            if ($params['field_poster'] && $cover)
+            {
 
                 $r = $this->parent->imageResizeModel($params['page'], $params['field_poster'], $record, $cover);
 

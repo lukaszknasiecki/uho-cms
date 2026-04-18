@@ -1952,6 +1952,13 @@ class model_app extends _uho_model
             if (@$field_schema['settings']['webp'])
                 $params['webp'] = true;
 
+
+            if (empty($data['uid']))
+            {
+                $data['uid']=uniqid();
+                $this->apporm->put($model, ['uid'=>$data['uid']], ['id'=>$data['id']]);
+            }
+
             $result = $this->imageResize($field_schema, $data, $source, false, $params);
             if ($result['result'])
                 return ['result' => true];

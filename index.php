@@ -203,13 +203,14 @@ class cms_sunship
         $cfg_project['folder_logs'] = isset($cfg_project['folder_logs']) ? $cfg_project['folder_logs'] : $cfg_project['folder_logs'] = '';
 
         if ($index['development']) {
+
             define("debug", true);
             ini_set('display_errors', 1);
             ini_set('log_errors', 1);
             $s = sprintf('%s/php-errors-%s.txt', $root . $cfg_project['folder_logs'], date('Ymd'));
             define('folder_logs', $root . $cfg_project['folder_logs']);
             ini_set('error_log', $s);
-            ini_set('error_reporting', E_ALL ^ E_NOTICE ^ E_WARNING);
+            ini_set('error_reporting', E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED);
         } else {
             ini_set('display_errors', 0);
             ini_set('log_errors', 1);
