@@ -21,3 +21,13 @@
   left: -10px;
   right: auto;
 }
+
+.ce-rawtool__textarea {
+  min-height: unset;
+  height: calc(1.5em * 5 + 16px);
+  resize: vertical;
+}
+
+.ce-lead {
+  font-size: 1.25em;
+}

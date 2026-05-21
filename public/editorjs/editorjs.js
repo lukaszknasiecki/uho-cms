@@ -5,8 +5,40 @@ import Quote from 'https://esm.sh/@editorjs/quote@2';
 import CodeTool from 'https://esm.sh/@editorjs/code@2';
 import Delimiter from 'https://esm.sh/@editorjs/delimiter@1';
 import ImageTool from 'https://esm.sh/@editorjs/image@2';
+import RawTool from 'https://esm.sh/@editorjs/raw@2';
 import './carousel-editorjs.js';
 const Carousel = window.Carousel;
+
+class LeadTool {
+  static get toolbox() {
+    return {
+      title: 'Lead',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10"/></svg>',
+    };
+  }
+
+  static get sanitize() {
+    return { text: { br: true } };
+  }
+
+  constructor({ data }) {
+    this.data = { text: data.text || '' };
+    this._element = null;
+  }
+
+  render() {
+    this._element = document.createElement('p');
+    this._element.classList.add('ce-lead');
+    this._element.contentEditable = 'true';
+    this._element.innerHTML = this.data.text;
+    return this._element;
+  }
+
+  save(el) {
+    return { text: el.innerHTML };
+  }
+}
+
 
 document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
   const editorEl = wrapper.querySelector('.editorjs-editor');
@@ -37,6 +69,10 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
         class: Header,
         config: { levels: [3, 4], defaultLevel: 3 },
       },
+      lead: {
+        class: LeadTool,
+        inlineToolbar: true,
+      },
       list: {
         class: List,
         inlineToolbar: true,
@@ -64,6 +100,11 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
             }
           }
         }
+      },
+
+      raw: {
+        class: RawTool,
+        config: { placeholder: 'Enter custom data' },
       },
 
       image: {
@@ -105,6 +146,7 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
 
   const blockActions = {
     'paragraph': () => editor.blocks.insert('paragraph'),
+    'lead': () => editor.blocks.insert('lead'),
     'header-1': () => editor.blocks.insert('header', { level: 1 }),
     'header-2': () => editor.blocks.insert('header', { level: 2 }),
     'header-3': () => editor.blocks.insert('header', { level: 3 }),

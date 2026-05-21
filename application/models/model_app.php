@@ -786,8 +786,9 @@ class model_app extends _uho_model
                         if ($k2 > 0 && $v['tab'])
                             unset($v['tab']);
                         if ($k2 != 0) {
-                            unset($v['help']);
-                            unset($v['hr']);
+                            unset($v['cms']['help']);
+                            unset($v['cms']['hr']);
+                            unset($v['cms']['tab']);
                         }
                         if ($k2 > 0 && isset($v['header'])) unset($v['header']);
                         $f[] = $v;
@@ -2388,7 +2389,6 @@ class model_app extends _uho_model
                 if ($validate) {
 
                     $this->validateSchema($schema, $model);
-
                     $this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert'], $record);
                 }
 

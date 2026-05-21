@@ -307,6 +307,7 @@ Alternative version on `options` property:
         "model": "categories"
     },
     "settings": {
+        "null": true,                // Allow null (0) value
         "output": "value"            // Return value instead of strict integer id (default)
     }
 }

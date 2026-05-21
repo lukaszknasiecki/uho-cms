@@ -253,7 +253,8 @@ class model_app_write extends model_app
 							if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
 						} else unset($vv[$k2]);
 
-					$data[$v['field']] = implode(',', $vv);
+					$data[$v['field']] = $vv;// implode(',', $vv);
+					
 
 					break;
 
@@ -800,6 +801,7 @@ class model_app_write extends model_app
 				case "checkboxes":
 				case "elements":
 						$data[$v['field']] = array_values(array_unique($data[$v['field']]));
+
 					break;
 			}
 

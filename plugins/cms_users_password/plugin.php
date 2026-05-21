@@ -43,7 +43,7 @@ class serdelia_plugin_cms_users_password
             }
 
             $r = $this->parent->clientsValidatePasswordFormat($password);
-            //print_r($r['errors']);
+            
             if ($r['errors'])
                 foreach ($r['errors'] as $k => $v) {
                     $v[0] = array_search($v[0], $rr);

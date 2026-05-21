@@ -1,0 +1,38 @@
+{% if success %}
+<div class="alert alert-success">
+	[[icon::done]] {{translate['success']}}
+</div>
+{% endif %}
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{{translate['error']}}
+</div>
+{% endif %}
+
+{% if success %}
+<a href="{{url_back_string}}"><button type="button" id="button_plugin_back" class="btn btn-default"><span
+			class="mdi mdi-keyboard-backspace pull-left"></span>{{translate.back}}</button></a>
+{% else %}
+
+<div class="alert alert-info">
+	[[icon::info]]
+	{{translate.description}}	
+</div>
+
+
+<form action="" method="POST">
+	<div class="form-group row">
+		<label for="password" class="col-lg-2 col-form-label">{{translate.current_password}}</label>
+		<div class="col-lg-6">
+			<input type="password" name="password" required class="form-control serdelia-edit-field" id="password"
+				value="">
+		</div>
+	</div>
+	<div class="checkbox">
+		<label><input type="checkbox" id="show" name="show">&nbsp; {{translate.show_password}}</label>
+	</div>
+	<hr>
+	<button type="submit" name="submit" class="btn btn-danger">[[icon::fingerprint]] {{translate.submit}}</button>
+</form>
+{% endif %}

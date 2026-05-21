@@ -75,14 +75,13 @@ class serdelia_plugin_api_single
             {
                 case "GET":
 
-                $r = @file_get_contents($url);
-                
+                $r = file_get_contents($url);
+
                 if ($r)
                 {
                     if (is_string($r)) $r = @json_decode($r, true); else $r=null;
                 }
-                else 
-                    
+                else                     
                     $r = _uho_fx::fileCurl($url,['json'=>true,'decode'=>true]);
                 break;
 

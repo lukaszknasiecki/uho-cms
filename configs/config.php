@@ -47,7 +47,7 @@ $cfg = [
         'logout_time' => getEnv("CMS_LOGOUT_TIME") ? getenv("CMS_LOGOUT_TIME") : 60,
 		'activity_time' => getEnv("CMS_ACTIVITY_TIME") ? getenv("CMS_ACTIVITY_TIME") : 15,
 
-        'serdelia_keys' => [
+        'keys' => [
             getenv('CLIENT_KEY1'),
             getenv('CLIENT_KEY2')
         ],

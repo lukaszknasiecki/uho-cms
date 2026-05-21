@@ -1,0 +1,34 @@
+{
+    "icon":"lock",    
+    "pl":
+    {
+        "label": "Sprawdzanie hasła",
+        "title": "Sprawdzanie hasła",
+        "required":["długość hasła","małe litery","wielkie litery","cyfry","znaki szczególne"],
+        "current_password":"Aktualne hasło",
+        "repeat_new_password":"Powtórz nowe hasło",
+        "generate_password":"Wygeneruj automatycznie nowe hasło",
+        "submit":"Sprawdź wpisane hasło",
+        "show_password":"Pokaż hasło",
+        "error_mismatch":"Podane hasła nie są identyczne",
+        "error_system":"System error, please try again later",  
+        "success":"Hasło poprawne.",
+        "back":"Powrót",
+        "requitements":"Minimalne wymagania"
+    },
+    "en":
+    {
+        "label": "Password check",
+        "title": "Password check",
+        "description":"Please, enter user's current password.",
+
+        "current_password":"Current password",
+        "repeat_new_password":"Repeat new password",
+        "generate_password":"Auto-generate new password",
+        "show_password":"Show password",
+        "error":"Passwords don't match",
+        "success":"Password is correct.",
+        "submit":"Check password",
+        "requitements":"Minimal requirements"
+    }    
+}
