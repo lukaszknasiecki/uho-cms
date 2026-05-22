@@ -183,7 +183,7 @@ class model_app_edit extends model_app
 			if (!empty($field['cms']['tab'])) {
 				$tabs[] = ['id' => count($tabs) + 1, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
-			if (!empty($tabs) && ($field['field'] || $field['type'] === 'plugin') && !$field['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
+			if (!empty($tabs) && ($field['field'] || in_array($field['type'],[ 'plugin' ,'preview'])) && !$field['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
 				$tabs[count($tabs) - 1]['count']++;
 			}
 		}
@@ -192,6 +192,7 @@ class model_app_edit extends model_app
 
 		$iTabs = 0;
 		$first = false;
+
 		foreach ($tabs as &$tab) {
 			if (!$tab['count']) {
 				$tab['hidden'] = true;

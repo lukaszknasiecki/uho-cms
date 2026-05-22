@@ -993,6 +993,16 @@ class model_app extends _uho_model
 
                         break;
 
+                    case "preview":
+
+                        $v['value'] = [
+                            'url_preview'=>$this->fillPattern($v['cms']['url_preview'], ['keys' => $record, 'numbers' => $params, 'twig' => $record]),
+                            'url_edit'=>$this->cms_path.$this->fillPattern($v['cms']['url_edit'], ['keys' => $record, 'numbers' => $params, 'twig' => $record])
+                        ];
+
+
+                        break;
+
                     case "boolean":
 
                         if ($is_new && ($v['cms']['default'] === 1 || $v['cms']['default'] === true))

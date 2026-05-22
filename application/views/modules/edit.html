@@ -99,7 +99,7 @@
         <div class="form-group row" data-edit-lang="{{field.settings.lang}}" data-edit-field="{{field.cms_field}}" {% if
           field.cms.hidden %}style="display:none" {% endif %}>
 
-          {% if not field.cms.label and (field.cms.wide or field.type=='plugin') %}
+          {% if not field.cms.label and (field.cms.wide or field.type=='preview' or field.type=='plugin') %}
           {% else %}
           <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.cms.label}}{% if field.cms.required %}<sup>
               *</sup>{% endif %}

@@ -28,6 +28,7 @@
   - [`hidden`](#hidden)
   - [`order`](#order)
   - [`plugin`](#plugin)
+  - [`preview`](#preview)
   - [`model`](#model)
   - [`table`](#table)
   - [`url`](#url)
@@ -679,6 +680,27 @@ Useful if you want to visually attach plugin to some field and hide top plugin b
     "plugin_nr": 1,             // if there is more than 1 plugin of this type, choose which one to use
     "page": "items"             // plugin name, if it's of page type, must match .page from buttons_edit
 }
+```
+
+### `preview`
+
+Creates preview area, used mostly for page previews.
+
+You can define page URL preview (full URI) to be embedded via IFrame, and CMS url to be executed
+once IFrame area is clicked (CMS related URI).
+
+As IFrame is loaded only to visible elements, it's a good practice to put this type of elements
+inside (non-first) separate TAB, so it's loaded only if user clicks tab containing this element.
+
+```json
+{
+    "type": "preview",
+    "cms": {
+        "tab": "Preview"
+        "url_preview": "/en/{{path}}?preview=true",
+        "url_edit": "page/pages_modules,{{id}}",
+        }
+    }
 ```
 
 ### `model`
