@@ -64,7 +64,10 @@ class serdelia_widget_page
             return ['result' => false];
         }
 
+        if (isset($schema['cms']['label']['page'])) $schema['label'] = $schema['cms']['label']['page'];
+
         if (!$schema['label']) $schema['label'] = $this->parent->getSchemaLabelFromMenu($this->params['model']);
+
         if ($this->params['label'])  $schema['label'] = $this->params['label'];
 
         $f = [];
