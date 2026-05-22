@@ -732,6 +732,7 @@ Table view with multiple columns and rows.
                 "label": "Time",            // column header
                 "width": 30,                // column width in % of table width
                 "placeholder": "HH:MM"      // row placeholder for this column
+                "style": "json"
             },
             {
                 "label": "Text",
@@ -743,9 +744,9 @@ Table view with multiple columns and rows.
     "cms": {
         "counter": true,                    // if set to true, row numbers are visible
         "height": 300,                      // row height in pixels
-        "wide": false,                      // if true - table takes 100% of screen width
         "style": "json",                    // available: json|distinct
         "placeholders": ["A", "B"],         // placeholders for each column
+        "wide": false,                      // if true - table takes 100% of screen width
         "widths": [30,50,70]                // width of each column (%)
     }
 }

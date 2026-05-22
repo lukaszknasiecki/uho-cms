@@ -67,7 +67,7 @@
               </textarea>
             {% else %}            
             <textarea {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} data-order="{{loop_index}}"
-              style="{% if field.settings.height %}height:{{field.settings.height}}px;{% endif %}{% if field.cms.style=='json' or field.settings.header[v].style=='json' %}font-family:Courier{% endif %}"
+              style="{% if field.cms.height %}height:{{field.cms.height}}px;{% endif %}{% if field.cms.style=='json' or field.settings.header[v].style=='json' %}font-family:Courier{% endif %}"
               class="serdelia-edit-field serdelia_table_input"
               name="{{field.cms_field}}[][{{row_index_plus_1}}][{{loop.index}}]"
               placeholder="{{field.settings.header[v].placeholder}}">{{cell_value}}</textarea>
