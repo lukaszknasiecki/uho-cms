@@ -202,22 +202,24 @@ class serdelia_plugin_import_cover
                     /*
                         sources
                     */
+
+                    $sources_progressive = $vimeo['mp4_play'] ?? null;
+
                     if ($params['field_mp4'] && $vimeo['mp4']) {
                         $sources = $vimeo['mp4'];
                         if (is_array($sources) && !empty($sources[0]) && !empty($sources[0]['src'])) {
-                            $sources = json_encode($sources, true);
+                            $sources = ['static' => $sources, 'progressive' => $sources_progressive];
                         } else {
                             $errors[] = 'Vimeo Sources not found';
                             $sources = null;
                         }
                     }
 
-                    if ($params['field_mp4_play'] && $vimeo['mp4_play'])
-                    {
-                        $sources_progressive = $vimeo['mp4_play'];
-                        if (is_array($sources_progressive) && !empty($sources_progressive['progressive'][0]) && !empty($sources_progressive['progressive'][0]['src'])) {
-                            $sources_progressive = json_encode($sources_progressive, true);
-                        } else {
+                    if (is_array($sources_progressive) && !empty($sources_progressive['progressive'][0]) && !empty($sources_progressive['progressive'][0]['src'])) {
+                        $sources_progressive = json_encode($sources_progressive, true);
+
+                        if ($params['field_mp4_play'] && $vimeo['mp4_play']) {
+                        } elseif ($params['field_mp4_play']) {
                             $errors[] = 'Vimeo Progressive Sources not found';
                             $sources_progressive = null;
                         }
@@ -258,8 +260,7 @@ class serdelia_plugin_import_cover
                 $added[] = 'title_added';
             }
 
-            if ($params['field_poster'] && $cover)
-            {
+            if ($params['field_poster'] && $cover) {
 
                 $r = $this->parent->imageResizeModel($params['page'], $params['field_poster'], $record, $cover);
 
@@ -274,11 +275,13 @@ class serdelia_plugin_import_cover
                 $data[$params['field_poster_url']] = $cover;
                 $added[] = 'poster_added';
             }
+
+
             if ($sources) {
                 $data[$params['field_mp4']] = $sources;
                 $added[] = 'sources_added';
             }
-            if ($sources_progressive) {
+            if ($sources_progressive && !empty($params['field_mp4_play'])) {
                 $data[$params['field_mp4_play']] = $sources_progressive;
                 $added[] = 'sources_play_added';
             }
@@ -288,7 +291,10 @@ class serdelia_plugin_import_cover
                 $added[] = 'duration_added';
             }
 
-            $this->cms->put($params['page'], $data);
+            $r=$this->cms->put($params['page'], $data);
+            if ($r===false) $errors[] = 'Database update failed';
+             else
+                $added[] = 'record_updated';
             if ($cover_to_remove) unlink($cover_to_remove);
         }
 
@@ -411,7 +417,7 @@ class serdelia_plugin_import_cover
                 'subtitles' => $subtitles,
                 'duration' => $duration
             ]);
-            
+
             return $r;
         }
     }

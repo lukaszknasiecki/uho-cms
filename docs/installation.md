@@ -75,6 +75,9 @@ SQL_DEBUG=0|1
 CLIENT_PASSWORD_SALT=xxx
 CLIENT_KEY1=xxxxxxxxxxxxxxxx
 CLIENT_KEY2=xxxxxxxxxxxxxxxx
+
+# 2-Factor Authentication
+2FACTOR=true
 ```
 
 See [Environment Variables Reference](#environment-variables-reference) below for the full list.
@@ -123,6 +126,7 @@ These variables must be set for the CMS to start.
 | `CLIENT_PASSWORD_SALT` | Salt used when hashing frontend user passwords |
 | `CLIENT_KEY1` | Encryption key — **must be exactly 16 characters** |
 | `CLIENT_KEY2` | Encryption key — **must be exactly 16 characters** |
+| `CLIENT_KEY2` | Encryption key — **must be exactly 16 characters** |
 
 ### CMS Behaviour
 
@@ -134,6 +138,7 @@ These variables must be set for the CMS to start.
 | `SQL_DEBUG` | `false` | Log all SQL queries — useful during development, disable in production |
 | `PHP` | system `php` | Absolute path to the PHP binary used by background plugins (e.g. `/usr/bin/php`) |
 | `INT_API_TOKEN` | — | Token for internal API calls between CMS components or plugins |
+| `2FACTOR` | false | If set to true requires 2-factor authenticatoin by user's email and authentication Apps |
 
 ### Media Processing
 

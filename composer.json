@@ -17,7 +17,8 @@
         "james-heinrich/getid3": "2.0.x-dev",
         "lukaszknasiecki/uho-mvc": "^0.2.1",
         "vimeo/vimeo-api": "dev-master",
-        "aws/aws-sdk-php-resources": "^0.3.0"
+        "aws/aws-sdk-php-resources": "^0.3.0",
+        "robthree/twofactorauth": "dev-master"
     },
     "autoload": {
         "psr-4": {

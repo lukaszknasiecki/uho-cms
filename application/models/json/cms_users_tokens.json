@@ -1,0 +1,61 @@
+{
+    "table": "cms_users_tokens",
+    "order": "!valid_to",
+    "disable": [
+        "add",
+        "edit",
+        "remove",
+        "backup"
+    ],
+    "fields": [
+        {
+            "cms": {
+                "list": "show",
+                "edit": false,
+                "search": true,
+                "label_PL": "Data i czas",
+                "label_EN": "Date",
+                "auto":"timestamp"
+            },
+            "field": "valid_to",
+            "type": "timestamp"
+        },
+        {
+            "field": "session",
+            "type": "integer",
+            "cms": {
+                "label_PL": "Identyfikator sesji",
+                "label_EN": "Session ID",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
+        },
+        {
+            "field": "user",
+            "type": "select",
+            "source": {
+                "model": "cms_users"
+            },
+            "cms": {
+                "label_PL": "Użytkownik",
+                "label_EN": "User",
+                "list": "show",
+                "edit": false,
+                "search": true
+            }
+        },
+        {
+            "field": "token",
+            "settings": {
+                "hash": "Xc!"
+            },
+            "cms": {
+                "label_PL": "Token",
+                "label_EN": "Token",
+                "edit": false,
+                "search": true
+            }
+        }
+    ]
+}

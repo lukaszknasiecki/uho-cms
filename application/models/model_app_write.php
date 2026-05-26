@@ -200,8 +200,6 @@ class model_app_write extends model_app
 				if ($f && $f['type'] == 'image' && !empty($f['settings']['sizes']) && !in_array($f['settings']['sizes'], $update_fields)) $update_fields_even_empty[] = $update_fields[] = $f['settings']['sizes'];
 			}
 
-
-
 		// value updates
 		foreach ($schema['fields'] as $k => $v) {
 			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])) {
@@ -213,8 +211,6 @@ class model_app_write extends model_app
 				case "float":
 
 					break;
-
-
 
 				case "variable":
 					$data[$v['field']] = $this->getAutoVariable($v['variable']);

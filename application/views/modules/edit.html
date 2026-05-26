@@ -85,9 +85,9 @@
         
         {% if field.cms.header %}
         <div class="form-group row">
-          <label class="col-lg-2 col-form-label"></label>
+          <label class="col-lg-2 col-form-label">{% if field.cms.wide %}<h5>{{field.cms.header}}</h5>{% endif %}</label>
           <div class="col-lg-6">
-            <h5>{{field.cms.header}}</h5>
+            {% if not field.cms.wide %}<h5>{{field.cms.header}}</h5>{% endif %}
           </div>
         </div>
         {% endif %}

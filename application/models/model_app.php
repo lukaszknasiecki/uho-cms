@@ -407,7 +407,7 @@ class model_app extends _uho_model
 
     public function setHead($data)
     {
-        $this->head_title = $data['title'];;
+        $this->head_title = $data['title'];
         $this->head['description'] = $data['description'];
     }
 
@@ -905,7 +905,6 @@ class model_app extends _uho_model
 
     public function updateSchemaForEdit(&$schema, $page_with_params, $record, $translate, $params)
     {
-        //print_r($schema);exit();
         if (is_array($schema['cms']['label'])) {
             if (isset($schema['cms']['label']['edit']))
                 $schema['cms']['label'] = $schema['cms']['label']['edit'];
@@ -1218,7 +1217,8 @@ class model_app extends _uho_model
                         }
 
                         // filter options
-                        if (isset($v['options']) && !empty($v['cms']['filters'])) {
+                        if (isset($v['options']) && !empty($v['cms']['filters']))
+                        {
                             $option_filters = $v['cms']['filters'];
 
                             foreach ($option_filters as $kf => $vf) {
@@ -3325,6 +3325,18 @@ class model_app extends _uho_model
         $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
         return $class->getAccessWrite();
     }
+
+    public function was2factor()
+    {
+        if (empty($_SESSION['2factor'])) return false;
+        else return true;
+    }
+
+    public function set2factor()
+    {
+        $_SESSION['2factor']=true;
+    }
+    
 
 
 }

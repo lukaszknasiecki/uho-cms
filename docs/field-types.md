@@ -305,7 +305,11 @@ Alternative version on `options` property:
     "field": "category_id",
     "type": "select",
     "source": {
-        "model": "categories"
+        "model": "categories",      // source model
+        "order": "label",           // order (sort)
+        "filters": {                // additional filters
+            "production": "{{film.production.id}}"
+        }
     },
     "settings": {
         "null": true,                // Allow null (0) value

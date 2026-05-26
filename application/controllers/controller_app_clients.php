@@ -23,13 +23,12 @@ class controller_app_clients
      * @param object $route Route handler instance
      */
     public function __construct($cfg, $model, $route)
-    {                
+    {
         $this->cfg   = $cfg;
         $this->model = $model;
         $this->route = $route;
-        if (isset($this->cfg['cms']['debug']) && in_array($this->cfg['cms']['debug'],[1,'true']))
-             $this->model->setDebugMode(true);
-
+        if (isset($this->cfg['cms']['debug']) && in_array($this->cfg['cms']['debug'], [1, 'true']))
+            $this->model->setDebugMode(true);
     }
 
     /**
@@ -40,7 +39,7 @@ class controller_app_clients
      * @param array $get  Incoming GET data
      * @return void
      */
-    public function actionBefore(array $post, array $get) : void
+    public function actionBefore(array $post, array $get): void
     {
         $this->post = $post;
         $this->get  = $get;
@@ -111,7 +110,16 @@ class controller_app_clients
         // Optionally clean up temp files (disabled)
         if ($this->clients->isLogged()) {
             // $this->model->removeTempFiles();
+
+            if ($this->cfg['2factor'] && !$this->model->was2factor()) {
+                if ($this->route->e(0) !== '2factor' && $this->route->e(0) !== 'logout')
+                {
+                    $this->route->redirect('2factor');
+                }
+            }
         }
+
+
 
         // After successful login, redirect to pre-login route if stored
         if ($this->clients->isLogged() && isset($_SESSION['prelogin_route'])) {
@@ -123,4 +131,3 @@ class controller_app_clients
         }
     }
 }
-?>

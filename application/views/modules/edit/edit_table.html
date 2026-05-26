@@ -59,7 +59,7 @@
             <textarea {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} data-order="{{loop_index}}"
               id="{{field.cms_field}}_{{row_index_plus_1}}_{{loop.index}}"
               class="serdelia-edit-field serdelia_table_input {{ckeditor_class}}"
-              {% if field.settings.height %}data-height="{{field.settings.height}}px;"{% else %}data-height="200px"{% endif %}
+              {% if field.cms.height %}data-height="{{field.cms.height}}px;"{% else %}data-height="200px"{% endif %}
               data-toolbar="false" data-footer="false"
               name="{{field.cms_field}}[][{{row_index_plus_1}}][{{loop.index}}]"
               placeholder="{{field.cms.placeholders[v]}}">

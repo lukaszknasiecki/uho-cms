@@ -125,7 +125,7 @@ class model_app_page extends model_app
 	
 		foreach ($schema['fields'] as $k => $field)
 			if (
-				!in_array($field['type'], ['image', 'checkboxes', 'temp-elements']) &&
+				!in_array($field['type'], ['image', 'temp-checkboxes', 'temp-elements']) &&
 				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
 			) {
 				$searchKey = $field['field_search'] ?? null;
@@ -148,8 +148,10 @@ class model_app_page extends model_app
 					case 'integer':
 						$vv = $value ?: 0;
 						break;
+
 					case 'select':
 					case 'elements':
+					case 'checkboxes':
 					
 							if ($global_search && !empty($field['options']))
 							{
@@ -160,7 +162,7 @@ class model_app_page extends model_app
 									}
 								}
 							} else $vv=$value;
-							
+
 						break;
 
 					case 'string':
@@ -252,8 +254,8 @@ class model_app_page extends model_app
 		$offset = ($page_nr - 1) * $this->paging['count'];
 		$limit = $this->paging['count'];
 		$schema['order']=$schema['cms']['order'];
-
-		$records = $this->apporm->get($schema, $filters, false, null, "$offset,$limit");
+		
+		$records = $this->apporm->get($schema, $filters, false, $schema['order']['field'], "$offset,$limit");
 
 		if (!$global_search) {
 			$records = $this->apporm->filterResults($schema, $records, $filters_virtual, false);
@@ -292,12 +294,15 @@ class model_app_page extends model_app
 		}
 
 		// Render source labels for certain fields
+		
 		foreach ($schema['fields'] as $field) {
 			if (isset($field['source']['label'])) {
 				foreach ($records as $i => $rec) {
 					$val = $rec['values'][$field['field']] ?? null;
-					if (in_array($field['type'], ['elements', 'checkboxes'])) {
+					if (in_array($field['type'], ['elements', 'checkboxes']))
+					{
 						$val = array_map(fn($v) => $this->getTwigFromHtml($field['source']['label'], $v), (array) $val);
+						if (empty($schema['cms']['layout']['type']) || $schema['cms']['layout']['type']!=='grid')
 						$records[$i]['values'][$field['field']] = implode(', ', $val);
 					} else {
 						$records[$i]['values'][$field['field']] = $this->getTwigFromHtml($field['source']['label'], $val ?: []);

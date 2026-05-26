@@ -1,6 +1,7 @@
 {
     "controllers": {
         "": "home",
+        "2factor": "2auth",
         "add": "edit",
         "home": "home",
         "404": "404",

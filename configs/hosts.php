@@ -49,6 +49,7 @@ $cfg_domains = [
 				'token' => getEnv('VIMEO_TOKEN')
 			]
 		],
+		"2factor" => empty(getEnv("2FACTOR")) ? false : filter_var(getEnv("2FACTOR"), FILTER_VALIDATE_BOOLEAN),
 		"s3" => $s3
 	]
 ];

@@ -54,6 +54,7 @@ class model_app_edit extends model_app
 		// Load base schema and prepare ORM
 
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
+        
 
 		// Access check
 		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
@@ -72,7 +73,7 @@ class model_app_edit extends model_app
 			}
 		} else $schema_validation = null;
 
-		$schema=$this->getSchemaDepreceated($schema);
+		$schema=$this->getSchemaDepreceated($schema);		
 		$this->validateSchema($schema, $model);				
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 
@@ -116,6 +117,7 @@ class model_app_edit extends model_app
 			// Refresh schema after plugin execution
 
 			$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post);
+			
 		}
 
 		// Add backup URLs if applicable

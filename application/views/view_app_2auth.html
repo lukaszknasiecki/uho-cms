@@ -1,0 +1,64 @@
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        {% if errors %}
+        <div class="alert alert-danger" role="alert">
+                <h5 class="alert-heading">Errors occured.</h5>
+                <ul>
+                        {% for error in errors %}
+                        <li>{{error}}</li>
+                        {% endfor %}
+                </ul>
+                <p><a href="" class="btn btn-primary">Try Again</a></p>
+        </div>
+        
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+                <h5 class="alert-heading">Success</h5>
+                <ul>
+                        {% for message in success %}
+                        <li>{{message}}</li>
+                        {% endfor %}
+                </ul>
+        </div>
+        {% endif %}
+        {% if qrCodeUrl %}
+        <div class="card mb-3">
+                {% if qrCodeUrl!='exists' %}
+                <div class="card-body">
+                        <h5 class="card-title">Scan the QR code with your 2FA app and provide 6-digit code</h5>
+                        <img src="{{qrCodeUrl}}" alt="QR Code for 2FA setup" class="img-fluid">
+                </div>
+                {% else %}
+                <div class="card-body">
+                        <h5 class="card-title">Please, enter 6-digit code from your verification app</h5>
+                </div>
+                {% endif %}
+                
+                        <div class="card-body">
+                                <form method="post">
+                                        <div class="mb-3">
+                                                <label for="code" class="form-label">6-digit code</label>
+                                                <input style="font-size:24px" type="text" class="form-control" id="code"
+                                                        name="code" maxlength="6" inputmode="numeric" pattern="[0-9]*"
+                                                        autocomplete="one-time-code" autofocus required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Verify</button>
+                                </form>
+                                <script>
+                                        document.getElementById('code').addEventListener('input', function (e) {
+                                                this.value = this.value.replace(/\D/g, '');
+                                                if (this.value.length === 6) this.closest('form').submit();
+                                        });
+                                </script>
+                                <p><br>
+                                        <form method="post">
+                                                <input type="hidden" name="qr_regenerate" value="1">
+                                                <label style="font-size:12px" for="qr_regenerate" class="form-label">Need new QR code?</label>
+                                                <button type="submit" class="btn btn-sm btn-default">Regenerate</button>
+                                        </form>
+                                </p>
+                        </div>
+
+        </div>
+        {% endif %}
+</div>
