@@ -1984,17 +1984,19 @@ class model_app extends _uho_model
      */
     public function imageUpdateResize($model, $field, $record)
     {
-        $schema = $this->apporm->getSchema($model);
+        $schema = $this->apporm->getSchema($model);        
         if ($schema)
             $image_field = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
         else
             return false;
+
         if ($image_field && !empty($image_field['settings']['sizes']))
             $sizes = $image_field['settings']['sizes'];
         else
             return false;
 
         $item = $this->apporm->get($model, ['id' => $record], true);
+        
         if ($item && !empty($item[$field])) {
             $image = $item[$field];
             foreach ($image as $k => $v) {
