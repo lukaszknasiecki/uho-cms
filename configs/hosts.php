@@ -47,6 +47,11 @@ $cfg_domains = [
 				'client' => getEnv('VIMEO_CLIENT'),
 				'secret' => getEnv('VIMEO_SECRET'),
 				'token' => getEnv('VIMEO_TOKEN')
+			],
+			"spotify" =>
+			[
+				'client' => getEnv('SPOTIFY_CLIENT'),
+				'secret' => getEnv('SPOTIFY_SECRET')
 			]
 		],
 		"2factor" => empty(getEnv("2FACTOR")) ? false : filter_var(getEnv("2FACTOR"), FILTER_VALIDATE_BOOLEAN),

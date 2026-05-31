@@ -112,6 +112,7 @@ class serdelia_plugin_import_cover
         $title = '';
         $cover = '';
         $sources = '';
+        $date = null;
         $sources_progressive = '';
         $duration = 0;
         $root = $_SERVER['DOCUMENT_ROOT'];
@@ -154,6 +155,17 @@ class serdelia_plugin_import_cover
                 if (@$youtube['title']) $title = $youtube['title'];
                 if (@$youtube['image']) $cover = $youtube['image'];
 
+                break;
+
+            case "spotify":
+
+                $spotify = $this->spotifyGet($record[$params['field_spotify']], $this->parent->getApiKeys('spotify'));
+
+                if (!$spotify) $errors[] = 'spotify_not_found';
+                else {
+                    if (!empty($spotify['date'])) $date = $spotify['date'];
+                    if (!empty($spotify['duration'])) $duration = $spotify['duration'];
+                }
                 break;
 
             // ------------------------------------------------------------------------------------
@@ -203,27 +215,13 @@ class serdelia_plugin_import_cover
                         sources
                     */
 
-                    $sources_progressive = $vimeo['mp4_play'] ?? null;
-
-                    if ($params['field_mp4'] && $vimeo['mp4']) {
-                        $sources = $vimeo['mp4'];
-                        if (is_array($sources) && !empty($sources[0]) && !empty($sources[0]['src'])) {
-                            $sources = ['static' => $sources, 'progressive' => $sources_progressive];
-                        } else {
-                            $errors[] = 'Vimeo Sources not found';
-                            $sources = null;
-                        }
+                    if ($params['field_mp4'] && (!empty($vimeo['static']) || !empty($vimeo['play']))) {
+                        $sources = ['static' => $vimeo['static'] ?? [], 'play' => $vimeo['play'] ?? []];
+                    } else {
+                        $errors[] = 'Vimeo Sources not found';
+                        $sources = null;
                     }
 
-                    if (is_array($sources_progressive) && !empty($sources_progressive['progressive'][0]) && !empty($sources_progressive['progressive'][0]['src'])) {
-                        $sources_progressive = json_encode($sources_progressive, true);
-
-                        if ($params['field_mp4_play'] && $vimeo['mp4_play']) {
-                        } elseif ($params['field_mp4_play']) {
-                            $errors[] = 'Vimeo Progressive Sources not found';
-                            $sources_progressive = null;
-                        }
-                    }
 
                     if (!empty($vimeo['duration'])) {
                         $duration = $vimeo['duration'];
@@ -252,7 +250,7 @@ class serdelia_plugin_import_cover
 
         // ------------------------------------------------------------------------------------
 
-        if ($title || $cover || $sources || $sources_progressive) {
+        if ($title || $cover || $sources || $sources_progressive || $duration || $date) {
 
             $data = ['id' => $record['id']];
             if ($params['field_title'] && $title && !$record[$params['field_title']]) {
@@ -280,6 +278,11 @@ class serdelia_plugin_import_cover
             if ($sources) {
                 $data[$params['field_mp4']] = $sources;
                 $added[] = 'sources_added';
+                if (isset($params['field_mp4_timestamp']))
+                {
+                    $data[$params['field_mp4_timestamp']] = date('Y-m-d H:i:s');
+                    $added[] = 'sources_timestamp_added';
+                }
             }
             if ($sources_progressive && !empty($params['field_mp4_play'])) {
                 $data[$params['field_mp4_play']] = $sources_progressive;
@@ -291,9 +294,16 @@ class serdelia_plugin_import_cover
                 $added[] = 'duration_added';
             }
 
-            $r=$this->cms->put($params['page'], $data);
-            if ($r===false) $errors[] = 'Database update failed';
-             else
+            if ($date && isset($params['field_date'])) {
+                $data[$params['field_date']] = $date;
+                $added[] = 'date_added';
+            }
+
+
+
+            $r = $this->cms->put($params['page'], $data);
+            if ($r === false) $errors[] = 'Database update failed';
+            else
                 $added[] = 'record_updated';
             if ($cover_to_remove) unlink($cover_to_remove);
         }
@@ -350,6 +360,7 @@ class serdelia_plugin_import_cover
         if (isset($data['body']['error'])) {
             return ['error' => 'Error: ' . $data['body']['error'] . ' ' . $data['body']['developer_message']];
         } elseif ($data) {
+
             $title = @$data['body']['name'];
             $author = @$data['body']['user']['name'];
             $image = @$data['body']['pictures']['sizes'];
@@ -409,9 +420,9 @@ class serdelia_plugin_import_cover
                 'image' => $image,
                 'title' => $title,
                 'author' => $author,
-                'mp4' => $video,
-                'mp4_play' => [
-                    'progressive' => $video_progressive,
+                'static' => $video,
+                'play' => [
+                    'mp4' => $video_progressive,
                     'hls' => $hls
                 ],
                 'subtitles' => $subtitles,
@@ -448,5 +459,84 @@ class serdelia_plugin_import_cover
 
         $result = ['title' => $title, 'image' => $image, 'author' => $author];
         return $result;
+    }
+
+    private function spotifyGet(string $spotify_id, array $keys)
+    {
+        $token = $this->getSpotifyToken($keys['client'], $keys['secret']);
+        if ($token) {
+            $url = "https://api.spotify.com/v1/episodes/" . $spotify_id;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $token,
+                'Content-Type: application/json'
+            ]);
+
+            $response = curl_exec($ch);
+
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            if ($httpCode === 200) {
+                $data = json_decode($response, true);
+
+                $title = $data['name'] ?? null;
+                $author = $data['show']['publisher'] ?? null;
+                $image = $data['images'][0]['url'] ?? null;
+                $duration = $data['duration_ms'] ?? null;
+
+                return [
+                    'title' => $title,
+                    'date' => $data['release_date'] ?? null,
+                    'author' => $author,
+                    'image' => $image,
+                    'duration' => intval($duration / 1000)
+                ];
+            }
+        }
+    }
+
+    private function getSpotifyToken($clientId, $clientSecret)
+    {
+        // 1. Spotify's token endpoint
+        $url = 'https://accounts.spotify.com/api/token';
+
+        // 2. Prepare the payload 
+        // The payload requires 'grant_type' and can optionally include client credentials here or via Basic Auth headers
+        $postFields = http_build_query([
+            'grant_type'    => 'client_credentials',
+            'client_id'     => $clientId,
+            'client_secret' => $clientSecret
+        ]);
+
+        // 3. Setup cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
+
+        // 4. Execute request
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            return null;
+        }
+
+        // 5. Read the Token
+        if ($httpCode === 200) {
+            $data = json_decode($response, true);
+
+            $accessToken = $data['access_token'];
+            return $accessToken;
+        } else {
+            return null;
+        }
     }
 }

@@ -38,6 +38,7 @@ class model_app_edit extends model_app
 		$post = $_POST;
 
 		$params = explode(',', $page[1]);
+
 		$page_with_params = $page[1];
 		$model = $params[0];
 		unset($params[0]);
@@ -132,8 +133,7 @@ class model_app_edit extends model_app
 
 		// Update schema with current state and permissions
 
-		$schema = $this->updateSchemaSources($schema, $record, $params);
-		
+		$schema = $this->updateSchemaSources($schema, $record, $params);		
 		$schema = $this->updateSchemaAuth($schema);
 		$schema = $this->updateSchemaRecord($schema, $record, $params);		
 		$record = $this->updateSchemaForEdit($schema, $page_with_params, $record, $translate, $params);
@@ -300,6 +300,7 @@ class model_app_edit extends model_app
 	 */
 	private function updateSchemaRecord($schema, $record, $params)
 	{
+		
 		if (!$record) {
 			$schema['cms']['buttons_edit'] = [];
 		}

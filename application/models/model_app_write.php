@@ -126,7 +126,14 @@ class model_app_write extends model_app
 		}
 
 		// Perform update
-		$result = $this->updateRecord($model, $id, $data, $modelParams, $update_payload_only, $update_fields);
+		$result = $this->updateRecord(
+			$model,
+			$id,
+			$data,
+			$modelParams,
+			$update_payload_only,
+			$update_fields
+			);
 
 		// Clear cache and return result
 		$this->cacheKill();

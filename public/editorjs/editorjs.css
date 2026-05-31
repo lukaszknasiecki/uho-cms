@@ -31,3 +31,16 @@
 .ce-lead {
   font-size: 1.25em;
 }
+
+/* removes the default focus and selection styles for blocks with the lead class, allowing the custom styles to take precedence */
+.ce-block--selected:has(.ce-lead),
+.ce-block--selected:has(.ce-lead) .ce-block__content,
+.ce-block--focused:has(.ce-lead),
+.ce-block--focused:has(.ce-lead) .ce-block__content,
+.ce-block:has(.ce-lead:focus),
+.ce-lead:focus {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
