@@ -965,6 +965,12 @@ class model_app extends _uho_model
                     Update schema by type
                 */
 
+                // strings with options are selects in the CMS
+                if ($v['type']=='string' && isset($v['options']))
+                {
+                    $schema['fields'][$k]['type']=$v['type']='select';
+                }
+
 
                 switch ($v['type']) {
                     case "image":

@@ -255,7 +255,7 @@ class model_app_page extends model_app
 		$limit = $this->paging['count'];
 		$schema['order']=$schema['cms']['order'];
 		
-		$records = $this->apporm->get($schema, $filters, false, $schema['order']['field'], "$offset,$limit");
+		$records = $this->apporm->get($schema, $filters, false, $schema['order'], "$offset,$limit");
 
 		if (!$global_search) {
 			$records = $this->apporm->filterResults($schema, $records, $filters_virtual, false);
@@ -552,6 +552,7 @@ class model_app_page extends model_app
 	 */
 	private function updateSchemaSorting(array $schema, ?string $sort, string $page_with_filters): array
 	{
+		
 		// If sorting is provided (e.g., "field,ASC"), set it into the schema.
 		if ($sort)
 		{

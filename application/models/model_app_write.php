@@ -570,7 +570,7 @@ class model_app_write extends model_app
 
 					if (is_string($data[$v['field']]))
 						$data[$v['field']]=explode(',',$data[$v['field']]);
-					if (@$field['settings']['output'] != 'string') 
+					if (isset($field['settings']['output']) && $field['settings']['output'] != 'string') 
 						foreach ($data[$v['field']] as $k2 => $v2)
 							$data[$v['field']][$k2]=intval($v2);
 
@@ -833,6 +833,8 @@ class model_app_write extends model_app
 
 
 			$result = $this->apporm->post($schema, $data);
+			if ($result===false) exit('error on POST: '.$this->apporm->getLastError());
+			 
 
 			$id_new = $id = $result;
 			if ($data['id']) $id_new = $id = $data['id'];
