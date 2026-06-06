@@ -27,6 +27,8 @@ use Vimeo\Vimeo;
  *  - field_vimeo       field storing vimeo id (string)
  *  - field_vtt         field storing vtt (file type)
  *  - field_title       field storing video title (string)
+ *  - field_date        field video date
+ *  - field_date_updated timestamp date updated
  * 
  * Example:
  *  {
@@ -118,6 +120,16 @@ class serdelia_plugin_import_cover
         $root = $_SERVER['DOCUMENT_ROOT'];
         $cover_to_remove = null;
 
+        if (isset($params['field_poster']) && isset($params['poster_if_exists']) && $params['poster_if_exists']===false)
+        {
+            $image=$record[$params['field_poster']];
+            
+            if ($image && _uho_fx::file_exists(array_shift($image)))
+            {
+                unset($params['field_poster']);
+            }
+        }
+
         // ------------------------------------------------------------------------------------
 
         switch ($params['type']) {
@@ -200,9 +212,11 @@ class serdelia_plugin_import_cover
                         vimeo poster via ffmpeg
                     */
 
-                    if (isset($params['field_poster_timestamp']) && $record[$params['field_poster_timestamp']] && isset($vimeo['mp4'][0]['src'])) {
+
+
+                    if (isset($params['field_poster_timestamp']) && $record[$params['field_poster_timestamp']] && isset($vimeo['static'][0]['src'])) {
                         $image_temp = '/cms_config-temp/' . uniqid() . '.jpg';
-                        $mp4 = $vimeo['mp4'][0]['src'];
+                        $mp4 = $vimeo['static'][0]['src'];
                         $cmd = "-ss " . $record[$params['field_poster_timestamp']] . " -i \"" . $mp4 . "\" -frames:v 1 " . $root . $image_temp;
                         $this->parent->ffmpeg($cmd);
                         if (_uho_fx::file_exists($image_temp)) {
@@ -299,7 +313,9 @@ class serdelia_plugin_import_cover
                 $added[] = 'date_added';
             }
 
-
+            if (isset($params['field_date_updated'])) {
+                $data[$params['field_date_updated']] = date('Y-m-d H:i:s');
+            }
 
             $r = $this->cms->put($params['page'], $data);
             if ($r === false) $errors[] = 'Database update failed';

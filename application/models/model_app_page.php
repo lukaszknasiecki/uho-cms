@@ -34,7 +34,7 @@ class model_app_page extends model_app
 	public function getContentData($params = null)
 	{
 
-        $this->resetActivityTime();
+		$this->resetActivityTime();
 
 		// Extract page info and GET parameters
 		$page = explode('/', $params['url']);
@@ -67,15 +67,15 @@ class model_app_page extends model_app
 
 		// Load and validate schema		
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
-		if (isset($schema['result']) && $schema['result']===false)
-			exit('<pre>'.$schema['message'].'</pre>');
-		$schema=$this->getSchemaDepreceated($schema);		
+		if (isset($schema['result']) && $schema['result'] === false)
+			exit('<pre>' . $schema['message'] . '</pre>');
+		$schema = $this->getSchemaDepreceated($schema);
 		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 		$schema = $this->updateSchemaAuth($schema);
 
 		// Validate Access
-		if (!$this->checkAccessPage($schema, ['nested'=>$params])) exit('access::error::[app_page]');
+		if (!$this->checkAccessPage($schema, ['nested' => $params])) exit('access::error::[app_page]');
 
 
 		// Execute plugin "on_load" hooks
@@ -107,7 +107,7 @@ class model_app_page extends model_app
 
 		$buttons = $this->getSchemaButtons($schema, $params);
 		$schema['fields'] = $this->updateSchemaLanguagesSearch($schema);
-		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);		
+		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);
 		$schema = $this->updateSchemaRowWidth($schema);
 
 		// Determine current page number
@@ -122,7 +122,7 @@ class model_app_page extends model_app
 		$filters_stack = [];
 		$first = true;
 		$global_search = isset($get['query']);
-	
+
 		foreach ($schema['fields'] as $k => $field)
 			if (
 				!in_array($field['type'], ['image', 'temp-checkboxes', 'temp-elements']) &&
@@ -131,7 +131,7 @@ class model_app_page extends model_app
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
-	
+
 				if (!$global_search) {
 					$schema['fields'][$k]['searched'] = $value;
 				}
@@ -152,16 +152,14 @@ class model_app_page extends model_app
 					case 'select':
 					case 'elements':
 					case 'checkboxes':
-					
-							if ($global_search && !empty($field['options']))
-							{
-								foreach ($field['options'] as $opt)
-								{
-									if (isset($opt['label']) && str_contains($opt['label'], $value)) {
-										$vv[] = $opt['value'];
-									}
+
+						if ($global_search && !empty($field['options'])) {
+							foreach ($field['options'] as $opt) {
+								if (isset($opt['label']) && str_contains($opt['label'], $value)) {
+									$vv[] = $opt['value'];
 								}
-							} else $vv=$value;
+							}
+						} else $vv = $value;
 
 						break;
 
@@ -194,7 +192,7 @@ class model_app_page extends model_app
 
 				// Build filter label stack
 				if (!$global_search || $first) {
-					
+
 					$first = false;
 
 					if (!empty($field['options']) && !$global_search) {
@@ -206,14 +204,13 @@ class model_app_page extends model_app
 						}
 					}
 
-					if ($field['type'] == 'boolean')
-					{
-						if ($this->lang == 'en') $no = 'No'; else $no = 'Nie';						
+					if ($field['type'] == 'boolean') {
+						if ($this->lang == 'en') $no = 'No';
+						else $no = 'Nie';
 						if (!$label_value) $label_value = $field['cms']['label'];
 						if (!$value && $field['cms']['label_not']) $label_value = $field['cms']['label_not'];
 						elseif (!$value) $label_value = $no . '-' . $field['cms']['label'];
-					}
-					elseif (!$label_value)  $label_value = $value;
+					} elseif (!$label_value)  $label_value = $value;
 
 
 					$filters_stack[] = [
@@ -245,7 +242,7 @@ class model_app_page extends model_app
 
 		// Merge with Access Filters
 
-		$filters = array_merge($filters,$this->getAccessFilters($schema));
+		$filters = array_merge($filters, $this->getAccessFilters($schema));
 
 		// Fetch records
 		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
@@ -253,9 +250,16 @@ class model_app_page extends model_app
 
 		$offset = ($page_nr - 1) * $this->paging['count'];
 		$limit = $this->paging['count'];
-		$schema['order']=$schema['cms']['order'];
-		
-		$records = $this->apporm->get($schema, $filters, false, $schema['order'], "$offset,$limit");
+		$schema['order'] = $schema['cms']['order'];
+
+		$records = $this->apporm->get(
+			[
+				'schema' => $schema,
+				'filters' => $filters,
+				'order' => $schema['order'],
+				'limit' => "$offset,$limit"
+			]
+		);
 
 		if (!$global_search) {
 			$records = $this->apporm->filterResults($schema, $records, $filters_virtual, false);
@@ -274,7 +278,7 @@ class model_app_page extends model_app
 			];
 
 			if (!empty($schema['cms']['nav']['page_edit'])) {
-				$records[$i]['url_edit'] = $this->fillPattern($schema['cms']['nav']['page_edit'], ['twig' => array_merge($record,['nested' => $record])]);
+				$records[$i]['url_edit'] = $this->fillPattern($schema['cms']['nav']['page_edit'], ['twig' => array_merge($record, ['nested' => $record])]);
 			}
 
 			if (!empty($schema['cms']['layout']['link'])) {
@@ -294,16 +298,15 @@ class model_app_page extends model_app
 		}
 
 		// Render source labels for certain fields
-		
+
 		foreach ($schema['fields'] as $field) {
 			if (isset($field['source']['label'])) {
 				foreach ($records as $i => $rec) {
 					$val = $rec['values'][$field['field']] ?? null;
-					if (in_array($field['type'], ['elements', 'checkboxes']))
-					{
+					if (in_array($field['type'], ['elements', 'checkboxes'])) {
 						$val = array_map(fn($v) => $this->getTwigFromHtml($field['source']['label'], $v), (array) $val);
-						if (empty($schema['cms']['layout']['type']) || $schema['cms']['layout']['type']!=='grid')
-						$records[$i]['values'][$field['field']] = implode(', ', $val);
+						if (empty($schema['cms']['layout']['type']) || $schema['cms']['layout']['type'] !== 'grid')
+							$records[$i]['values'][$field['field']] = implode(', ', $val);
 					} else {
 						$records[$i]['values'][$field['field']] = $this->getTwigFromHtml($field['source']['label'], $val ?: []);
 					}
@@ -394,26 +397,23 @@ class model_app_page extends model_app
 
 		/**
 		 * Shortcuts
-		*/
+		 */
 
-		if (isset($schema['cms']['shortcuts']))
-		{
-			foreach ($schema['cms']['shortcuts'] as $k=>$v)
-			{
-				$schema['cms']['shortcuts'][$k]['url']=['type'=>'url_now','get'=>@$v['link']['query']];
+		if (isset($schema['cms']['shortcuts'])) {
+			foreach ($schema['cms']['shortcuts'] as $k => $v) {
+				$schema['cms']['shortcuts'][$k]['url'] = ['type' => 'url_now', 'get' => @$v['link']['query']];
 			}
 		}
 
 		/**
 		 * Search
 		 */
-		if (empty($schema['cms']['search'])) $schema['cms']['search']=[];
+		if (empty($schema['cms']['search'])) $schema['cms']['search'] = [];
 
 		/**
 		 * Loop through all fields and normalize configuration
 		 */
-		foreach ($schema['fields'] as $k => $v)
-		 {
+		foreach ($schema['fields'] as $k => $v) {
 
 			// Override multilingual label
 			if (@is_array($v['label'])) {
@@ -422,20 +422,17 @@ class model_app_page extends model_app
 
 			// convert list to object if string
 
-			if (!empty($v['cms']['list']) && is_string($v['cms']['list']))
-			{
-				$v['cms']['list']=$schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];				
+			if (!empty($v['cms']['list']) && is_string($v['cms']['list'])) {
+				$v['cms']['list'] = $schema['fields'][$k]['cms']['list'] = ['type' => $v['cms']['list']];
 			} elseif (empty($v['cms']['list']))
-				$v['cms']['list']=$schema['fields'][$k]['cms']['list'] = [];
+				$v['cms']['list'] = $schema['fields'][$k]['cms']['list'] = [];
 
 			// Override search from schema.search array
 
-			if (in_array($v['field'], $schema['cms']['search']))
-			{
-				$schema['fields'][$k]['cms']['search'] = $v['cms']['search']=true;
+			if (in_array($v['field'], $schema['cms']['search'])) {
+				$schema['fields'][$k]['cms']['search'] = $v['cms']['search'] = true;
 				if (empty($v['cms']['list']['type']))
-					$schema['fields'][$k]['cms']['list']['type']=$v['cms']['list']['type']='read';
-					
+					$schema['fields'][$k]['cms']['list']['type'] = $v['cms']['list']['type'] = 'read';
 			}
 
 
@@ -451,25 +448,21 @@ class model_app_page extends model_app
 					break;
 
 				case "image":
-					
+
 					// Ensure list view for images is well-formed
-					if (isset($v['cms']['list']))
-					{
-						$list=@$v['cms']['list'];
-						if (!$list) $list=$v['cms']['list'] = [];
-						if (empty($list['folder']))
-						{
+					if (isset($v['cms']['list'])) {
+						$list = @$v['cms']['list'];
+						if (!$list) $list = $v['cms']['list'] = [];
+						if (empty($list['folder'])) {
 							if (!is_array($v['cms']['list']))
-								$v['cms']['list']=[];
-							$v['cms']['list']['folder'] = 
+								$v['cms']['list'] = [];
+							$v['cms']['list']['folder'] =
 								$v['images'][1]['folder'];
 						}
-						if (!empty($list['src_blank']))
-						{
+						if (!empty($list['src_blank'])) {
 							$v['cms']['list']['src_blank'] = $this->cfg_path . '/assets/' . $list['src_blank'];
 						}
 						$schema['fields'][$k]['cms']['list'] = $v['cms']['list'];
-
 					}
 					break;
 
@@ -486,15 +479,10 @@ class model_app_page extends model_app
 			}
 
 			// If any field has search enabled, set schema search flag
-			if (!empty($v['cms']['search']))
-			{
+			if (!empty($v['cms']['search'])) {
 				if (!in_array($v['field'], $schema['cms']['search']))
 					$schema['cms']['search'][] = $v['field'];
-				
 			}
-
-
-
 		}
 
 
@@ -552,25 +540,23 @@ class model_app_page extends model_app
 	 */
 	private function updateSchemaSorting(array $schema, ?string $sort, string $page_with_filters): array
 	{
-		
+
 		// If sorting is provided (e.g., "field,ASC"), set it into the schema.
-		if ($sort)
-		{
+		if ($sort) {
 			[$field, $direction] = explode(',', $sort);
-			if (empty($direction)) $direction='ASC';
+			if (empty($direction)) $direction = 'ASC';
 			$schema['cms']['order'] = ['field' => $field, 'sort' => $direction];
 		}
-		
+
 
 		// Default sorting fallback to the first field if not defined.
 		if (empty($schema['cms']['order'])) {
-			$schema['cms']['order'] = ['field'=>$schema['fields'][0]['field'],'sort'=>'ASC'];
+			$schema['cms']['order'] = ['field' => $schema['fields'][0]['field'], 'sort' => 'ASC'];
 		}
 
 
 		// Ensure the order format is consistent (associative array).
-		if (!is_array($schema['cms']['order']))
-		{
+		if (!is_array($schema['cms']['order'])) {
 			$schema['cms']['order'] = [
 				'field' => $schema['cms']['order'],
 				'sort'  => $order[1] ?? 'ASC'
@@ -618,7 +604,7 @@ class model_app_page extends model_app
 		// Apply schema transformations based on sources and page context.
 		$schema = $this->updateSchemaSources($schema);
 		$schema = $this->updateSchemaForPage($schema, $page_with_params, $params);
-		
+
 		if (empty($schema['fields'])) {
 			exit('<pre>No fields to display in the list view. Please add fields[].cms.list in the schema configuration.</pre>');
 		}
@@ -636,20 +622,19 @@ class model_app_page extends model_app
 
 		// Restrict actions for unauthorized users.
 		if (!in_array($auth, [2, 3])) {
-			if ($auth==1) $remove=['add', 'remove'];
-				else $remove=['add', 'remove', 'edit'];
+			if ($auth == 1) $remove = ['add', 'remove'];
+			else $remove = ['add', 'remove', 'edit'];
 			$schema['cms']['disable'] = array_merge($schema['cms']['disable'] ?? [], $remove);
 			$schema['cms']['enable'] = array_merge($schema['cms']['enable'] ?? [], ['view']);
-		}		
+		}
 
 		// Remove editable fields in list
 		if (!in_array($auth, [2, 3])) {
-			foreach ($schema['fields'] as $k=>$v)
-			{
-				if (isset($v['cms']['list']) && $v['cms']['list']=='edit')
-					$schema['fields'][$k]['cms']['list']='show';
-				if (!empty($v['list']['type']) && $v['list']['type']=='edit')
-					$schema['fields'][$k]['list']['type']='show';
+			foreach ($schema['fields'] as $k => $v) {
+				if (isset($v['cms']['list']) && $v['cms']['list'] == 'edit')
+					$schema['fields'][$k]['cms']['list'] = 'show';
+				if (!empty($v['list']['type']) && $v['list']['type'] == 'edit')
+					$schema['fields'][$k]['list']['type'] = 'show';
 			}
 		}
 
@@ -766,7 +751,6 @@ class model_app_page extends model_app
 		// Override with explicit back page, if defined
 		if (!empty($schema['cms']['nav']['page_back'])) {
 			$url = $this->fillPattern($schema['cms']['nav']['page_back'], ['twig' => ['nested' => $params]]);
-
 		}
 
 		// Add "back" button if URL is defined
@@ -777,7 +761,7 @@ class model_app_page extends model_app
 				'url'   => $url
 			];
 		}
-		
+
 
 		// Append any schema-defined buttons
 		if (!empty($schema['cms']['buttons_page']) && is_array($schema['cms']['buttons_page'])) {
@@ -785,8 +769,7 @@ class model_app_page extends model_app
 		}
 
 		// Add "add" button if it's not disabled
-		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true))
-		{			
+		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true)) {
 			$addLabel = $schema['cms']['buttons_page_labels']['add'] ?? 'add';
 			$buttons[] = [
 				'label' => $addLabel,

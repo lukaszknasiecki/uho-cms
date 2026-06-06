@@ -10,7 +10,7 @@
   		<a class="dropdown-item" href="{{item.url}}">{{item.label}}</a>
   	</li>
     {% elseif not submenu %}
-       <li class="nav-item dropdown" {% if small %}style="font-size:12px;padding-right:0px"{% endif %}>
+       <li class="nav-item dropdown" {#{% if small %}style="font-size:12px;padding-right:0px"{% endif %}#}>
               <a class="nav-link dropdown-toggle" href="#" {#id="navbardrop"#} data-toggle="dropdown">
                 {{item.label}}
               </a>

@@ -184,8 +184,9 @@ class cms_sunship
                         'pre' => [__DIR__ . '/configs']
                     ];
                     $_SESSION['possible_uho_cms_project'] = $project + 1;
+                    
                 }
-            }
+            } else $cfg_file = null;
         }
 
         /*
@@ -244,7 +245,13 @@ class cms_sunship
         */
 
         try {
-            $app = new _uho_application($index['root_path'], $index['development'], $cfg_file);
+            $app = new _uho_application(
+                $index['root_path'],
+                $index['development'],
+                $cfg_file,
+                false,
+                []
+                );
         } catch (Exception $e) {
             header('Content-Type: text/plain; charset=utf-8');
             echo ("503 Service Unavailable: Uho framework error.");
