@@ -1,7 +1,9 @@
 {# classic dropdown view #}
 {% if field.cms.input!='search' %}
-	{% if value.id %}{% set value=value.id %}{% endif %}
-	{% if value.values.id %}{% set value=value.values.id %}{% endif %}
+	{% set id='id' %}
+	{% if field.source.id %}{% set id=field.source.id %}{% endif %}
+	{% if value[id] %}{% set value=value[id] %}{% endif %}
+	{% if value.values[id] %}{% set value=value.values[id] %}{% endif %}
 
 	{% if field.source.edit %}
 	<div class="row">

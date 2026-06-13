@@ -233,10 +233,12 @@ class model_app_write extends model_app
 						} else $vv = explode(',', $data[$v['field']]);
 					} else $vv = [];
 
+					/*
 					$iDigits = 8;
 					if ($v['output'] == '4digits') $iDigits = 4;
 					if ($v['output'] == '6digits') $iDigits = 6;
 					if ($v['output'] == 'string') $iDigits = 0;
+*/
 
 					// extract new
 					if (isset($data[$v['field'] . '_new'])) $new = json_decode($data[$v['field'] . '_new'], true);
@@ -253,7 +255,7 @@ class model_app_write extends model_app
 
 					foreach ($vv as $k2 => $v2)
 						if ($vv) {
-							if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
+							//if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
 						} else unset($vv[$k2]);
 
 					$data[$v['field']] = $vv;// implode(',', $vv);

@@ -889,7 +889,6 @@ class model_app extends _uho_model
                         $schema['fields'][$k]['options'][$kk]['label'] = $vv['label' . $this->lang_add];
             }
         $schema = $this->apporm->updateSchemaSources($schema, $record, $p);
-        //print_r($schema['fields'][4]['options']);
         return $schema;
     }
 
@@ -1244,7 +1243,9 @@ class model_app extends _uho_model
                         if (isset($v['source']['null']) || !empty($v['settings']['null'])) {
                             if (!$schema['fields'][$k]['options'])
                                 $schema['fields'][$k]['options'] = [];
-                            array_unshift($schema['fields'][$k]['options'], ['value' => 0, 'label' => '--- ' . $translate['choose'] . ' ---']);
+                            $output=$schema['fields'][$k]['settings']['output'] ?? null;
+                            if ($output=='string') $null_val=''; else $null_val=0;
+                            array_unshift($schema['fields'][$k]['options'], ['value' => $null_val, 'label' => '--- ' . $translate['choose'] . ' ---']);
                         }
 
                         // add default
@@ -2332,7 +2333,6 @@ class model_app extends _uho_model
         $schema = $this->getSchema($model, true, $params);
         $schema = $this->getSchemaDepreceated($schema);
 
-
         // on_create defaults
         $plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_create', 1);
         if ($plugins) {
@@ -2379,6 +2379,7 @@ class model_app extends _uho_model
                 }
         }
 
+        
         // plugins on create
         $plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_create', 1);
 
@@ -2413,8 +2414,6 @@ class model_app extends _uho_model
                 if ($id)
                     $record = $this->apporm->get($schema, ['id' => $id], true);
             }
-
-
 
 
             // marking fields which cause update to launch askSaveGo popup after change
@@ -2478,7 +2477,6 @@ class model_app extends _uho_model
         if (!empty($schema['cms']['filters']))
             foreach ($schema['cms']['filters'] as $k => $v)
                 if ($v[0] == '%') unset($schema['cms']['filters'][$k]);
-
 
         return $schema;
     }

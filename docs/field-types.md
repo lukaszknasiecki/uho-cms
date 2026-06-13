@@ -373,6 +373,10 @@ Multiple selection from another model (with fixed order).
         "small": true,
         "input": "standard"    // use standard drop-down select, not "search"
     },
+    "settings":
+    {
+        "output":"string"
+    },
     "source": {
         "model": "items",
         "model_fields": ["title", "description"],
@@ -603,13 +607,19 @@ Attach media from another model.
             "youtube"
         ]
     },
+    "cms" : {
+        "wide": true
+    }
     "layout": {
         "folder": "desktop"
     },
     "captions": [
         {
             "label": "Caption",
-            "field": "label"
+            "field": "label",
+            "cms": {
+                        "wide": true
+                    }
         },
         {
             "label": "Description",
