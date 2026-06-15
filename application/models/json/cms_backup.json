@@ -1,34 +1,36 @@
 {
     "table": "cms_backup",
-    "order": "!date",
-    "label": "Backup restore",
-    "disable": [
-        "add",
-        "remove",
-        "backup"
-    ],
-    "buttons_edit": [
-        {
-            "label_PL": "Przywróć rekord",
-            "label_EN": "Restore record",
-            "icon": "restore",
-            "plugin": "cms_backup_restore"
-        }
-    ],
-    "buttons_page": [
-        {
-            "label": "Backup Media",
-            "icon": "backup",
-            "type": "page",
-            "page": "cms_backup_media?s_page={{get.s_page}}&s_record={{get.s_record}}"
-        }
-    ],
+    "cms": {
+        "order": "!date",
+        "label": "Backup restore",
+        "disable": [
+            "add",
+            "remove",
+            "backup"
+        ],
+        "buttons_edit": [
+            {
+                "label": "Restore record",
+                "icon": "restore",
+                "plugin": "cms_backup_restore"
+            }
+        ],
+        "buttons_page": [
+            {
+                "label": "Backup Media",
+                "hidden":true,
+                "icon": "backup",
+                "type": "page",
+                "page": "cms_backup_media?s_page={{get.s_page}}&s_record={{get.s_record}}"
+            }
+        ]
+    },
     "fields": [
         {
             "field": "date",
-            "type": "date",
+            "type": "timestamp",
             "cms": {
-                "label": "Data",
+                "label": "Date",
                 "list": "show",
                 "edit": false
             }
@@ -36,7 +38,7 @@
         {
             "field": "session",
             "cms": {
-                "label": "Sesja",
+                "label": "Session",
                 "list": "show",
                 "edit": false
             },
@@ -58,7 +60,7 @@
         {
             "field": "record",
             "cms": {
-                "label": "Rekord",
+                "label": "Record",
                 "list": "show",
                 "edit": false,
                 "search": true
@@ -68,8 +70,8 @@
             "field": "data",
             "type": "json",
             "cms": {
-                "label": "Dane",
-                "edit": false                
+                "label": "Data",
+                "edit": false
             }
         }
     ]

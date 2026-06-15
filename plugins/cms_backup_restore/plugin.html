@@ -1,0 +1,20 @@
+{% if success %}
+<div class="alert alert-success">
+	[[icon::done]] {{translate.success}}
+</div>
+{% endif %}
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{{translate.error}}
+</div>
+{% endif %}
+{% if not success %}
+<div class="alert alert-info">
+	[[icon::info]]
+	{{translate.description}}
+</div>
+
+
+<a href="?confirm=true" class="btn btn-danger">{{translate.submit}}</a>
+{% endif %}

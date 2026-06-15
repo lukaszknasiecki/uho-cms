@@ -21,6 +21,13 @@ class LeadTool {
     return { text: { br: true } };
   }
 
+  static get conversionConfig() {
+    return {
+      export: (data) => data.text,
+      import: (content) => ({ text: content }),
+    };
+  }
+
   constructor({ data }) {
     this.data = { text: data.text || '' };
     this._element = null;
@@ -64,22 +71,20 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
   const editor = new EditorJS({
     holder: editorEl,
     data: initialData || undefined,
+
     tools: {
       header: {
         class: Header,
         config: { levels: [3, 4], defaultLevel: 3 },
       },
-      lead: {
-        class: LeadTool,
-        inlineToolbar: true,
-      },
-      list: {
-        class: List,
-        inlineToolbar: true,
-      },
-      quote: {
-        class: Quote,
-        inlineToolbar: true,
+      image: {
+        class: ImageTool,
+        config: {
+          endpoints: {
+            byFile: document.body.dataset.basePath + "/api/uploader?type=editorjs", // upload file to server
+            //byUrl: '/api/fetchImage',   // optional: fetch by URL
+          }
+        },
       },
       carousel: {
         class: Carousel,
@@ -101,36 +106,40 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
           }
         }
       },
+      lead: {
+        class: LeadTool,
+        inlineToolbar: true,
+      },
+      list: {
+        class: List,
+        inlineToolbar: true,
+      },
+      quote: {
+        class: Quote,
+        inlineToolbar: true,
+      },
 
       raw: {
         class: RawTool,
         config: { placeholder: 'Enter custom data' },
       },
 
-      image: {
-        class: ImageTool,
-        config: {
-          endpoints: {
-            byFile: document.body.dataset.basePath + "/api/uploader?type=editorjs", // upload file to server
-            //byUrl: '/api/fetchImage',   // optional: fetch by URL
-          }
-        },
-        /* base64 image - discarded because of size limitations, but left here for reference
-        config: {
-          uploader: {
-            uploadByUrl(url) {
-              return Promise.resolve({ success: 1, file: { url } });
-            },
-            uploadByFile(file) {
-              return new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = e => resolve({ success: 1, file: { url: e.target.result } });
-                reader.readAsDataURL(file);
-              });
-            },
+      /* base64 image - discarded because of size limitations, but left here for reference
+      config: {
+        uploader: {
+          uploadByUrl(url) {
+            return Promise.resolve({ success: 1, file: { url } });
           },
-        },*/
-      },
+          uploadByFile(file) {
+            return new Promise(resolve => {
+              const reader = new FileReader();
+              reader.onload = e => resolve({ success: 1, file: { url: e.target.result } });
+              reader.readAsDataURL(file);
+            });
+          },
+        },
+      },*/
+
     },
     placeholder: 'Start writing…',
     onChange: async () => {
@@ -151,12 +160,13 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
     'header-2': () => editor.blocks.insert('header', { level: 2 }),
     'header-3': () => editor.blocks.insert('header', { level: 3 }),
     'header-4': () => editor.blocks.insert('header', { level: 4 }),
+    'image': () => editor.blocks.insert('image'),
+    'lead': () => editor.blocks.insert('lead'),
     'list-unordered': () => editor.blocks.insert('list', { style: 'unordered' }),
     'list-ordered': () => editor.blocks.insert('list', { style: 'ordered' }),
     'quote': () => editor.blocks.insert('quote'),
     'code': () => editor.blocks.insert('code'),
-    'delimiter': () => editor.blocks.insert('delimiter'),
-    'image': () => editor.blocks.insert('image'),
+    'delimiter': () => editor.blocks.insert('delimiter')
   };
   /*
     toolbar.addEventListener('click', e => {

@@ -32,6 +32,22 @@
   font-size: 1.25em;
 }
 
+.cdx-quote {
+  position: relative;
+  padding-left: 4em;
+}
+
+.cdx-quote::before {
+  content: "\201C";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 7em;
+  line-height: 1;
+  color: #aaa;
+  font-family: Georgia, serif;
+}
+
 /* removes the default focus and selection styles for blocks with the lead class, allowing the custom styles to take precedence */
 .ce-block--selected:has(.ce-lead),
 .ce-block--selected:has(.ce-lead) .ce-block__content,

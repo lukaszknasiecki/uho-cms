@@ -133,7 +133,7 @@ class model_app_write extends model_app
 			$modelParams,
 			$update_payload_only,
 			$update_fields
-			);
+		);
 
 		// Clear cache and return result
 		$this->cacheKill();
@@ -258,8 +258,8 @@ class model_app_write extends model_app
 							//if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
 						} else unset($vv[$k2]);
 
-					$data[$v['field']] = $vv;// implode(',', $vv);
-					
+					$data[$v['field']] = $vv; // implode(',', $vv);
+
 
 					break;
 
@@ -395,21 +395,17 @@ class model_app_write extends model_app
 
 				case "blocks":
 
-					$json=json_decode($data[$v['field']], true);
+					$json = json_decode($data[$v['field']], true);
 
-					if ($json)
-					{
-						if (!empty($v['settings']['media']))
-						{
+					if ($json) {
+						if (!empty($v['settings']['media'])) {
 							$r = $this->blocksMediaUpdate($json, $schema['model_name'], $v['settings']['media'], $v);
 							$data[$v['field']] = $r['json'];
 							$additional_post = array_merge($additional_post, $r['post']);
 							$additional_put = array_merge($additional_put, $r['put']);
 							$additional_delete = array_merge($additional_delete, $r['delete']);
-						} 
-					}
-					else
-					{
+						}
+					} else {
 						// avoid invalid json
 						unset($data[$v['field']]);
 					}
@@ -460,6 +456,7 @@ class model_app_write extends model_app
 						if (is_array($filename)) $filename = ''; // refresh plugin only
 						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
+
 					}
 					// recompress
 					elseif ($data[$v['field'] . '_recompress'] == 'on') {
@@ -571,10 +568,10 @@ class model_app_write extends model_app
 				case "checkboxes":
 
 					if (is_string($data[$v['field']]))
-						$data[$v['field']]=explode(',',$data[$v['field']]);
-					if (isset($field['settings']['output']) && $field['settings']['output'] != 'string') 
+						$data[$v['field']] = explode(',', $data[$v['field']]);
+					if (isset($field['settings']['output']) && $field['settings']['output'] != 'string')
 						foreach ($data[$v['field']] as $k2 => $v2)
-							$data[$v['field']][$k2]=intval($v2);
+							$data[$v['field']][$k2] = intval($v2);
 
 					break;
 
@@ -788,13 +785,13 @@ class model_app_write extends model_app
 
 		if ($schema['cms']['filters']) $data = array_merge($schema['cms']['filters'], $data);
 
-		$access_data=$this->getAccessWrite($schema,['nested' => $params]);
+		$access_data = $this->getAccessWrite($schema, ['nested' => $params]);
 
 		foreach ($access_data as $k => $v)
-			if (empty($data[$k])) $data[$k]=$v;
-			elseif (is_array($data[$k]) && is_array($v)) $data[$k]=array_merge($data[$k], $v);
-			elseif (is_array($data[$k])) $data[$k][]=$v;
-				else $data[$k]=$v;
+			if (empty($data[$k])) $data[$k] = $v;
+			elseif (is_array($data[$k]) && is_array($v)) $data[$k] = array_merge($data[$k], $v);
+			elseif (is_array($data[$k])) $data[$k][] = $v;
+			else $data[$k] = $v;
 
 
 		/*
@@ -805,7 +802,7 @@ class model_app_write extends model_app
 			switch ($v['type']) {
 				case "checkboxes":
 				case "elements":
-						$data[$v['field']] = array_values(array_unique($data[$v['field']]));
+					$data[$v['field']] = array_values(array_unique($data[$v['field']]));
 
 					break;
 			}
@@ -835,8 +832,8 @@ class model_app_write extends model_app
 
 
 			$result = $this->apporm->post($schema, $data);
-			if ($result===false) exit('error on POST: '.$this->apporm->getLastError());
-			 
+			if ($result === false) exit('error on POST: ' . $this->apporm->getLastError());
+
 
 			$id_new = $id = $result;
 			if ($data['id']) $id_new = $id = $data['id'];
@@ -1262,6 +1259,11 @@ class model_app_write extends model_app
 					$rotated = imagerotate($img, $params['rotate'], 0);
 					$this->imagejpeg($rotated, $original);
 				}
+
+				$sizes = @getimagesize($original);
+				if ($sizes)//qqq
+				$images_sizes['original'] = [$sizes[0], $sizes[1]];
+
 				$checksum = md5_file($original);
 				$source_image_size = getimagesize($original);
 			}
@@ -2083,7 +2085,7 @@ class model_app_write extends model_app
 	private function blocksMediaUpdate($json, $parent_model, $media_model_name, $field): array
 	{
 		//$uho_media_replacer = !empty($field['settings']['media_field']);
-		$existing_uids=[];
+		$existing_uids = [];
 
 		$new_media = [];     // New images to upload
 		$updated_media = []; // Existing media metadata to update
@@ -2105,33 +2107,33 @@ class model_app_write extends model_app
 				case "image":
 
 					$img = $block['data']['file']['url'] ?? null;
-					$dir=explode('/', $img)[1];
-					
-					$base64=substr($img, 0, 5) == 'data:';
-					$tempdir=('/'.$dir==$this->temp_path);
-					
+					$dir = explode('/', $img)[1];
+
+					$base64 = substr($img, 0, 5) == 'data:';
+					$tempdir = ('/' . $dir == $this->temp_path);
+
 					if ($base64 || $tempdir) {
-						
+
 						$uid = uniqid();
 						$image_type = 'image';
 
-						if ($base64) $params=['source_base64' => $img];
-						else $params=['source' => $img];
+						if ($base64) $params = ['source_base64' => $img];
+						else $params = ['source' => $img];
 
 						$upload_result = $this->imageUpload(
-								$image_field,
-								['uid' => $uid],
-								$uid,
-								false,
-								$params,
-								$image_type
-							);
+							$image_field,
+							['uid' => $uid],
+							$uid,
+							false,
+							$params,
+							$image_type
+						);
 
 						if (
 							!empty($upload_result['result'])
 							&& !empty($upload_result['images'][0])
 						) {
-							$existing_uids[]= $uid;
+							$existing_uids[] = $uid;
 							$json['blocks'][$k]['data']['file']['url'] = $upload_result['images'][0];
 							$new_media[] = [
 								'model' => $media_model_name,
@@ -2144,12 +2146,11 @@ class model_app_write extends model_app
 								]
 							];
 						}
-					} else
-					{
+					} else {
 						// already uploaded previously, let's add to existing_uids to prevent deletion
-						$img=basename(explode('?', $img)[0]);
-						$img=explode('.', $img)[0];
-						if ($img) $existing_uids[]= $img;
+						$img = basename(explode('?', $img)[0]);
+						$img = explode('.', $img)[0];
+						if ($img) $existing_uids[] = $img;
 					}
 
 					break;
@@ -2159,30 +2160,28 @@ class model_app_write extends model_app
 				*/
 				case "carousel":
 
-					$items=$block['data'];
+					$items = $block['data'];
 
-					foreach ($items as $item_key => $item)
-					{
+					foreach ($items as $item_key => $item) {
 
 						$img = $item['url'] ?? null;
-						$dir=explode('/', $img)[1];
-						if ('/'.$dir==$this->temp_path)
-						{
+						$dir = explode('/', $img)[1];
+						if ('/' . $dir == $this->temp_path) {
 							// it's a new image, let's upload
 							$uid = uniqid();
 							$image_type = 'image';
 
 							$upload_result = $this->imageUpload(
-									$image_field,
-									['uid' => $uid],
-									$uid,
-									false,
-									['source' => $img],
-									$image_type
-								);
+								$image_field,
+								['uid' => $uid],
+								$uid,
+								false,
+								['source' => $img],
+								$image_type
+							);
 
 							if (!empty($upload_result['result'])) {
-								$existing_uids[]= $uid;
+								$existing_uids[] = $uid;
 								$json['blocks'][$k]['data'][$item_key]['url'] = $upload_result['images'][0];
 								$new_media[] = [
 									'model' => $media_model_name,
@@ -2195,12 +2194,11 @@ class model_app_write extends model_app
 									]
 								];
 							}
-						} else
-						{
+						} else {
 							// already uploaded previously, let's add to existing_uids to prevent deletion
-							$img=basename(explode('?', $img)[0]);
-							$img=explode('.', $img)[0];
-							if ($img) $existing_uids[]= $img;
+							$img = basename(explode('?', $img)[0]);
+							$img = explode('.', $img)[0];
+							if ($img) $existing_uids[] = $img;
 						}
 					}
 					break;
@@ -2224,7 +2222,6 @@ class model_app_write extends model_app
 		];
 
 		return $result;
-
 	}
 
 	/**

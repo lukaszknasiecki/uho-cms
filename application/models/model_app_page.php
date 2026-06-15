@@ -193,6 +193,8 @@ class model_app_page extends model_app
 				// Build filter label stack
 				if (!$global_search || $first) {
 
+					$label_value=null;
+
 					$first = false;
 
 					if (!empty($field['options']) && !$global_search) {

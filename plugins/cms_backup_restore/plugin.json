@@ -1,0 +1,21 @@
+{
+    "pl":
+    {
+        "title": "Przywracanie danych",
+        "description":"Potwierdź przywrócenie danych z tego rekordu.",
+        "submit":"Przywróć teraz",
+        "success":"Dane zostały przywrócone",
+        "error":"Błąd, dne nie zostały przywrócone",
+        "back":"Powrót"
+    },
+    "en":
+    {
+        "title": "Data restore",
+        "description":"Please, confirm record restore.",
+        "success":"Record data have been restored",
+        "error":"Error, data have not been restored",
+        "submit":"Restore now",
+           "back":"Back"
+
+    }    
+}

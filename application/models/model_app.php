@@ -1482,7 +1482,7 @@ class model_app extends _uho_model
                 // page button
                 if ($v['type'] == 'page') {
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
-                    $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record, $params_twig));
+                    $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record ?? [], $params_twig ?? []));
 
                     if ($this->checkAuth($v['page'], [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
@@ -2590,17 +2590,18 @@ class model_app extends _uho_model
 
     /**
      * Adds data backup
-     * @param array $page
-     * @param array $record
+     * @param string $page
+     * @param string|int $record
      * @return boolean
      */
 
-    public function backupAdd($page, $record)
+    public function backupAdd(string $page, string|int $record)
     {
         $data = $this->query('SELECT * FROM ' . $page . ' WHERE id="' . $record . '"', true);
 
         $this->post('cms_backup', [
             'data' => json_encode($data),
+            'date'=>date('Y-m-d H:i:s'),
             'session' => @intval($_SESSION['login_session_id']),
             'page' => $page,
             'record' => $record
