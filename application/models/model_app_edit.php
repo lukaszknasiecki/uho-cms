@@ -89,8 +89,7 @@ class model_app_edit extends model_app
 
 		if (isset($schema['cms']['helper_models'])) {
 			$replace = $record;
-			$replace['helper_models'] = $schema['cms']['helper_models'];
-			
+			$replace['helper_models'] = $schema['cms']['helper_models'];			
 			$schema['cms']['label']['edit'] = $this->getTwigFromHtml($schema['cms']['label']['edit'], $replace);
 		}
 

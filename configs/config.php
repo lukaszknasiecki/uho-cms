@@ -10,7 +10,7 @@ $cfg = [
     'application_url_prefix' => getenv('CMS_CONFIG_PREFIX'),
     'application_languages' => ['en'],
     'application_languages_url' => false,
-    'orm_version' =>getenv('UHO_ORM') ? getenv('UHO_ORM') : 1,
+    'orm_version' => getenv('UHO_ORM') ? getenv('UHO_ORM') : 1,
 
     'clients' =>
     [
@@ -22,8 +22,8 @@ $cfg = [
     ],
     'plugins' => [
 
-		'PHP' => getEnv("PHP") ?? null,
-		'INT_API_TOKEN' => getEnv("INT_API_TOKEN") ?? null,
+        'PHP' => getEnv("PHP") ?? null,
+        'INT_API_TOKEN' => getEnv("INT_API_TOKEN") ?? null,
 
         'client' =>
         [
@@ -45,7 +45,7 @@ $cfg = [
         'strict_schema' => empty(getEnv("CMS_CONFIG_STRICT")) ? true : filter_var(getEnv("CMS_CONFIG_STRICT"), FILTER_VALIDATE_BOOLEAN),
 
         'logout_time' => getEnv("CMS_LOGOUT_TIME") ? getenv("CMS_LOGOUT_TIME") : 60,
-		'activity_time' => getEnv("CMS_ACTIVITY_TIME") ? getenv("CMS_ACTIVITY_TIME") : 15,
+        'activity_time' => getEnv("CMS_ACTIVITY_TIME") ? getenv("CMS_ACTIVITY_TIME") : 15,
 
         'keys' => [
             getenv('CLIENT_KEY1'),

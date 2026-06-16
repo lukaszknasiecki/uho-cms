@@ -69,6 +69,9 @@ class model_app_page extends model_app
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 		if (isset($schema['result']) && $schema['result'] === false)
 			exit('<pre>' . $schema['message'] . '</pre>');
+		
+		$params['helper_models']=$schema['cms']['helper_models'] ?? [];
+
 		$schema = $this->getSchemaDepreceated($schema);
 		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
@@ -193,7 +196,7 @@ class model_app_page extends model_app
 				// Build filter label stack
 				if (!$global_search || $first) {
 
-					$label_value=null;
+					$label_value = null;
 
 					$first = false;
 
@@ -731,6 +734,7 @@ class model_app_page extends model_app
 	 */
 	private function getSchemaButtons(array $schema, array $params): array
 	{
+		
 		$buttons = [];
 
 		// Determine the 'back' button URL based on schema structure
@@ -784,6 +788,8 @@ class model_app_page extends model_app
 			];
 		}
 		// Final update using plugin/customization hook
+		
+		
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}
 

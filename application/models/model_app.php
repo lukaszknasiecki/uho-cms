@@ -710,7 +710,6 @@ class model_app extends _uho_model
 
         if ($model_update) {
             $schema = $this->apporm->getSchema([$model, $model_update], false, $params);
-            
         } else
             $schema = $this->apporm->getSchema($model, false, $params);
 
@@ -965,9 +964,8 @@ class model_app extends _uho_model
                 */
 
                 // strings with options are selects in the CMS
-                if ($v['type']=='string' && isset($v['options']))
-                {
-                    $schema['fields'][$k]['type']=$v['type']='select';
+                if ($v['type'] == 'string' && isset($v['options'])) {
+                    $schema['fields'][$k]['type'] = $v['type'] = 'select';
                 }
 
 
@@ -1000,8 +998,8 @@ class model_app extends _uho_model
                     case "preview":
 
                         $v['value'] = [
-                            'url_preview'=>$this->fillPattern($v['cms']['url_preview'], ['keys' => $record, 'numbers' => $params, 'twig' => $record]),
-                            'url_edit'=>$this->cms_path.$this->fillPattern($v['cms']['url_edit'], ['keys' => $record, 'numbers' => $params, 'twig' => $record])
+                            'url_preview' => $this->fillPattern($v['cms']['url_preview'], ['keys' => $record, 'numbers' => $params, 'twig' => $record]),
+                            'url_edit' => $this->cms_path . $this->fillPattern($v['cms']['url_edit'], ['keys' => $record, 'numbers' => $params, 'twig' => $record])
                         ];
 
 
@@ -1222,8 +1220,7 @@ class model_app extends _uho_model
                         }
 
                         // filter options
-                        if (isset($v['options']) && !empty($v['cms']['filters']))
-                        {
+                        if (isset($v['options']) && !empty($v['cms']['filters'])) {
                             $option_filters = $v['cms']['filters'];
 
                             foreach ($option_filters as $kf => $vf) {
@@ -1243,8 +1240,9 @@ class model_app extends _uho_model
                         if (isset($v['source']['null']) || !empty($v['settings']['null'])) {
                             if (!$schema['fields'][$k]['options'])
                                 $schema['fields'][$k]['options'] = [];
-                            $output=$schema['fields'][$k]['settings']['output'] ?? null;
-                            if ($output=='string') $null_val=''; else $null_val=0;
+                            $output = $schema['fields'][$k]['settings']['output'] ?? null;
+                            if ($output == 'string') $null_val = '';
+                            else $null_val = 0;
                             array_unshift($schema['fields'][$k]['options'], ['value' => $null_val, 'label' => '--- ' . $translate['choose'] . ' ---']);
                         }
 
@@ -1286,19 +1284,18 @@ class model_app extends _uho_model
                             $this->ckeditor_configs['e_' . $v['field']] = $v['settings']['config'];
 
                     case "integer":
-                        if ($is_new && isset($v['settings']['default']))
-                        {
-                            
+                        if ($is_new && isset($v['settings']['default'])) {
+
                             $record[$v['field']] = $this->fillPatternTwig(
                                 $v['settings']['default'],
                                 [
-                                    'params'=>
+                                    'params' =>
                                     [
                                         'record' => $record,
                                         'nested' => $params
                                     ]
-                                ]);
-                                
+                                ]
+                            );
                         }
 
                         break;
@@ -1306,8 +1303,7 @@ class model_app extends _uho_model
                     case "string":
                         if ($record[$v['field']] == '{{random32}}' && $v['cms']['default'] == '{{random32}}')
                             $record[$v['field']] = md5(uniqid());
-                        elseif ($is_new && $v['cms']['default'])
-                        {
+                        elseif ($is_new && $v['cms']['default']) {
                             $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'nested' => $params]);
                         }
 
@@ -1506,6 +1502,7 @@ class model_app extends _uho_model
                     }
 
                     $v = $this->fillPattern($v, ['keys' => $record, 'numbers' => $params], true);
+
                     if ($this->checkAuth($schema['model_name'], [2, 3])) {
 
                         if ($record) {
@@ -1514,25 +1511,28 @@ class model_app extends _uho_model
                             if ($v['params'])
                                 foreach ($v['params'] as $k2 => $v2)
                                     $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $record);
-                        } else
-                            $buttons[$k]['params'] = $v['params'];
+                        } else {
+                            if ($v['params'])
+                                foreach ($v['params'] as $k2 => $v2)
+                                    $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $params);
+                              
+                            //$buttons[$k]['params'] = $v['params'];
+                        }
 
                         if ($schema['model_url_name'])
                             $m_name = $schema['model_url_name'];
                         else
                             $m_name = $schema['model_name'];
 
-                        /*                        
                         $buttons[$k]['url'] = [
                             'type' => 'plugin',
                             'page' => $m_name,
                             'page_params' => $params,
-                            'plugin_nr' => $k+1,
+                            'plugin' => $v['plugin'],
                             'record' => $record['id'],
+                            'params' => $buttons[$k]['params'],
                             'get' => $get
-                        ];*/
-
-                        $buttons[$k]['url'] = ['type' => 'plugin', 'page' => $m_name, 'page_params' => $params, 'plugin' => $v['plugin'], 'record' => $record['id'], 'params' => $buttons[$k]['params'], 'get' => $get];
+                        ];
 
                         // let's find plugin's JSON
 
@@ -1561,9 +1561,8 @@ class model_app extends _uho_model
      */
 
     public function fillPatternTwig($string, $params)
-    {        
+    {
         return $this->getTwigFromHtml($string, $params);
-        
     }
 
     public function fillPattern($array, $params)
@@ -1971,10 +1970,9 @@ class model_app extends _uho_model
                 $params['webp'] = true;
 
 
-            if (empty($data['uid']))
-            {
-                $data['uid']=uniqid();
-                $this->apporm->put($model, ['uid'=>$data['uid']], ['id'=>$data['id']]);
+            if (empty($data['uid'])) {
+                $data['uid'] = uniqid();
+                $this->apporm->put($model, ['uid' => $data['uid']], ['id' => $data['id']]);
             }
 
             $result = $this->imageResize($field_schema, $data, $source, false, $params);
@@ -1991,7 +1989,7 @@ class model_app extends _uho_model
      */
     public function imageUpdateResize($model, $field, $record)
     {
-        $schema = $this->apporm->getSchema($model);        
+        $schema = $this->apporm->getSchema($model);
         if ($schema)
             $image_field = _uho_fx::array_filter($schema['fields'], 'field', $field, ['first' => true]);
         else
@@ -2003,7 +2001,7 @@ class model_app extends _uho_model
             return false;
 
         $item = $this->apporm->get($model, ['id' => $record], true);
-        
+
         if ($item && !empty($item[$field])) {
             $image = $item[$field];
             foreach ($image as $k => $v) {
@@ -2379,7 +2377,7 @@ class model_app extends _uho_model
                 }
         }
 
-        
+
         // plugins on create
         $plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_create', 1);
 
@@ -2401,8 +2399,7 @@ class model_app extends _uho_model
             if ($record)
                 $schema['schema_update']['file'] = $this->getTwigFromHtml($schema['schema_update']['file'], $record);
 
-            if ($schema['schema_update']['file'] && $record)
-            {
+            if ($schema['schema_update']['file'] && $record) {
                 $schema = $this->getSchema($model, true, $params, ['model' => $schema['schema_update']['file'], 'position_after' => $schema['schema_update']['position_after']]);
 
                 if ($validate) {
@@ -2601,7 +2598,7 @@ class model_app extends _uho_model
 
         $this->post('cms_backup', [
             'data' => json_encode($data),
-            'date'=>date('Y-m-d H:i:s'),
+            'date' => date('Y-m-d H:i:s'),
             'session' => @intval($_SESSION['login_session_id']),
             'page' => $page,
             'record' => $record
@@ -3341,9 +3338,6 @@ class model_app extends _uho_model
 
     public function set2factor()
     {
-        $_SESSION['2factor']=true;
+        $_SESSION['2factor'] = true;
     }
-    
-
-
 }
