@@ -250,6 +250,7 @@ You can use `on_load` or `on_update` together with `hidden` for silent backgroun
         {
             "label": "Sync index",
             "plugin": "index_sync",
+            "auth":"admin",
             "on_load": true,
             "on_update": true,
             "hidden": true

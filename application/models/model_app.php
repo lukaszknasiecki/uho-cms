@@ -817,8 +817,6 @@ class model_app extends _uho_model
             $schema['fields'] = $f;
         }
 
-
-
         // adding default values for CMS if not present
         foreach ($schema['fields'] as $k => $v)
             switch ($v['type']) {
@@ -861,6 +859,16 @@ class model_app extends _uho_model
 
         if (isset($schema['cms']['label']['page'])) {
             $schema['cms']['label']['page'] = $this->fillPattern($schema['cms']['label']['page'], $params);
+        }
+
+        // remove non-authorized elements
+
+
+        if (isset($schema['cms']['buttons_page'])) {
+            foreach ($schema['cms']['buttons_page'] as $k => $v) {
+                if (isset($v['auth']) && !$this->checkAuthModelSet($schema['model_name'], $v['auth']))
+                    unset($schema['cms']['buttons_page'][$k]);
+            }
         }
 
         return $schema;
@@ -1477,6 +1485,7 @@ class model_app extends _uho_model
 
                 // page button
                 if ($v['type'] == 'page') {
+                    
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
                     $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record ?? [], $params_twig ?? []));
 
@@ -1512,10 +1521,11 @@ class model_app extends _uho_model
                                 foreach ($v['params'] as $k2 => $v2)
                                     $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $record);
                         } else {
+                    
                             if ($v['params'])
                                 foreach ($v['params'] as $k2 => $v2)
                                     $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $params);
-                              
+                    
                             //$buttons[$k]['params'] = $v['params'];
                         }
 
@@ -1533,6 +1543,7 @@ class model_app extends _uho_model
                             'params' => $buttons[$k]['params'],
                             'get' => $get
                         ];
+                        
 
                         // let's find plugin's JSON
 

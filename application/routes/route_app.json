@@ -101,7 +101,7 @@
             ],
             "input_format":
                 {"params": "json"},
-            "value": "{% if record %}plugin-edit{% else %}plugin-page{% endif %}/{{page}}{% if page_params %}{% for p in page_params %},{{p}}{% endfor %}{% endif %}{% if record %}/{{record}}{% endif %}/{{plugin}}?params={{params}}"
+            "value": "{% if record %}plugin-edit{% else %}plugin-page{% endif %}/{{page}}{% if page_params %}{% for p in page_params %}{% if p is not iterable %},{{p}}{% endif %}{% endfor %}{% endif %}{% if record %}/{{record}}{% endif %}/{{plugin}}?params={{params}}"
         },
         "remove": {
             "type": "twig",

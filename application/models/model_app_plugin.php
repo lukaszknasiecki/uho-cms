@@ -47,16 +47,16 @@ class model_app_plugin extends model_app
 	public function getContentData($input = null, bool $twig = true): ?array
 	{
 
-        $this->resetActivityTime();
+		$this->resetActivityTime();
 		$params = $input['params'] ?? [];
 
 		// Access control
-		$page = $params['page'] ?? '';			
-		$page_single=explode(',', $page)[0];
+		$page = $params['page'] ?? '';
+		$page_single = explode(',', $page)[0];
 		$plugin = $params['plugin'] ?? '';
 		$plugin = preg_replace('/[^a-zA-Z0-9_-]/', '', $plugin); // Only alphanumeric, dash, underscore
-		
-	
+
+
 		if (empty($plugin)) {
 			exit("Invalid plugin name");
 		}
@@ -67,13 +67,16 @@ class model_app_plugin extends model_app
 		if (!$this->parent && !$this->checkAuth($page, [2, 3])) {
 			exit("auth::error::1::app_plugin::{$page}::{$plugin}");
 		}
+		if (isset($plugin['auth']) && !$this->parent->checkAuthModelSet($page_single, $plugin['auth']))
+			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
 
-		$schema=$this->apporm->getSchemaWithPageUpdate($page_single);
 
-		if (isset($params['record'])) $buttons=$schema['cms']['buttons_edit'];
-			else $buttons=$schema['cms']['buttons_page'];
-		
-		if (!_uho_fx::array_filter($buttons,'plugin',$plugin))
+		$schema = $this->apporm->getSchemaWithPageUpdate($page_single);
+
+		if (isset($params['record'])) $buttons = $schema['cms']['buttons_edit'];
+		else $buttons = $schema['cms']['buttons_page'];
+
+		if (!_uho_fx::array_filter($buttons, 'plugin', $plugin))
 			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
 
 		// Translations
@@ -108,7 +111,7 @@ class model_app_plugin extends model_app
 		$pluginTrans = $pluginTrans[$this->lang] ?? [];
 
 		// Load plugin PHP class
-		$pluginFile=$pluginFolder . 'plugin.php';
+		$pluginFile = $pluginFolder . 'plugin.php';
 		if (!file_exists($pluginFile) || !is_readable($pluginFile)) {
 			exit("Plugin file not found");
 		}

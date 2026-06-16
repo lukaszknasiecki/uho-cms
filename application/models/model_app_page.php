@@ -67,6 +67,7 @@ class model_app_page extends model_app
 
 		// Load and validate schema		
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
+		
 		if (isset($schema['result']) && $schema['result'] === false)
 			exit('<pre>' . $schema['message'] . '</pre>');
 		
@@ -109,6 +110,7 @@ class model_app_page extends model_app
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
 
 		$buttons = $this->getSchemaButtons($schema, $params);
+		
 		$schema['fields'] = $this->updateSchemaLanguagesSearch($schema);
 		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);
 		$schema = $this->updateSchemaRowWidth($schema);
@@ -271,7 +273,7 @@ class model_app_page extends model_app
 		}
 
 		// Format each record
-
+		unset($params['helper_models']);
 		foreach ($records as $i => $record) {
 			$records[$i] = [
 				'id' => $record['id'],
@@ -745,6 +747,7 @@ class model_app_page extends model_app
 		} elseif (!empty($schema['cms']['structure']['parent']['page'])) {
 			// Construct parent page URL from params
 			$p = $params;
+			unset($p['helper_models']);
 			$record = array_pop($p); // last param is considered the record ID
 			$url = [
 				'type'   => 'edit',
@@ -752,12 +755,15 @@ class model_app_page extends model_app
 				'params' => $p,
 				'record' => $record
 			];
+			
 		}
 
 		// Override with explicit back page, if defined
 		if (!empty($schema['cms']['nav']['page_back'])) {
 			$url = $this->fillPattern($schema['cms']['nav']['page_back'], ['twig' => ['nested' => $params]]);
 		}
+
+		
 
 		// Add "back" button if URL is defined
 		if (isset($url)) {
@@ -790,6 +796,7 @@ class model_app_page extends model_app
 		// Final update using plugin/customization hook
 		
 		
+
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}
 
