@@ -1008,6 +1008,7 @@ class model_app_write extends model_app
 		}
 
 		// Sanitize input values in $data
+		if (in_array($field['cms']['auto'],['translit', 'url']))
 		foreach ($data as $k => $v) {
 			if (is_string($v)) {
 				$v = str_replace(['&', "'", '"'], ['and', '', ''], $v);
@@ -1020,6 +1021,7 @@ class model_app_write extends model_app
 
 		// Apply pattern using templating engine (e.g., Twig)
 		$value = $this->getTwigFromHtml($value, $data);
+		$value = htmlspecialchars_decode($value, ENT_QUOTES);
 
 		// Transliterate value if needed
 		if (in_array('translit', $field['cms']['auto']['type'])) {

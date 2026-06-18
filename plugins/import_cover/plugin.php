@@ -102,7 +102,8 @@ class serdelia_plugin_import_cover
 
         $schema = $this->parent->apporm->getSchema($params['page']);
 
-        if (isset($record['uid']) && empty($record['uid'])) {
+        if (empty($record['uid']))
+        {
             $record['uid'] = uniqid();
             $this->parent->queryOut('UPDATE ' . $schema['table'] . ' SET uid="' . $record['uid'] . '" WHERE id=' . $params['record']);
         }
