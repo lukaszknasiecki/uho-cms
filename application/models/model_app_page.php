@@ -567,7 +567,13 @@ class model_app_page extends model_app
 
 
 		// Ensure the order format is consistent (associative array).
-		if (!is_array($schema['cms']['order'])) {
+		if (!is_array($schema['cms']['order']))
+		{
+			if (strpos($schema['cms']['order'],','))
+				{
+					
+				}
+				else
 			$schema['cms']['order'] = [
 				'field' => $schema['cms']['order'],
 				'sort'  => $order[1] ?? 'ASC'
@@ -575,8 +581,11 @@ class model_app_page extends model_app
 		}
 
 		// Add URL sorting links and modify field names with ",DESC" where needed.
-		foreach ($schema['fields'] as $k => $v) {
-			if ($v['field'] === $schema['cms']['order']['field'] && $schema['cms']['order']['sort'] !== 'DESC') {
+		foreach ($schema['fields'] as $k => $v)
+		{
+			if (
+				is_array($schema['cms']['order']) &&
+				$v['field'] === $schema['cms']['order']['field'] && $schema['cms']['order']['sort'] !== 'DESC') {
 				$v['field'] .= ',DESC';
 			}
 
