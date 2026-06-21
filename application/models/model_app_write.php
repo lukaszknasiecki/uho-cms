@@ -456,7 +456,6 @@ class model_app_write extends model_app
 						if (is_array($filename)) $filename = ''; // refresh plugin only
 						$r = $this->imageUpload($v, $data, $filename, true, null, 'image', $backup_record_data);
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
-
 					}
 					// recompress
 					elseif ($data[$v['field'] . '_recompress'] == 'on') {
@@ -521,7 +520,8 @@ class model_app_write extends model_app
 
 					if ($data[$v['field'] . '_remove'] == 'on') {
 						$r = $this->fileRemove($v, $data, null, true);
-					} elseif ($data[$v['field']]) {
+					} elseif ($data[$v['field']])
+					{
 						$r = $this->fileUpload($v, $data, $data[$v['field']], $extension);
 						if ($size) $data[$size] = $r['size'];
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
@@ -531,7 +531,16 @@ class model_app_write extends model_app
 								if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
 							}
 						}
+					} elseif ($v['cms']['auto'])
+					{
+						foreach ($v['cms']['auto'] as $k2 => $v2)
+						if ($old_value[$v['field']]['src'])
+						{							
+							$r0 = $this->getFileAuto($v2['type'], $_SERVER['DOCUMENT_ROOT'] . $old_value[$v['field']]['src']);
+							if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
+						}
 					}
+					
 
 					break;
 
@@ -1008,13 +1017,13 @@ class model_app_write extends model_app
 		}
 
 		// Sanitize input values in $data
-		if (in_array($field['cms']['auto'],['translit', 'url']))
-		foreach ($data as $k => $v) {
-			if (is_string($v)) {
-				$v = str_replace(['&', "'", '"'], ['and', '', ''], $v);
-				$data[$k] = $v;
+		if (in_array($field['cms']['auto'], ['translit', 'url']))
+			foreach ($data as $k => $v) {
+				if (is_string($v)) {
+					$v = str_replace(['&', "'", '"'], ['and', '', ''], $v);
+					$data[$k] = $v;
+				}
 			}
-		}
 
 		// Inject CMS user if needed in pattern
 		$data['cms_user'] = $this->clients->getClientId();
@@ -1263,8 +1272,8 @@ class model_app_write extends model_app
 				}
 
 				$sizes = @getimagesize($original);
-				if ($sizes)//qqq
-				$images_sizes['original'] = [$sizes[0], $sizes[1]];
+				if ($sizes) //qqq
+					$images_sizes['original'] = [$sizes[0], $sizes[1]];
 
 				$checksum = md5_file($original);
 				$source_image_size = getimagesize($original);
@@ -1775,6 +1784,7 @@ class model_app_write extends model_app
 
 	private function getFileAuto($type, $file)
 	{
+		$file=explode('?', $file)[0];
 		switch ($type) {
 			case "duration":
 				$getID3 = new JamesHeinrich\GetID3\GetID3();

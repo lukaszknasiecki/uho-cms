@@ -67,11 +67,11 @@ class model_app_page extends model_app
 
 		// Load and validate schema		
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
-		
+
 		if (isset($schema['result']) && $schema['result'] === false)
 			exit('<pre>' . $schema['message'] . '</pre>');
-		
-		$params['helper_models']=$schema['cms']['helper_models'] ?? [];
+
+		$params['helper_models'] = $schema['cms']['helper_models'] ?? [];
 
 		$schema = $this->getSchemaDepreceated($schema);
 		$this->validateSchema($schema, $model);
@@ -110,7 +110,7 @@ class model_app_page extends model_app
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
 
 		$buttons = $this->getSchemaButtons($schema, $params);
-		
+
 		$schema['fields'] = $this->updateSchemaLanguagesSearch($schema);
 		$schema = $this->updateSchemaSorting($schema, $get['sort'] ?? null, $page_with_filters);
 		$schema = $this->updateSchemaRowWidth($schema);
@@ -284,6 +284,8 @@ class model_app_page extends model_app
 				'url_remove' => ['type' => 'remove', 'page' => $model, 'record' => $record['id'], 'params' => $params]
 			];
 
+
+
 			if (!empty($schema['cms']['nav']['page_edit'])) {
 				$records[$i]['url_edit'] = $this->fillPattern($schema['cms']['nav']['page_edit'], ['twig' => array_merge($record, ['nested' => $record])]);
 			}
@@ -307,6 +309,7 @@ class model_app_page extends model_app
 		// Render source labels for certain fields
 
 		foreach ($schema['fields'] as $field) {
+			// source label rework
 			if (isset($field['source']['label'])) {
 				foreach ($records as $i => $rec) {
 					$val = $rec['values'][$field['field']] ?? null;
@@ -320,6 +323,7 @@ class model_app_page extends model_app
 				}
 			}
 		}
+
 
 		// Paging
 		$paging = $this->getPaging($this->paging['count'], $page_nr, $all);
@@ -736,7 +740,7 @@ class model_app_page extends model_app
 	 */
 	private function getSchemaButtons(array $schema, array $params): array
 	{
-		
+
 		$buttons = [];
 
 		// Determine the 'back' button URL based on schema structure
@@ -755,7 +759,6 @@ class model_app_page extends model_app
 				'params' => $p,
 				'record' => $record
 			];
-			
 		}
 
 		// Override with explicit back page, if defined
@@ -763,7 +766,7 @@ class model_app_page extends model_app
 			$url = $this->fillPattern($schema['cms']['nav']['page_back'], ['twig' => ['nested' => $params]]);
 		}
 
-		
+
 
 		// Add "back" button if URL is defined
 		if (isset($url)) {
@@ -794,8 +797,8 @@ class model_app_page extends model_app
 			];
 		}
 		// Final update using plugin/customization hook
-		
-		
+
+
 
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}
@@ -874,12 +877,21 @@ class model_app_page extends model_app
 	private function updateRecordsValues(array $schema, array $records): array
 	{
 		foreach ($schema['fields'] as $field)
+		{
 			if (!empty($field['list']['value'])) {
 				foreach ($records as $k => $record) {
 					$records[$k]['values'][$field['field']] = $this->getTwigFromHtml($field['list']['value'], $record['values']);
 				}
 			}
 
+			// src
+			if (!empty($field['cms']['list']['src_blank'])) {
+				foreach ($records as $i => $rec) {
+					$records[$i]['values']['image']['src_blank'] = $this->getTwigFromHtml($field['cms']['list']['src_blank'], $rec['values']);
+				}
+			}
+
+		}
 
 		return $records;
 	}

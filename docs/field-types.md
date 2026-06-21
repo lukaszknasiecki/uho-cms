@@ -452,7 +452,7 @@ By default all images are converted to JPG and WEBP (optional).
         "list": {
             "height": 110,                      // image height in CMS preview
             "change_uid_on_upload": "uid",      // changes uid field on each upload (prevents overwriting)
-            "src_blank": "blank169.png"         // blank file to be shown if no image is present, uses /cms_config/assets folder as a root
+            "src_blank": "blank169.png"         // blank file to be shown if no image is present, uses /cms_config/assets folder as a root, you can use TWIG template here, based on record values
         }
     }
 }
@@ -498,7 +498,7 @@ You can also keep original image types, which is convenient for transparent imag
         "color_background": "red",          // background color for transparent images
         "list": {
             "height": 110,
-            "src_blank": "blank169.png"
+            "src_blank": "{% if media_type=='audio' %}interview-audio.png{% else %}interview-blank.png{% endif %}"
         }
     }
 }
