@@ -811,6 +811,7 @@ class model_app_write extends model_app
 			switch ($v['type']) {
 				case "checkboxes":
 				case "elements":
+					if ($data[$v['field']] && is_array($data[$v['field']]))
 					$data[$v['field']] = array_values(array_unique($data[$v['field']]));
 
 					break;

@@ -53,6 +53,7 @@ class model_app_home extends model_app
 				foreach ($home['widgets'] as $k => $v)
 				{
 					if (!is_array($v)) $v = ['widget' => $v];
+					
 					$home['widgets'][$k] = $this->widgetGet($v);
 
 					if (!$home['widgets'][$k]) {

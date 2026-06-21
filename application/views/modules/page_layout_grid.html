@@ -64,14 +64,16 @@
                 {% if card_title %}
                   <h6 class='card-title'>
                 {% endif %}
+                {% if item.cms.list.type=="show" %}
                   {% include 'modules/page/page_'~item.type~'.html' with
                   {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes } %}
+                {% endif %}
 
                   {% if card_title %}</h6>{% else %}<br>{% endif %}
 
                 {% elseif item.field %}
-                {% set html=html|merge({(item.field):include ('modules/page/page_'~item.type~'.html',
-                {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes })}) %}
+                  {% set html=html|merge({(item.field):include ('modules/page/page_'~item.type~'.html',
+                  {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes })}) %}
                 {% endif %}
                 {% endif %}
                 {% endif %}
