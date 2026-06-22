@@ -55,7 +55,6 @@ class model_app_edit extends model_app
 		// Load base schema and prepare ORM
 
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
-        
 
 		// Access check
 		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
@@ -133,7 +132,7 @@ class model_app_edit extends model_app
 		// Update schema with current state and permissions
 
 		$schema = $this->updateSchemaSources($schema, $record, $params);		
-		$schema = $this->updateSchemaAuth($schema);
+		$schema = $this->updateSchemaAuth($schema);		
 		$schema = $this->updateSchemaRecord($schema, $record, $params);		
 		$record = $this->updateSchemaForEdit($schema, $page_with_params, $record, $translate, $params);
 

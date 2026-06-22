@@ -936,7 +936,8 @@ class model_app extends _uho_model
 
 
         foreach ($schema['fields'] as $k => $v)
-            if (!empty($v['cms']['edit']) && $v['cms']['edit'] == 'remove')
+
+            if (!empty($v['cms']['edit']) && $v['cms']['edit'] === 'remove')
                 unset($schema['fields'][$k]);
             else {
                 if (@is_array($v['label']))
@@ -975,6 +976,8 @@ class model_app extends _uho_model
                 if ($v['type'] == 'string' && isset($v['options'])) {
                     $schema['fields'][$k]['type'] = $v['type'] = 'select';
                 }
+
+                
 
 
                 switch ($v['type']) {
@@ -1244,6 +1247,8 @@ class model_app extends _uho_model
                             }
                         }
 
+                        
+
                         // add null
                         if (isset($v['source']['null']) || !empty($v['settings']['null'])) {
                             if (!$schema['fields'][$k]['options'])
@@ -1284,6 +1289,7 @@ class model_app extends _uho_model
                             $v['value'] = $this->fillPattern($v['value'], ['keys' => $record, 'numbers' => $params]);
                             $record[$v['field']] = $v['value'];
                         }
+
 
                         break;
 
@@ -1365,7 +1371,8 @@ class model_app extends _uho_model
 
 
                 // help ---------------------------------------------
-                if (!empty($v['cms']['help'])) {
+                if (!empty($v['cms']['help']))
+                {
                     $c = 'uho_cms_edit_help_' . $schema['model_name'] . '_' . $v['cms_field'];
                     $hidden = (@$_COOKIE[$c] == 1);
                     if (!is_array($v['cms']['help']))
