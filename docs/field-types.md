@@ -762,7 +762,6 @@ Table view with multiple columns and rows.
     "type": "table",
     "settings": {
         "cols": 3,                          // columns count
-        "style": "distinct",
         "header": [                         // header shows table header and sets columns count
             {
                 "label": "Time",            // column header
@@ -772,13 +771,23 @@ Table view with multiple columns and rows.
             },
             {
                 "label": "Text",
-                "type": "html",             // row type, string is default, allowed: "string|html"
-                "width": 70
+                "type": "html",             // row type, string is default, allowed: "string|html|select"
+                "width": 60
+            },
+            {
+                "label": "Button",
+                "type":"select",
+                "options":[
+                    {"label":"Read","value":"read"},
+                    {"label":"Play","value":"play"}
+                ],
+                "width": 10
             }
         ]
     },
     "cms": {
         "counter": true,                    // if set to true, row numbers are visible
+        "style": "distinct",
         "height": 300,                      // row height in pixels
         "style": "json",                    // available: json|distinct
         "placeholders": ["A", "B"],         // placeholders for each column

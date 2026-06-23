@@ -65,6 +65,14 @@
               placeholder="{{field.cms.placeholders[v]}}">
                 {{cell_value}}
               </textarea>
+            {% elseif field.settings.header[v].type=='select' %}
+            <select {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} data-order="{{loop_index}}"
+              class="serdelia-edit-field serdelia_table_input"
+              name="{{field.cms_field}}[][{{row_index_plus_1}}][{{loop.index}}]"
+              placeholder="{{field.settings.header[v].placeholder}}">
+                {% for option in field.settings.header[v].options %}
+                  <option value="{{option.value}}" {% if cell_value==option.value %}selected{% endif %}>{{option.label}}</option>
+                {% endfor %}
             {% else %}            
             <textarea {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} data-order="{{loop_index}}"
               style="{% if field.cms.height %}height:{{field.cms.height}}px;{% endif %}{% if field.cms.style=='json' or field.settings.header[v].style=='json' %}font-family:Courier{% endif %}"

@@ -792,6 +792,9 @@ class model_app_page extends model_app
 			$buttons = array_merge($buttons, $schema['cms']['buttons_page']);
 		}
 
+		if (isset($params['helper_models']))
+			unset($params['helper_models']);
+
 		// Add "add" button if it's not disabled
 		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true)) {
 			$addLabel = $schema['cms']['buttons_page_labels']['add'] ?? 'add';
@@ -805,9 +808,10 @@ class model_app_page extends model_app
 				]
 			];
 		}
+
+
+
 		// Final update using plugin/customization hook
-
-
 
 		return $this->updateSchemaButtons($buttons, $schema, null, $params, $_GET ?? []);
 	}
