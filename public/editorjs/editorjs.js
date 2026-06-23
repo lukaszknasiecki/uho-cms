@@ -6,6 +6,18 @@ import CodeTool from 'https://esm.sh/@editorjs/code@2';
 import Delimiter from 'https://esm.sh/@editorjs/delimiter@1';
 import ImageTool from 'https://esm.sh/@editorjs/image@2';
 import RawTool from 'https://esm.sh/@editorjs/raw@2';
+
+class RawToolFixed extends RawTool {
+  render() {
+    const wrapper = super.render();
+    const textarea = wrapper.querySelector('textarea');
+    if (textarea) {
+      textarea.addEventListener('keydown', (e) => e.stopPropagation());
+    }
+    return wrapper;
+  }
+}
+
 import './carousel-editorjs.js';
 const Carousel = window.Carousel;
 
@@ -120,7 +132,7 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
       },
 
       raw: {
-        class: RawTool,
+        class: RawToolFixed,
         config: { placeholder: 'Enter custom data' },
       },
 
