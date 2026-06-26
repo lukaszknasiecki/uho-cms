@@ -356,10 +356,11 @@ class model_app_write extends model_app
 
 		// unique values
 		foreach ($schema['fields'] as $k => $v)
-			if (isset($v['unique']) && $v['unique']) {
+			if (isset($v['settings']['unique']) && $v['settings']['unique'])
+			{
 				$exists = $this->apporm->get($model, ['id' => ['operator' => '!=', 'value' => $id], $v['field'] => $data[$v['field']]], true, null, null, ['additionalParams' => $params]);
 				if ($exists)
-					return ['result' => false, 'message' => $v['label'] . ' - ' . str_replace('%value%', $data[$v['field']], $this->translate['unique_field'])];
+					return ['result' => false, 'message' => $v['cms']['label'] . ' - ' . str_replace('%value%', $data[$v['field']], $this->translate['unique_field'])];
 			}
 
 		$backup_record_data = [
@@ -520,8 +521,7 @@ class model_app_write extends model_app
 
 					if ($data[$v['field'] . '_remove'] == 'on') {
 						$r = $this->fileRemove($v, $data, null, true);
-					} elseif ($data[$v['field']])
-					{
+					} elseif ($data[$v['field']]) {
 						$r = $this->fileUpload($v, $data, $data[$v['field']], $extension);
 						if ($size) $data[$size] = $r['size'];
 						if (!$r['result']) $errors = array_merge($errors, $r['errors']);
@@ -531,16 +531,14 @@ class model_app_write extends model_app
 								if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
 							}
 						}
-					} elseif ($v['cms']['auto'])
-					{
+					} elseif ($v['cms']['auto']) {
 						foreach ($v['cms']['auto'] as $k2 => $v2)
-						if ($old_value[$v['field']]['src'])
-						{							
-							$r0 = $this->getFileAuto($v2['type'], $_SERVER['DOCUMENT_ROOT'] . $old_value[$v['field']]['src']);
-							if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
-						}
+							if ($old_value[$v['field']]['src']) {
+								$r0 = $this->getFileAuto($v2['type'], $_SERVER['DOCUMENT_ROOT'] . $old_value[$v['field']]['src']);
+								if (isset($r0['value'])) $data[$v2['field']] = $r0['value'];
+							}
 					}
-					
+
 
 					break;
 
@@ -812,7 +810,7 @@ class model_app_write extends model_app
 				case "checkboxes":
 				case "elements":
 					if ($data[$v['field']] && is_array($data[$v['field']]))
-					$data[$v['field']] = array_values(array_unique($data[$v['field']]));
+						$data[$v['field']] = array_values(array_unique($data[$v['field']]));
 
 					break;
 			}
@@ -1785,7 +1783,7 @@ class model_app_write extends model_app
 
 	private function getFileAuto($type, $file)
 	{
-		$file=explode('?', $file)[0];
+		$file = explode('?', $file)[0];
 		switch ($type) {
 			case "duration":
 				$getID3 = new JamesHeinrich\GetID3\GetID3();
