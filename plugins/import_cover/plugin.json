@@ -11,7 +11,9 @@
         "errors_poster_failed":"Błąd importu okładki",
         "errors_spotify_not_found":"Plik Spotify nie został znaleziony",
         "added_duration_added":"Długość filmu została uaktualniona",
-        "errors_vimeo_not_found":"Plik Vimeo nie został znaleziony"
+        "errors_vimeo_not_found":"Plik Vimeo nie został znaleziony",
+        "record_udpated":"Rekord został zaktualizowany",
+        "sources_timestamp_added":"Data aktualizacji źródeł z Vimeo została dodana"
     },
     "en":
     {
@@ -26,7 +28,9 @@
         "added_sources_added":"MP4 Vimeo sources have been updated",
         "errors_spotify_not_found":"Spotify file not found",
         "errors_poster_failed":"Cover import error",
-        "errors_vimeo_not_found":"Vimeo file not found"
+        "errors_vimeo_not_found":"Vimeo file not found",
+        "record_udpated":"Record has been updated",
+        "sources_timestamp_added":"Vimeo sources update timestamp has been updated"
 
     }
 }

@@ -102,15 +102,14 @@ class serdelia_plugin_import_cover
 
         $schema = $this->parent->apporm->getSchema($params['page']);
 
-        if (empty($record['uid']))
-        {
+        if (empty($record['uid'])) {
             $record['uid'] = uniqid();
             $this->parent->queryOut('UPDATE ' . $schema['table'] . ' SET uid="' . $record['uid'] . '" WHERE id=' . $params['record']);
         }
 
         $params = array_merge($params, $params['params']);
 
-        if (!$params['field_mp4']) $params['field_mp4'] = 'source';
+        //if (!$params['field_mp4']) $params['field_mp4'] = 'source';
 
         $title = '';
         $cover = '';
@@ -121,12 +120,10 @@ class serdelia_plugin_import_cover
         $root = $_SERVER['DOCUMENT_ROOT'];
         $cover_to_remove = null;
 
-        if (isset($params['field_poster']) && isset($params['poster_if_exists']) && $params['poster_if_exists']===false)
-        {
-            $image=$record[$params['field_poster']];
-            
-            if ($image && _uho_fx::file_exists(array_shift($image)))
-            {
+        if (isset($params['field_poster']) && isset($params['poster_if_exists']) && $params['poster_if_exists'] === false) {
+            $image = $record[$params['field_poster']];
+
+            if ($image && _uho_fx::file_exists(array_shift($image))) {
                 unset($params['field_poster']);
             }
         }
@@ -233,7 +230,7 @@ class serdelia_plugin_import_cover
                     if ($params['field_mp4'] && (!empty($vimeo['static']) || !empty($vimeo['play']))) {
                         $sources = ['static' => $vimeo['static'] ?? [], 'play' => $vimeo['play'] ?? []];
                     } else {
-                        $errors[] = 'Vimeo Sources not found';
+                        if ($params['field_mp4'])  $errors[] = 'Vimeo Sources not found';
                         $sources = null;
                     }
 
@@ -268,12 +265,14 @@ class serdelia_plugin_import_cover
         if ($title || $cover || $sources || $sources_progressive || $duration || $date) {
 
             $data = ['id' => $record['id']];
+
             if ($params['field_title'] && $title && !$record[$params['field_title']]) {
                 $data[$params['field_title']] = $title;
                 $added[] = 'title_added';
             }
 
-            if ($params['field_poster'] && $cover) {
+            if ($params['field_poster'] && $cover)
+            {
 
                 $r = $this->parent->imageResizeModel($params['page'], $params['field_poster'], $record, $cover);
 
@@ -284,21 +283,22 @@ class serdelia_plugin_import_cover
                     $added[] = 'poster_added';
                 }
             }
+
             if ($params['field_poster_url'] && $cover) {
                 $data[$params['field_poster_url']] = $cover;
                 $added[] = 'poster_added';
             }
+ 
 
-
-            if ($sources) {
+            if ($sources && !empty($params['field_mp4'])) {
                 $data[$params['field_mp4']] = $sources;
                 $added[] = 'sources_added';
-                if (isset($params['field_mp4_timestamp']))
-                {
+                if (isset($params['field_mp4_timestamp'])) {
                     $data[$params['field_mp4_timestamp']] = date('Y-m-d H:i:s');
                     $added[] = 'sources_timestamp_added';
                 }
             }
+
             if ($sources_progressive && !empty($params['field_mp4_play'])) {
                 $data[$params['field_mp4_play']] = $sources_progressive;
                 $added[] = 'sources_play_added';
@@ -318,9 +318,15 @@ class serdelia_plugin_import_cover
                 $data[$params['field_date_updated']] = date('Y-m-d H:i:s');
             }
 
-            $r = $this->cms->put($params['page'], $data);
-            if ($r === false) $errors[] = 'Database update failed';
-            else
+            // no need to write to "image" field
+            if (isset($params['field_poster']) && $data[$params['field_poster']])
+                unset($data[$params['field_poster']]);
+
+            // if more than ID
+            if ($data && count($data) > 1) {
+                $r = $this->cms->put($params['page'], $data);
+                if ($r === false) $errors[] = 'Database update failed';
+            } else
                 $added[] = 'record_updated';
             if ($cover_to_remove) unlink($cover_to_remove);
         }

@@ -67,6 +67,7 @@ class model_app_plugin extends model_app
 		if (!$this->parent && !$this->checkAuth($page, [2, 3])) {
 			exit("auth::error::1::app_plugin::{$page}::{$plugin}");
 		}
+
 		if (isset($plugin['auth']) && !$this->parent->checkAuthModelSet($page_single, $plugin['auth']))
 			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
 
@@ -77,7 +78,7 @@ class model_app_plugin extends model_app
 		else $buttons = $schema['cms']['buttons_page'];
 
 		if (!_uho_fx::array_filter($buttons, 'plugin', $plugin))
-			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
+			exit("auth::error::3::app_plugin::{$page}::{$plugin}");
 
 		// Translations
 		$defaultTranslate = [
