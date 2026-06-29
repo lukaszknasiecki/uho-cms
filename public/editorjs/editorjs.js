@@ -80,6 +80,8 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
           code: CodeTool,
           delimiter: Delimiter,
   */
+  const editorStartTime = Date.now();
+
   const editor = new EditorJS({
     holder: editorEl,
     data: initialData || undefined,
@@ -155,6 +157,7 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
     },
     placeholder: 'Start writing…',
     onChange: async () => {
+      if (Date.now() - editorStartTime < 3000) return;
       if (destination) {
         const outputData = await editor.save();
         destination.value = JSON.stringify(outputData);

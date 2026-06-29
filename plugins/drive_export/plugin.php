@@ -5,6 +5,7 @@
  */
 
 use Huncwot\UhoFramework\_uho_fx;
+
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
 class serdelia_plugin_drive_export
@@ -40,35 +41,39 @@ class serdelia_plugin_drive_export
         $errors = [];
         $schema = $this->cms->getSchema($this->params['page']);
 
-        $fields_raw=[];
-
-        foreach ($params['fields'] as $field)
-        {
-            $fields_raw[] = explode('.',$field)[0];
-        }
-
+        // LOAD
         $records = $this->cms->get(
             [
-                'schema' => $this->params['page'],
-                'fields' => $fields_raw
+                'schema' => $this->params['page']
             ]
         );
 
-        foreach ($params['fields'] as $field)
-        {
-            $field=explode('.',$field);
-            if (isset($field[1]))
-            {
-                foreach ($records as $k=>$record)
+        $output = [];
+
+        foreach ($records as $k => $record) {
+            $o = [];
+            foreach ($params['fields'] as $field) {
+                $f = explode('.', $field);
+
+                $field = array_shift($f);
+                $field = explode(',', $field);
+                $nr = $field[1] ?? "";
+                $field = $field[0];
+
+                if ($f)
                 {
-                    $records[$k][$field[0]]=$record[$field[0]][$field[1]];
-                }
+                    $val = $record[$field];
+                    if ($nr) $val = $val[$nr - 1] ?? [];
+                    foreach ($f as $ff) {
+                        $val = $val[$ff] ?? [];
+                    }
+                    if (is_array($val)) $val = '';
+                    $o[$field . $nr] = $val;
+                } else $o[$field] = $record[$field] ?? '';
             }
+            $output[] = $o;
         }
 
-    
-        foreach ($records as $k => $v)
-            unset($records[$k]['id']);
 
         $this->client = new \Google_Client();
         $this->client->setApplicationName('COH Sync');
@@ -77,10 +82,10 @@ class serdelia_plugin_drive_export
         $this->client->setAuthConfig($_SERVER['DOCUMENT_ROOT'] . '/google_credentials.json');
         $this->service = new Google_Service_Sheets($this->client);
 
-        $this->saveDataToSheet($params['drive']['id'],$params['drive']['tab'], $records);
+        $this->saveDataToSheet($params['drive']['id'], $params['drive']['tab'], $output);
 
 
-        return $data;
+        return ['result' => true];
     }
 
     public function saveDataToSheet($sheetId, $range, $values)
@@ -96,6 +101,7 @@ class serdelia_plugin_drive_export
 
         $body = new Google_Service_Sheets_ValueRange(['values' => $rows]);
         $params = ['valueInputOption' => 'RAW'];
+
         $this->service->spreadsheets_values->update($sheetId, $range, $body, $params);
     }
 

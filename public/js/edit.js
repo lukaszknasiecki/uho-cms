@@ -28,6 +28,7 @@ Apps.Edit = function ($, window) {
 
     $('.serdelia-edit-field').unbind('change').bind('change', changeField);
     $('.serdelia-edit-field').unbind('keyup').bind('keyup', changeField);
+    
     $('.serdelia-edit-toggle-field').unbind('change').bind('change', changeToggleField);
     $('.serdelia-edit-show-on-demand').unbind('click').bind('click', showOnDemand);
     $('.serdelia-edit-cancel').unbind('click').bind('click', cancel);
@@ -450,6 +451,7 @@ Apps.Edit = function ($, window) {
     },
 
     changeField = function () {
+
       $('#serdelia-submit').prop('disabled', false);
       $('#serdelia-submit-top').prop('disabled', false);
       $('#serdelia-submit-edit').prop('disabled', false);
@@ -463,8 +465,11 @@ Apps.Edit = function ($, window) {
         $('.show-on-change').show();
       }
 
+
       var now = $(this).attr('name');
-      if (now) {
+
+      if (now)       
+      {
         var then = $("body").find("[data-select-parent='" + now + "']");
         if (then.length > 0) {
           var value = $(this).val();
