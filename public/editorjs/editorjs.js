@@ -7,6 +7,10 @@ import Delimiter from 'https://esm.sh/@editorjs/delimiter@1';
 import ImageTool from 'https://esm.sh/@editorjs/image@2';
 import RawTool from 'https://esm.sh/@editorjs/raw@2';
 
+if (typeof window.CustomDataTool_Types === 'undefined') {
+  window.CustomDataTool_Types = [];
+}
+
 class RawToolFixed extends RawTool {
   render() {
     const wrapper = super.render();
@@ -80,7 +84,7 @@ class CustomDataTool {
 
     const keyInput = document.createElement('select');
     keyInput.style.cssText = 'flex:0.5;padding:6px 8px;border:1px solid #e0e0e0;border-radius:4px;font-size:14px';
-    ['Clips', 'Accordions'].forEach(opt => {
+    CustomDataTool_Types.forEach(opt => {
       const option = document.createElement('option');
       option.value = opt;
       option.textContent = opt;
