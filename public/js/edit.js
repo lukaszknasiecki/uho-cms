@@ -624,14 +624,26 @@ Apps.Edit = function ($, window) {
       if (found === null) return;
       data = data[found];
 
-
       if (data.hide)
         for (var i = 0; i < data.hide.length; i++)
-          $('[data-edit-field="e_' + data.hide[i] + '"]').css('display', 'none');
+        {
+          if (data.hide[i].charAt(0) == '#')
+          {
+            var hide=data.hide[i].substring(1);            
+            $('[data-tab="tab_' + hide + '"]').css('display', 'none');
+          }
+          else $('[data-edit-field="e_' + data.hide[i] + '"]').css('display', 'none');
+        }
       if (data.show)
         for (var i = 0; i < data.show.length; i++)
-          $('[data-edit-field="e_' + data.show[i] + '"]').css('display', 'flex');
-
+        {
+          if (data.show[i].charAt(0) == '#')
+          {
+            var show=data.show[i].substring(1);            
+            $('[data-tab="tab_' + show + '"]').css('display', 'flex');
+          }
+          else $('[data-edit-field="e_' + data.show[i] + '"]').css('display', 'flex');
+        }
 
 
 

@@ -1,0 +1,32 @@
+{% if message %}
+<div class="alert alert-info">
+	{% for i in message %} {% if loop.index>1 %}<br>{% endif %}
+	{{i}} {% endfor %}
+</div>
+{% endif %}
+
+{% if errors %}
+<div class="alert alert-danger">
+	[[icon::warning]]
+	{% for error in errors %} {% if loop.index>1 %}<br>{% endif %}
+	{% if translate['error_'~error] %}{{translate['error_'~error]}}{% else %}{{error}}{% endif %} {% endfor %}
+</div>
+{% endif %}
+
+{% if not exported %}
+<div class="alert alert-info">
+	[[icon::info-outline]] {{translate.description}}
+	<br>Records to export: {{count}}
+</div>
+<form action="" method="POST">
+	{% for field in fields %}
+	<div class="checkbox">
+		<label><input type="checkbox" name="f_{{field.field}}" checked>&nbsp; {{field.cms.label}}</label>
+	</div>
+	{% endfor %}
+	<br>
+
+	<button type="submit" name="export" class="btn btn-primary">[[icon::download]] {{translate.submit_export}}</button>
+	<button type="submit" name="import" class="btn btn-danger">[[icon::download]] {{translate.submit_import}}</button>
+</form>
+{% endif %}

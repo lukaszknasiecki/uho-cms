@@ -41,15 +41,13 @@
 
         <input type="hidden" name="tab" id="hidden_tab" value="">
         <ul class="nav nav-tabs" id="serdelia-edit-tabs" role="tablist">
-        {% for item in tabs %}
-          {% if not item.cms.hidden %}
-            <li id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item">
+        {% for item in tabs %}          
+            <li id="tab_{{item.id}}" data-tab="tab_{{item.id}}" temp-id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item" {% if item.hidden %}style="display:none"{% endif %}>
               <a class="nav-link {% if item.active %}active{% endif %}" href="#tab{{loop.index}}"
                 aria-controls="tab{{loop.index}}" role="tab" data-toggle="tab">
                 {{item.label}}
               </a>
             </li>
-          {% endif %}
         {% endfor %}
       </ul>
 
@@ -59,8 +57,11 @@
         {% set iTab=0 %}
         {% set iElementsNow=0 %}
 
+        {% set current_tab = '' %}
+
         {% for field in schema.fields %}
           {% if field.cms.tab %}
+            {% set current_tab = field.cms.id %}
             {% if iTab!=0 %}</div><!-- closeTab -->{% endif %}
             <!-- openTab -->
             <div role="tabpanel" class="tab-pane{% if tabs[iTab].active %} active{% endif %}" id="tab{{iTab+1}}">
@@ -95,7 +96,7 @@
           {% include 'modules/edit/subview_help.html' with {field:field,size:'full'} %}
         {% endif %}
 
-        <div class="form-group row" data-edit-lang="{{field.settings.lang}}" data-edit-field="{{field.cms_field}}" {% if
+        <div class="form-group row" {% if current_tab %}data-tab="tab_{{current_tab}}"{% endif %} data-edit-lang="{{field.settings.lang}}" data-edit-field="{{field.cms_field}}" {% if
           field.cms.hidden %}style="display:none" {% endif %}>
 
           {% if not field.cms.label and (field.cms.wide or field.type=='blocks' or field.type=='preview' or field.type=='plugin') %}

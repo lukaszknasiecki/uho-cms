@@ -1352,7 +1352,7 @@ class model_app extends _uho_model
                         $val = $val['values']['id'];
                     $toggle = $v['cms']['toggle_fields'];
 
-                    if (isset($toggle)) // && @isset($toggle[$val]))
+                    if (isset($toggle))
                     {
                         $toggle_found = null;
                         foreach ($toggle as $kk => $vv)
@@ -1426,10 +1426,22 @@ class model_app extends _uho_model
                 $record[$v['field']] = $html;
             }
 
+        // update field TAB parents
+        $tab=null;
+        foreach ($schema['fields'] as $k => $v)
+        {
+            if (!empty($v['cms']['tab'])) $tab = $v['cms']['id'] ?? $v['cms']['tab'];
+            if ($tab)
+                $schema['fields'][$k]['cms']['tab_id'] = $tab;
+        }
 
         if ($hide)
             foreach ($schema['fields'] as $k => $v)
-                if (in_array($v['field'], $hide)) {
+                if (
+                    ($v['cms']['tab_id'] && in_array('#'.$v['cms']['tab_id'], $hide))
+                    || in_array($v['field'], $hide)
+                    )
+                {
                     if (!isset($schema['fields'][$k]['cms'])) $schema['fields'][$k]['cms'] = [];
                     $schema['fields'][$k]['cms']['hidden'] = true;
                 }

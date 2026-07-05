@@ -179,11 +179,13 @@ class model_app_edit extends model_app
 		// Prepare field tabs
 
 		$tabs = [];
-		foreach ($schema['fields'] as $field) {
+		foreach ($schema['fields'] as $field)
+		{
 			if (!empty($field['cms']['tab'])) {
-				$tabs[] = ['id' => count($tabs) + 1, 'label' => $field['cms']['tab'], 'count' => 0];
+				$id=$field['cms']['id'] ?? count($tabs) + 1;
+				$tabs[] = ['id' => $id, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
-			if (!empty($tabs) && ($field['field'] || in_array($field['type'],[ 'plugin' ,'preview'])) && !$field['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
+			if (!empty($tabs) && ($field['field'] || in_array($field['type'],[ 'plugin' ,'preview'])) && !$field['cms']['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
 				$tabs[count($tabs) - 1]['count']++;
 			}
 		}
@@ -204,6 +206,7 @@ class model_app_edit extends model_app
 				}
 			}
 		}
+		
 
 		// Remove tabs if there's only one
 

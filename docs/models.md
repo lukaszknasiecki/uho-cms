@@ -278,15 +278,16 @@ Each field in the `fields` array defines a database column and its CMS behavior:
         "list": "show|read|edit|order|object",
         "search": true,              // Include in search filters
         "tab": "Tab Name",           // Group fields in tabs
+        "id": "tab_id",              // Optional tab_id, to use with toggle options
         "hr": true,                  // Show divider above field
         "header": "Section Header",  // Section header text
         "on_demand": true,           // Only show when requested
         "edit": {
             "remove": true           // Hide from edit form
         },
-        "toggle_fields": {          // Shows/Hides other fields based on this field's value
+        "toggle_fields": {          // Shows/Hides other fields based on this field's or tab's (# prefix) values
             "Video": {
-                "show":["video","cover"],
+                "show":["video","cover","#assets"],
                 "hide":["text"]
             },
             "Audio": {
