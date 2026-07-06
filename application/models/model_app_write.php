@@ -2087,7 +2087,7 @@ class model_app_write extends model_app
 			'html'   => $html,
 			'post'   => $new_media,
 			'put'    => $updated_media,
-			'delete' => $deleted_media
+			'delete' => [],//$deleted_media
 		];
 		//print_r($result);exit();
 		return $result;
