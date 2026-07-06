@@ -182,8 +182,8 @@ class model_app_edit extends model_app
 		foreach ($schema['fields'] as $field)
 		{
 			if (!empty($field['cms']['tab'])) {
-				$id=$field['cms']['id'] ?? count($tabs) + 1;
-				$tabs[] = ['id' => $id, 'label' => $field['cms']['tab'], 'count' => 0];
+				$idt=$field['cms']['id'] ?? count($tabs) + 1;
+				$tabs[] = ['id' => $idt, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
 			if (!empty($tabs) && ($field['field'] || in_array($field['type'],[ 'plugin' ,'preview'])) && !$field['cms']['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
 				$tabs[count($tabs) - 1]['count']++;

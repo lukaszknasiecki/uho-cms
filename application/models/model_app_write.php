@@ -859,6 +859,7 @@ class model_app_write extends model_app
 			$data['id'] = $id;
 			$this->logsAdd('edit');
 			$schema['fields'] = array_values($schema['fields']);
+
 			$result = $this->apporm->put($schema, $data);
 			if ($result === false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
 			else $result = true;
@@ -878,15 +879,7 @@ class model_app_write extends model_app
 				$this->apporm->put($v['model'], $v['value'], $v['filter']);
 
 		
-		/*
-		temporary disable
-		$deleted_media[] = [
-				'model' => $media_model_name,
-				'value' => [
-					'model_id' => '%record_id%',
-					'uid' => ['operator' => '!=', 'value' => $uids]
-				]
-			];
+		
 
 		if ($additional_delete)
 			foreach ($additional_delete as $k => $v)
@@ -895,8 +888,7 @@ class model_app_write extends model_app
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
 				$this->apporm->delete($v['model'], $v['value'], true);
 			}
-				*/
-
+				
 		/*
 		** run auto-plugins		
 		*/
