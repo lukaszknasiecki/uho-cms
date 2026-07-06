@@ -26,7 +26,7 @@
 
 <input type="hidden" name="{{field.cms_field}}" class="form-control serdelia-edit-field"  id="{{field.cms_field}}" value="{% if value is iterable %}{{value.values.id}}{% else %}}value{% endif %}">
 
-<input type="text" {% if field.disabled %}disabled{% endif %} name="{{field.cms_field}}_text" data-field="{{field.cms_field}}" class="form-control serdelia-edit-field serdelia-edit-field-search"  id="{{field.cms_field}}_text" placeholder="{{field.source.placeholder}}" value="{{value.label|striptags}}">
+<input {% if field.cms.edit is same as(false) %}disabled{% endif %} type="text" {% if field.disabled %}disabled{% endif %} name="{{field.cms_field}}_text" data-field="{{field.cms_field}}" class="form-control serdelia-edit-field serdelia-edit-field-search"  id="{{field.cms_field}}_text" placeholder="{{field.source.placeholder}}" value="{{value.label|striptags}}">
 <ul class="list-group" data-field="{{field.cms_field}}" data-searched="{{field.cms_field}}"></ul>
 
 

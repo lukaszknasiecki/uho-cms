@@ -318,6 +318,27 @@ Alternative version on `options` property:
 }
 ```
 
+**Non-interger source ids:**
+
+```json
+{
+    "field": "author_uid",
+    "type": "select",
+    "cms":
+    {
+        "input": "search"
+    },
+    "settings": {
+                "output":"string",
+                "length": 32
+            },
+    "source": {
+        "model": "authors",                 // search in this model
+        "id":"uid"
+    }
+}
+```
+
 **Search Input (for large models):**
 
 ```json

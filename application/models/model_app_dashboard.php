@@ -40,7 +40,9 @@ class model_app_dashboard extends model_app
 		$home = file_exists($uri) ? file_get_contents($uri) : null;
 		$home = json_decode($home, true);
 
-		foreach ($home['widgets'] as $k => $v) {
+		foreach ($home['widgets'] as $k => $v)
+		{
+
 			if (!is_array($v)) $v = ['widget' => $v];
 			if (empty($v['params'])) $v['params'] = [];
 			$v['params'] = array_merge($v['params'], $params);

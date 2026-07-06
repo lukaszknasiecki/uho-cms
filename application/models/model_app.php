@@ -119,6 +119,7 @@ class model_app extends _uho_model
      * search url variable
      */
     var $url_search = '';
+    public $can_global_search=false;
 
     /**
      * Init function
@@ -3370,4 +3371,10 @@ class model_app extends _uho_model
     {
         $_SESSION['2factor'] = true;
     }
+
+    public function setCanGlobalSearch(bool $q)
+    {
+        $this->can_global_search = $q;
+    }
+
 }

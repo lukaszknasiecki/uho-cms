@@ -127,12 +127,16 @@ class model_app_page extends model_app
 		$filters_stack = [];
 		$first = true;
 		$global_search = isset($get['query']);
+		foreach ($schema['fields'] as $k => $field)
+		if ($field['cms']['search']==='global') $this->setCanGlobalSearch(true);
 
 		foreach ($schema['fields'] as $k => $field)
 			if (
-				!in_array($field['type'], ['image', 'temp-checkboxes', 'temp-elements']) &&
-				(!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
-			) {
+				!in_array($field['type'], ['image', 'temp-checkboxes', 'temp-elements'])
+				&& (!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
+				&& (!$global_search || $field['cms']['search']==='global')
+			)
+			{
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
@@ -196,7 +200,8 @@ class model_app_page extends model_app
 
 
 				// Build filter label stack
-				if (!$global_search || $first) {
+				if (!$global_search || $first)
+				{
 
 					$label_value = null;
 
@@ -234,12 +239,21 @@ class model_app_page extends model_app
 		if ($global_search) {
 			$searchSchema = $schema;
 			$searchSchema['cms']['filters'] = $filters;
-			//TBD
+			
+			/*
 			$filterSet = $this->apporm->getFiltersQueryArray($searchSchema);
+			
 			$filters = $filterSet
 				? ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filterSet]]
-				: [];
-			$filters_stack = [];
+				: [];*/
+			$filters_stack = [
+				[
+				'label' => 'Search',
+				'label_value' => $get['query'],
+				'value' => $get['query'],
+				'url' => ['type' => 'url_now', 'getRemove' => ['query']]
+				]
+			];
 		}
 
 		// Merge with schema-defined filters

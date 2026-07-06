@@ -238,7 +238,7 @@ class model_app_write extends model_app
 					if ($v['output'] == '4digits') $iDigits = 4;
 					if ($v['output'] == '6digits') $iDigits = 6;
 					if ($v['output'] == 'string') $iDigits = 0;
-*/
+					*/
 
 					// extract new
 					if (isset($data[$v['field'] . '_new'])) $new = json_decode($data[$v['field'] . '_new'], true);
@@ -859,7 +859,6 @@ class model_app_write extends model_app
 			$data['id'] = $id;
 			$this->logsAdd('edit');
 			$schema['fields'] = array_values($schema['fields']);
-
 			$result = $this->apporm->put($schema, $data);
 			if ($result === false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
 			else $result = true;
@@ -878,12 +877,25 @@ class model_app_write extends model_app
 			foreach ($additional_put as $k => $v)
 				$this->apporm->put($v['model'], $v['value'], $v['filter']);
 
+		
+		/*
+		temporary disable
+		$deleted_media[] = [
+				'model' => $media_model_name,
+				'value' => [
+					'model_id' => '%record_id%',
+					'uid' => ['operator' => '!=', 'value' => $uids]
+				]
+			];
+
 		if ($additional_delete)
-			foreach ($additional_delete as $k => $v) {
+			foreach ($additional_delete as $k => $v)
+			{
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
 				$this->apporm->delete($v['model'], $v['value'], true);
 			}
+				*/
 
 		/*
 		** run auto-plugins		

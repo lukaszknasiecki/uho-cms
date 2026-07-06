@@ -220,7 +220,7 @@ class controller_app extends _uho_controller
         $this->view->setRenderHtmlRoot(!$this->data['fullscreen'] && !$this->route->isAjax());
 
         // Search URL and logout URL
-        if ($this->model->url_search) {
+        if ($this->model->can_global_search && $this->model->url_search) {
             $this->data['scaffold']['url_search'] = $this->model->url_search;
         }
             
