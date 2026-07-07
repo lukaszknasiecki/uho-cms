@@ -382,6 +382,7 @@ class model_app_write extends model_app
 			$backup_record_data['field'] = $v['field'];
 			switch ($v['type']) {
 
+				/*
 				case "html":
 					if (@$v['settings']['media']) {
 						$r = $this->htmlMediaUpdate($data[$v['field']], $schema['model_name'], $v['settings']['media'], $v);
@@ -392,7 +393,7 @@ class model_app_write extends model_app
 						$additional_delete = array_merge($additional_delete, $r['delete']);
 					}
 
-					break;
+					break;*/
 
 				case "blocks":
 
@@ -2227,6 +2228,9 @@ class model_app_write extends model_app
 				'uid' => ['operator' => '!=', 'value' => $existing_uids]
 			]
 		];
+
+		// temporary disable
+		$deleted_media=[];
 
 
 		$result = [
