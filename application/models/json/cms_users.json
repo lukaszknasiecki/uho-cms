@@ -162,6 +162,15 @@
                 "label_PL": "Blokada konta",
                 "hidden": true
             }
+        },
+        {
+            "field": "2fa",
+            "type": "boolean",
+            "cms": {
+                "list": "show",
+                "label_EN": "2FA in place (uncheck to allow regeneration)",
+                "label_PL": "2FA włączone (odkliknij, aby umożliwić regenerację)"
+            }
         }
     ]
 }

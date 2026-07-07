@@ -42,6 +42,8 @@ class model_app_2auth extends model_app
 		$tfa = new TwoFactorAuth(new QRServerProvider(), $params['title']);
 
 		$qr_regenerate = $_POST['qr_regenerate'] ?? null;
+		if ($user['2fa']) $qr_regenerate=null;
+		
 		$code = $_POST['code'] ?? null;
 
 		if ($qr_regenerate) {
@@ -72,6 +74,16 @@ class model_app_2auth extends model_app
 
 			if ($tfa->verifyCode($token['token'], $code))
 			{
+				// disable 2fa regeneration after successful verification
+ 				$this->orm->patch(
+					'cms_users',
+					[
+						'2fa' => 1
+					],
+					[
+						'id' => $user['id']
+					]					
+				);
 				return [
 					'result' => true,
 					'authenticated'=>true,
@@ -140,6 +152,7 @@ class model_app_2auth extends model_app
 			'result'  => true,
 			'errors'  => $errors,
 			'success' => $success,
+			'allow_regenerate'=>$user['2fa']==0 ? true : false,
 			'qrCodeUrl' => $qrCodeUrl
 		];
 	}

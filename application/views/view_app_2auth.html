@@ -50,13 +50,19 @@
                                                 if (this.value.length === 6) this.closest('form').submit();
                                         });
                                 </script>
+                                {% if allow_regenerate %}
                                 <p><br>
                                         <form method="post">
                                                 <input type="hidden" name="qr_regenerate" value="1">
-                                                <label style="font-size:12px" for="qr_regenerate" class="form-label">Need new QR code?</label>
+                                                <label style="font-size:12px" for="qr_regenerate" class="form-label">new QR code?</label>
                                                 <button type="submit" class="btn btn-sm btn-default">Regenerate</button>
                                         </form>
                                 </p>
+                                {% else %}
+                                <p><br>
+                                        No code? Please, check your 2FA app or contact support.
+                                </p>
+                                {% endif %}
                         </div>
 
         </div>
