@@ -401,7 +401,10 @@ class model_app_write extends model_app
 
 					if ($json) {
 						if (!empty($v['settings']['media'])) {
-							$r = $this->blocksMediaUpdate($json, $schema['model_name'], $v['settings']['media'], $v);
+							$r = $this->blocksMediaUpdate(
+								$json,
+								$schema['model_name'],
+								$v['settings']['media'], $v);
 							$data[$v['field']] = $r['json'];
 							$additional_post = array_merge($additional_post, $r['post']);
 							$additional_put = array_merge($additional_put, $r['put']);
@@ -2225,12 +2228,13 @@ class model_app_write extends model_app
 			'model' => $media_model_name,
 			'value' => [
 				'model_id' => '%record_id%',
+				'model'=>$parent_model,
 				'uid' => ['operator' => '!=', 'value' => $existing_uids]
 			]
 		];
 
 		// temporary disable
-		$deleted_media=[];
+		// $deleted_media=[];
 
 
 		$result = [
