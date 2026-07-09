@@ -160,7 +160,6 @@ class controller_app extends _uho_controller
         
         // Fetch content data for current controller/action
         $this->data = $this->getContentData();
-
         // Enable lightbox mode if requested
         if (!empty($this->get['mode']) && $this->get['mode'] === 'lightbox') {
             $this->data['lightbox'] = true;
@@ -254,9 +253,11 @@ class controller_app extends _uho_controller
         }
         $this->data['langs'] = $lang;
 
+        // subnav data from session
+        $this->data['content']['subnav']=$this->model->getSubnavNow($this->route->getUrlNow());
+
         // Update URLs with routing info        
         $this->data = $this->urlUpdate($this->data);
-
         $this->data['head']['url'] = rtrim($this->route->getUrlNow(), '/');
     }
 

@@ -119,7 +119,7 @@ class model_app extends _uho_model
      * search url variable
      */
     var $url_search = '';
-    public $can_global_search=false;
+    public $can_global_search = false;
 
     /**
      * Init function
@@ -896,7 +896,12 @@ class model_app extends _uho_model
                     if (empty($vv['label']) && $vv['label' . $this->lang_add])
                         $schema['fields'][$k]['options'][$kk]['label'] = $vv['label' . $this->lang_add];
             }
+
+
         $schema = $this->apporm->updateSchemaSources($schema, $record, $p);
+
+
+
         return $schema;
     }
 
@@ -978,7 +983,7 @@ class model_app extends _uho_model
                     $schema['fields'][$k]['type'] = $v['type'] = 'select';
                 }
 
-                
+
 
 
                 switch ($v['type']) {
@@ -1248,7 +1253,7 @@ class model_app extends _uho_model
                             }
                         }
 
-                        
+
 
                         // add null
                         if (isset($v['source']['null']) || !empty($v['settings']['null'])) {
@@ -1353,8 +1358,7 @@ class model_app extends _uho_model
                         $val = $val['values']['id'];
                     $toggle = $v['cms']['toggle_fields'];
 
-                    if (isset($toggle))
-                    {
+                    if (isset($toggle)) {
                         $toggle_found = null;
                         foreach ($toggle as $kk => $vv)
                             if ($kk == $val)
@@ -1372,8 +1376,7 @@ class model_app extends _uho_model
 
 
                 // help ---------------------------------------------
-                if (!empty($v['cms']['help']))
-                {
+                if (!empty($v['cms']['help'])) {
                     $c = 'uho_cms_edit_help_' . $schema['model_name'] . '_' . $v['cms_field'];
                     $hidden = (@$_COOKIE[$c] == 1);
                     if (!is_array($v['cms']['help']))
@@ -1428,9 +1431,8 @@ class model_app extends _uho_model
             }
 
         // update field TAB parents
-        $tab=null;
-        foreach ($schema['fields'] as $k => $v)
-        {
+        $tab = null;
+        foreach ($schema['fields'] as $k => $v) {
             if (!empty($v['cms']['tab'])) $tab = $v['cms']['id'] ?? $v['cms']['tab'];
             if ($tab)
                 $schema['fields'][$k]['cms']['tab_id'] = $tab;
@@ -1439,10 +1441,9 @@ class model_app extends _uho_model
         if ($hide)
             foreach ($schema['fields'] as $k => $v)
                 if (
-                    ($v['cms']['tab_id'] && in_array('#'.$v['cms']['tab_id'], $hide))
+                    ($v['cms']['tab_id'] && in_array('#' . $v['cms']['tab_id'], $hide))
                     || in_array($v['field'], $hide)
-                    )
-                {
+                ) {
                     if (!isset($schema['fields'][$k]['cms'])) $schema['fields'][$k]['cms'] = [];
                     $schema['fields'][$k]['cms']['hidden'] = true;
                 }
@@ -1505,7 +1506,7 @@ class model_app extends _uho_model
 
                 // page button
                 if ($v['type'] == 'page') {
-                    
+
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
                     $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record ?? [], $params_twig ?? []));
 
@@ -1541,11 +1542,11 @@ class model_app extends _uho_model
                                 foreach ($v['params'] as $k2 => $v2)
                                     $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $record);
                         } else {
-                    
+
                             if ($v['params'])
                                 foreach ($v['params'] as $k2 => $v2)
                                     $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $params);
-                    
+
                             //$buttons[$k]['params'] = $v['params'];
                         }
 
@@ -1563,7 +1564,7 @@ class model_app extends _uho_model
                             'params' => $buttons[$k]['params'],
                             'get' => $get
                         ];
-                        
+
 
                         // let's find plugin's JSON
 
@@ -3377,4 +3378,105 @@ class model_app extends _uho_model
         $this->can_global_search = $q;
     }
 
+    public function setSubnav($type, $value)
+    {
+        if (empty($_SESSION['subnav'])) $_SESSION['subnav'] = [];
+        $_SESSION['subnav'][$type] = $value;
+    }
+
+    public function getSubnav($type)
+    {
+        return $_SESSION['subnav'][$type] ?? null;
+    }
+
+    public function getSubnavNow($url)
+    {
+        $url = explode('/', trim($url, '/'));
+
+        array_shift($url);
+        $url = implode('/', $url);
+
+        $uri = $this->cfg_folder . '/structure/subnav.json';
+        $json = file_exists($uri) ? json_decode(file_get_contents($uri), true) : null;
+        if (!$json) return null;
+        $exists = false;
+
+
+        foreach ($json as $group => $items) {
+            $now = $this->getSubNav($group);
+            if ($now) {
+
+                $exists = false;
+
+                // distribute children
+                $output = [];
+
+                foreach ($items as $item) {
+                    $output[] = $item;
+                    $parent=count($output)-1;
+
+                    if (isset($item['children']) && is_array($item['children'])) {
+                        foreach ($item['children'] as $child) {
+                            $i = $item;
+                            $i['parent'] = $parent;
+                            $i['page'] = 'page/' . $child . ',{id},*';
+                            unset($i['label']);
+                            unset($i['children']);
+                            $output[] = $i;
+                        }
+                    }
+                }
+
+                $items=$output;
+                $output=[];
+
+                foreach ($items as $item) {
+                    $output[] = $item;
+                    $parent = $item['parent'] ??count($output) - 1;
+
+                    if (str_starts_with($item['page'], 'page/')) {
+                        $i = $item;
+                        unset($i['label']);
+                        unset($i['children']);
+                        $i['parent'] = $parent;
+                        $p = explode('/', $item['page']);
+                        $p[0] = 'add';
+                        $i['page'] = implode('/', $p) . '/*';
+                        $output[] = $i;
+                        $p[0] = 'edit';
+                        $i['page'] = implode('/', $p) . '/*';
+                        $output[] = $i;
+                    }
+                }
+
+                $items = $output;
+
+                foreach ($items as $kk => $item) {
+
+                    $page = str_replace('{id}', $now, $item['page']);
+
+                    if (fnmatch($page, $url)) {
+                        $exists = true;
+                        if ($item['parent']) $kk = $item['parent'];
+                        break;
+                    }
+                }
+            }
+
+            if ($exists) {
+                $items[$kk]['active'] = true;
+                $group = $items;
+                break;
+            }
+        }
+
+
+        if (!$exists) return null;
+
+        foreach ($group as $k => $g)
+            if (!empty($g['label'])) {
+                $group[$k]['url'] = str_replace('{id}', $now, $g['page']);
+            } else unset($group[$k]);
+        return ['nav' => array_values($group)];
+    }
 }

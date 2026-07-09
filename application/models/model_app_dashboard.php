@@ -40,6 +40,14 @@ class model_app_dashboard extends model_app
 		$home = file_exists($uri) ? file_get_contents($uri) : null;
 		$home = json_decode($home, true);
 
+		if (isset($home['subnav']))
+		{
+			if (isset($home['subnav']['set']) && $home['subnav']['set'] === true)
+			{
+				$this->setSubnav($home['subnav']['type'],$params['record']);
+			}
+		}
+
 		foreach ($home['widgets'] as $k => $v)
 		{
 

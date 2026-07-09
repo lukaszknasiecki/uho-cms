@@ -128,15 +128,16 @@ class model_app_page extends model_app
 		$first = true;
 		$global_search = isset($get['query']);
 		foreach ($schema['fields'] as $k => $field)
-		if ($field['cms']['search']==='global') $this->setCanGlobalSearch(true);
+			if ($field['cms']['search'] === 'global') $this->setCanGlobalSearch(true);
 
+		$global_search_filters = [];
+		// search loop
 		foreach ($schema['fields'] as $k => $field)
 			if (
 				!in_array($field['type'], ['image', 'temp-checkboxes', 'temp-elements'])
 				&& (!empty($field['field_search']) && isset($get[$field['field_search']]) || $get['query'])
-				&& (!$global_search || $field['cms']['search']==='global')
-			)
-			{
+				&& (!$global_search || $field['cms']['search'] === 'global')
+			) {
 				$searchKey = $field['field_search'] ?? null;
 				$queryVal = $searchKey ? ($get[$searchKey] ?? null) : null;
 				$value = $global_search ? $get['query'] : $queryVal;
@@ -187,21 +188,25 @@ class model_app_page extends model_app
 						break;
 				}
 
+				$filter_val = null;
+
 				// Apply filters based on field type
 				if ($field['type'] === 'virtual') {
 					$filters_virtual[$field['field']] = $vv;
 				} elseif ($field['type'] === 'date') {
-					$filters[$field['field']] = ['operator' => '%LIKE%', 'value' => $vv];
+					$filter_val = ['operator' => '%LIKE%', 'value' => $vv];
 				} elseif ($field['type'] === 'integer' && is_numeric($vv)) {
-					$filters[$field['field']] = (int)$vv;
+					$filter_val = (int)$vv;
 				} elseif ($vv !== null) {
-					$filters[$field['field']] = $vv;
+					$filter_val = $vv;
 				}
+				
+				if ($filter_val!==null && !$global_search) $filters[$field['field']] = $filter_val;
+				elseif ($filter_val && $global_search) $global_search_filters[$field['field']] = $filter_val;
 
 
 				// Build filter label stack
-				if (!$global_search || $first)
-				{
+				if (!$global_search || $first) {
 
 					$label_value = null;
 
@@ -235,26 +240,35 @@ class model_app_page extends model_app
 			}
 
 
-		// Convert global search to unified custom query
-		if ($global_search) {
-			$searchSchema = $schema;
-			$searchSchema['cms']['filters'] = $filters;
-			
-			/*
-			$filterSet = $this->apporm->getFiltersQueryArray($searchSchema);
-			
-			$filters = $filterSet
-				? ['search' => ['type' => 'custom', 'join' => '||', 'value' => $filterSet]]
-				: [];*/
-			$filters_stack = [
-				[
-				'label' => 'Search',
-				'label_value' => $get['query'],
-				'value' => $get['query'],
-				'url' => ['type' => 'url_now', 'getRemove' => ['query']]
-				]
-			];
+		if ($global_search_filters) {
+
+			//$schema['filters'] = $global_search_filters;
+			$global_search_filters = $this->orm->getFiltersQueryArray($schema, $global_search_filters);
+			if ($global_search_filters) {
+
+
+				/*
+				$searchSchema = $schema;
+				$searchSchema['cms']['filters'] = $filters;
+				*/
+				$filters['global_search'] = [
+					'type' => 'custom',
+					'value' => $global_search_filters,
+					'join' => '||'
+				];
+
+				$filters_stack = [
+					[
+						'label' => 'Search',
+						'label_value' => $get['query'],
+						'value' => $get['query'],
+						'url' => ['type' => 'url_now', 'getRemove' => ['query']]
+					]
+				];
+			}
 		}
+
+		
 
 		// Merge with schema-defined filters
 		if (!empty($schema['cms']['filters'])) {
@@ -264,9 +278,13 @@ class model_app_page extends model_app
 		// Merge with Access Filters
 
 		$filters = array_merge($filters, $this->getAccessFilters($schema));
+		
 
 		// Fetch records
+		
+	
 		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
+
 		$_SESSION['page_filters'][$model] = $filters;
 
 		$offset = ($page_nr - 1) * $this->paging['count'];
@@ -581,25 +599,21 @@ class model_app_page extends model_app
 
 
 		// Ensure the order format is consistent (associative array).
-		if (!is_array($schema['cms']['order']))
-		{
-			if (strpos($schema['cms']['order'],','))
-				{
-					
-				}
-				else
-			$schema['cms']['order'] = [
-				'field' => $schema['cms']['order'],
-				'sort'  => $order[1] ?? 'ASC'
-			];
+		if (!is_array($schema['cms']['order'])) {
+			if (strpos($schema['cms']['order'], ',')) {
+			} else
+				$schema['cms']['order'] = [
+					'field' => $schema['cms']['order'],
+					'sort'  => $order[1] ?? 'ASC'
+				];
 		}
 
 		// Add URL sorting links and modify field names with ",DESC" where needed.
-		foreach ($schema['fields'] as $k => $v)
-		{
+		foreach ($schema['fields'] as $k => $v) {
 			if (
 				is_array($schema['cms']['order']) &&
-				$v['field'] === $schema['cms']['order']['field'] && $schema['cms']['order']['sort'] !== 'DESC') {
+				$v['field'] === $schema['cms']['order']['field'] && $schema['cms']['order']['sort'] !== 'DESC'
+			) {
 				$v['field'] .= ',DESC';
 			}
 
@@ -903,8 +917,7 @@ class model_app_page extends model_app
 
 	private function updateRecordsValues(array $schema, array $records): array
 	{
-		foreach ($schema['fields'] as $field)
-		{
+		foreach ($schema['fields'] as $field) {
 			if (!empty($field['list']['value'])) {
 				foreach ($records as $k => $record) {
 					$records[$k]['values'][$field['field']] = $this->getTwigFromHtml($field['list']['value'], $record['values']);
@@ -917,7 +930,6 @@ class model_app_page extends model_app
 					$records[$i]['values']['image']['src_blank'] = $this->getTwigFromHtml($field['cms']['list']['src_blank'], $rec['values']);
 				}
 			}
-
 		}
 
 		return $records;

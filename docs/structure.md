@@ -45,6 +45,38 @@ Defines the CMS navigation menu.
 
 ---
 
+## subnav.json
+
+Defines additional subnavigation for certains pages initiated by visiting
+a dasboard with .subnav property set.
+
+You can define page patterns which if met will show the navigation,
+additionally you can use .children array to accomodate nested models.
+
+```json
+{
+    "projects": [
+        {
+            "label": "Dashboard",
+            "page": "dashboard/projects/{id}"
+        },
+        {
+            "label": "Interviewers",
+            "page": "page/interviewers,{id}"
+        },
+        {
+            "label": "Categories",
+            "page": "page/filters_groups,{id}",
+            "children": [
+                "filters_items"
+            ]
+        }
+    ]
+}
+```
+
+---
+
 ## dashboard.json
 
 Defines dashboard widgets shown on CMS home page.
@@ -52,6 +84,11 @@ Defines dashboard widgets shown on CMS home page.
 ```json
 {
     "type": "widgets",
+    "subnav":
+    {
+        "set":true,
+        "type":"projects"
+    },
     "widgets": [
         "hello",
         {

@@ -1,0 +1,10 @@
+{% if subnav %}
+        <div id="nav_left" class="col-md-2"
+            style="z-index:9999;background-color:white;position:fixed; left:0px;height:100%; top:68px; padding-top:20px; width:calc(16.6667% - 80px); flex:0 0 calc(16.6667% - 80px); max-width:calc(16.6667% - 80px)">
+            <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                {% for item in subnav.nav %}
+                <a class="nav-link {% if item.active %}active{% endif %}" {% if not item.active %}style="color:black"{% endif %} href="{{item.url}}">{{ item.label }}</a>
+                {% endfor %}
+            </div>
+        </div>
+{% endif %}

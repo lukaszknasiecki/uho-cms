@@ -1,0 +1,191 @@
+<div
+  class="{% if lightbox %}serdelia-body-edit-lightbox{% else %}serdelia-body-edit{% endif %} {% if schema_editor %}serdelia-body-edit-schema{% endif %}">
+  <div class="container serdelia-edit">
+
+    {% if schema_validation.errors|length>0 %}    
+    <div class="alert alert-info" role="alert">
+      <h5 class="alert-heading">This schema is not valid and should be updated.</h5>
+      <ul>
+        {% for error in schema_validation.errors %}
+        <li>{{error}}</li>
+        {% endfor %}
+      </ul>
+      {% if schema_validation.url %}<a href="{{schema_validation.url}}" class="btn btn-danger">Update schema</a>{% endif %}
+    </div>
+    {% endif %}
+    <form class="form-horizontal" id="serdelia_edit_form" {#id="fileupload" #} enctype="multipart/form-data"
+      action="{{schema.url_write}}" data-page="{{schema.model_name}}" data-url-back="{{schema.url_back_form}}" {% if not
+      record.id %}data-url-new={{schema.url_new}} {% endif %} method="POST" role="form">
+      <input type="hidden" name="_srdcsrftkn" value="{{csrf_token_value}}">
+      
+      {% if tabs %}
+
+        <input type="hidden" name="tab" id="hidden_tab" value="">
+        <ul class="nav nav-tabs" id="serdelia-edit-tabs" role="tablist">
+        {% for item in tabs %}          
+            <li id="tab_{{item.id}}" data-tab="tab_{{item.id}}" temp-id="tab{{loop.index}}_hidden_field" role="presentation" class="nav-item" {% if item.hidden %}style="display:none"{% endif %}>
+              <a class="nav-link {% if item.active %}active{% endif %}" href="#tab{{loop.index}}"
+                aria-controls="tab{{loop.index}}" role="tab" data-toggle="tab">
+                {{item.label}}
+              </a>
+            </li>
+        {% endfor %}
+      </ul>
+
+      <div class="tab-content">
+        {% endif %}
+
+        {% set iTab=0 %}
+        {% set iElementsNow=0 %}
+
+        {% set current_tab = '' %}
+
+        {% for field in schema.fields %}
+          {% if field.cms.tab %}
+            {% set current_tab = field.cms.id %}
+            {% if iTab!=0 %}</div><!-- closeTab -->{% endif %}
+            <!-- openTab -->
+            <div role="tabpanel" class="tab-pane{% if tabs[iTab].active %} active{% endif %}" id="tab{{iTab+1}}">
+            <br><br>
+            {% set iTab=iTab+1 %}
+            {% set iElementsNow=0 %}
+          {% endif %}
+          
+          {% if field.type in ['variable','hidden','uid'] %}
+            {% include 'modules/edit/edit_hidden.html' with {'field':field,'value':record[field.field],'lang':settings.lang } %}
+          {% elseif field.settings.hashable and field.value_hashed and (field.type!='file') %}
+          <div class="form-group row">
+            <label class="col-lg-2 col-form-label">{{field.cms.label}}</label>
+            {% include 'modules/edit/edit_hashable.html' with {'field':field,'value':record[field.field],'lang':settings.lang } %}
+          </div>
+          {% else %}
+            {% if not field.cms.hidden %}
+            {% if field.cms.hr and field.cms.hr is not same as ('down') and iElementsNow>0 %}
+            <hr>{% endif %}
+          {% endif %}
+        
+        {% if field.cms.header %}
+        <div class="form-group row">
+          <label class="col-lg-2 col-form-label">{% if field.cms.wide %}<h5>{{field.cms.header}}</h5>{% endif %}</label>
+          <div class="col-lg-6">
+            {% if not field.cms.wide %}<h5>{{field.cms.header}}</h5>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if field.cms.help and field.cms.help.size=='full' %}
+          {% include 'modules/edit/subview_help.html' with {field:field,size:'full'} %}
+        {% endif %}
+
+        <div class="form-group row" {% if current_tab %}data-tab="tab_{{current_tab}}"{% endif %} data-edit-lang="{{field.settings.lang}}" data-edit-field="{{field.cms_field}}" {% if
+          field.cms.hidden %}style="display:none" {% endif %}>
+
+          {% if not field.cms.label and (field.cms.wide or field.type=='blocks' or field.type=='preview' or field.type=='plugin') %}
+          {% else %}
+          <label for="{{field.cms_field}}" class="col-lg-2 col-form-label">{{field.cms.label}}{% if field.cms.required %}<sup>
+              *</sup>{% endif %}
+            {% if field.settings.lang and schema.cms.langs|length>1 %}
+            &nbsp;<span class="btn btn-xs btn-default serdelia-edit-fields-lang">{{field.settings.lang}}</span>
+            {% endif %}
+            {% if field.cms.help %}
+            &nbsp;<span data-field="e_{{field.field}}"
+              class="btn btn-xs btn-default serdelia-edit-toggle-help {% if not field.cms.help.hidden %}d-none{% endif %}">?</span>
+            {% endif %}
+          </label>
+          {% endif %}
+
+          {% if field.cms.width %}{% set size=field.cms.width %}{% else %}{% set size=6 %}{% endif %}
+          {% if field.cms.wide and not field.cms.width %}{% set size=12 %}
+          {% elseif field.type=='blocks' %}{% set size=8 %}{% endif %}
+          {% set sizes = { 'date': 2,'elements_double': 10 } %}
+          {% if sizes[field.type] %}{% set size=sizes[field.type] %}{% endif %}
+
+
+          {% set non_inline = ['table','elements','image'] %}
+
+          {% if field.cms.help and field.cms.help.size!='full' %}
+            {% include 'modules/edit/subview_help.html' %}
+          {% endif %}
+
+          <div
+            class="col-lg-{{size}} {% if not field.type in non_inline %}form-check-inline{% else %}{% endif %} {% if field.cms.on_demand %}input-group{% endif %}"
+            style="{% if not field.type in non_inline %}padding-left:0{% endif %}">
+            {% include 'modules/edit/edit_'~field.type~'.html' with
+            {'field':field,'value':record[field.field],'lang':settings.lang,'langs':langs } %}
+            {% if field.cms.on_demand and field.cms.edit is not same as(false) %}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <input type="checkbox" aria-label="" class="serdelia-on-demand" data-field="{{field.cms_field}}">
+              </div>
+            </div>
+            {% endif %}
+
+            {% if field.settings.ai %}
+                <span class="badge badge-sm badge-secondary" style="padding-bottom:5px;padding-right:7px;margin-top:5px"><span class="mdi mdi-bolt"></span> Improve with AI</span>
+            {% endif %}
+
+          </div>
+
+        </div>
+        {% endif %}
+        {% if field.cms.hr is same as ('down') %}
+        <hr>{% endif %}
+        {% if not field.cms.hidden %}
+        {% set iElementsNow=iElementsNow+1 %}
+        {% endif %}
+        {% endfor %}
+        {% if iTab>0 %}
+      </div>{% endif %}
+      <!-- footer write changes, cancel etc -->
+
+      <hr>
+      {% if not view_only %}
+      <div class="form-group row">
+        <label class="col-lg-2 col-form-label"></label>
+        <div class="col-lg-6" style="padding-left:0px">
+          {% if not lightbox %}
+          <button disabled id="serdelia-submit" name="submit-standard" value="submit"
+            class="btn btn btn-primary serdelia-submit"><span
+              class="mdi mdi-done pull-left"></span>{{translate.write_changes}}</button>
+          <button disabled id="serdelia-submit-edit" name="submit-edit" value="submit-edit"
+            class="btn btn btn-primary serdelia-submit"><span
+              class="mdi mdi-done-all pull-left"></span>{{translate.write_changes_edit}}</button>
+          <button name="cancel" value="cancel" class="btn btn-default serdelia-edit-cancel"><span
+              class="mdi mdi-cancel pull-left"></span>{{translate.cancel}}</button>
+
+          {% if schema.url_backup %}
+          {#<div style="float:right">#}
+            <a href="#" data-url="{{schema.url_backup}}" class="button-backup serdelia-edit-ask-save-go"><button
+                type="button" class="btn btn btn-default"><span
+                  class="mdi mdi-backup pull-left"></span>Backup</button></a>
+
+            {#{% if schema.url_backup_media %}
+            <a href="#" data-url="{{schema.url_backup_media}}" class="button-backup serdelia-edit-ask-save-go"><button
+                type="button" class="btn btn-sm btn-default"><span
+                  class="mdi mdi-backup pull-left"></span>Media</button></a>
+            {% endif %}#}
+            {#
+          </div>#}
+          {% endif %}
+        </div>
+        {% else %}
+        <button disabled id="serdelia-submit" name="submit-standard" value="submit"
+          class="btn btn btn-primary serdelia-submit serdelia-submit-lightbox"><span
+            class="mdi mdi-done pull-left"></span>{{translate.write_changes}}</button>
+        <button name="cancel" value="cancel" class="btn btn-default serdelia-lightbox-closer-js"><span
+            class="mdi mdi-cancel pull-left"></span>{{translate.cancel}}</button>
+        {% endif %}
+      </div>
+      {% endif %}
+    </form>
+
+    {% if tabs %}
+  </div>
+  {% endif %}
+
+  {% include 'modals/modal_savego.html' %}
+  {% include 'modals/modal_info.html' %}
+
+
+</div>
+</div>

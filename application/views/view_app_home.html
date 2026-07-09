@@ -1,6 +1,9 @@
-<!--{% include 'modules/header.html' %}-->
-{% if type=='widgets' %}
-	{% include 'modules/widgets.html' %}
-{% elseif type=='sections' %}
-	{% include 'modules/sections.html' %}
-{% endif %}
+<div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
+  <div class="container serdelia-page">
+		{% if type=='widgets' %}
+			{% include 'modules/widgets.html' %}
+		{% elseif type=='sections' %}
+			{% include 'modules/sections.html' %}
+		{% endif %}
+	</div>
+</div>

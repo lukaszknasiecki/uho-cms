@@ -1,0 +1,14 @@
+{% include 'view_app_subnav.html' %}
+{% if not header %}
+<div class="serdelia-body serdelia-body--no-header serdelia-bg-color">
+  <div class="container serdelia-page">
+        {% include include_template %}
+    </div>
+</div>
+{% else %}
+<div class="serdelia-body serdelia-bg-color{% if schema_editor %}-schema{% endif %}">
+    <div class="container serdelia-page">
+        {% include include_template %}
+    </div>
+</div>
+{% endif %}
