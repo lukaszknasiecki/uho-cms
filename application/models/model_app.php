@@ -1510,7 +1510,8 @@ class model_app extends _uho_model
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
                     $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record ?? [], $params_twig ?? []));
 
-                    if ($this->checkAuth($v['page'], [2, 3]))
+                    $auth_page=$this->checkAuth($v['page']);
+                    if (in_array($auth_page, [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
                     else
                         unset($buttons[$k]);
@@ -1532,9 +1533,16 @@ class model_app extends _uho_model
                     }
 
                     $v = $this->fillPattern($v, ['keys' => $record, 'numbers' => $params], true);
-
-                    if ($this->checkAuth($schema['model_name'], [2, 3])) {
-
+                    
+                    $plugin_auth = $this->checkAuth($schema['model_name']);
+                    $admin_required=isset($v['auth']) && $v['auth']=='admin';
+                    
+                    if 
+                    (
+                        ($admin_required && $plugin_auth==3)
+                        || (!$admin_required && in_array($plugin_auth, [2, 3]))
+                    )
+                    {
                         if ($record) {
                             $v['params'] = $this->fillPattern($v['params'], ['keys' => $record]);
 
@@ -2223,7 +2231,7 @@ class model_app extends _uho_model
 
     public function checkAuth($model, $levels = null)
     {
-
+        
         $result = 0;
         $user = $this->getUser();
 
@@ -3479,4 +3487,42 @@ class model_app extends _uho_model
             } else unset($group[$k]);
         return ['nav' => array_values($group)];
     }
+
+    private function getAutoFieldValue(array $field, array $record)
+    {
+        if (empty($field['cms']['auto'])) return null;
+
+        $auto = $field['cms']['auto'];
+        
+        $value=$this->getTwigFromHtml($auto['pattern'],$record);
+        return $value;
+    }
+
+    public function autoUpdateRecord(string $schema_name, string|int $record_id)
+    {
+        $schema = $this->getSchema($schema_name, true);
+        if (!$schema || empty($schema['fields'])) return false;
+        $fields=$schema['fields'];
+        foreach ($fields as $k=>$field)
+            if (empty($field['cms']['auto'])) unset($fields[$k]);
+        if (!$fields) return false;
+        $record=$this->apporm->get($schema, ['id'=>$record_id],true);
+        if (!$record) return false;
+
+        $output=[];
+        foreach ($fields as $k=>$field)
+        if (empty($field['cms']['auto']['on_null']) || !$record[$field['field']])
+        {
+            $val=$this->getAutoFieldValue($field,$record);
+            if ($val!==null) $output[$field['field']]=$val;
+        }
+        
+
+        if ($output) return $this->apporm->put($schema, $output, ['id'=>$record_id]);
+         else return false;
+
+
+    }
+
+
 }

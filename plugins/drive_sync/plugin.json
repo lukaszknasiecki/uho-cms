@@ -4,7 +4,7 @@
     {
         "label": "Drive Sync",
         "title": "Drive Sync",
-        "description":"Please, check the fields to sync.",
+        "description":"Please, select the fields you want to sync.",
         "error_nothing_checked":"Please, check at least one field.",
         "error_no_data":"No data to export found.",
         "error_sql":"SQL error, sorry.",

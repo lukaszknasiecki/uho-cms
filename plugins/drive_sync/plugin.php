@@ -44,7 +44,8 @@ class serdelia_plugin_drive_sync
 
         $fields = $params['fields'] ?? [];
         foreach ($fields as $k => $field) {
-            $find = _uho_fx::array_filter($schema['fields'], 'field', $k, ['first' => true]);
+            $field_name=explode('.',$k)[0];
+            $find = _uho_fx::array_filter($schema['fields'], 'field', $field_name, ['first' => true]);
             if ($find) {
                 $fields[$k] = $find;
                 $fields[$k]['drive'] = $field;
@@ -53,7 +54,13 @@ class serdelia_plugin_drive_sync
         $fields = array_values($fields);
 
         if (isset($_POST['export'])) {
-            $this->export();
+            
+            $r=$this->export($schema, $fields,$params['order'] ?? null);
+            if (!$r['result']) {
+                $errors[] = $r['message'];
+            } else {
+                $message[] = $r['message'];
+            }
         }
         if (isset($_POST['import'])) {
             $r = $this->import($schema, $fields);
@@ -69,6 +76,7 @@ class serdelia_plugin_drive_sync
 
     private function import(array $schema, array $fields)
     {
+        exit('disabled');
         $this->client = new \Google_Client();
         $this->client->setApplicationName('COH Sync');
         $this->client->setScopes([\Google_Service_Sheets::SPREADSHEETS, \Google_Service_Drive::DRIVE]);
@@ -145,41 +153,60 @@ class serdelia_plugin_drive_sync
             return ['result' => true, 'message' => 'Imported ' . count($input) . ' records'];
     }
 
-    private function export()
+    private function export(array $schema, array $fields, $order = null)
     {
-        exit('TBD');
         // LOAD
         $records = $this->cms->get(
             [
-                'schema' => $this->params['page']
+                'schema' => $this->params['page'],
+                'order'=>$order 
             ]
         );
 
+        $params = $this->params['params'];
         $output = [];
 
         foreach ($records as $k => $record) {
             $o = [];
-            foreach ($params['fields'] as $field) {
-                $f = explode('.', $field);
+            foreach ($params['fields'] as $field =>$drive_field) {
 
-                $field = array_shift($f);
+                $f = explode('.', $field);
+                $field = array_shift($f);       // $f[] is a list of subfields, if any
+
                 $field = explode(',', $field);
                 $nr = $field[1] ?? "";
-                $field = $field[0];
+                $field = $field[0];             // $field is a raw field
 
-                if ($f) {
+                if ($f)
+                {
                     $val = $record[$field];
                     if ($nr) $val = $val[$nr - 1] ?? [];
-                    foreach ($f as $ff) {
-                        $val = $val[$ff] ?? [];
+
+                    if (is_array($val) && isset($val[0]))
+                    {
+                        foreach ($val as $kk=>$vv)
+                            foreach ($f as $ff) {
+                                $val[$kk] = $vv[$ff] ?? [];
+                        }
+                        $val=implode(', ',$val);
+
+                    }
+
+                    else
+                    {
+                        foreach ($f as $ff) {
+                            $val = $val[$ff] ?? [];
+                        }
                     }
                     if (is_array($val)) $val = '';
-                    $o[$field . $nr] = $val;
-                } else $o[$field] = $record[$field] ?? '';
+                    $o[$drive_field . $nr] = $val;
+                } else
+                {
+                    $o[$drive_field] = $record[$field] ?? '';
+                }
             }
             $output[] = $o;
         }
-
 
         $this->client = new \Google_Client();
         $this->client->setApplicationName('COH Sync');
@@ -189,6 +216,8 @@ class serdelia_plugin_drive_sync
         $this->service = new Google_Service_Sheets($this->client);
 
         $this->saveDataToSheet($params['drive']['id'], $params['drive']['tab'], $output);
+
+        return ['result' => true, 'message' => 'Exported ' . count($output) . ' records'];
     }
 
     public function saveDataToSheet($sheetId, $range, $values)
