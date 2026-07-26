@@ -53,11 +53,8 @@ class model_app_edit extends model_app
 		$record = null;
 
 		// Load base schema and prepare ORM
-
 		$schema = $this->getSchema($model, false, ['nested' => $params, 'return_error' => true]);
 
-		// Access check
-		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
 
 		// Debug mode
 		if ($this->getDebugMode())
@@ -76,6 +73,9 @@ class model_app_edit extends model_app
 		$schema=$this->getSchemaDepreceated($schema);		
 		$this->validateSchema($schema, $model);				
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
+
+		// Access check
+		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
 
 		// Generate edit schema (populated with record data)
 
