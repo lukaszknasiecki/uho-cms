@@ -8,7 +8,7 @@ var confirmUrl = '';
 var askSaveGoType = '';
 var page_update_field = null;
 var page_update_required_field = null;
-var serdeliaFormName = 'serdelia_edit_form';//'fileupload'
+var serdeliaFormName = 'serdelia_edit_form';
 var CKEditors5 = [];
 
 Apps.Edit = function ($, window) {

@@ -146,6 +146,7 @@ class model_app_api_uploader
         }
 
         // Use general UploadHandler for standard uploads
+        
         new UploadHandler($dirs, true, null, $this->parent->lang ?? null);
 
         if (!empty($params['test'])) {

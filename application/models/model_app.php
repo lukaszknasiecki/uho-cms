@@ -821,6 +821,7 @@ class model_app extends _uho_model
         // adding default values for CMS if not present
         foreach ($schema['fields'] as $k => $v)
             switch ($v['type']) {
+
                 case "image":
 
                     if (!_uho_fx::array_filter($v['images'], 'preview')) {
@@ -839,9 +840,6 @@ class model_app extends _uho_model
 
                 case "elements":
                 case "checkboxes":
-
-
-
                     break;
             }
 

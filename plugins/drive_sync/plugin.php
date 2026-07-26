@@ -36,6 +36,9 @@ class serdelia_plugin_drive_sync
 
     public function getData()
     {
+
+        set_time_limit(60*4);
+
         $params = $this->params['params'];
 
         $errors = [];
@@ -43,19 +46,28 @@ class serdelia_plugin_drive_sync
         $schema = $this->cms->getSchema($this->params['page']);
 
         $fields = $params['fields'] ?? [];
-        foreach ($fields as $k => $field) {
-            $field_name=explode('.',$k)[0];
+        $elements_separator = $params['elements_separator'] ?? ';';
+
+
+        foreach ($fields as $k => $field)
+        {
+            $field_name = explode('.', $k)[0];
+            $field_nr = explode(',', $field_name)[1] ?? 0;
+            $field_name = explode(',', $field_name)[0];
+            
             $find = _uho_fx::array_filter($schema['fields'], 'field', $field_name, ['first' => true]);
             if ($find) {
                 $fields[$k] = $find;
                 $fields[$k]['drive'] = $field;
+                $fields[$k]['drive_source_nr'] = $field_nr;
+                $fields[$k]['drive_source_key'] = explode('.', $k)[1] ?? 'label';
             } else unset($fields[$k]);
         }
         $fields = array_values($fields);
 
         if (isset($_POST['export'])) {
-            
-            $r=$this->export($schema, $fields,$params['order'] ?? null);
+
+            $r = $this->export($schema, $fields, $params['order'] ?? null);
             if (!$r['result']) {
                 $errors[] = $r['message'];
             } else {
@@ -63,7 +75,7 @@ class serdelia_plugin_drive_sync
             }
         }
         if (isset($_POST['import'])) {
-            $r = $this->import($schema, $fields);
+            $r = $this->import($schema, $fields,$elements_separator);
             if (!$r['result']) {
                 $errors[] = $r['message'];
             } else {
@@ -74,9 +86,9 @@ class serdelia_plugin_drive_sync
         return ['result' => true, 'fields' => $fields, 'errors' => $errors, 'message' => $message];
     }
 
-    private function import(array $schema, array $fields)
+    private function import(array $schema, array $fields, string $elements_separator=';')
     {
-        exit('disabled');
+
         $this->client = new \Google_Client();
         $this->client->setApplicationName('COH Sync');
         $this->client->setScopes([\Google_Service_Sheets::SPREADSHEETS, \Google_Service_Drive::DRIVE]);
@@ -91,11 +103,25 @@ class serdelia_plugin_drive_sync
 
         // remove non-selected fields
         $input = [];
+        $limit=null;
+        //$limit=[1472,100];
 
-        foreach ($data as $k => $row) {
+        foreach ($data as $k => $row)
+        if (!$limit || ($k>=$limit[0] && $k<($limit[0]+$limit[1])))
+        {
+            
             $new = [];
             foreach ($fields as $field)
-                if (isset($row[$field['drive']])) $new[$field['field']] = $row[$field['drive']];
+                if (isset($row[$field['drive']]))
+                {
+                    if ($field['type'] == 'elements' && $field['drive_source_nr'])
+                    {                        
+                        if (empty($new[$field['field']])) $new[$field['field']]=[];
+                        if ($row[$field['drive']])
+                            $new[$field['field']][$field['drive_source_nr']-1] = $row[$field['drive']];
+                    } else
+                    $new[$field['field']] = $row[$field['drive']];
+                }
             if ($new) $input[] = $new;
         }
 
@@ -103,11 +129,51 @@ class serdelia_plugin_drive_sync
 
         $sources = [];
 
-        foreach ($input as $k => $row) {
-            foreach ($fields as $field) {
+        foreach ($input as $k => $row)
+        {
+
+            foreach ($fields as $field)
+            if (in_array($field['drive_source_nr'],[0,1])) // 0-->standard, 1-->elements, use first field occurrence only
+            {
+                
                 switch ($field['type']) {
+
+                    case 'select':
+
+                        if (isset($field['source']['model']))
+                        {
+                            $value = $row[$field['field']];
+
+                            // load source if needed
+                            if (empty($sources[$field['field']])) {
+                                $sources[$field['field']] = $this->cms->get(
+                                    [
+                                        'schema' => $field['source']['model']
+                                    ]
+                                );
+                                $source_schema = $this->cms->getSchema($field['source']['model']);
+                                if (isset($source_schema['cms']['output'])) {
+                                    foreach ($sources[$field['field']] as $kk => $v) {
+                                        $sources[$field['field']][$kk]['label'] = $this->cms->getTwigFromHtml($source_schema['cms']['output']['label'], $v);
+                                    }
+                                }
+                            }
+
+                            $s = $sources[$field['field']];
+                            $found = _uho_fx::array_filter($s, $field['drive_source_key'], trim($value), ['first' => true]);
+                            if ($found) $input[$k][$field['field']] = $found['id'];
+                            else exit('Value not found: ' . $value . ' in field ' . $field['field'] . ' (row ' . ($k + 2) . ')');
+                        }
+
+
+                        break;
+
                     case 'elements':
-                        $values = explode(';', $row[$field['field']]);
+
+                        $value = $row[$field['field']];
+
+                        if (is_string($value)) $values = explode($elements_separator, $value);
+                        else $values = array_values($value);
 
                         if (empty($sources[$field['field']])) {
 
@@ -118,39 +184,46 @@ class serdelia_plugin_drive_sync
                             );
 
                             $source_schema = $this->cms->getSchema($field['source']['model']);
-                            if (isset($source_schema['cms']['output']))
-                            {
-                                foreach ($sources[$field['field']] as $kk => $v)
-                                {
+                            if (isset($source_schema['cms']['output'])) {
+                                foreach ($sources[$field['field']] as $kk => $v) {
                                     $sources[$field['field']][$kk]['label'] = $this->cms->getTwigFromHtml($source_schema['cms']['output']['label'], $v);
                                 }
                             }
-
                         }
+
                         $s = $sources[$field['field']];
 
-                        foreach ($values as $kk => $v) {
-
+                        foreach ($values as $kk => $v)
+                        {
                             $label = trim($v);
-                            $found = _uho_fx::array_filter($s, 'label', $label, ['first' => true]);
-                            if ($found) $values[$kk] = $found['id'];
-                            else unset($values[$kk]);
+                            if ($label)
+                            {
+                                $found = _uho_fx::array_filter($s, $field['drive_source_key'], $label, ['first' => true]);
+                                if ($found) $values[$kk] = $found['id'];
+                                else {
+                                    exit('Elements Value [' . $label . '] not found in field ' . $field['field'] . ' (row ' . ($k + 2) . ')');
+                                    unset($values[$kk]);
+                                }
+                            } else unset($values[$kk]);
                         }
 
-                        $input[$k][$field['field']] = $values;
+                        if (empty($input[$k][$field['field']])) $input[$k][$field['field']]=[];
+                        //$input[$k][$field['field']] = array_merge($input[$k][$field['field']], $values);
+                        $input[$k][$field['field']] = array_values($values);
                         break;
-                }
-            }
+                }                
+            }    
+
         }
 
         if (!$input) return ['result' => false, 'message' => 'No data to import after filtering'];
 
         $id = $fields[0]['field'];
         
-        $result = $this->cms->patch($schema['table'], $input, [], true, ['uid' => $id,'skip_id'=>true]);
+        $result = $this->cms->patch($schema['table'], $input, [], true, ['uid' => [$id], 'skip_id' => true]);
 
-        if ($result===false) return ['result' => false, 'message' => 'Error during import: '.$this->cms->getLastError()];
-            return ['result' => true, 'message' => 'Imported ' . count($input) . ' records'];
+        if ($result === false) return ['result' => false, 'message' => 'Error during import: ' . $this->cms->getLastError()];
+        return ['result' => true, 'message' => 'Imported ' . count($input) . ' records'];
     }
 
     private function export(array $schema, array $fields, $order = null)
@@ -159,7 +232,7 @@ class serdelia_plugin_drive_sync
         $records = $this->cms->get(
             [
                 'schema' => $this->params['page'],
-                'order'=>$order 
+                'order' => $order
             ]
         );
 
@@ -168,7 +241,7 @@ class serdelia_plugin_drive_sync
 
         foreach ($records as $k => $record) {
             $o = [];
-            foreach ($params['fields'] as $field =>$drive_field) {
+            foreach ($params['fields'] as $field => $drive_field) {
 
                 $f = explode('.', $field);
                 $field = array_shift($f);       // $f[] is a list of subfields, if any
@@ -177,36 +250,32 @@ class serdelia_plugin_drive_sync
                 $nr = $field[1] ?? "";
                 $field = $field[0];             // $field is a raw field
 
-                if ($f)
-                {
+                if ($f) {
                     $val = $record[$field];
                     if ($nr) $val = $val[$nr - 1] ?? [];
 
-                    if (is_array($val) && isset($val[0]))
-                    {
-                        foreach ($val as $kk=>$vv)
+                    if (is_array($val) && isset($val[0])) {
+                        foreach ($val as $kk => $vv)
                             foreach ($f as $ff) {
                                 $val[$kk] = $vv[$ff] ?? [];
-                        }
-                        $val=implode(', ',$val);
-
-                    }
-
-                    else
-                    {
+                            }
+                        $val = implode(', ', $val);
+                    } else {
                         foreach ($f as $ff) {
                             $val = $val[$ff] ?? [];
                         }
                     }
                     if (is_array($val)) $val = '';
-                    $o[$drive_field . $nr] = $val;
-                } else
-                {
+                    $o[$drive_field] = $val;
+                } else {
                     $o[$drive_field] = $record[$field] ?? '';
                 }
             }
             $output[] = $o;
+            
         }
+
+
 
         $this->client = new \Google_Client();
         $this->client->setApplicationName('COH Sync');

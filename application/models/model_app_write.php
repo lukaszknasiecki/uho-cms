@@ -209,7 +209,12 @@ class model_app_write extends model_app
 
 		// value updates
 		foreach ($schema['fields'] as $k => $v) {
-			if (!empty($v['cms']['auto']) && $v['type'] != 'file' && (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])) {
+			if (
+				$v['type'] != 'file'
+				&& !empty($v['cms']['auto'])				
+				&& (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])
+				)
+			{
 				$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
 			}
 
