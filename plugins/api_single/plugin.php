@@ -9,7 +9,8 @@
  *           "label": "Get Api",
  *           "plugin": "api_single",
  *           "params":{
- *               "url":"/api/data/{{id}}"
+ *               "url":"/api/data/{{id}}",
+ *               "pass_env": "API_PASS"
  *           }
  *       }
  * 
@@ -33,7 +34,7 @@ class serdelia_plugin_api_single
     {
         $this->cms = $cms;
         $this->parent = $parent;
-        $this->input = _uho_fx::sanitize_input($params['params'],['url'=>'string','method'=>'string']);
+        $this->input = _uho_fx::sanitize_input($params['params'],['url'=>'string','pass_env'=>'string','method'=>'string']);
     }
 
     /** Main plugin-method, returns data for View module
@@ -54,6 +55,8 @@ class serdelia_plugin_api_single
         else
         {
             // construct final url to call
+            $pass=!empty($this->input['pass_env']) ? getenv($this->input['pass_env']) : null;
+
             $url=$this->input['url'];
             $url_primary=$url=str_replace('&iquest;','?',$url);
             
@@ -68,6 +71,8 @@ class serdelia_plugin_api_single
                 $url = $https . '://'.$_SERVER['HTTP_HOST'].$url;                                
             }
 
+            if ($pass) $url=str_replace('://','://'.$pass.'@',$url);
+exit($url);
             // method
             $method=empty($this->input['method']) ? "GET" : $this->input['method'];
 

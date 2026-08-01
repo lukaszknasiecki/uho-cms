@@ -162,7 +162,9 @@ Executes a single HTTP request (GET or POST) against an internal or external URL
             "label": "Sync",
             "params": {
                 "url": "/api/sync/{{id}}",
-                "method": "GET"
+                "plugin": "api_single",
+                "pass_env": "API_PASS_ENV",         // optional, gets USER:PASS from ENV and adds to the url
+                "method": "GET"                     // optional. GET is default
             }
         }
     ]
