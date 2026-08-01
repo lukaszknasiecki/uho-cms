@@ -1,5 +1,4 @@
-
-<div class="editorjs-editor-wrapper" data-destination="{{field.cms_field}}">
+<div class="editorjs-editor-wrapper" data-destination="{{field.cms_field}}" {% if subnav %}style="margin-left:40px"{% endif %}>
   <div class="editorjs-editor"></div>
 </div>
 <textarea name="{{field.cms_field}}" id="{{field.cms_field}}" style="display:none">{{value|json_encode}}</textarea>

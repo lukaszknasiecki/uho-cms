@@ -71,8 +71,8 @@ class serdelia_widget_page
         if ($this->params['label'])  $schema['label'] = $this->params['label'];
 
         $f = [];
-        if (isset($schema['filters'])) {
-            $f = $schema['filters'];
+        if (isset($schema['cms']['filters'])) {
+            $f = $schema['cms']['filters'];
             $params = ['cms_user' => $this->parent->getUser()];
             foreach ($f as $k => $v) {
                 $f[$k] = $this->parent->getTwigFromHtml($f[$k], $params);

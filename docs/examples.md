@@ -11,7 +11,10 @@
         "page": "Articles",
         "edit": "{% if not title %}New Article{% else %}{{title}}{% endif %}"
     },
-    "order": "publish_date DESC, title",
+    "order": {
+            "field": "date",
+            "sort": "desc"
+        },
     "layout": {
         "type": "grid",
         "html": "{{html.image|raw}}<h6>{{record.values.title}}</h6><small>{{record.values.publish_date}}</small> {{html.active|raw}}",

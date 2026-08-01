@@ -1,12 +1,21 @@
+{% set width=schema.cms.layout.settings.width %}
+{% if not width %}{% set width=2 %}{% endif %}
+<div class="grid-sort-header">{% apply spaceless %}
+      {% for item in schema.fields %}
+      {% if item.cms.list.type in ["show","edit","order"] %}
+      <div class="grid-sort-header-cell{% if item.field==schema.order.field %} grid-sort-header-cell--active{% endif %}">
+        {% if not schema.cms.sortable and item.url_sort %}
+          <a style="color:#202124" href="{{item.url_sort}}">{{item.cms.label}} {% if item.lang %}<small>{{item.lang|upper}}</small>{% endif %} {% if item.field==schema.order.field %}&nbsp;{% if schema.order.sort!='DESC' %}[[icon::arrow-downward]]{% else %}[[icon::arrow-upward]]{% endif %}{% endif %}</a>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+</div>{% endapply %}
+
 <div id="serdelia_page" data-url-write="{{schema.url_write}}" data-_srdcsrftkn="{{csrf_token_value}}"></div>
 <div id="gridList" data-separator="section" class="row{% if schema.cms.layout.class %} {{schema.cms.layout.class}}{% endif %}"
   {% if schema.cms.sortable %}data-sortable="true" data-field="{{schema.cms.sortable.field}}" data-path="{{schema.url_sort}}" {%
   endif %}>
-
-  {% set width=schema.cms.layout.settings.width %}
-  {% if not width %}
-  {% set width=2 %}
-  {% endif %}
 
   {% set image_sizes = [ null, null, [166,166] ] %}
   {% set image_sizes = image_sizes[2] %}

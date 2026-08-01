@@ -3354,9 +3354,9 @@ class model_app extends _uho_model
 
     public function checkAccessEdit($schema, $params, $record_id)
     {
-        if (empty($schema['cms']['access'])) return true;
-
+        if (empty($schema['cms']['access'])) return true;        
         $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
+        if ($class && !$record_id) return true; // new record
         return $class->isAccessRecord($record_id);
     }
 

@@ -7,7 +7,10 @@ Each content type in the CMS is defined as a "schema/model" using a JSON configu
 ```json
 {
     "table": "database_table_name",
-    "order": "field_name",
+    "order": {
+            "field": "date",
+            "sort": "desc"
+        },
     "cms": {
         "label": {
             "page": "Display Name (List View)",

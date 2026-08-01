@@ -1203,6 +1203,11 @@ class model_app_write extends model_app
 	 */
 	private function imageUpload($field, $data, $filename, $rescale_only = false, $params = null, $image_type = 'image', $record = []): array
 	{
+		if (isset($record['record'])) $data['id']= $record['record'];
+		if (!empty($field['settings']['folder']))
+		{
+			$field['settings']['folder']=$this->getTwigFromHtml($field['settings']['folder'], $data);
+		}
 
 		// --- Handle remote image upload (for S3)
 		if ($this->s3 && is_string($filename) && str_starts_with($filename, 'http')) {
@@ -1284,7 +1289,7 @@ class model_app_write extends model_app
 				}
 
 				$sizes = @getimagesize($original);
-				if ($sizes) //qqq
+				if ($sizes) //
 					$images_sizes['original'] = [$sizes[0], $sizes[1]];
 
 				$checksum = md5_file($original);
