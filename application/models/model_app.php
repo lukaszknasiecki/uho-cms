@@ -936,7 +936,7 @@ class model_app extends _uho_model
 
         if (!@$record['id']) {
             $is_new = true;
-        }
+        } else $is_new = false;
 
 
         foreach ($schema['fields'] as $k => $v)
@@ -982,7 +982,23 @@ class model_app extends _uho_model
                 }
 
 
+                if ($is_new && $v['cms']['default']) {
 
+                    $v['cms']['default'] = $this->getTwigFromHtml(
+                        $v['cms']['default'],
+                        [
+                            'params' =>
+                            [
+                                'system' => [
+                                    ['cms_user' => $this->getUser()['id']]
+                                ],
+                                'nested' => $params
+                            ]
+                        ]
+                    );
+
+                    $record[$v['field']] = $v['cms']['default'];
+                }
 
                 switch ($v['type']) {
                     case "image":
@@ -1272,20 +1288,7 @@ class model_app extends _uho_model
                                 'numbers' => $params,
                                 'params' => ['cms_user' => 1]
                             ]);
-
-                            $v['cms']['default'] = $this->getTwigFromHtml(
-                                $v['cms']['default'],
-                                [
-                                    'params' =>
-                                    [
-                                        'system' => [
-                                            ['cms_user' => $this->getUser()['id']]
-                                        ],
-                                        'nested' => $params
-                                    ]
-                                ]
-                            );
-
+                
                             $record[$v['field']] = $v['cms']['default'];
                         }
 
@@ -1508,7 +1511,7 @@ class model_app extends _uho_model
                     $v['page'] = $this->fillPattern($v['page'], ['keys' => $record, 'numbers' => $params, 'get' => $get]);
                     $v['page'] = $this->getTwigFromHtml($v['page'], array_merge($record ?? [], $params_twig ?? []));
 
-                    $auth_page=$this->checkAuth($v['page']);
+                    $auth_page = $this->checkAuth($v['page']);
                     if (in_array($auth_page, [2, 3]))
                         $buttons[$k]['url'] = ['type' => 'page', 'page' => $v['page']];
                     else
@@ -1531,16 +1534,14 @@ class model_app extends _uho_model
                     }
 
                     $v = $this->fillPattern($v, ['keys' => $record, 'numbers' => $params], true);
-                    
+
                     $plugin_auth = $this->checkAuth($schema['model_name']);
-                    $admin_required=isset($v['auth']) && $v['auth']=='admin';
-                    
-                    if 
-                    (
-                        ($admin_required && $plugin_auth==3)
+                    $admin_required = isset($v['auth']) && $v['auth'] == 'admin';
+
+                    if (
+                        ($admin_required && $plugin_auth == 3)
                         || (!$admin_required && in_array($plugin_auth, [2, 3]))
-                    )
-                    {
+                    ) {
                         if ($record) {
                             $v['params'] = $this->fillPattern($v['params'], ['keys' => $record]);
 
@@ -2229,7 +2230,7 @@ class model_app extends _uho_model
 
     public function checkAuth($model, $levels = null)
     {
-        
+
         $result = 0;
         $user = $this->getUser();
 
@@ -3354,7 +3355,7 @@ class model_app extends _uho_model
 
     public function checkAccessEdit($schema, $params, $record_id)
     {
-        if (empty($schema['cms']['access'])) return true;        
+        if (empty($schema['cms']['access'])) return true;
         $class = $this->getAccessObject($schema['table'], $schema['cms']['access'], $params);
         if ($class && !$record_id) return true; // new record
         return $class->isAccessRecord($record_id);
@@ -3419,7 +3420,7 @@ class model_app extends _uho_model
 
                 foreach ($items as $item) {
                     $output[] = $item;
-                    $parent=count($output)-1;
+                    $parent = count($output) - 1;
 
                     if (isset($item['children']) && is_array($item['children'])) {
                         foreach ($item['children'] as $child) {
@@ -3433,12 +3434,12 @@ class model_app extends _uho_model
                     }
                 }
 
-                $items=$output;
-                $output=[];
+                $items = $output;
+                $output = [];
 
                 foreach ($items as $item) {
                     $output[] = $item;
-                    $parent = $item['parent'] ??count($output) - 1;
+                    $parent = $item['parent'] ?? count($output) - 1;
 
                     if (str_starts_with($item['page'], 'page/')) {
                         $i = $item;
@@ -3491,8 +3492,8 @@ class model_app extends _uho_model
         if (empty($field['cms']['auto'])) return null;
 
         $auto = $field['cms']['auto'];
-        
-        $value=$this->getTwigFromHtml($auto['pattern'],$record);
+
+        $value = $this->getTwigFromHtml($auto['pattern'], $record);
         return $value;
     }
 
@@ -3500,27 +3501,22 @@ class model_app extends _uho_model
     {
         $schema = $this->getSchema($schema_name, true);
         if (!$schema || empty($schema['fields'])) return false;
-        $fields=$schema['fields'];
-        foreach ($fields as $k=>$field)
+        $fields = $schema['fields'];
+        foreach ($fields as $k => $field)
             if (empty($field['cms']['auto'])) unset($fields[$k]);
         if (!$fields) return false;
-        $record=$this->apporm->get($schema, ['id'=>$record_id],true);
+        $record = $this->apporm->get($schema, ['id' => $record_id], true);
         if (!$record) return false;
 
-        $output=[];
-        foreach ($fields as $k=>$field)
-        if (empty($field['cms']['auto']['on_null']) || !$record[$field['field']])
-        {
-            $val=$this->getAutoFieldValue($field,$record);
-            if ($val!==null) $output[$field['field']]=$val;
-        }
-        
-
-        if ($output) return $this->apporm->put($schema, $output, ['id'=>$record_id]);
-         else return false;
+        $output = [];
+        foreach ($fields as $k => $field)
+            if (empty($field['cms']['auto']['on_null']) || !$record[$field['field']]) {
+                $val = $this->getAutoFieldValue($field, $record);
+                if ($val !== null) $output[$field['field']] = $val;
+            }
 
 
+        if ($output) return $this->apporm->put($schema, $output, ['id' => $record_id]);
+        else return false;
     }
-
-
 }
