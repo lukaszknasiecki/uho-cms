@@ -2,6 +2,8 @@
 
 require_once("controller_app.php");
 
+use Huncwot\UhoFramework\_uho_fx;
+
 /**
  * Controller class for initializing and managing client (user) authentication
  * and configuration before the main application runs.
@@ -93,6 +95,11 @@ class controller_app_clients
             !$this->clients->isLogged() &&
             !in_array($action, ['login', 'create', 'build'], true)
         ) {
+            if (_uho_fx::isAjax()) {
+                header('HTTP/1.1 401 Unauthorized');
+                echo json_encode(['login' => true, 'error' => 'You have been logged out. Please log in again.']);
+                exit();
+            }
             $this->route->redirect('login');
         }
 
@@ -112,8 +119,7 @@ class controller_app_clients
             // $this->model->removeTempFiles();
 
             if ($this->cfg['2factor'] && !$this->model->was2factor()) {
-                if ($this->route->e(0) !== '2factor' && $this->route->e(0) !== 'logout')
-                {
+                if ($this->route->e(0) !== '2factor' && $this->route->e(0) !== 'logout') {
                     $this->route->redirect('2factor');
                 }
             }

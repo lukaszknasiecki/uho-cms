@@ -342,6 +342,7 @@ Apps.Edit = function ($, window) {
           else if (actionType == 'submit-edit' || actionType == 'edit') window.location.reload(true);
         }
         else {
+          $('.serdelia-modal-info-footer').hide();
           $('#modalInfoLabel').html('Error');
           $('#modalInfoMessage').html(data.message);
           $('#modalInfo').modal();
@@ -353,10 +354,20 @@ Apps.Edit = function ($, window) {
         unchecked.prop('checked', false);
         unchecked.attr('value', 'on');
 
-
         var errorMessage = jqXHR.responseText;
         if (errorMessage.length > 0) {
-          alert('ERROR' + errorMessage);
+          var showLogin = false;
+          try {
+            var errorJson = JSON.parse(errorMessage);
+            if (errorJson && errorJson.error) errorMessage = errorJson.error;
+            if (errorJson && errorJson.login === true) showLogin = true;
+          } catch (e) {}
+
+          $('.serdelia-modal-info-footer').toggle(showLogin);
+          $('.serdelia-modal-info-close').toggle(!showLogin);
+          $('#modalInfoLabel').html('Error');
+          $('#modalInfoMessage').html(errorMessage);
+          $('#modalInfo').modal();
         }
       }
     });

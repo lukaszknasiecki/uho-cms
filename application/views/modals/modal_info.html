@@ -3,15 +3,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="modalInfoLabel">{{title}}</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close serdelia-modal-info-close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
       <div class="modal-body" id="modalInfoMessage">
         {{message|replace({'<br>':'<br><br>'})|raw}}
       </div>
-      <!--<div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{{translate.cancel}}</button>
-        <button type="button" class="btn btn-primary serdelia-removeRecordConfirm">{{translate.remove}}</button>
-      </div>-->
+      <div class="modal-footer serdelia-modal-info-footer" style="display:none">
+        <a href="/cms/login" class="btn btn-primary serdelia-modal-info-login">Login</a>
+      </div>
     </div>
   </div>
 </div>
