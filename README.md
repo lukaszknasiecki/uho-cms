@@ -18,7 +18,7 @@ Please, read full documentation in `/docs` folder.
 
 ```
 project_root/
-├── uho-cms.json              # Root configuration
+├── .uho-cms.json              # Root configuration
 ├── cms/                      # CMS core (framework)
 └── cms_config/               # Your configuration
     ├── config.php
@@ -38,7 +38,7 @@ project_root/
 
 ## Configuration Files
 
-### uho-cms.json
+### .uho-cms.json
 
 ```json
 {
@@ -359,7 +359,7 @@ CMS_CONFIG_STRICT=false
 
 | Issue | Solution |
 |----|----|
-| CMS not loading | Check `uho-cms.json` exists |
+| CMS not loading | Check `.uho-cms.json` exists |
 | Model not appearing | Verify JSON syntax, check table exists |
 | Plugin error | Check class name matches folder |
 | Image upload fails | Verify folder permissions, check path |

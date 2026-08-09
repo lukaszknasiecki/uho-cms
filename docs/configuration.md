@@ -6,7 +6,7 @@ By default CMS is using configs defiend in `/cms/configs` folder, but you can ad
 own settings, which will be merged with default config.
 
 The `cms_config` folder contains all project-specific configurations.
-It can be aby other folder, you need to define its name in `/uho-cms.json` file,
+It can be aby other folder, you need to define its name in `/.uho-cms.json` file,
 please refer to [Installation & Setup](installation.md).
 
 Here's the recommended structure for this folder:

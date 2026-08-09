@@ -15,9 +15,9 @@ You can also execute both operations with one command:
 
 Create a configuration file in your project root (not in `/cms`):
 
-* `/uho-cms.json`
+* `/.uho-cms.json`
 
-**Example** `/uho-cms.json`:
+**Example** `/.uho-cms.json`:
 
 ```json
 {
@@ -193,7 +193,7 @@ Required only when using the `import_cover` plugin with YouTube or Vimeo sources
 
 ### CMS Not Loading
 
-1. Check `uho-cms.json` exists in project root
+1. Check `.uho-cms.json` exists in project root
 2. Verify `cms_config` folder exists
 3. Check `cms_config/config.php` syntax
 4. Review error logs in `cms_config-logs/`
