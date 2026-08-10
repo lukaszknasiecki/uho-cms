@@ -72,7 +72,7 @@ class serdelia_plugin_api_single
             }
 
             if ($pass) $url=str_replace('://','://'.$pass.'@',$url);
-exit($url);
+
             // method
             $method=empty($this->input['method']) ? "GET" : $this->input['method'];
 
