@@ -211,10 +211,9 @@ class model_app_write extends model_app
 		foreach ($schema['fields'] as $k => $v) {
 			if (
 				$v['type'] != 'file'
-				&& !empty($v['cms']['auto'])				
+				&& !empty($v['cms']['auto'])
 				&& (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])
-				)
-			{
+			) {
 				$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
 			}
 
@@ -361,8 +360,7 @@ class model_app_write extends model_app
 
 		// unique values
 		foreach ($schema['fields'] as $k => $v)
-			if (isset($v['settings']['unique']) && $v['settings']['unique'])
-			{
+			if (isset($v['settings']['unique']) && $v['settings']['unique']) {
 				$exists = $this->apporm->get($model, ['id' => ['operator' => '!=', 'value' => $id], $v['field'] => $data[$v['field']]], true, null, null, ['additionalParams' => $params]);
 				if ($exists)
 					return ['result' => false, 'message' => $v['cms']['label'] . ' - ' . str_replace('%value%', $data[$v['field']], $this->translate['unique_field'])];
@@ -405,11 +403,15 @@ class model_app_write extends model_app
 					$json = json_decode($data[$v['field']], true);
 
 					if ($json) {
+
 						if (!empty($v['settings']['media'])) {
 							$r = $this->blocksMediaUpdate(
 								$json,
 								$schema['model_name'],
-								$v['settings']['media'], $v);
+								$v['settings']['media'],
+								$v['settings']['media_filters'] ?? null,
+								$v
+							);
 							$data[$v['field']] = $r['json'];
 							$additional_post = array_merge($additional_post, $r['post']);
 							$additional_put = array_merge($additional_put, $r['put']);
@@ -756,6 +758,9 @@ class model_app_write extends model_app
 
 							$add = array_merge($add, $cap);
 
+							if (isset($v['source']['filters']))
+								$add = array_merge($add, $v['source']['filters']);
+
 							$r = $this->apporm->post($v['source']['model'], $add);
 							if (!$r) return (['result' => false, 'message' => 'Last error on POST: ' . $this->apporm->getLastError()]);
 
@@ -775,23 +780,38 @@ class model_app_write extends model_app
 					}
 
 					if ($val) {
+
+						$output_filters = [
+							'model' => $schema['model_name'] . @$v['media']['suffix'],
+							'model_id' => $id
+						];
+
+						if (isset($v['source']['filters']))
+							$output_filters = array_merge($output_filters, $v['source']['filters']);
+
 						$r = $this->apporm->put(
 							$v['source']['model'],
 							$val,
-							['model' => $schema['model_name'] . @$v['media']['suffix'], 'model_id' => $id],
+							$output_filters,
 							true
 						);
 						if ($r === false) return (['result' => false, 'message' => 'Last error on PUT: ' . $this->apporm->getLastError()]);
 						else $r = true;
 					}
 
+					$delete_filters = [
+						'id' => ['operator' => '!=', 'value' => $existing],
+						'model' => $schema['model_name'] . @$v['media']['suffix'],
+						'model_id' => $id
+					];
+
+					if (isset($v['source']['filters']))
+						$delete_filters = array_merge($delete_filters, $v['source']['filters']);
+
+
 					$this->apporm->delete(
 						$v['source']['model'],
-						[
-							'id' => ['operator' => '!=', 'value' => $existing],
-							'model' => $schema['model_name'] . @$v['media']['suffix'],
-							'model_id' => $id
-						],
+						$delete_filters,
 						true
 					);
 
@@ -876,28 +896,27 @@ class model_app_write extends model_app
 			$is_new_now = false;
 		}
 
+
 		if ($additional_post)
 			foreach ($additional_post as $k => $v) {
+
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
+
 				$this->apporm->post($v['model'], $v['value']);
 			}
-
+		
 		if ($additional_put)
 			foreach ($additional_put as $k => $v)
 				$this->apporm->put($v['model'], $v['value'], $v['filter']);
 
-		
-		
-
 		if ($additional_delete)
-			foreach ($additional_delete as $k => $v)
-			{
+			foreach ($additional_delete as $k => $v) {
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
 				$this->apporm->delete($v['model'], $v['value'], true);
 			}
-				
+
 		/*
 		** run auto-plugins		
 		*/
@@ -1203,10 +1222,9 @@ class model_app_write extends model_app
 	 */
 	private function imageUpload($field, $data, $filename, $rescale_only = false, $params = null, $image_type = 'image', $record = []): array
 	{
-		if (isset($record['record'])) $data['id']= $record['record'];
-		if (!empty($field['settings']['folder']))
-		{
-			$field['settings']['folder']=$this->getTwigFromHtml($field['settings']['folder'], $data);
+		if (isset($record['record'])) $data['id'] = $record['record'];
+		if (!empty($field['settings']['folder'])) {
+			$field['settings']['folder'] = $this->getTwigFromHtml($field['settings']['folder'], $data);
 		}
 
 		// --- Handle remote image upload (for S3)
@@ -2101,7 +2119,7 @@ class model_app_write extends model_app
 			'html'   => $html,
 			'post'   => $new_media,
 			'put'    => $updated_media,
-			'delete' => [],//$deleted_media
+			'delete' => [], //$deleted_media
 		];
 		//print_r($result);exit();
 		return $result;
@@ -2110,8 +2128,12 @@ class model_app_write extends model_app
 	/*
 		Uploading images and carousel images from EDITORJS
 		to media model
+
+		$parent_model --> media model name
+		$field	--> blocks field
+		$media_model_name 
 	*/
-	private function blocksMediaUpdate($json, $parent_model, $media_model_name, $field): array
+	private function blocksMediaUpdate($json, string $parent_model, string $media_model_name, array|null $media_filters, array $field): array
 	{
 		//$uho_media_replacer = !empty($field['settings']['media_field']);
 		$existing_uids = [];
@@ -2164,7 +2186,7 @@ class model_app_write extends model_app
 						) {
 							$existing_uids[] = $uid;
 							$json['blocks'][$k]['data']['file']['url'] = $upload_result['images'][0];
-							$new_media[] = [
+							$new_media_item = [
 								'model' => $media_model_name,
 								'value' => [
 									'model'    => $parent_model,
@@ -2174,6 +2196,11 @@ class model_app_write extends model_app
 									'extension' => $upload_result['extension']
 								]
 							];
+							if ($media_filters) $new_media_item['value'] = array_merge(
+								$new_media_item['value'],
+								$media_filters
+							);
+							$new_media[] = $new_media_item;
 						}
 					} else {
 						// already uploaded previously, let's add to existing_uids to prevent deletion
@@ -2234,14 +2261,17 @@ class model_app_write extends model_app
 			}
 		}
 
-		$deleted_media[] = [
+		$deleted_media_item = [
 			'model' => $media_model_name,
 			'value' => [
 				'model_id' => '%record_id%',
-				'model'=>$parent_model,
+				'model' => $parent_model,
 				'uid' => ['operator' => '!=', 'value' => $existing_uids]
 			]
 		];
+		if ($media_filters) $deleted_media_item['value'] = array_merge($deleted_media_item['value'], $media_filters);
+
+		$deleted_media[] = $deleted_media_item;
 
 		// temporary disable
 		// $deleted_media=[];

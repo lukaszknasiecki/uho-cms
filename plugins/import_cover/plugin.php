@@ -77,7 +77,7 @@ class serdelia_plugin_import_cover
         $params = $this->params;
 
         $p = @$params['get']['params'];
-        if ($p) $p = json_decode($p, true);
+        if ($p && is_string($p)) $p = json_decode($p, true);
         if ($p) $params = array_merge($params, $p);
 
         if (!$params['record']) return ['result' => false];
@@ -108,8 +108,6 @@ class serdelia_plugin_import_cover
         }
 
         $params = array_merge($params, $params['params']);
-
-        //if (!$params['field_mp4']) $params['field_mp4'] = 'source';
 
         $title = '';
         $cover = '';

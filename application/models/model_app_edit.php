@@ -28,7 +28,7 @@ class model_app_edit extends model_app
 	public function getContentData($params = null)
 	{
 
-        $this->resetActivityTime();
+		$this->resetActivityTime();
 		$this->translate = json_decode(file_get_contents(__DIR__ . '/model_app_edit.json'), true);
 
 		$translate = $this->getTranslateByLang($this->lang);
@@ -48,7 +48,7 @@ class model_app_edit extends model_app
 		if (!$this->checkAuth($model, [2, 3])) {
 			if ($this->checkAuth($model, [1])) $this->view = true;
 			else exit('auth::error::[app_edit]');
-		}		
+		}
 
 		$record = null;
 
@@ -57,8 +57,7 @@ class model_app_edit extends model_app
 
 
 		// Debug mode
-		if ($this->getDebugMode())
-		{
+		if ($this->getDebugMode()) {
 			if ($this->getStrictSchema()) $s = $schema;
 			else $s = $this->getSchemaDepreceated($schema);
 			unset($s['cms']['structure']);
@@ -70,16 +69,16 @@ class model_app_edit extends model_app
 			}
 		} else $schema_validation = null;
 
-		$schema=$this->getSchemaDepreceated($schema);		
-		$this->validateSchema($schema, $model);				
+		$schema = $this->getSchemaDepreceated($schema);
+		$this->validateSchema($schema, $model);
 		$this->apporm->sqlCreator($schema, ['create' => 'auto', 'update' => 'alert']);
 
 		// Access check
-		if (!$this->checkAccessEdit($schema,['nested'=>$params],$id)) exit('access::error::[app_edit_no_access]');
+		if (!$this->checkAccessEdit($schema, ['nested' => $params], $id)) exit('access::error::[app_edit_no_access]');
 
 		// Generate edit schema (populated with record data)
 
-		$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post, true);		
+		$schema = $this->getSchemaForEdit($model, $record, ['nested' => $params], $id, $post, true);
 
 		if ($id && !$record) exit('model_app_edit::record_not_found');
 
@@ -87,7 +86,7 @@ class model_app_edit extends model_app
 
 		if (isset($schema['cms']['helper_models'])) {
 			$replace = $record;
-			$replace['helper_models'] = $schema['cms']['helper_models'];			
+			$replace['helper_models'] = $schema['cms']['helper_models'];
 			$schema['cms']['label']['edit'] = $this->getTwigFromHtml($schema['cms']['label']['edit'], $replace);
 		}
 
@@ -114,8 +113,7 @@ class model_app_edit extends model_app
 			}
 			// Refresh schema after plugin execution
 
-			$schema = $this->getSchemaForEdit($model, $record, ['nested'=>$params], $id, $post);
-			
+			$schema = $this->getSchemaForEdit($model, $record, ['nested' => $params], $id, $post);
 		}
 
 		// Add backup URLs if applicable
@@ -130,10 +128,10 @@ class model_app_edit extends model_app
 
 		// Update schema with current state and permissions
 
-		$schema = $this->updateSchemaSources($schema, $record, $params);		
-		
-		$schema = $this->updateSchemaAuth($schema);		
-		$schema = $this->updateSchemaRecord($schema, $record, $params);		
+		$schema = $this->updateSchemaSources($schema, $record, $params);
+
+		$schema = $this->updateSchemaAuth($schema);
+		$schema = $this->updateSchemaRecord($schema, $record, $params);
 		$record = $this->updateSchemaForEdit($schema, $page_with_params, $record, $translate, $params);
 
 		// Enforce view-only mode if required
@@ -179,13 +177,12 @@ class model_app_edit extends model_app
 		// Prepare field tabs
 
 		$tabs = [];
-		foreach ($schema['fields'] as $field)
-		{
+		foreach ($schema['fields'] as $field) {
 			if (!empty($field['cms']['tab'])) {
-				$idt=$field['cms']['id'] ?? count($tabs) + 1;
+				$idt = $field['cms']['id'] ?? count($tabs) + 1;
 				$tabs[] = ['id' => $idt, 'label' => $field['cms']['tab'], 'count' => 0];
 			}
-			if (!empty($tabs) && ($field['field'] || in_array($field['type'],[ 'plugin' ,'preview'])) && !$field['cms']['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
+			if (!empty($tabs) && ($field['field'] || in_array($field['type'], ['plugin', 'preview'])) && !$field['cms']['hidden'] && !in_array($field['type'], ['uid', 'order'])) {
 				$tabs[count($tabs) - 1]['count']++;
 			}
 		}
@@ -206,7 +203,7 @@ class model_app_edit extends model_app
 				}
 			}
 		}
-		
+
 
 		// Remove tabs if there's only one
 
@@ -234,7 +231,7 @@ class model_app_edit extends model_app
 			$schema['url_back_form']['query'] = http_build_query($query);
 		}
 
-		
+
 
 		$schema['url_write'] = [
 			'type' => 'write',
@@ -250,9 +247,18 @@ class model_app_edit extends model_app
 		];
 
 		// Hide system fields like 'order'
+		// Hide non-editable fields on ADD
 
 		foreach ($schema['fields'] as &$field) {
-			if (in_array($field['type'], ['order'])) {
+			if (
+				in_array($field['type'], ['order'])
+				|| (!$id &&
+					(
+						$field['type'] == 'timestamp'
+						|| @$field['cms']['edit'] === false
+					)
+				))
+			 {
 				if (!isset($field['cms'])) $field['cms'] = [];
 				$field['cms']['hidden'] = true;
 			}
@@ -271,7 +277,7 @@ class model_app_edit extends model_app
 		}
 
 		// Validate schema - older version
-	    /*
+		/*
 		$validator = $this->apporm->schemaValidate($schema);
 		if (!$validator['result']) {
 			exit(implode('<br>', $validator['errors']));
@@ -301,7 +307,7 @@ class model_app_edit extends model_app
 	 */
 	private function updateSchemaRecord($schema, $record, $params)
 	{
-		
+
 		if (!$record) {
 			$schema['cms']['buttons_edit'] = [];
 		}

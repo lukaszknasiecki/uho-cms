@@ -426,7 +426,11 @@ Blocks are defined in JSON file aligned with EditorJS schema.
         "wide": true   // One of available toolbar styles
     },
     "settings": {
-        "media": "media_field"  // connected media model - field of type `media`
+        "media": "media_field",  // connected media model - field of type `media`
+        "media_filters":         // additional filters for media model
+        {
+            "section": "main"
+        }
     }
 }
 ```
@@ -616,6 +620,9 @@ Attach media from another model.
     "type": "media",
     "source": {
         "model": "media",
+        "filters": {
+            "section": "main"
+        },
         "types": [
             "image",
             "video",
