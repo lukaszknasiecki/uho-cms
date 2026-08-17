@@ -1323,7 +1323,7 @@ class model_app extends _uho_model
 
                     case "string":
                         if ($record[$v['field']] == '{{random32}}' && $v['cms']['default'] == '{{random32}}')
-                            $record[$v['field']] = md5(uniqid());
+                            $record[$v['field']] = bin2hex(random_bytes(32));
                         elseif ($is_new && $v['cms']['default']) {
                             $record[$v['field']] = $this->fillPattern($v['cms']['default'], ['keys' => $record, 'nested' => $params]);
                         }

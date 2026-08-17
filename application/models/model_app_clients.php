@@ -47,23 +47,23 @@ class model_app_clients
             $this->cfg = $cfg;
         }
 
-        $client_config=[
-                'models' => [
-                    'client_model' => 'cms_users',
-                    'client_logs_model' => 'cms_users_logs',
-                    'client_logins_model' => 'cms_users_logs_logins'
-                ],
-                'users' => [
-                    'bad_login' => 'bad_login',
-                ],
-                'mailer' => ['smtp' => $smtp],
-                'salt' => ['type' => 'double', 'value' => $cfg['password_salt'], 'field' => 'salt'],
-                'hash' => @$cfg['password_hash'],
-                'settings' => [
-                    'password_format' => @$cfg['password_required'],
-                    'max_bad_login' => @$cfg['max_bad_login']
-                ],
-            ];
+        $client_config = [
+            'models' => [
+                'client_model' => 'cms_users',
+                'client_logs_model' => 'cms_users_logs',
+                'client_logins_model' => 'cms_users_logs_logins'
+            ],
+            'users' => [
+                'bad_login' => 'bad_login',
+            ],
+            'mailer' => ['smtp' => $smtp],
+            'salt' => ['type' => 'double', 'value' => $cfg['password_salt'], 'field' => 'salt'],
+            'hash' => @$cfg['password_hash'],
+            'settings' => [
+                'password_format' => @$cfg['password_required'],
+                'max_bad_login' => @$cfg['max_bad_login']
+            ],
+        ];
 
         // Initialize _uho_client
         $this->client = new _uho_client(
@@ -73,8 +73,8 @@ class model_app_clients
         );
 
         // Configure client
-        $client_keys=$this->cms->getKeys();
-        
+        $client_keys = $this->cms->getKeys();
+
         $this->client->setModel($cms);
         $this->client->setKeys($client_keys);
         $this->client->setFields([
@@ -106,65 +106,78 @@ class model_app_clients
 
     // ----- Utility Setters/Getters -----
 
-    public function setNoSql() {
+    public function setNoSql()
+    {
         $this->no_sql = true;
     }
 
-    public function isNoSql() {
+    public function isNoSql()
+    {
         return $this->no_sql;
     }
 
-    public function isLogged($reload = false) {
+    public function isLogged($reload = false)
+    {
         if (!$this->no_sql && !isset($this->is_logged_user)) {
             $this->is_logged_user = $this->client->isLogged();
         }
         return $this->is_logged_user;
     }
 
-    public function logout() {
+    public function logout()
+    {
         return $this->client->logout();
     }
 
-    public function login($login, $pass) {
+    public function login($login, $pass)
+    {
         return $this->client->login($login, $pass);
     }
 
-    public function loginCookie() {
+    public function loginCookie()
+    {
         return $this->client->cookieLogin();
     }
 
-    public function facebookLogin($token = null) {
+    public function facebookLogin($token = null)
+    {
         return $this->client->loginFacebook($token);
     }
 
-    public function createAdmin($login, $pass) {
+    public function createAdmin($login, $pass)
+    {
         return $this->client->createAdmin($login, $pass);
     }
 
-    public function anyUserExists() {
+    public function anyUserExists()
+    {
         return $this->client->anyUserExists();
     }
 
-    public function adminExists() {
+    public function adminExists()
+    {
         return $this->client->adminExists();
     }
 
-    public function validatePasswordFormat($pass) {
+    public function validatePasswordFormat($pass)
+    {
         return $this->client->passwordValidateFormat($pass);
     }
 
-    public function passwordSet($user, $pass) {
+    public function passwordSet($user, $pass)
+    {
         if (is_numeric($user) && $user > 0 && $this->validatePasswordFormat($pass)) {
             return $this->client->passwordChange($pass, $user);
         }
     }
 
+    /*
     public function passwordReminder($email) {
         $result = $this->cms->get('users', ['email' => strtolower($email)], true);
 
         if ($result) {
             if (!$result['email_key']) {
-                $result['email_key'] = md5(uniqid());
+                $result['email_key'] = bin2hex(random_bytes(32));
                 $this->cms->queryOut('UPDATE users SET email_key="' . $result['email_key'] . '" WHERE id=' . $result['id']);
             }
 
@@ -174,22 +187,26 @@ class model_app_clients
         }
 
         return ['result' => true];
-    }
+    }*/
 
-    public function passwordGenerate() {
+    public function passwordGenerate()
+    {
         return $this->client->passwordGenerate();
     }
 
-    public function passwordChange($key, $pass, $pass_old = null) {
+    public function passwordChange($key, $pass, $pass_old = null)
+    {
         if ($key && $pass) return $this->client->passwordChange($key, $pass);
         elseif ($pass && $pass_old) return $this->client->passwordChangeByOldPassword($pass_old, $pass);
     }
 
-    public function checkEmailKey($key) {
+    public function checkEmailKey($key)
+    {
         return $this->client->checkEmailKey($key);
     }
 
-    public function register($email, $password, $newsletter, $name = null, $surname = null, $image = null, $face = null) {
+    public function register($email, $password, $newsletter, $name = null, $surname = null, $image = null, $face = null)
+    {
         $uid = uniqid();
         $r = $this->client->register([
             'email' => $email,
@@ -216,11 +233,13 @@ class model_app_clients
         return $r;
     }
 
-    public function registerConfirm($key) {
+    public function registerConfirm($key)
+    {
         return $this->client->registerConfirm($key);
     }
 
-    public function profileSet($data, $image, $allowEmptyCheckboxes = true) {
+    public function profileSet($data, $image, $allowEmptyCheckboxes = true)
+    {
         $user = $this->getClient();
         if (!$user) return;
 
@@ -239,11 +258,13 @@ class model_app_clients
         return $this->client->update($data, $allowEmptyCheckboxes);
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->client->getId();
     }
 
-    public function getClient() {
+    public function getClient()
+    {
         if (!$this->no_sql) {
             $data = $this->client->getData(false);
             $data['text'] = $data['text' . $this->cms->lang_add];
@@ -251,15 +272,18 @@ class model_app_clients
         return $data;
     }
 
-    public function getCfg($key) {
+    public function getCfg($key)
+    {
         return @$this->cfg[$key];
     }
 
-    public function getClientName() {
+    public function getClientName()
+    {
         return @$this->client->getData()['name'];
     }
 
-    public function getClientData() {
+    public function getClientData()
+    {
         $data = $this->client->getData();
         return [
             'id' => $data['id'],
@@ -270,12 +294,14 @@ class model_app_clients
         ];
     }
 
-    public function getClientCoverFace() {
+    public function getClientCoverFace()
+    {
         $v = $this->client->getData();
         return $v['face'] ? '/public/faces/' . $v['face'] . '.png' : '/public/faces/2.png';
     }
 
-    public function getClientId() {
+    public function getClientId()
+    {
         return @$this->client->getData()['id'];
     }
 
@@ -310,12 +336,14 @@ class model_app_clients
         }
     }
 
-    public function newsletterConfirm($key, $status = "confirmed") {
+    public function newsletterConfirm($key, $status = "confirmed")
+    {
         $key = $this->cms->sqlSafe($key);
         return $this->cms->queryOut('UPDATE newsletter_users SET status="' . $this->cms->sqlSafe($status) . '" WHERE key_confirm="' . $key . '"');
     }
 
-    public function newsletterRemove($key) {
+    public function newsletterRemove($key)
+    {
         $key = $this->cms->sqlSafe($key);
         $result = false;
         if ($key) {
@@ -328,7 +356,8 @@ class model_app_clients
         return $result;
     }
 
-    public function newsletterAdd($email, $source = 'www') {
+    public function newsletterAdd($email, $source = 'www')
+    {
         $domain = 'http://' . $_SERVER['HTTP_HOST'];
         $data = [];
 
@@ -339,11 +368,11 @@ class model_app_clients
 
             $mail = false;
             if (!$exists) {
-                $key_confirm = md5(uniqid());
+                $key_confirm = bin2hex(random_bytes(32));
                 $this->cms->queryOut('INSERT INTO newsletter_users (lang,source,key_confirm,status,date_signup,email) VALUES ("' . $this->cms->lang . '","' . $source . '","' . $key_confirm . '","submitted","' . date('Y-m-d H:i:s') . '","' . $email_hashed . '")');
                 $mail = true;
             } else if ($exists['status'] != 'confirmed') {
-                $key_confirm = md5(uniqid());
+                $key_confirm = bin2hex(random_bytes(32));
                 $this->cms->queryOut('UPDATE newsletter_users SET key_confirm="' . $key_confirm . '", status="submitted" WHERE email="' . $email_hashed . '"');
                 $mail = true;
             }
@@ -362,7 +391,8 @@ class model_app_clients
         return $data;
     }
 
-    public function logsAdd($action) {
+    public function logsAdd($action)
+    {
         if ($action) $this->client->logsAdd($action);
     }
 }
