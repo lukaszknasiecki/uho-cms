@@ -65,6 +65,34 @@ class model_app_remove extends model_app
 		// Backup record before deletion
 		$this->backupAdd($schema['table'], $id);
 
+		// Run any pre-deletion edit plugins (if defined)
+		if (!empty($schema['cms']['buttons_edit'])) {
+			require_once("model_app_plugin.php");
+
+			$plugins = _uho_fx::array_filter($schema['cms']['buttons_edit'], 'on_remove', 1);
+			
+			foreach ($plugins as $pluginConfig) {
+				
+				$class = new model_app_plugin($this->sql, $this->lang);
+				$class->setParent($this);
+				$class->setCfgPath($this->cfg_path);
+
+				$page_with_params = implode(',', $params);
+
+				$pluginParams = [
+					'page' => $model,
+					'page_with_params' => $page_with_params,
+					'params' => $pluginConfig['params'],
+					'plugin' => $pluginConfig['plugin'],
+					'record' => $id,
+					'orm' => $this->apporm,
+				];
+
+				$class->getContentData(['params' => $pluginParams, 'get' => []]);
+			}
+		}
+
+
 		$result = false;
 		if ($exists)
 		{
@@ -77,6 +105,7 @@ class model_app_remove extends model_app
 			require_once("model_app_plugin.php");
 
 			$plugins = _uho_fx::array_filter($schema['cms']['buttons_page'], 'on_update', 1);
+			
 			foreach ($plugins as $pluginConfig) {
 				$class = new model_app_plugin($this->sql, $this->lang);
 				$class->setParent($this);

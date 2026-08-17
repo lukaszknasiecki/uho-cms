@@ -244,6 +244,7 @@ You can use `on_load` or `on_update` together with `hidden` for silent backgroun
 |----------|------|-------------|
 | `on_load` | `true` | Execute the plugin automatically when the page or edit form loads, before rendering. |
 | `on_update` | `true` | Execute the plugin automatically after a record is saved. |
+| `on_remove` | `true` | Execute the plugin automatically before a record is removed. |
 
 **Example — silent auto-run on load and after save:**
 

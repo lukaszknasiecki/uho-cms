@@ -71,6 +71,10 @@ class model_app_plugin extends model_app
 		if (isset($plugin['auth']) && !$this->parent->checkAuthModelSet($page_single, $plugin['auth']))
 			exit("auth::error::2::app_plugin::{$page}::{$plugin}");
 
+		if (!empty($params['orm'])) {
+			$this->apporm = $params['orm'];
+		}
+
 
 		$schema = $this->apporm->getSchemaWithPageUpdate($page_single);
 
@@ -87,9 +91,6 @@ class model_app_plugin extends model_app
 		];
 		$translate = $defaultTranslate[$this->lang] ?? [];
 
-		if (!empty($params['orm'])) {
-			$this->apporm = $params['orm'];
-		}
 
 		if (empty($plugin)) {
 			return null;
