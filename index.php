@@ -158,15 +158,35 @@ class cms_sunship
         $cfg_folder = null;
         $cfg_project = null;
 
-        if (isset($_SESSION['uho_cms_project']) || (isset($_POST['login_login']) && isset($_POST['project'])))
+        if (
+            isset($_SESSION['uho_cms_project'])
+            || (isset($_POST['login_login']) && isset($_POST['project']))
+            || (strpos($_SERVER['REQUEST_URI'],'/auth-google-callback'))
+        )
         {
             
             $blank = false;
 
             // get current project array index
+            $project=null;
+
             if (!empty($_SESSION['uho_cms_project'])) $project = $_SESSION['uho_cms_project'] - 1;
             else $project = intval($_POST['project']) - 1;
 
+            if (strpos($_SERVER['REQUEST_URI'],'/auth-google-callback'))
+            {
+                $project=_uho_fx::getGet('state');
+                $project=explode('_',$project);
+                $project=array_pop($project);
+                if (is_numeric($project)) $project=intval($project)-1;
+                else $project=null;
+                
+
+                //$project=$_SESSION[_uho_fx::getGet('state')] ?? null;
+            }
+
+            if ($project<0 || $project===null) exit('Project not found.');
+            
             // check if project per domain defined
             if (!empty($cfg_root['projects'][$project]['domains']))
             {

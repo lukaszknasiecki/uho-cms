@@ -1,0 +1,24 @@
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        {% if errors %}
+        <div class="alert alert-danger" role="alert">
+                <h5 class="alert-heading">Errors occured.</h5>
+                <ul>
+                        {% for error in errors %}
+                        <li>{{error}}</li>
+                        {% endfor %}
+                </ul>
+                <p><a href="" class="btn btn-primary">Try Again</a></p>
+        </div>
+
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+                <h5 class="alert-heading">Success</h5>
+                <ul>
+                        {% for message in success %}
+                        <li>{{message}}</li>
+                        {% endfor %}
+                </ul>
+        </div>
+        {% endif %}
+</div>

@@ -9,6 +9,7 @@ use Huncwot\UhoFramework\_uho_orm;
 use Huncwot\UhoFramework\_uho_s3;
 use Huncwot\UhoFramework\_uho_fx;
 use Huncwot\UhoFramework\_uho_thumb;
+use Huncwot\UhoFramework\_uho_load_env;
 
 require_once("model_app_clients.php");
 require_once(__DIR__ . "/../helpers/serdelia_access.php");
@@ -67,6 +68,7 @@ class model_app extends _uho_model
  
      */
     public $cms_path = '';
+    public $cms_url='';
 
     /*
         DIR to CMS folder
@@ -1288,7 +1290,7 @@ class model_app extends _uho_model
                                 'numbers' => $params,
                                 'params' => ['cms_user' => 1]
                             ]);
-                
+
                             $record[$v['field']] = $v['cms']['default'];
                         }
 
@@ -3518,5 +3520,78 @@ class model_app extends _uho_model
 
         if ($output) return $this->apporm->put($schema, $output, ['id' => $record_id]);
         else return false;
+    }
+
+    /**
+     * Loads the list of available projects from sunship-cms.json.
+     *
+     * @return array|null Configuration array containing available projects
+     */
+    public function getAvailableProjects()
+    {
+        $configPath = $_SERVER['DOCUMENT_ROOT'] . '/.uho-cms.json';
+        if (!file_exists($configPath))
+            $configPath = $_SERVER['DOCUMENT_ROOT'] . '/uho-cms.json';
+        if (!file_exists($configPath))
+            $configPath = $_SERVER['DOCUMENT_ROOT'] . '/sunship-cms.json';
+
+        // Load base CMS config
+        if (!file_exists($configPath)) {
+            return null;
+        }
+
+        $configContent = file_get_contents($configPath);
+        $cfg = $configContent ? json_decode($configContent, true) : null;
+
+        if (!$cfg) {
+            return null;
+        }
+
+        // Configuration defaults
+        $instances   = !empty($cfg['CMS_CONFIG_FOLDERS']) ? explode(',', $cfg['CMS_CONFIG_FOLDERS']) : ['cms_config'];
+        $lang        = $cfg['CMS_CONFIG_LANG']    ?? 'en';
+        $cms_prefix  = $cfg['CMS_CONFIG_PREFIX']  ?? 'cms';
+        $theme       = $cfg['CMS_CONFIG_THEME']   ?? 'light';
+
+        // Build project list
+        foreach ($instances as $k => $folder) {
+            $name = 'Project #' . ($k + 1);
+            $configFolder = $_SERVER['DOCUMENT_ROOT'] . '/' . $folder . '/';
+            $configFile = $configFolder . 'config.php';
+
+            if (file_exists($configFile)) {
+                require_once($configFile);
+                if (!empty($cfg['cms']['title'])) {
+                    $name = $cfg['cms']['title'];
+                }
+
+                $envFile = $configFolder . '.env';
+                if (file_exists($envFile)) {
+                    $env_loader = new _uho_load_env($envFile);
+                    $env_loader->load(['GOOGLE_OAUTH_CLIENT_ID', 'GOOGLE_OAUTH_CLIENT_SECRET']);
+                }
+            }
+
+            $instances[$k] = [
+                'name'   => $name,
+                'folder' => $folder
+            ];
+
+            if (!empty($_ENV['GOOGLE_OAUTH_CLIENT_ID']) || !empty($_ENV['GOOGLE_OAUTH_CLIENT_SECRET'])) {
+                $instances[$k]['google_oauth'] = [
+                    'client' => $_ENV['GOOGLE_OAUTH_CLIENT_ID'],
+                    'secret' => $_ENV['GOOGLE_OAUTH_CLIENT_SECRET']
+                ];
+            }
+        }
+
+
+        return [
+            'languages'             => [$lang],
+            'languages_url'         => false,
+            'application_url_prefix' => $cms_prefix,
+            'mode'                  => $theme,
+            'projects'              => $instances
+        ];
     }
 }

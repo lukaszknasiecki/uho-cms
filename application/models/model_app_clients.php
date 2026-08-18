@@ -144,6 +144,29 @@ class model_app_clients
         return $this->client->loginFacebook($token);
     }
 
+    public function googleLogin($token, $code)
+    {
+        $r = $this->client->loginGoogle($token, $code, 'data');
+        if ($r['result'] && !empty($r['data']['email'])) {
+
+            $client = $this->cms->get('cms_users', ['email' => $r['data']['email'],'auth_google'=>1], true);
+            if ($client) {
+                $this->client->storeData($client);
+                $user = $this->client->getClientId();
+                $_SESSION['uho_cms_project'] = intval($_SESSION['possible_uho_cms_project']);
+                $_SESSION['uho_cms_login_time']   = time();
+                $_SESSION['uho_cms_activity_time'] = time();
+                $this->client->cookieLoginStore($user);
+            }
+        }
+        return ['result' => $r['result']];
+    }
+
+    public function setOAuthConfig($key, $value)
+    {
+        return $this->client->setOAuthConfig($key, $value);
+    }
+
     public function createAdmin($login, $pass)
     {
         return $this->client->createAdmin($login, $pass);

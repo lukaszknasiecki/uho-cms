@@ -22,6 +22,8 @@ class controller_app extends _uho_controller
     {
         // Set CMS base path
         $this->model->cms_path = $this->route->getUrl('');
+        $this->model->cms_url = $this->route->getUrl('',true);
+
         if (!empty($this->cfg['plugins'])) $this->model->setPluginsCfg($this->cfg['plugins']);        
         if (isset($this->cfg['cms']['debug']) && in_array($this->cfg['cms']['debug'],[1,'true']))
              $this->model->setDebugMode(true);
@@ -124,14 +126,6 @@ class controller_app extends _uho_controller
         }
 
         // Configure WYSIWYG editor settings
-        /*
-        switch ($this->cfg['cms']['wysiwyg']['type']) {
-            case "ckeditor5":
-                
-                $this->cfg['cms']['wysiwyg']['configs'] = $this->model->ckeditor_configs;
-                
-                break;
-        }*/
         $this->model->setWysiwyg($this->cfg['cms']['wysiwyg']);
 
         if (empty($this->cfg['cms']['logout_time']) && $this->cfg['cms']['logout_time']!==0)
@@ -323,6 +317,7 @@ class controller_app extends _uho_controller
             ) {
             $_SESSION['last_url'] = $last;
         }
+
     }
 
     /**

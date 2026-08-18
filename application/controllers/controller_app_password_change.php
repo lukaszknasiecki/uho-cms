@@ -32,7 +32,7 @@ class controller_app_password_change extends controller_app
 
         // If the model requests a redirect after password change, go to login
         if (!empty($data['content']['redirect'])) {
-            $this->route->redirect('login');
+            $this->route->redirect('login?source=password-change');
         }
 
         // Return view data

@@ -38,7 +38,7 @@ class controller_app_settings extends controller_app
 
         // If model requests a redirect, send to login page
         if (!empty($data['content']['redirect'])) {
-            $this->route->redirect('login');
+            $this->route->redirect('login?source=settings');
         }
 
         return $data;

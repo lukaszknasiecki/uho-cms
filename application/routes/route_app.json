@@ -2,6 +2,7 @@
     "controllers": {
         "": "home",
         "2factor": "2auth",
+        "auth-google-callback":"google_auth",
         "add": "edit",
         "home": "home",
         "404": "404",

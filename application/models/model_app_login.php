@@ -1,5 +1,7 @@
 <?php
 
+use Huncwot\UhoFramework\_uho_load_env;
+
 require_once('model_app.php');
 
 /**
@@ -28,10 +30,10 @@ class model_app_login extends model_app
 	public function getContentData($params = null)
 	{
 
-		$this->translate = json_decode(file_get_contents(__DIR__.'/model_app_login.json'),true);
+		$this->translate = json_decode(file_get_contents(__DIR__ . '/model_app_login.json'), true);
 
 		$cfg = $this->getAvailableProjects();
-		
+
 		$logged = false;
 		$error = '';
 
@@ -42,14 +44,12 @@ class model_app_login extends model_app
 		) {
 
 			$result = $this->clients->login($params['login_login'], $params['login_password']);
-			
-			if (!empty($result['result']))
-			{
+
+			if (!empty($result['result'])) {
 				$logged = true;
 				$_SESSION['uho_cms_project'] = intval($params['project']);
 				$_SESSION['uho_cms_login_time']   = time();
-				$_SESSION['uho_cms_activity_time']= time();
-
+				$_SESSION['uho_cms_activity_time'] = time();
 			} else {
 				$error = 'login_error';
 			}
@@ -58,13 +58,26 @@ class model_app_login extends model_app
 			$error = 'login_error_project';
 		}
 
+		$projects=$cfg['projects'];
+		
+		foreach ($projects as $k => $p)
+		{
+			$token=$this->clients->client->generateToken().'_'.($k+1);
+			$projects[$k]['token']=$token;
+			$_SESSION['uho_cms_projects_oauth'][$token]=$k+1;
+		}
+
+		print_r($_SESSION);
+
 		// Response data
 		$response = [
 			'logged'    => $logged,
 			'translate' => $this->translate[$this->lang] ?? [],
 			'error'     => $error,
+			'google'	=> !empty($cfg['projects'][0]['google_oauth']),
+			'google_redirect' => $this->getCmsUri() . 'auth-google-callback',
 			'action'    => $this->cms_path . 'login',
-			'projects'  => $cfg['projects'] ?? []
+			'projects'  => $projects ?? []
 		];
 
 		// Token and login attempt metadata (if client object exists)
@@ -85,6 +98,7 @@ class model_app_login extends model_app
 	 *
 	 * @return array|null Configuration array containing available projects
 	 */
+	/*
 	private function getAvailableProjects()
 	{
 		$configPath = $_SERVER['DOCUMENT_ROOT'] . '/.uho-cms.json';
@@ -114,12 +128,19 @@ class model_app_login extends model_app
 		// Build project list
 		foreach ($instances as $k => $folder) {
 			$name = 'Project #' . ($k + 1);
-			$configFile = $_SERVER['DOCUMENT_ROOT'] . '/' . $folder . '/config.php';
+			$configFolder = $_SERVER['DOCUMENT_ROOT'] . '/' . $folder . '/';
+			$configFile = $configFolder . 'config.php';
 
 			if (file_exists($configFile)) {
 				require_once($configFile);
 				if (!empty($cfg['cms']['title'])) {
 					$name = $cfg['cms']['title'];
+				}
+
+				$envFile = $configFolder . '.env';
+				if (file_exists($envFile)) {
+					$env_loader = new _uho_load_env($envFile);
+					$env_loader->load(['GOOGLE_OAUTH_CLIENT_ID', 'GOOGLE_OAUTH_CLIENT_SECRET']);
 				}
 			}
 
@@ -127,14 +148,38 @@ class model_app_login extends model_app
 				'name'   => $name,
 				'folder' => $folder
 			];
+
+			if (!empty($_ENV['GOOGLE_OAUTH_CLIENT_ID']) || !empty($_ENV['GOOGLE_OAUTH_CLIENT_SECRET'])) {
+				$instances[$k]['google_oauth'] = [
+					'client' => $_ENV['GOOGLE_OAUTH_CLIENT_ID'],
+					'secret' => $_ENV['GOOGLE_OAUTH_CLIENT_SECRET']
+				];
+			}
 		}
+
 
 		return [
 			'languages'             => [$lang],
 			'languages_url'         => false,
-			'application_url_prefix'=> $cms_prefix,
+			'application_url_prefix' => $cms_prefix,
 			'mode'                  => $theme,
 			'projects'              => $instances
 		];
+	}*/
+
+	private function getCmsUri()
+	{
+		if (
+			isset($_SERVER['SSL_PROTOCOL'])
+			|| @$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' // ec2 ooh
+			|| @$_SERVER['HTTPS'] == 'on'
+			|| isset($_SERVER['SSL_TLS_SNI'])
+		)
+			$http = 'https';
+		else $http = 'http';
+		$cms_url = $http . '://' . $_SERVER['SERVER_NAME'];
+
+		$cms_url .= $this->cms_path;
+		return $cms_url;
 	}
 }

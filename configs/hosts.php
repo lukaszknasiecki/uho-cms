@@ -52,6 +52,11 @@ $cfg_domains = [
 			[
 				'client' => getEnv('SPOTIFY_CLIENT'),
 				'secret' => getEnv('SPOTIFY_SECRET')
+			],
+			"google_oauth"=>
+			[
+				'client' => getEnv('GOOGLE_OAUTH_CLIENT_ID') ?? null,
+				'secret' => getEnv('GOOGLE_OAUTH_CLIENT_SECRET') ?? null,
 			]
 		],
 		"2factor" => empty(getEnv("2FACTOR")) ? false : filter_var(getEnv("2FACTOR"), FILTER_VALIDATE_BOOLEAN),

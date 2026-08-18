@@ -506,6 +506,51 @@ body a {
 
 }
 
+.login-google-separator {
+  position: relative;
+  text-align: center;
+  margin: 15px 0;
+  color: #9aa0a6;
+  font-size: 13px;
+}
+
+.login-google-separator:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #dadce0;
+}
+
+.login-google-separator span {
+  position: relative;
+  padding: 0 10px;
+  background: var(--background-color, #ffffff);
+}
+
+.login-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: #ffffff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+}
+
+.login-google:hover,
+.login-google:focus {
+  background: #f8f9fa;
+  color: #3c4043;
+  border-color: #d2d5d9;
+}
+
+.login-google svg {
+  margin-right: 10px;
+  flex: 0 0 auto;
+}
+
 /*----------------------------------------------------------------------*/
 /*----------------------------------------------------------------------*/
 /*----------------------------------------------------------------------*/

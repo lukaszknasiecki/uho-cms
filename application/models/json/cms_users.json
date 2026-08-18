@@ -57,6 +57,13 @@
             }
         },
         {
+            "field": "email",
+            "cms": {
+                "label": "Email",
+                "list":"show"
+            }
+        },
+        {
             "field": "salt",
             "cms": {
                 "label": "Salt",
@@ -75,36 +82,22 @@
             }
         },
         {
-            "field": "auth_label",
+            "field": "auth_google",
+            "type": "boolean",
             "cms": {
-                "label_PL": "Zestaw uprawnień",
-                "label_EN": "Permissions set",
-                "edit": false,
-                "list": "show"
+                "hr": true,
+                "list": "show",
+                "label_EN": "Allow Google Auth Login",
+                "label_PL": "Pozwól na Login Google"
             }
         },
         {
-            "field": "status",
-            "type": "select",
+            "field": "2fa",
+            "type": "boolean",
             "cms": {
-                "label": "Status",
-                "default": "confirmed"
-            },
-            "options": [
-                {
-                    "value": "confirmed",
-                    "label": "Confirmed"
-                }
-            ]
-        },
-        {
-            "field": "date_set",
-            "type": "datetime",
-            "cms": {
-                "label_PL": "Data utworzenia",
-                "label_EN": "Created",
-                "default": "{{now}}",
-                "edit": false
+                "list": "show",
+                "label_EN": "2FA enabled",
+                "label_PL": "2FA włączone"
             }
         },
         {
@@ -116,17 +109,31 @@
             }
         },
         {
+            "field": "date_set",
+            "type": "datetime",
+            "cms": {
+                "hr": true,
+                "label_PL": "Data utworzenia",
+                "label_EN": "Created",
+                "default": "{{now}}",
+                "edit": false
+            }
+        },
+        {
+            "field": "auth_label",
+            "cms": {
+                "label_PL": "Zestaw uprawnień",
+                "label_EN": "Permissions set",
+                "edit": false,
+                "list": "show"
+            }
+        },
+        {
             "field": "admin",
             "type": "boolean",
             "cms": {
                 "label": "Admin",
                 "hidden": true
-            }
-        },
-        {
-            "field": "email",
-            "cms": {
-                "label": "Email"
             }
         },
         {
@@ -164,13 +171,20 @@
             }
         },
         {
-            "field": "2fa",
-            "type": "boolean",
+            "field": "status",
+            "type": "select",
             "cms": {
-                "list": "show",
-                "label_EN": "2FA in place (uncheck to allow regeneration)",
-                "label_PL": "2FA włączone (odkliknij, aby umożliwić regenerację)"
-            }
+                "label": "Status",
+                "hr": true,
+                "list":"show",
+                "default": "confirmed"
+            },
+            "options": [
+                {
+                    "value": "confirmed",
+                    "label": "Confirmed"
+                }
+            ]
         }
     ]
 }
