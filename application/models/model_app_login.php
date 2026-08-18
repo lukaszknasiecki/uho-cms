@@ -59,13 +59,17 @@ class model_app_login extends model_app
 		}
 
 		$projects=$cfg['projects'];
+		$uho_cms_projects_oauth=[];
 		
 		foreach ($projects as $k => $p)
 		{
 			$token=$this->clients->client->generateToken().'_'.($k+1);
 			$projects[$k]['token']=$token;
-			$_SESSION['uho_cms_projects_oauth'][$token]=$k+1;
+			$uho_cms_projects_oauth[$token]=$k+1;
 		}
+
+		if ($uho_cms_projects_oauth)
+			setcookie('uho_cms_projects_oauth', json_encode($uho_cms_projects_oauth), time()+60, '/');
 
 		// Response data
 		$response = [

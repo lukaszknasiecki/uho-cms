@@ -175,13 +175,15 @@ class cms_sunship
 
             if (strpos($_SERVER['REQUEST_URI'],'/auth-google-callback'))
             {
-                $project=_uho_fx::getGet('state');
-                $project=explode('_',$project);
-                $project=array_pop($project);
+                $project=null;
+                $state=_uho_fx::getGet('state');
+                $states=$_COOKIE['uho_cms_projects_oauth'] ?? null;                
+                if ($states) $states=json_decode($states, true);
+
+                $project=$states[$state] ?? null;
                 if (is_numeric($project)) $project=intval($project)-1;
                 else $project=null;
                 
-
                 //$project=$_SESSION[_uho_fx::getGet('state')] ?? null;
             }
 

@@ -94,8 +94,12 @@ class controller_app_clients
 
             if ($r['result'])
             {
+                $project=null;
+                $states=$_COOKIE['uho_cms_projects_oauth'] ?? [];                
+                if ($states) $states=json_decode($states, true);
                 $state=_uho_fx::getGet('state');
-                $project=$_SESSION['uho_cms_projects_oauth'][$state] ?? null;
+                if ($states && isset($states[$state]))                    
+                    $project=$states[$state] ?? null;
 
                 if ($project)
                 {
