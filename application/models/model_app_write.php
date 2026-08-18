@@ -2121,7 +2121,7 @@ class model_app_write extends model_app
 			'put'    => $updated_media,
 			'delete' => [], //$deleted_media
 		];
-		//print_r($result);exit();
+
 		return $result;
 	}
 

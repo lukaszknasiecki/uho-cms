@@ -67,8 +67,6 @@ class model_app_login extends model_app
 			$_SESSION['uho_cms_projects_oauth'][$token]=$k+1;
 		}
 
-		print_r($_SESSION);
-
 		// Response data
 		$response = [
 			'logged'    => $logged,

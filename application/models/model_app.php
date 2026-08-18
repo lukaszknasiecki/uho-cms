@@ -1945,9 +1945,7 @@ class model_app extends _uho_model
             $ffprobe = 'ffprobe';
 
         $cmd = $ffprobe . ' ' . $cmd . ' 2>&1';
-        //exec($cmd, $output, $retval);
-        //echo "Returned with status $retval and output:\n";
-        //print_r($output);
+
         return shell_exec($cmd);
     }
 
