@@ -118,9 +118,11 @@ class cms_sunship
 
         header('X-Frame-Options: SAMEORIGIN');
         date_default_timezone_set('Europe/Berlin');
+        
         ini_set("session.cookie_httponly", 1);
-        ini_set("session.cookie_samesite", "Strict");
+        ini_set("session.cookie_samesite", "Lax");
         ini_set("session.use_strict_mode", 1);        
+
         if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ini_set('session.cookie_secure', 1);
         
         session_start();
@@ -177,17 +179,20 @@ class cms_sunship
             {
                 $project=null;
                 $state=_uho_fx::getGet('state');
-                $states=$_COOKIE['uho_cms_projects_oauth'] ?? null;                
+                $states=$_SESSION['uho_cms_projects_oauth'] ?? null;                
                 if ($states) $states=json_decode($states, true);
 
                 $project=$states[$state] ?? null;
                 if (is_numeric($project)) $project=intval($project)-1;
-                else $project=null;
+                else exit('Project not found in Google Auth response.');
                 
-                //$project=$_SESSION[_uho_fx::getGet('state')] ?? null;
+                
             }
 
-            if ($project<0 || $project===null) exit('Project not found.');
+            if ($project<0 || $project===null)
+            {
+                exit('Project not found.');
+            }
             
             // check if project per domain defined
             if (!empty($cfg_root['projects'][$project]['domains']))

@@ -149,7 +149,11 @@ class model_app_clients
         $r = $this->client->loginGoogle($token, $code, 'data');
         if ($r['result'] && !empty($r['data']['email'])) {
 
-            $client = $this->cms->get('cms_users', ['email' => $r['data']['email'],'auth_google'=>1], true);
+            $client = $this->cms->get('cms_users', [
+                'email' => $r['data']['email'],
+                'locked' => 0,
+                'status' => 'confirmed',
+                'auth_google'=>1], true);
             if ($client) {
                 $this->client->storeData($client);
                 $user = $this->client->getClientId();

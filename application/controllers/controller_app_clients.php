@@ -43,7 +43,7 @@ class controller_app_clients
      */
     public function actionBefore(array $post, array $get): void
     {
-        
+
         $this->post = $post;
         $this->get  = $get;
 
@@ -77,45 +77,43 @@ class controller_app_clients
 
         // google login
         if ($this->route->e(0) == 'auth-google-callback') {
-            
+
+            $states = $_SESSION['uho_cms_projects_oauth'] ?? [];
+            if ($states) $states = json_decode($states, true);
+            $state = _uho_fx::getGet('state');
+
+            $project = $states[$state] ?? null;
+
+            if (!$project) {
+                exit('Project not found for state: ' . $state);
+            }
+
             $projects = $this->model->getAvailableProjects();
-            $google_cfg = $projects['projects'][0]['google_oauth'];
+            $google_cfg = $projects['projects'][$project - 1]['google_oauth'];
 
             $this->clients->setOAuthConfig(
                 'google',
                 [
                     'client_id' => $google_cfg['client'],
                     'client_secret' => $google_cfg['secret'],
-                    'redirect_uri' => $this->getCmsUri(true).'/auth-google-callback'
+                    'redirect_uri' => $this->getCmsUri(true) . '/auth-google-callback'
                 ]
             );
 
             $r = $this->clients->googleLogin(null, $this->get['code']);
 
-            if ($r['result'])
-            {
-                $project=null;
-                $states=$_COOKIE['uho_cms_projects_oauth'] ?? [];                
-                if ($states) $states=json_decode($states, true);
-                $state=_uho_fx::getGet('state');
-                if ($states && isset($states[$state]))                    
-                    $project=$states[$state] ?? null;
+            if ($r['result']) {
 
-                if ($project)
-                {
-                    $_SESSION['uho_cms_project']=$project;
-                    $this->model->setLogoutTime(
-                        $this->cfg['cms']['activity_time'],
-                        $this->cfg['cms']['logout_time']
-                    );
+                $_SESSION['uho_cms_projects_oauth'] = null;
+                $_SESSION['uho_cms_project'] = $project;
+                $this->model->setLogoutTime(
+                    $this->cfg['cms']['activity_time'],
+                    $this->cfg['cms']['logout_time']
+                );
 
-                    // it's pre-login so we need to build uri other way
-                    header("Refresh: 1; url=".$this->getCmsUri(false));
-                    exit();
-                } else
-                {
-                    exit('Project not found for state: '.$state);
-                }
+                // it's pre-login so we need to build uri other way
+                header("Refresh: 1; url=" . $this->getCmsUri(false));
+                exit();
             }
         }
 
@@ -185,8 +183,7 @@ class controller_app_clients
 
     private function getCmsUri(bool $domain)
     {
-        if ($domain)
-        {
+        if ($domain) {
             if (
                 isset($_SERVER['SSL_PROTOCOL'])
                 || @$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' // ec2 ooh
@@ -195,9 +192,9 @@ class controller_app_clients
             )
                 $http = 'https';
             else $http = 'http';
-            $cms_url=$http.'://'.$_SERVER['SERVER_NAME'];
-        } else $cms_url='';
-        $cms_url.='/'.$this->cfg['application_url_prefix'];
+            $cms_url = $http . '://' . $_SERVER['SERVER_NAME'];
+        } else $cms_url = '';
+        $cms_url .= '/' . $this->cfg['application_url_prefix'];
         return $cms_url;
     }
 }
