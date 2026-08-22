@@ -123,8 +123,10 @@ class model_app_page extends model_app
      	*/
 
 		$filters = [];
+		$filters_custom = [];
 		$filters_virtual = [];
 		$filters_stack = [];
+
 		$first = true;
 		$global_search = isset($get['query']);
 		foreach ($schema['fields'] as $k => $field)
@@ -251,7 +253,7 @@ class model_app_page extends model_app
 				$searchSchema = $schema;
 				$searchSchema['cms']['filters'] = $filters;
 				*/
-				$filters['global_search'] = [
+				$filters_custom[] = [
 					'type' => 'custom',
 					'value' => $global_search_filters,
 					'join' => '||'
@@ -295,6 +297,7 @@ class model_app_page extends model_app
 			[
 				'schema' => $schema,
 				'filters' => $filters,
+				'filters_custom' => $filters_custom,
 				'order' => $schema['order'],
 				'limit' => "$offset,$limit"
 			]

@@ -241,6 +241,7 @@ class serdelia_plugin_drive_sync
 
         foreach ($records as $k => $record) {
             $o = [];
+
             foreach ($params['fields'] as $field => $drive_field) {
 
                 $f = explode('.', $field);
@@ -289,7 +290,7 @@ class serdelia_plugin_drive_sync
         return ['result' => true, 'message' => 'Exported ' . count($output) . ' records'];
     }
 
-    public function saveDataToSheet($sheetId, $range, $values)
+    public function saveDataToSheet(string $sheetId, string $range, array $values)
     {
         $rows = [];
 
@@ -300,6 +301,7 @@ class serdelia_plugin_drive_sync
             }
         }
 
+        
         $body = new Google_Service_Sheets_ValueRange(['values' => $rows]);
         $params = ['valueInputOption' => 'RAW'];
 

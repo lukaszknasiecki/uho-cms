@@ -386,6 +386,7 @@ class model_app_edit extends model_app
 		$searchSchema = $this->apporm->getSchema($field['source']['model']);
 		$searchFields = $field['source']['search'] ?? ['label'];
 		$filter = [];
+		$filters_custom=[];
 
 		if (isset($field['source']['search_strict'])) {
 			foreach ($searchFields as $f) {
@@ -400,10 +401,18 @@ class model_app_edit extends model_app
 				$searchClauses[] = implode(' && ', $subClauses);
 			}
 
-			$filter = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $searchClauses]];
+			$filters_custom[] = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $searchClauses]];
 		}
 
-		$items = $this->apporm->get($field['source']['model'], $filter, false, null, '0,10');
+		$items = $this->apporm->get(
+			[
+				'schema'=>$field['source']['model'], 
+				'filters'=>$filter,
+				'filters_custom'=>$filters_custom,
+				'limit'=>'0,10'
+			]
+		);
+		
 		foreach ($items as &$item) {
 			$item['label'] = $this->getTwigFromHtml($field['source']['label'], $item);
 			if (isset($searchSchema['cms']['model']['image'])) {

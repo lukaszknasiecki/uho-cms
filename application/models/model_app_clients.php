@@ -146,7 +146,8 @@ class model_app_clients
 
     public function googleLogin($token, $code)
     {
-        $r = $this->client->loginGoogle($token, $code, 'data');
+        $r = $this->client->loginGoogle($token, $code, 'data',false);
+
         if ($r['result'] && !empty($r['data']['email'])) {
 
             $client = $this->cms->get('cms_users', [
