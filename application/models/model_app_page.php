@@ -244,6 +244,8 @@ class model_app_page extends model_app
 
 		if ($global_search_filters) {
 
+		
+
 			//$schema['filters'] = $global_search_filters;
 			$global_search_filters = $this->orm->getFiltersQueryArray($schema, $global_search_filters);
 			if ($global_search_filters) {
@@ -280,12 +282,27 @@ class model_app_page extends model_app
 		// Merge with Access Filters
 
 		$filters = array_merge($filters, $this->getAccessFilters($schema));
+		$filters_custom=[];
+
+		foreach ($filters as $k=>$v)
+		if (isset($v['type']) && $v['type']=='custom')
+		{
+			$filters_custom[]=$v;
+			unset($filters[$k]);
+		}
 		
 
 		// Fetch records
 		
 	
-		$all = $this->apporm->get($schema, $filters, false, null, null, ['count' => true]);
+		$all = $this->apporm->get(
+			[
+				'schema'=>$schema,
+				'filters'=>$filters,
+				'filters_custom'=>$filters_custom,
+				'count' => true
+			]
+			);
 
 		$_SESSION['page_filters'][$model] = $filters;
 

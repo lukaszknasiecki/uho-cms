@@ -905,7 +905,7 @@ class model_app_write extends model_app
 
 				$this->apporm->post($v['model'], $v['value']);
 			}
-		
+
 		if ($additional_put)
 			foreach ($additional_put as $k => $v)
 				$this->apporm->put($v['model'], $v['value'], $v['filter']);
@@ -950,7 +950,9 @@ class model_app_write extends model_app
 			$data = $this->apporm->get($model, ['id' => $id], true, null, null, ['additionalParams' => $params]);
 			$new = [];
 			foreach ($schema['fields'] as $k => $v) {
-				if ($v['cms']['auto'] && (!@$v['cms']['auto']['on_null'] || !$data[$v['field']])) {
+				if (
+					$v['cms']['auto'] && (empty($v['cms']['auto']['on_null']) || empty($data[$v['field']]))
+				) {
 					$auto = $this->updateAutoValue($v, $schema, $data, $params);
 					if ($auto) $new[$v['field']] = $auto;
 				}
