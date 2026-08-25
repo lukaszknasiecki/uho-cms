@@ -48,22 +48,32 @@ class serdelia_plugin_drive_sync
         $fields = $params['fields'] ?? [];
         $elements_separator = $params['elements_separator'] ?? ';';
 
+        $fields_output=[];
 
         foreach ($fields as $k => $field)
         {
+            $key=$k;
+            $k=explode('->',$k);
+
+            $field_id=$k[1] ?? 'id';
+            $k=$k[0];
+
             $field_name = explode('.', $k)[0];
             $field_nr = explode(',', $field_name)[1] ?? 0;
             $field_name = explode(',', $field_name)[0];
             
             $find = _uho_fx::array_filter($schema['fields'], 'field', $field_name, ['first' => true]);
             if ($find) {
-                $fields[$k] = $find;
-                $fields[$k]['drive'] = $field;
-                $fields[$k]['drive_source_nr'] = $field_nr;
-                $fields[$k]['drive_source_key'] = explode('.', $k)[1] ?? 'label';
-            } else unset($fields[$k]);
+                $output = $find;
+                $output['drive'] = $field;
+                $output['drive_field_id'] = $field_id;
+                $output['drive_source_nr'] = $field_nr;
+                $output['drive_source_key'] = explode('.', $k)[1] ?? 'label';
+                $fields_output[] = $output;
+            }
         }
-        $fields = array_values($fields);
+        
+        $fields = $fields_output;
 
         if (isset($_POST['export'])) {
 
@@ -145,7 +155,8 @@ class serdelia_plugin_drive_sync
                             $value = $row[$field['field']];
 
                             // load source if needed
-                            if (empty($sources[$field['field']])) {
+                            if (empty($sources[$field['field']]))
+                            {
                                 $sources[$field['field']] = $this->cms->get(
                                     [
                                         'schema' => $field['source']['model']
@@ -160,9 +171,24 @@ class serdelia_plugin_drive_sync
                             }
 
                             $s = $sources[$field['field']];
-                            $found = _uho_fx::array_filter($s, $field['drive_source_key'], trim($value), ['first' => true]);
-                            if ($found) $input[$k][$field['field']] = $found['id'];
-                            else exit('Value not found: ' . $value . ' in field ' . $field['field'] . ' (row ' . ($k + 2) . ')');
+
+                            /*
+                            if ($value=='FS00000007')
+                            {
+                                exit($field['drive_source_key'].'!');
+                                print_r($s);exit();
+
+                            }*/
+                            
+                            if (!trim($value))
+                            {
+                                $input[$k][$field['field']] = null;
+                            } else
+                            {
+                                $found = _uho_fx::array_filter($s, $field['drive_source_key'], trim($value), ['first' => true]);
+                                if ($found) $input[$k][$field['field']] = $found[$field['drive_field_id']];
+                                else exit('Value not found: [' . $value . '] in field ' . $field['field'] . ' (row ' . ($k + 2) . ')');
+                            }
                         }
 
 
