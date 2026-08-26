@@ -46,6 +46,7 @@ class serdelia_plugin_drive_sync
         $schema = $this->cms->getSchema($this->params['page']);
 
         $fields = $params['fields'] ?? [];
+        $fields_additional = $params['fields_additional'] ?? [];
         $elements_separator = $params['elements_separator'] ?? ';';
 
         $fields_output=[];
@@ -85,7 +86,7 @@ class serdelia_plugin_drive_sync
             }
         }
         if (isset($_POST['import'])) {
-            $r = $this->import($schema, $fields,$elements_separator);
+            $r = $this->import($schema, $fields,$fields_additional, $elements_separator);
             if (!$r['result']) {
                 $errors[] = $r['message'];
             } else {
@@ -96,7 +97,7 @@ class serdelia_plugin_drive_sync
         return ['result' => true, 'fields' => $fields, 'errors' => $errors, 'message' => $message];
     }
 
-    private function import(array $schema, array $fields, string $elements_separator=';')
+    private function import(array $schema, array $fields, array $fields_additional=[], string $elements_separator=';')
     {
 
         $this->client = new \Google_Client();
@@ -132,8 +133,23 @@ class serdelia_plugin_drive_sync
                     } else
                     $new[$field['field']] = $row[$field['drive']];
                 }
+            
+            if ($new && $fields_additional)
+            {
+                $fields_additional2 = [];
+                foreach ($fields_additional as $k => $v)
+                {
+                    $v = $this->cms->getTwigFromHtml($v, $new);
+                    $fields_additional2[$k] = $v;
+                }
+                $new = array_merge($new, $fields_additional2);
+            }
+
             if ($new) $input[] = $new;
+
         }
+
+        
 
         // change to proper format for orm
 
@@ -245,7 +261,7 @@ class serdelia_plugin_drive_sync
         if (!$input) return ['result' => false, 'message' => 'No data to import after filtering'];
 
         $id = $fields[0]['field'];
-        
+
         $result = $this->cms->patch($schema['table'], $input, [], true, ['uid' => [$id], 'skip_id' => true]);
 
         if ($result === false) return ['result' => false, 'message' => 'Error during import: ' . $this->cms->getLastError()];
