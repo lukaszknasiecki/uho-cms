@@ -805,11 +805,14 @@ class model_app_page extends model_app
 
 		if (($schema['cms']['structure']['parent']['parent_page'] ?? '') === 'null') {
 			$url = '/';
-		} elseif (!empty($schema['cms']['structure']['parent']['page'])) {
-			// Construct parent page URL from params
+		} elseif (!empty($schema['cms']['structure']['parent']['page']))
+		{
+			// Construct parent page URL from params (BACK BUTTON)
 			$p = $params;
+			$helper_models=$p['helper_models']??[];
 			unset($p['helper_models']);
 			$record = array_pop($p); // last param is considered the record ID
+
 			$url = [
 				'type'   => 'edit',
 				'page'   => $schema['cms']['structure']['parent']['parent_page'],
@@ -822,8 +825,6 @@ class model_app_page extends model_app
 		if (!empty($schema['cms']['nav']['page_back'])) {
 			$url = $this->fillPattern($schema['cms']['nav']['page_back'], ['twig' => ['nested' => $params]]);
 		}
-
-
 
 		// Add "back" button if URL is defined
 		if (isset($url)) {
@@ -840,11 +841,12 @@ class model_app_page extends model_app
 			$buttons = array_merge($buttons, $schema['cms']['buttons_page']);
 		}
 
-		if (isset($params['helper_models']))
-			unset($params['helper_models']);
 
 		// Add "add" button if it's not disabled
-		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true)) {
+		if (empty($schema['cms']['disable']) || !in_array('add', $schema['cms']['disable'], true))
+		{
+			$p = $params;
+			unset($p['helper_models']);
 			$addLabel = $schema['cms']['buttons_page_labels']['add'] ?? 'add';
 			$buttons[] = [
 				'label' => $addLabel,
@@ -852,7 +854,7 @@ class model_app_page extends model_app
 				'url'   => [
 					'type'   => 'add',
 					'page'   => $schema['model_name'] ?? $schema['table'],
-					'params' => $params
+					'params' => $p
 				]
 			];
 		}

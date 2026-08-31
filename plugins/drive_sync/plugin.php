@@ -64,6 +64,7 @@ class serdelia_plugin_drive_sync
             $field_name = explode(',', $field_name)[0];
             
             $find = _uho_fx::array_filter($schema['fields'], 'field', $field_name, ['first' => true]);
+
             if ($find) {
                 $output = $find;
                 $output['drive'] = $field;
@@ -115,7 +116,6 @@ class serdelia_plugin_drive_sync
         // remove non-selected fields
         $input = [];
         $limit=null;
-        //$limit=[1472,100];
 
         foreach ($data as $k => $row)
         if (!$limit || ($k>=$limit[0] && $k<($limit[0]+$limit[1])))
@@ -149,7 +149,6 @@ class serdelia_plugin_drive_sync
 
         }
 
-        
 
         // change to proper format for orm
 
