@@ -388,7 +388,8 @@ class model_app_edit extends model_app
 		$filter = [];
 		$filters_custom=[];
 
-		if (isset($field['source']['search_strict'])) {
+		if (isset($field['source']['search_strict']))
+		{
 			foreach ($searchFields as $f) {
 				$filter[$f] = $value;
 			}
@@ -401,7 +402,7 @@ class model_app_edit extends model_app
 				$searchClauses[] = implode(' && ', $subClauses);
 			}
 
-			$filters_custom[] = ['search' => ['type' => 'custom', 'join' => '||', 'value' => $searchClauses]];
+			$filters_custom[] = ['type' => 'custom', 'join' => '||', 'value' => $searchClauses];
 		}
 
 		$items = $this->apporm->get(
