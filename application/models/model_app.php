@@ -1391,8 +1391,10 @@ class model_app extends _uho_model
         // update HTML media
 
         foreach ($schema['fields'] as $k => $v)
-            if ($v['type'] == 'html' && isset($v['settings']['media_field']) && (in_array($v['settings']['wysiwyg'], ['ckeditor', 'ckeditor5']))) {
+            if ($v['type'] == 'html' && isset($v['settings']['media_field']) && (in_array($v['settings']['wysiwyg'], ['ckeditor', 'ckeditor5'])))
+            {
                 $media = $record[$v['settings']['media_field']];
+                
                 //$filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
                 $filename = 'uho_media.png';
 
@@ -1402,6 +1404,7 @@ class model_app extends _uho_model
                 // $html=strip_tags($html,'<p><b><strong><i><em><a><blockquote><img><iframe><figure><h1><h2><h3><h4><h5><h6><ol><ul><li><sup><sub>');
 
                 $html = $this->removeTags($html, ['span', 'figcaption']);
+                $html=str_replace('<img style="aspect-ratio:640/360;" ','<img ',$html);
 
                 $max = 100;
 
@@ -1412,6 +1415,7 @@ class model_app extends _uho_model
                     $i2 = strpos($html, '>', $i1);
 
                     $image = _uho_fx::array_filter($media, 'type', 'image', ['first' => true, 'keys' => true]);
+                    
 
                     if ($image !== false && $i2 > $i1) {
 
@@ -1420,7 +1424,6 @@ class model_app extends _uho_model
                         if (!empty($media[$image]['caption'])) {
                             $caption = '<figcaption>' . $media[$image]['caption'] . '</figcaption>';
                         } else $caption = '';
-
 
                         $figure = '<figure class="image"><img src="' . $media[$image]['image']['original'] . '" alt="' . $alt . '">' . $caption . '</figure>';
 
@@ -1827,7 +1830,8 @@ class model_app extends _uho_model
 
             foreach ($this->cache_folders as $k => $v) {
                 // url based
-                if (!empty($v['url'])) {
+                if (!empty($v['url']))
+                {
                     $file_contents = _uho_fx::fileCurl($v['url']);
                     if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                     else $r = null;

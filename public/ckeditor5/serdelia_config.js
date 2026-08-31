@@ -145,7 +145,7 @@ var CKEditor5_Config = {
 
     simpleUpload:{
         
-        uploadUrl: '/serdelia/api/uploader?type=binary',
+        uploadUrl: '/cms/api/uploader?type=binary',
 
         // Enable the XMLHttpRequest.withCredentials property.
         //withCredentials: true,

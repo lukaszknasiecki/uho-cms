@@ -385,10 +385,13 @@ class model_app_write extends model_app
 			$backup_record_data['field'] = $v['field'];
 			switch ($v['type']) {
 
-				/*
 				case "html":
-					if (@$v['settings']['media']) {
-						$r = $this->htmlMediaUpdate($data[$v['field']], $schema['model_name'], $v['settings']['media'], $v);
+					if (isset($v['settings']['media']))
+					{
+						$r = $this->htmlMediaUpdate(
+							$data[$v['field']],
+							$schema['model_name'],
+							$v['settings']['media'], $v);
 
 						$data[$v['field']] = $r['html'];
 						$additional_post = array_merge($additional_post, $r['post']);
@@ -396,7 +399,7 @@ class model_app_write extends model_app
 						$additional_delete = array_merge($additional_delete, $r['delete']);
 					}
 
-					break;*/
+					break;
 
 				case "blocks":
 

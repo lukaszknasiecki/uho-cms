@@ -1132,7 +1132,7 @@ Apps.Edit = function ($, window) {
           <img \
           width="45" \
           height="45" \
-          src="/serdelia/public/img/edit_images_url.png" />\
+          src="/cms/public/img/edit_images_url.png" />\
           ' + captionsDom + '\
         </div>';
 
