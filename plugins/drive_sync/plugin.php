@@ -122,6 +122,7 @@ class serdelia_plugin_drive_sync
         {
             
             $new = [];
+
             foreach ($fields as $field)
                 if (isset($row[$field['drive']]))
                 {
@@ -132,7 +133,7 @@ class serdelia_plugin_drive_sync
                             $new[$field['field']][$field['drive_source_nr']-1] = $row[$field['drive']];
                     } else
                     $new[$field['field']] = $row[$field['drive']];
-                }
+                } else $new[$field['field']] = NULL;
             
             if ($new && $fields_additional)
             {
@@ -148,6 +149,7 @@ class serdelia_plugin_drive_sync
             if ($new) $input[] = $new;
 
         }
+
 
 
         // change to proper format for orm
