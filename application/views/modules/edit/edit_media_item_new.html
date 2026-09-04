@@ -1,0 +1,81 @@
+<div data-id="{{item.id}}" class="card shadow-sm">
+    <div class="card-header bg-light d-flex align-items-center justify-content-between py-2 px-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold fs-7 text-uppercase text-danger tracking-wide">
+                {% if item.type=='file' %}{{item.extension}}{% else %}{{item.type}}{% endif %}
+            </span>
+            <span class="text-muted small">2.4 MB</span>
+        </div>
+
+
+        <div style="float:right;text-align:right;position:absolute;top:0;right:0;padding:5px 5px">
+
+            {% if item.type=='panorama' %}
+            <a href="{{item.url_panorama}}" type="button"
+                class="mdi mdi-panorama-horizontal serdelia-edit-imageUploadView"></a>
+            {% elseif zoom %}
+            {% if field.layout.type=='linear' %}
+            <a href="{{zoom}}" target="_blank" type="button" class="serdelia-edit-media-tool"
+                style="vertical-align: top;"><span class="badge badge-secondary">{{item.type|capitalize}}
+                    Source</span></a>
+            {% else %}
+            <a href="{{zoom}}" type="button" target="_blank"
+                class="mdi mdi-remove-red-eye serdelia-edit-imageUploadView"></a>
+            {% endif %}
+            {% endif %}
+            {% if item.url_resize %}
+            <a href="{{item.url_resize}}" type="button" class="mdi mdi-crop serdelia-edit-imageUploadView"></a>
+            {% endif %}
+
+            <span data-id="{{item.id}}" class="mdi mdi-clear serdelia-edit-imageUploadRemove"></span>
+        </div>
+
+    </div>
+
+    <div class="card-body d-flex flex-column p-3">
+        <form class="d-flex flex-column flex-grow-1">
+            {% for i in field.captions %}
+
+            <label for="" class="form-label form-label-sm fw-semibold text-secondary mb-1">{{i.label}}</label>
+
+            {% if i.field_type=='text' %}
+            <textarea {% if disabled %}disabled{% endif %} {% if i.lang %}data-edit-lang="{{i.lang}}" {% if not
+                langs[i.lang] %} style="display:none" {% endif %}{% endif %} type="text"
+                class="form-control form-control-sm" rows="2" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]"
+                placeholder="" value="{{item[i.field]}}">{{item[i.field]}}</textarea>
+            {% else %}
+            <input {% if disabled %}disabled{% endif %} {% if i.lang %}data-edit-lang="{{i.lang}}" {% if not
+                langs[i.lang] %} style="display:none" {% endif %}{% endif %} type="text"
+                class="form-control form-control-sm" value="{{item[i.field]}}"
+                name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" placeholder="">
+            {% endif %}
+            {% endfor %}
+            {#
+            <div class="mb-2">
+                <label for="pdfTitle1" class="form-label form-label-sm fw-semibold text-secondary mb-1">Title</label>
+                <input type="text" class="form-control form-control-sm" id="pdfTitle1" value="Q4_Financial_Report.pdf"
+                    placeholder="Enter title...">
+            </div>
+
+            <div class="mb-2">
+                <label for="pdfCategory1"
+                    class="form-label form-label-sm fw-semibold text-secondary mb-1">Category</label>
+                <select class="form-select form-select-sm" id="pdfCategory1">
+                    <option selected>Finance</option>
+                    <option value="1">Legal</option>
+                    <option value="2">Operations</option>
+                </select>
+            </div>
+
+            <div class="mb-3 d-flex flex-column flex-grow-1">
+                <label for="pdfDesc1"
+                    class="form-label form-label-sm fw-semibold text-secondary mb-1">Description</label>
+                <textarea class="form-control form-control-sm h-100" id="pdfDesc1" style="min-height: 80px;"
+                    placeholder="Add details or notes..."></textarea>
+            </div>#}
+
+
+        </form>
+    </div>
+    <input type="hidden" name="{{field.cms_field}}[{{item.id}}][type]" value="{{item.type}}">
+</div>

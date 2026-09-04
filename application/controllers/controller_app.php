@@ -166,6 +166,9 @@ class controller_app extends _uho_controller
         $this->data['head']['http'] = $this->route->getDomain();
         $this->data['cms_path'] = rtrim($this->model->cms_path, '/');
         $this->data['translate'] = $this->model->getTranslate();
+        
+        $this->data['css_version'] = '2.0.0';
+        $this->data['js_version'] = '2.0.0';
 
         // Scaffold setup (page layout, CSS, menus, etc.)
         $this->data['scaffold'] = [];

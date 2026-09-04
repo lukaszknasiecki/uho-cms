@@ -74,8 +74,8 @@
         <img height="128" src="{{zoom}}">
     {% else %}
     <div
-        style="width:170px;height:128px;background-color:white;font-size:36px;display: table-cell;vertical-align: middle;text-align:center;{% if label_small %}font-size:16px{% endif %}">
-        {{label}}</div>
+        style="width:170px;height:50px;background-color:white;font-size:36px;display: table-cell;vertical-align: middle;text-align:center;font-size:16px">
+        {{label}}</div><br>
     {% endif %}
     <div style="float:right;text-align:right;position:absolute;top:0;right:0;padding-right:12px">
 
@@ -130,7 +130,7 @@
             endif %}>
             {% if not i.type or item.type in i.type %}
             {% if i.field_type=='boolean' %}
-            <input id="{{field.field}}-{{item.id}}" class="serdelia-edit-field" type="checkbox"
+            <input id="{{field.field}}-{{item.id}}" class="serdelia-edit-field" type="checkbox"                
                 style="margin-right:10px;margin-top:10px" {% if disabled %}disabled{% endif %}
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" {% if item[i.field] %}checked{% endif %}
                 value="1">
@@ -172,7 +172,7 @@
                 class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.lang
                 %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{% endif %}
                 value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">#}
-            <input {% if disabled %}disabled{% endif %}
+            <input {% if i.edit===false or disabled %}disabled{% endif %}
                 class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" {% if i.lang
                 %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{% endif %}
                 value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">

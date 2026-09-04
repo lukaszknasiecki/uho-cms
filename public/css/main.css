@@ -949,6 +949,16 @@ display: block;
   position: absolute;
 }
 
+
+
+.serdelia-edit-media-item-files
+{
+  background-color: white;
+  padding:5px;
+  margin:0 10px 10px 0;
+}
+
+
 .serdelia-edit-field-hidden {
   display: none;
 }

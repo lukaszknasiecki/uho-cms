@@ -636,11 +636,12 @@ Attach media from another model.
         ]
     },
     "cms" : {
-        "wide": true
-    }
-    "layout": {
-        "folder": "desktop"
-    },
+        "wide": true,
+        "layout": {
+            "folder": "desktop",
+            "style":"icons"
+        }
+    },    
     "captions": [
         {
             "label": "Caption",
