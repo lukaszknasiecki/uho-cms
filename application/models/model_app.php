@@ -862,6 +862,17 @@ class model_app extends _uho_model
             $schema['cms']['label']['page'] = $this->fillPattern($schema['cms']['label']['page'], $params);
         }
 
+        // update fields with helpermpdels
+        if ($schema['cms']['helper_models'])
+        {
+            foreach ($schema['fields'] as $k => $v) {
+                if (isset($v['source']['filters']['model_id']))
+                {
+                    $schema['fields'][$k]['source']['filters']['model_id'] = $this->fillPattern($v['source']['filters']['model_id'], $params);
+                }
+            }
+        }
+
         // remove non-authorized elements
 
 
@@ -2427,7 +2438,8 @@ class model_app extends _uho_model
         /*
          changing schema according to record values
         */
-        if ($schema['schema_update']) {
+        if ($schema['schema_update'])
+        {
 
             if (!is_array($schema['schema_update']))
                 $schema['schema_update'] = ['file' => $schema['schema_update']];
