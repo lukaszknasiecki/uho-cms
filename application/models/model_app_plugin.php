@@ -189,4 +189,9 @@ class model_app_plugin extends model_app
 
 		return $data;
 	}
+
+	public function getPluginsCfgSection(string $section)
+	{
+		return $this->plugins_cfg[$section] ?? null;
+	}
 }

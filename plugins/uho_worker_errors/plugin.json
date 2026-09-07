@@ -1,0 +1,17 @@
+{
+    "icon":"video-settings",
+    "pl":
+    {
+        "label":"Reaktywuj zadania zakończone błędem",
+        "title": "Reaktywuj zadania zakończone błędem",
+        "updated":"Zaktualizowano akcji:",
+        "removed":"Usunięto duplikatów akcji:"
+    },
+    "en":
+    {
+        "label":"Reactivate errors queries",
+        "label": "Reactivate errors queries",
+        "removed":"Removed action duplicates:",
+        "updated":"Updatet queries:"
+    }
+}

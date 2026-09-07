@@ -1,0 +1,21 @@
+{
+    "icon":"stop",
+    "pl":
+    {
+        "label":"Usuń zadania",
+        "title": "Usuń zadania",
+        "info":"Wybierz typy zadań do usunięcia",
+        "remove":"Usuń",
+        "updated":"Zaktualizowano akcji:",
+        "removed":"Usunięto duplikatów akcji:"
+    },
+    "en":
+    {
+        "label":"Remove queries",
+        "title": "Remove queries",
+        "info":"Choose types of queries to remove",
+        "remove":"Remove",
+        "removed":"Removed action duplicates:",
+        "updated":"Updatet queries:"
+    }
+}

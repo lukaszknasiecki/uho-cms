@@ -60,3 +60,60 @@
   border: none !important;
   outline: none !important;
 }
+/* ---- Text Expand block ---- */
+
+.ce-text-expand {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ce-text-expand__part {
+  padding: 10px 12px;
+  outline: none;
+  line-height: 1.5;
+}
+
+.ce-text-expand__part--more {
+  background: #f5f5f5;
+}
+
+.ce-text-expand__part:empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+}
+
+.ce-text-expand__divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-top: 1px dashed #d0d0d0;
+  border-bottom: 1px dashed #d0d0d0;
+  background: #fafafa;
+}
+
+.ce-text-expand__divider::before {
+  content: "▾";
+  color: #aaa;
+  font-size: 12px;
+}
+
+.ce-text-expand__label {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+  background: white;
+}
+
+/* the block draws its own frame, so drop EditorJS' selection/focus highlight */
+.ce-block--selected:has(.ce-text-expand),
+.ce-block--selected:has(.ce-text-expand) .ce-block__content,
+.ce-block--focused:has(.ce-text-expand),
+.ce-block--focused:has(.ce-text-expand) .ce-block__content {
+  background: none !important;
+  box-shadow: none !important;
+}

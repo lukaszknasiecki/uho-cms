@@ -63,6 +63,108 @@ class LeadTool {
 }
 
 
+class TextExpandTool {
+  static get toolbox() {
+    return {
+      title: 'Text Expand',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 9h10"/><path d="M4 15h16M4 19h10" stroke-dasharray="3 2"/><path d="M18 13l3 3-3 3" stroke-dasharray="0"/></svg>',
+    };
+  }
+
+  static get DEFAULT_LABEL() {
+    return 'Show more';
+  }
+
+  static get sanitize() {
+    const inline = {
+      br: true,
+      b: {},
+      strong: {},
+      i: {},
+      em: {},
+      u: {},
+      s: {},
+      mark: { class: true },
+      code: {},
+      a: { href: true, target: true, rel: true },
+    };
+    return { text: inline, more: inline, label: false };
+  }
+
+  static get conversionConfig() {
+    return {
+      export: (data) => [data.text, data.more].filter(Boolean).join('<br>'),
+      import: (content) => ({ text: content, more: '', label: '' }),
+    };
+  }
+
+  constructor({ data, block, config }) {
+    this.data = {
+      text: data.text || '',
+      more: data.more || '',
+      label: data.label || '',
+    };
+    this._block = block;
+    this._config = config || {};
+    this._wrapper = null;
+  }
+
+  render() {
+    this._wrapper = document.createElement('div');
+    this._wrapper.classList.add('ce-text-expand');
+
+    this._text = this._createPart('text', this._config.placeholder || 'Visible text…');
+    this._more = this._createPart('more', this._config.morePlaceholder || 'Text hidden behind the button…');
+
+    const divider = document.createElement('div');
+    divider.classList.add('ce-text-expand__divider');
+
+    this._label = document.createElement('input');
+    this._label.type = 'text';
+    this._label.classList.add('ce-text-expand__label');
+    this._label.value = this.data.label;
+    this._label.placeholder = this._config.defaultLabel || TextExpandTool.DEFAULT_LABEL;
+    this._label.addEventListener('keydown', (e) => e.stopPropagation());
+    this._label.addEventListener('input', () => this._block?.dispatchChange());
+    divider.appendChild(this._label);
+
+    this._wrapper.appendChild(this._text);
+    this._wrapper.appendChild(divider);
+    this._wrapper.appendChild(this._more);
+    return this._wrapper;
+  }
+
+  _createPart(name, placeholder) {
+    const el = document.createElement('div');
+    el.classList.add('ce-text-expand__part', 'ce-text-expand__part--' + name);
+    el.contentEditable = 'true';
+    el.dataset.placeholder = placeholder;
+    el.innerHTML = this.data[name];
+    // Enter must stay inside the part instead of splitting the block into two
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        document.execCommand('insertLineBreak');
+      }
+    });
+    return el;
+  }
+
+  save() {
+    return {
+      text: this._text.innerHTML.trim(),
+      more: this._more.innerHTML.trim(),
+      label: this._label.value.trim(),
+    };
+  }
+
+  validate(data) {
+    return (data.text || '').trim() !== '' || (data.more || '').trim() !== '';
+  }
+}
+
+
 class CustomDataTool {
   static get toolbox() {
     return {
@@ -160,6 +262,10 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
         class: List,
         inlineToolbar: true,
       },
+      textExpand: {
+        class: TextExpandTool,
+        inlineToolbar: true,
+      },
       quote: {
         class: Quote,
         inlineToolbar: true,
@@ -240,6 +346,7 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
   const blockActions = {
     'paragraph': () => editor.blocks.insert('paragraph'),
     'lead': () => editor.blocks.insert('lead'),
+    'text-expand': () => editor.blocks.insert('textExpand'),
     'header-1': () => editor.blocks.insert('header', { level: 1 }),
     'header-2': () => editor.blocks.insert('header', { level: 2 }),
     'header-3': () => editor.blocks.insert('header', { level: 3 }),

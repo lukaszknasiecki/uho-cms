@@ -1,0 +1,14 @@
+{% if removed %}
+<div class="alert alert-success">
+	{{translate.removed}}: {{removed}}
+</div><br>
+{% endif %}
+
+<p>{{translate.info}}</p>
+<form method="POST">
+	{% for item in types %}
+	<input type="checkbox" id="{{item.value}}" name="{{item.value}}"> <label for="{{item.value}}">{{item.label}} ({{item.count}})</label><br>
+	{% endfor %}
+	<input type="submit" name="submit" class="btn btn-warning" value="{{translate.remove}}">
+</form>
+
