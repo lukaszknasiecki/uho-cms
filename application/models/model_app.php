@@ -847,10 +847,11 @@ class model_app extends _uho_model
 
         // helper models
         if (isset($schema['cms']['helper_models'])) {
+            
             foreach ($schema['cms']['helper_models'] as $k => $v) {
                 $v['record'] = $this->getTwigFromHtml($v['record'], $params['twig']);
                 $schema['cms']['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
-            }
+            }            
         }
 
         if ($schema['cms']['helper_models']) {
@@ -866,9 +867,10 @@ class model_app extends _uho_model
         if ($schema['cms']['helper_models'])
         {
             foreach ($schema['fields'] as $k => $v) {
-                if (isset($v['source']['filters']['model_id']))
+                if (isset($v['source']['filters']))
+                foreach ($schema['fields'][$k]['source']['filters'] as $k2=>$v2)
                 {
-                    $schema['fields'][$k]['source']['filters']['model_id'] = $this->fillPattern($v['source']['filters']['model_id'], $params);
+                    $schema['fields'][$k]['source']['filters'][$k2] = $this->fillPattern($v2, $params);
                 }
             }
         }

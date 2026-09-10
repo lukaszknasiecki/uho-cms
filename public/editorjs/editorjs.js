@@ -249,21 +249,20 @@ document.querySelectorAll('.editorjs-editor-wrapper').forEach(wrapper => {
     data: initialData || undefined,
 
     tools: {
+      textExpand: {
+        class: TextExpandTool,
+        inlineToolbar: true,
+      },
       header: {
         class: Header,
         config: { levels: [3, 4], defaultLevel: 3 },
       },
-
       lead: {
         class: LeadTool,
         inlineToolbar: true,
       },
       list: {
         class: List,
-        inlineToolbar: true,
-      },
-      textExpand: {
-        class: TextExpandTool,
         inlineToolbar: true,
       },
       quote: {
