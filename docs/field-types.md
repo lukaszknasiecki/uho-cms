@@ -390,7 +390,7 @@ Multiple selection from another model (with fixed order).
     "type": "elements",
     "cms":
     {
-        "layout": "simple|logotypes", 
+        "layout": "simple|logotypes|logotypes-medium", 
         "small": true,
         "input": "standard"    // use standard drop-down select, not "search"
     },

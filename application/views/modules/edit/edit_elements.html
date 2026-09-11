@@ -30,11 +30,13 @@
 				</div>
 			</div>
 			{% else %}
-			{% if field.cms.layout=='logotypes' %}{% set w=122 %}{% else %}{% set w=95 %}{% endif %}
+			{% if field.cms.layout=='logotypes' %}{% set w=122 %}
+			{% elseif field.cms.layout=='logotypes-medium' %}{% set w=166 %}
+			{% else %}{% set w=95 %}{% endif %}
 			<div style="display:inline-block;width:{{w}}px">
-				{% if field.cms.layout=='logotypes' and item.fields.image[thumb] %}
+				{% if (field.cms.layout=='logotypes' or field.cms.layout=='logotypes-medium') and item.fields.image[thumb] %}
 				<div style="height:{{w}}px;background-color:white;align-items:center;display:flex;justify-content:center">
-					<img src="{{item.fields.image[thumb]}}" style="max-width:110px;max-height:110px">
+					<img src="{{item.fields.image[thumb]}}" style="max-width:{{w-12}}px;max-height:110px">
 				</div>
 				{% elseif item.fields.image[thumb] %}
 				<img src="{{item.fields.image[thumb]}}" style="max-width:100px;max-height:100px">
