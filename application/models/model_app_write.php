@@ -208,7 +208,8 @@ class model_app_write extends model_app
 			}
 
 		// value updates
-		foreach ($schema['fields'] as $k => $v) {
+		foreach ($schema['fields'] as $k => $v)
+		if (!$update_payload_only || isset($data[$v['field']])) {
 			if (
 				$v['type'] != 'file'
 				&& !empty($v['cms']['auto'])
@@ -887,6 +888,7 @@ class model_app_write extends model_app
 		/*
 		** updating  record
 		*/ {
+			
 			$this->backupAdd($schema['table'], $id);
 			$data['id'] = $id;
 			$this->logsAdd('edit');
@@ -905,8 +907,10 @@ class model_app_write extends model_app
 
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
-
-				$this->apporm->post($v['model'], $v['value']);
+				
+				$result=$this->apporm->post($v['model'], $v['value']);
+				if($result===false)
+					exit('error on additional POST: ' . $this->apporm->getLastError());
 			}
 
 		if ($additional_put)
@@ -1998,7 +2002,8 @@ class model_app_write extends model_app
 		$search = $this->temp_path . '/upload';
 
 		$max = 100;
-		while (strpos(' ' . $html, $search) && $max-- > 0) {
+		while (strpos(' ' . $html, $search) && $max-- > 0)
+		{
 
 			$i1 = strpos($html, $this->temp_path . '/upload');
 			$i2 = strpos($html, '"', $i1 + 10);
