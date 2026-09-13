@@ -67,7 +67,8 @@
             "Dodaj panoramę"
         ],
         "elements_double_choose": "Wybierz model",
-        "elements_double_add": "Dodaj element"
+        "elements_double_add": "Dodaj element",
+        "elements_double_empty": "brak tytułu"
     },
     "en": {
         "write_changes": "Save",
@@ -134,6 +135,7 @@
             "Add Panorama"
         ],
         "elements_double_choose": "Choose data model",
-        "elements_double_add": "Add item"
+        "elements_double_add": "Add item",
+        "elements_double_empty": "no title"
     }
 }

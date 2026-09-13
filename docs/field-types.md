@@ -409,6 +409,23 @@ Multiple selection from another model (with fixed order).
 }
 ```
 
+### `elements_double`
+
+Multiple selection from several models at once (with fixed order). The value stores `slug:id` pairs, e.g. `news:12,books:7`.
+
+```json
+{
+    "field": "related",
+    "type": "elements_double",
+    "source_double": [
+        { "slug": "news", "model": "news" },
+        { "slug": "books", "model": "books" }
+    ]
+}
+```
+
+Each entry needs `slug` (stored in the value) and `model`. The label, image and model name shown in the editor come from the target model's `cms.output` and `cms.label`.
+
 ---
 
 ## Media Types
