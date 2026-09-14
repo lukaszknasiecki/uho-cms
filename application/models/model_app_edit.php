@@ -146,26 +146,12 @@ class model_app_edit extends model_app
 
 		if (!$this->view && isset($post['action'])) {
 			switch ($post['action']) {
-				/*
 				case "elements_double":
-					$result = [];
 					$field = _uho_fx::array_filter($schema['fields'], 'field', $post['field'], ['first' => true]);
-					if ($field) {
-						$modelInfo = $field['source_double'][$post['value'] - 1] ?? null;
-						if ($modelInfo) {
-							$result = $this->apporm->getShort($modelInfo['model'], null);
-							foreach ($result as &$r) {
-								$r['value'] = $modelInfo['slug'] . ':' . $r['id'];
-								$label = is_array($r['_model_label']) ? $r['_model_label']['page'] : $r['_model_label'];
-								$r['sublabel'] = $label;
-								$r['image'] = $r['image'];
-								if (!$r['label']) $r['label'] = '[brak tytułu, id=' . $r['id'] . ']';
-							}
-							$result = _uho_fx::array_multisort($result, 'label');
-						}
-					}
+					$modelInfo = $field ? ($field['source_double'][intval($post['value']) - 1] ?? null) : null;
+					$result = $modelInfo ? $this->apiElementsDouble($modelInfo) : [];
 					exit(json_encode($result));
-					break;*/
+					break;
 
 				case "search_source":
 					$result = $this->apiSearchSource($schema, substr($post['field'], 2), $post['value']);
@@ -370,6 +356,131 @@ class model_app_edit extends model_app
 	public function getTranslateByLang($lang)
 	{
 		return $this->translate[$lang] ?? [];
+	}
+
+	/**
+	 * Builds the record list for the second dropdown of an elements_double field.
+	 */
+	private function apiElementsDouble($modelInfo)
+	{
+		if (empty($modelInfo['model'])) return [];
+
+		$schema = $this->apporm->getSchema($modelInfo['model']);
+		$output = $schema['cms']['output'] ?? $schema['model'] ?? [];
+
+		$modelLabel = $schema['cms']['label'] ?? $schema['label'] ?? null;
+		if (is_array($modelLabel)) $modelLabel = $modelLabel['page'] ?? reset($modelLabel);
+		if (!$modelLabel) $modelLabel = $modelInfo['model_label'] ?? $modelInfo['model'];
+
+		$filters = [];
+		if (is_array($schema['cms']['filters'] ?? null))
+			foreach ($schema['cms']['filters'] as $key => $value) {
+				if (is_string($value) && (str_contains($value, '{{') || preg_match('/%\d+%/', $value))) continue;
+				$filters[$key] = $value;
+			}
+
+		$labelTemplate = $output['label'] ?? '';
+		$imageTemplate = $output['image'] ?? '';
+
+		$options = ['schema' => $modelInfo['model'], 'filters' => $filters];
+		$fields = $this->twigFieldsToRead([$labelTemplate, $imageTemplate], $schema);
+		if ($fields) $options['fields'] = $fields;
+
+		$items = $this->apporm->get($options);
+		if (!is_array($items)) return [];
+
+		$translate = $this->getTranslateByLang($this->lang);
+		$empty = $translate['elements_double_empty'] ?? 'no title';
+		$result = [];
+
+		foreach ($items as $item) {
+			$label = (string) $this->apporm->getTwigFromHtml($labelTemplate, $item);
+			if (!trim(strip_tags($label))) $label = '[' . $empty . ', id=' . $item['id'] . ']';
+
+			$result[] = [
+				'value' => $modelInfo['slug'] . ':' . $item['id'],
+				'label' => $label,
+				'sublabel' => $modelLabel,
+				'image' => (string) $this->apporm->getTwigFromHtml($imageTemplate, $item)
+			];
+		}
+
+		return _uho_fx::array_multisort($result, 'label');
+	}
+
+	/**
+	 * Lists the schema fields a set of twig templates reads, empty if unsure.
+	 */
+	private function twigFieldsToRead(array $templates, array $schema)
+	{
+		foreach ($templates as $template)
+			if (str_contains($template, '{%')) return [];
+
+		$names = $this->templateVariables($templates);
+		if (!$names) return [];
+
+		$fields = ['id'];
+
+		while ($names) {
+			$next = [];
+
+			foreach ($names as $name) {
+				$found = $this->schemaFieldByName($schema, $name);
+				if (!$found) return [];
+				if (in_array($found['field'], $fields)) continue;
+
+				$filename = $found['settings']['filename'] ?? '';
+				$folder = $found['settings']['folder'] ?? '';
+				if (!is_string($filename) || !is_string($folder)) return [];
+
+				$fields[] = $found['field'];
+				$next = array_merge($next, $this->templateVariables([$filename, $folder]));
+			}
+
+			$names = array_diff(array_unique($next), $fields);
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Finds a schema field by its exact name, or by a language column of a :lang field.
+	 */
+	private function schemaFieldByName(array $schema, string $name)
+	{
+		foreach ($schema['fields'] ?? [] as $field)
+			if (($field['field'] ?? null) === $name) return $field;
+
+		foreach ($schema['fields'] ?? [] as $field) {
+			$fieldName = $field['field'] ?? '';
+			if (str_contains($fieldName, ':lang') && str_starts_with($name, explode(':lang', $fieldName)[0] . '_')) return $field;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Root variable names referenced by twig output tags and %marker% placeholders.
+	 */
+	private function templateVariables(array $templates)
+	{
+		$names = [];
+
+		foreach ($templates as $template) {
+			if (!is_string($template) || $template === '') continue;
+
+			preg_match_all('/%([a-zA-Z_][a-zA-Z0-9_]*)%/', $template, $markers);
+			preg_match_all('/{{(.*?)}}/s', $template, $tags);
+
+			$expressions = implode(' ', $tags[1]);
+			$expressions = preg_replace('/"[^"]*"|\'[^\']*\'/', ' ', $expressions);
+			$expressions = preg_replace('/\|\s*[a-zA-Z_][a-zA-Z0-9_]*/', ' ', $expressions);
+			preg_match_all('/(?<![a-zA-Z0-9_.])([a-zA-Z_][a-zA-Z0-9_]*)/', $expressions, $identifiers);
+
+			$names = array_merge($names, $markers[1], $identifiers[1]);
+		}
+
+		return array_values(array_unique($names));
 	}
 
 	/**

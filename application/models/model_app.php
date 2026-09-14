@@ -1097,12 +1097,12 @@ class model_app extends _uho_model
                         foreach ($v['source_double'] as $k2 => $v2) {
                             if ($v2['model']) {
                                 $m = $this->apporm->getSchema($v2['model']);
-                                if ($m['model'])
-                                    $v['source_double'][$k2] = array_merge($v['source_double'][$k2], $m['model']);
-                                if (is_array($m['label']))
-                                    $label = $m['label']['page'];
-                                else
-                                    $label = $m['label'];
+                                $output = $m['cms']['output'] ?? $m['model'] ?? null;
+                                if ($output)
+                                    $v['source_double'][$k2] = array_merge($v['source_double'][$k2], $output);
+                                $label = $m['cms']['label'] ?? $m['label'] ?? null;
+                                if (is_array($label))
+                                    $label = $label['page'] ?? reset($label);
                                 $schema['fields'][$k]['source_double'][$k2]['model_label'] = $v['source_double'][$k2]['model_label'] = $label;
                             }
                             if (!isset($schema['fields'][$k]['source_double'][$k2]['model_label']))

@@ -119,7 +119,7 @@ class model_app_create extends model_app
      *
      * @return array|null
      */
-    private function getAvailableProjects()
+    public function getAvailableProjects()
     {
         $cfg_src = $_SERVER['DOCUMENT_ROOT'] . '/.uho-cms.json';
         if (!file_exists($cfg_src))
