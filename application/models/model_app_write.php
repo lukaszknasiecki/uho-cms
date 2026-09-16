@@ -633,7 +633,8 @@ class model_app_write extends model_app
 							$extension = strtolower(array_pop(explode('.', $source)));
 							$uid = uniqid();
 
-							if ($image_type == 'file') {
+							if ($image_type == 'file')
+							{
 								$r = $this->fileUpload($file_field, ['uid' => $uid], $source, null, ['remove' => true]);
 								$new[$v2] = [
 									'uid' => $uid,
@@ -645,14 +646,12 @@ class model_app_write extends model_app
 							} else
 							if ($image_type == 'audio') {
 								$im = $image_field;
-								if ($im['settings']['folder_audio']) $im['settings']['folder'] = $im['settings']['folder_audio'];
 								if (@$audio_field['settings']['folder']) $im['settings']['folder'] = $audio_field['settings']['folder'];
 								$r = $this->fileUpload($im, ['uid' => $uid], $source);
 								$new[$v2] = ['uid' => $uid, 'filename_original' => $r['filename']];
 							} else
 							if ($image_type == 'video') {
 								$im = $image_field;
-								if ($im['settings']['folder_video']) $im['settings']['folder'] = $im['settings']['folder_video'];
 								if (@$video_field['settings']['folder']) $im['settings']['folder'] = $video_field['settings']['folder'];
 								$r = $this->fileUpload($im, ['uid' => $uid], $source);
 								$new[$v2] = ['uid' => $uid, 'filename_original' => $r['filename']];
