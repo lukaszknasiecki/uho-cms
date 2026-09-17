@@ -275,6 +275,16 @@ class model_app_write extends model_app
 
 					break;
 
+				case "timestamp":
+
+				
+					if (isset($v['settings']['on_update']) && $v['settings']['on_update']) {
+						unset($data[$v['field']]);
+					}
+					
+
+					break;
+
 				case "checkboxes":
 
 					$iDigits = 8;
