@@ -49,21 +49,27 @@ class model_app_home extends model_app
 
 		switch ($home['type']) {
 			case "widgets":
-				
-				foreach ($home['widgets'] as $k => $v)
-				{
+
+				foreach ($home['widgets'] as $k => $v) {
 					if (!is_array($v)) $v = ['widget' => $v];
-					
+
 					$home['widgets'][$k] = $this->widgetGet($v);
 
-					if (!$home['widgets'][$k]) {
-						unset($home['widgets'][$k]);
-					} elseif (!empty($home['widgets'][$k]['url'])) {
+					$disable=false;
+
+					if (!empty($v['params']['auth']) && !$this->checkAuth($v['params']['model']))
+						$disable=true;				
+					elseif (!$home['widgets'][$k])
+						$disable=true;
+					elseif (!empty($home['widgets'][$k]['url']))
+					{
 						$url = explode('/', $home['widgets'][$k]['url']);
 						if (!$this->checkAuth($url[1])) {
-							unset($home['widgets'][$k]);
+							$disable=true;
 						}
 					}
+
+					if ($disable) unset($home['widgets'][$k]);
 				}
 				break;
 
@@ -178,11 +184,12 @@ class model_app_home extends model_app
 		// Get widget data
 		$data = $class->getData();
 		$data = array_merge($translate, $data);
+		$data['translate'] = $translate;
 
 		// Render widget HTML if required
 		if (!empty($data['result'])) {
-			$html = file_exists($path . 'widget.html') 
-				? file_get_contents($path . 'widget.html') 
+			$html = file_exists($path . 'widget.html')
+				? file_get_contents($path . 'widget.html')
 				: file_get_contents($this->cms_folder . '/application/views/modules/widgets/_widget.html');
 
 			if ($render) {

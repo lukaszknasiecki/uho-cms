@@ -1,0 +1,18 @@
+{
+    "icon":"refresh",
+    "url":"page/uho_worker",
+    "params":["bg-primary","text-white"],
+    "pl":
+    {
+        "label": "Worker",
+        "text":"{% for item in logs %}{{item.status}}: {{item.stats[0].count}}<br>{% endfor %}"
+    },
+    "en":
+    {
+        "label": "Worker",
+        "text":"{% for item in logs %}{{translate[item.status]}}: {{item.stats[0].count}}<br>{% endfor %}",
+        "waiting": "Pending",
+        "success": "Finished Successfully",
+        "error": "Finished with Error"
+    }
+}

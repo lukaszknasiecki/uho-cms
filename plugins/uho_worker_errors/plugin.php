@@ -14,6 +14,10 @@ class serdelia_plugin_uho_worker_errors
      * @return null
      */
 
+    private $cms;
+    private $params;
+    private $parent;
+
 
     public function __construct($cms, $params, $parent)
     {
@@ -31,7 +35,7 @@ class serdelia_plugin_uho_worker_errors
         $errors = [];
         $added = [];
         
-        $items=$this->cms->getJsonModel('uho_worker',['status'=>'error'],false,null);
+        $items=$this->cms->get('uho_worker',['status'=>'error'],false,null);
 
         $update=[];
         if ($items)

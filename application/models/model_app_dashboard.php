@@ -50,10 +50,15 @@ class model_app_dashboard extends model_app
 
 		foreach ($home['widgets'] as $k => $v)
 		{
-
 			if (!is_array($v)) $v = ['widget' => $v];
 			if (empty($v['params'])) $v['params'] = [];
 			$v['params'] = array_merge($v['params'], $params);
+			if (!empty($v['params']['auth']) && !$this->checkAuth($v['params']['model']))
+			{
+				unset($home['widgets'][$k]);
+				continue;
+			}
+
 			$home['widgets'][$k] = $this->widgetGet($v);
 
 			if (!$home['widgets'][$k]) {
