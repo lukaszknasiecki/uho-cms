@@ -282,7 +282,6 @@ class model_app_page extends model_app
 		// Merge with Access Filters
 
 		$filters = array_merge($filters, $this->getAccessFilters($schema));
-		$filters_custom=[];
 
 		foreach ($filters as $k=>$v)
 		if (isset($v['type']) && $v['type']=='custom')
