@@ -34,13 +34,22 @@ class model_app_login extends model_app
 
 		$cfg = $this->getAvailableProjects();
 
+		$projects = [];
+		foreach ($cfg['projects'] as $k => $p) {
+			$projects[$k + 1] = $p + ['id' => $k + 1];
+		}
+
+		$host = $_SERVER['HTTP_HOST'] ?? '';
+		$projectsForHost = array_filter($projects, fn($p) => in_array($host, $p['domains'] ?? [], true));
+		if ($projectsForHost) $projects = $projectsForHost;
+
 		$logged = false;
 		$error = '';
 
 		// Login attempt
 		if (
 			isset($params['project'], $params['login_login'], $params['login_password']) &&
-			isset($cfg['projects'][intval($params['project']) - 1])
+			isset($projects[intval($params['project'])])
 		) {
 
 			$result = $this->clients->login($params['login_login'], $params['login_password']);
@@ -58,13 +67,13 @@ class model_app_login extends model_app
 			$error = 'login_error_project';
 		}
 
-		$projects = $cfg['projects'];
+		$projects = array_values($projects);
 		$uho_cms_projects_oauth = [];
 
 		foreach ($projects as $k => $p) {
-			$token = $this->clients->client->generateToken() . '_' . ($k + 1);
+			$token = $this->clients->client->generateToken() . '_' . $p['id'];
 			$projects[$k]['token'] = $token;
-			$uho_cms_projects_oauth[$token] = $k + 1;
+			$uho_cms_projects_oauth[$token] = $p['id'];
 		}
 
 		if ($uho_cms_projects_oauth)
@@ -81,7 +90,7 @@ class model_app_login extends model_app
 			'logged'    => $logged,
 			'translate' => $this->translate[$this->lang] ?? [],
 			'error'     => $error,
-			'google'	=> !empty($cfg['projects'][0]['google_oauth']),
+			'google'	=> !empty($projects[0]['google_oauth']),
 			'google_redirect' => $this->getCmsUri() . 'auth-google-callback',
 			'action'    => $this->cms_path . 'login',
 			'projects'  => $projects ?? []

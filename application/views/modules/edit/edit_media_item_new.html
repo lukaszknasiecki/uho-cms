@@ -39,13 +39,13 @@
             <label for="" class="form-label form-label-sm fw-semibold text-secondary mb-1">{{i.label}}</label>
 
             {% if i.field_type=='text' %}
-            <textarea {% if disabled %}disabled{% endif %} {% if i.lang %}data-edit-lang="{{i.lang}}" {% if not
-                langs[i.lang] %} style="display:none" {% endif %}{% endif %} type="text"
+            <textarea {% if disabled %}disabled{% endif %} {% if i.settings.lang %}data-edit-lang="{{i.settings.lang}}" {% if not
+                langs[i.settings.lang] %} style="display:none" {% endif %}{% endif %} type="text"
                 class="form-control form-control-sm" rows="2" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]"
                 placeholder="" value="{{item[i.field]}}">{{item[i.field]}}</textarea>
             {% else %}
-            <input {% if disabled %}disabled{% endif %} {% if i.lang %}data-edit-lang="{{i.lang}}" {% if not
-                langs[i.lang] %} style="display:none" {% endif %}{% endif %} type="text"
+            <input {% if disabled %}disabled{% endif %} {% if i.settings.lang %}data-edit-lang="{{i.settings.lang}}" {% if not
+                langs[i.settings.lang] %} style="display:none" {% endif %}{% endif %} type="text"
                 class="form-control form-control-sm" value="{{item[i.field]}}"
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" placeholder="">
             {% endif %}

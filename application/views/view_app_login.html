@@ -12,13 +12,13 @@
 				{{translate[error]}}
 			</div>
 			{% endif %}
-			{% if projects|length==1 %}<input name="project" type="hidden" value="1" data-state="{{projects[0].token}}">{% endif %}
+			{% if projects|length==1 %}<input name="project" type="hidden" value="{{projects[0].id}}" data-state="{{projects[0].token}}">{% endif %}
 			{% if projects|length==0 %}<div class="alert alert-danger text-center">
 				{{translate.no_projects}}
 			{% else %}
 			<select class="form-control" name="project">
 				{% for project in projects %}
-				<option value="{{loop.index}}" data-state="{{project.token}}" {% if project.disabled %}disabled{% endif %}>{{project.name}}</option>
+				<option value="{{project.id}}" data-state="{{project.token}}" {% if project.disabled %}disabled{% endif %}>{{project.name}}</option>
 				{% endfor %}
 			</select>
 			{% endif %}
