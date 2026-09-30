@@ -1510,7 +1510,7 @@ class model_app extends _uho_model
                     'user' => $this->getUser()
                 ],
                 'nested' => $params
-            ]
+            ]            
         ];
 
         // buttons -----------------------------------------------
@@ -1538,7 +1538,6 @@ class model_app extends _uho_model
                 // link new windows
                 elseif ($v['type'] == 'link') {
                     $u = $this->fillPattern($v['params']['url'], ['keys' => $record, 'numbers' => $params]);
-
                     $buttons[$k]['url'] = ['type' => 'external', 'link' => $u];
                     $buttons[$k]['target'] = "_blank";
                     $buttons[$k]['class'] = "warning";
@@ -1548,10 +1547,15 @@ class model_app extends _uho_model
 
                     $buttons[$k]['type'] = 'plugin';
                     if ($v['params']) {
-                        $v['params'] = $this->fillPattern($v['params'], ['keys' => $record, 'numbers' => $params]);
+                        $v['params'] = $this->fillPattern($v['params'], [
+                            'keys' => $record,
+                            'numbers' => $params                                                        
+                        ]);
                     }
-
-                    $v = $this->fillPattern($v, ['keys' => $record, 'numbers' => $params], true);
+                    $v = $this->fillPattern($v, [
+                        'keys' => $record,
+                        'numbers' => $params                        
+                        ], true);
 
                     $plugin_auth = $this->checkAuth($schema['model_name']);
                     $admin_required = isset($v['auth']) && $v['auth'] == 'admin';
@@ -1561,16 +1565,20 @@ class model_app extends _uho_model
                         || (!$admin_required && in_array($plugin_auth, [2, 3]))
                     ) {
                         if ($record) {
+
+                            $r=$record;
+                            $r['helper_models'] = $schema['cms']['helper_models'] ?? [];
+
                             $v['params'] = $this->fillPattern($v['params'], ['keys' => $record]);
 
                             if ($v['params'])
                                 foreach ($v['params'] as $k2 => $v2)
-                                    $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $record);
+                                    $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $r);
                         } else {
 
                             if ($v['params'])
                                 foreach ($v['params'] as $k2 => $v2)
-                                    $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $params);
+                                    $buttons[$k]['params'][$k2] = $this->getTwigFromHtml($v2, $r);
 
                             //$buttons[$k]['params'] = $v['params'];
                         }

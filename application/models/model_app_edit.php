@@ -299,7 +299,9 @@ class model_app_edit extends model_app
 		}
 
 		if ($schema['cms']['buttons_edit']) {
-			$schema['cms']['buttons_edit'] = $this->updateSchemaButtons($schema['cms']['buttons_edit'], $schema, $record, $params);
+			$schema['cms']['buttons_edit'] = $this->updateSchemaButtons(
+				$schema['cms']['buttons_edit'],
+				$schema, $record, $params);
 		}
 
 		foreach ($schema['fields'] as $k => $v) {
