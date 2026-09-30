@@ -3621,19 +3621,10 @@ class model_app extends _uho_model
     {
         if (!is_readable($envFile)) return [];
 
-        $values = [];
         foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if ($line === '' || $line[0] === '#' || !str_contains($line, '=')) continue;
-            [$key, $value] = explode('=', $line, 2);
-            $values[trim($key)] = trim(trim($value), '"\'');
+            if (preg_match('/^\s*DOMAIN\s*=\s*(.+?)\s*$/', $line, $match)) return [$match[1]];
         }
 
-        $domains = array_merge(
-            [$values['DOMAIN'] ?? ''],
-            explode(',', $values['DOMAIN_ALIASES'] ?? '')
-        );
-
-        return array_values(array_unique(array_filter(array_map('trim', $domains))));
+        return [];
     }
 }
