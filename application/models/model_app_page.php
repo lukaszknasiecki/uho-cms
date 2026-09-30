@@ -133,6 +133,7 @@ class model_app_page extends model_app
 			if ($field['cms']['search'] === 'global') $this->setCanGlobalSearch(true);
 
 		$global_search_filters = [];
+		$global_search_custom = [];
 		// search loop
 		foreach ($schema['fields'] as $k => $field)
 			if (
@@ -204,6 +205,7 @@ class model_app_page extends model_app
 				}
 				
 				if ($filter_val!==null && !$global_search) $filters[$field['field']] = $filter_val;
+				elseif ($filter_val && $global_search && is_array($filter_val) && ($filter_val['type'] ?? null) === 'custom') $global_search_custom[] = '(' . implode($filter_val['join'], $filter_val['value']) . ')';
 				elseif ($filter_val && $global_search) $global_search_filters[$field['field']] = $filter_val;
 
 
@@ -242,12 +244,13 @@ class model_app_page extends model_app
 			}
 
 
-		if ($global_search_filters) {
+		if ($global_search_filters || $global_search_custom) {
 
 		
 
 			//$schema['filters'] = $global_search_filters;
-			$global_search_filters = $this->orm->getFiltersQueryArray($schema, $global_search_filters);
+			if ($global_search_filters) $global_search_filters = $this->orm->getFiltersQueryArray($schema, $global_search_filters);
+			$global_search_filters = array_merge($global_search_filters, $global_search_custom);
 			if ($global_search_filters) {
 
 
