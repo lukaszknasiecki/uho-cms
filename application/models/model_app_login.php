@@ -90,7 +90,7 @@ class model_app_login extends model_app
 			'logged'    => $logged,
 			'translate' => $this->translate[$this->lang] ?? [],
 			'error'     => $error,
-			'google'	=> !empty($cfg['projects'][0]['google_oauth']),
+			'google'	=> !empty($projects[0]['google_oauth']),
 			'google_redirect' => $this->getCmsUri() . 'auth-google-callback',
 			'action'    => $this->cms_path . 'login',
 			'projects'  => $projects ?? []
