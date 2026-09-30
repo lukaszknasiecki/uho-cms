@@ -3576,9 +3576,12 @@ class model_app extends _uho_model
             $configFile = $configFolder . 'config.php';
 
             if (file_exists($configFile)) {
-                require_once($configFile);
-                if (!empty($cfg['cms']['title'])) {
-                    $name = $cfg['cms']['title'];
+                $projectCfg = (static function ($file) {
+                    include $file;
+                    return $cfg ?? [];
+                })($configFile);
+                if (!empty($projectCfg['cms']['title'])) {
+                    $name = $projectCfg['cms']['title'];
                 }
 
                 $envFile = $configFolder . '.env';
