@@ -3593,6 +3593,9 @@ class model_app extends _uho_model
                 'folder' => $folder
             ];
 
+            $domains = $this->getProjectDomains($configFolder . '.env');
+            if ($domains) $instances[$k]['domains'] = $domains;
+
             if (!empty($_ENV['GOOGLE_OAUTH_CLIENT_ID']) || !empty($_ENV['GOOGLE_OAUTH_CLIENT_SECRET'])) {
                 $instances[$k]['google_oauth'] = [
                     'client' => $_ENV['GOOGLE_OAUTH_CLIENT_ID'],
@@ -3609,5 +3612,25 @@ class model_app extends _uho_model
             'mode'                  => $theme,
             'projects'              => $instances
         ];
+    }
+
+    private function getProjectDomains(string $envFile): array
+    {
+        if (!is_readable($envFile)) return [];
+
+        $values = [];
+        foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#' || !str_contains($line, '=')) continue;
+            [$key, $value] = explode('=', $line, 2);
+            $values[trim($key)] = trim(trim($value), '"\'');
+        }
+
+        $domains = array_merge(
+            [$values['DOMAIN'] ?? ''],
+            explode(',', $values['DOMAIN_ALIASES'] ?? '')
+        );
+
+        return array_values(array_unique(array_filter(array_map('trim', $domains))));
     }
 }
