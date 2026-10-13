@@ -407,6 +407,8 @@ class model_app_edit extends model_app
 			];
 		}
 
+		if (!empty($schema['order'])) return $result;
+
 		return _uho_fx::array_multisort($result, 'label');
 	}
 

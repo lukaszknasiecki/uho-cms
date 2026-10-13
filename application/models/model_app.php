@@ -3584,9 +3584,12 @@ class model_app extends _uho_model
             $configFile = $configFolder . 'config.php';
 
             if (file_exists($configFile)) {
-                require_once($configFile);
-                if (!empty($cfg['cms']['title'])) {
-                    $name = $cfg['cms']['title'];
+                $projectCfg = (static function ($file) {
+                    include $file;
+                    return $cfg ?? [];
+                })($configFile);
+                if (!empty($projectCfg['cms']['title'])) {
+                    $name = $projectCfg['cms']['title'];
                 }
 
                 $envFile = $configFolder . '.env';
@@ -3600,6 +3603,9 @@ class model_app extends _uho_model
                 'name'   => $name,
                 'folder' => $folder
             ];
+
+            $domains = $this->getProjectDomains($configFolder . '.env');
+            if ($domains) $instances[$k]['domains'] = $domains;
 
             if (!empty($_ENV['GOOGLE_OAUTH_CLIENT_ID']) || !empty($_ENV['GOOGLE_OAUTH_CLIENT_SECRET'])) {
                 $instances[$k]['google_oauth'] = [
@@ -3617,5 +3623,16 @@ class model_app extends _uho_model
             'mode'                  => $theme,
             'projects'              => $instances
         ];
+    }
+
+    private function getProjectDomains(string $envFile): array
+    {
+        if (!is_readable($envFile)) return [];
+
+        foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            if (preg_match('/^\s*DOMAIN\s*=\s*(.+?)\s*$/', $line, $match)) return [$match[1]];
+        }
+
+        return [];
     }
 }

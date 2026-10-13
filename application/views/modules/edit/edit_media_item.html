@@ -126,7 +126,7 @@
 
     {% for i in field.captions %}
     <div class="col-lg-12" style="padding-left:0">
-        <div {% if i.lang %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{%
+        <div {% if i.settings.lang %}data-edit-lang="{{i.settings.lang}}" {% if not langs[i.settings.lang] %} style="display:none" {% endif %}{%
             endif %}>
             {% if not i.type or item.type in i.type %}
             {% if i.field_type=='boolean' %}
@@ -134,14 +134,14 @@
                 style="margin-right:10px;margin-top:10px" {% if disabled %}disabled{% endif %}
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]" {% if item[i.field] %}checked{% endif %}
                 value="1">
-            <label for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.lang %}({{i.lang|upper}}){%
+            <label for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.settings.lang %}({{i.settings.lang|upper}}){%
                 endif %}</label>
             {% elseif i.field_type=='select' %}
             <select {% if disabled %}disabled{% endif %}
-                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.lang
-                %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{% endif %}
+                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.settings.lang
+                %}data-edit-lang="{{i.settings.lang}}" {% if not langs[i.settings.lang] %} style="display:none" {% endif %}{% endif %}
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">
-                <option value=0>-- {{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %} --</option>
+                <option value=0>-- {{i.label}} {% if i.settings.lang %}({{i.settings.lang|upper}}){% endif %} --</option>
                 {% for option in i.options %}
                 <option {% if option.id==item[i.field] %}selected{% endif %} value="{{option.id}}">{{option.label}}
                 </option>
@@ -149,32 +149,32 @@
             </select>
             {% elseif i.field_type=='text' %}
             <textarea rows={% if i.cms.rows=='medium' %}6{% elseif i.cms.rows %}{{i.cms.rows}}{% else %}4{% endif %} {%
-                if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}"
+                if disabled %}disabled{% endif %} placeholder="{{i.label}} {% if i.settings.lang %}({{i.settings.lang|upper}}){% endif %}"
                 class="form-control serdelia-edit-field"
-                style="{% if i.settings.style=='json' %}font-family:cCourier;font-size:11px;{% endif %}{% if i.cms.wide %}width:800px;{% endif %}{% if i.lang and not langs[i.lang] %}display:none;{% endif %}"
-                {% if i.lang %}data-edit-lang="{{i.lang}}" {% endif %}
+                style="{% if i.settings.style=='json' %}font-family:cCourier;font-size:11px;{% endif %}{% if i.cms.wide %}width:800px;{% endif %}{% if i.settings.lang and not langs[i.settings.lang] %}display:none;{% endif %}"
+                {% if i.settings.lang %}data-edit-lang="{{i.settings.lang}}" {% endif %}
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">{{item[i.field]}}</textarea>
             {% elseif i.field_type=='html' %}
-            <label style="margin-top:10px" for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.lang
-                %}({{i.lang|upper}}){% endif %}:</label>
+            <label style="margin-top:10px" for="{{field.field}}-{{item.id}}" style="color:#666">{{i.label}} {% if i.settings.lang
+                %}({{i.settings.lang|upper}}){% endif %}:</label>
             <textarea id="{{field.cms_field}}[{{item.id}}][{{loop.index}}]"
                 class="form-control serdelia-edit-field {% if placeholder %}temp-{% endif %}ckeditor" {% if disabled
-                %}disabled{% endif %} placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}" {% if
-                i.lang %}data-edit-lang="{{i.lang}}" {% endif %} data-height=100 data-toolbar=false
+                %}disabled{% endif %} placeholder="{{i.label}} {% if i.settings.lang %}({{i.settings.lang|upper}}){% endif %}" {% if
+                i.settings.lang %}data-edit-lang="{{i.settings.lang}}" {% endif %} data-height=100 data-toolbar=false
                 name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">{{item[i.field]}}
                 </textarea>
 
             {% else %}
-            <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">{{i.label}} {% if i.lang
-                %}({{i.lang|upper}}){% endif %}:</label>
+            <label for="" class="serdelia-edit-imageUploadCaptionLinear-label">{{i.label}} {% if i.settings.lang
+                %}({{i.settings.lang|upper}}){% endif %}:</label>
             {#<input {% if disabled %}disabled{% endif %}
-                placeholder="{{i.label}} {% if i.lang %}({{i.lang|upper}}){% endif %}"
-                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.lang
-                %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{% endif %}
+                placeholder="{{i.label}} {% if i.settings.lang %}({{i.settings.lang|upper}}){% endif %}"
+                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear" {% if i.settings.lang
+                %}data-edit-lang="{{i.settings.lang}}" {% if not langs[i.settings.lang] %} style="display:none" {% endif %}{% endif %}
                 value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">#}
             <input {% if i.edit===false or disabled %}disabled{% endif %}
-                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" {% if i.lang
-                %}data-edit-lang="{{i.lang}}" {% if not langs[i.lang] %} style="display:none" {% endif %}{% endif %}
+                class="form-control serdelia-edit-field serdelia-edit-imageUploadCaptionLinear-short" {% if i.settings.lang
+                %}data-edit-lang="{{i.settings.lang}}" {% if not langs[i.settings.lang] %} style="display:none" {% endif %}{% endif %}
                 value="{{item[i.field]}}" name="{{field.cms_field}}[{{item.id}}][{{loop.index}}]">
             {% endif %}
             {% endif %}
