@@ -107,6 +107,7 @@ class model_app_page extends model_app
 		$this->url_search = ['type' => 'url_now'];
 
 		// Filter and transform schema
+		
 		$schema = $this->removeNonListedFieldsFromSchema($schema, $page_with_params, $params, $auth);
 
 		$buttons = $this->getSchemaButtons($schema, $params);
@@ -292,7 +293,6 @@ class model_app_page extends model_app
 			$filters_custom[]=$v;
 			unset($filters[$k]);
 		}
-		
 
 		// Fetch records
 		

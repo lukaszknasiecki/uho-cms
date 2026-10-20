@@ -78,7 +78,7 @@
                   {'value':record.values[item.field],'record':record,'field':item,'image_sizes':image_sizes } %}
                 {% endif %}
 
-                  {% if card_title %}</h6>{% else %}<br>{% endif %}
+                  {% if card_title %}</h6>{% elseif not item.cms.list.type=="show" %}<br>{% endif %}
 
                 {% elseif item.field %}
                   {% set html=html|merge({(item.field):include ('modules/page/page_'~item.type~'.html',
