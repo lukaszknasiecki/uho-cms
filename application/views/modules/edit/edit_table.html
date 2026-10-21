@@ -77,18 +77,19 @@
             <textarea {% if field.disabled or field.cms.edit is same as false %}disabled{% endif %} data-order="{{loop_index}}"
               style="{% if field.cms.height %}height:{{field.cms.height}}px;{% endif %}{% if field.cms.style=='json' or field.settings.header[v].style=='json' %}font-family:Courier{% endif %}"
               class="serdelia-edit-field serdelia_table_input"
+              {% if field.settings.data[i][v] %}readonly{% endif %}
               name="{{field.cms_field}}[][{{row_index_plus_1}}][{{loop.index}}]"
               placeholder="{{field.settings.header[v].placeholder}}">{{cell_value}}</textarea>
             {% endif %}
         </td>
      	{% endfor %}
-       {% if not field.disabled and field.cms.edit is not same as false %}
+       {% if not field.disabled and field.cms.edit is not same as false and not field.settings.rows %}
       <td width="10px" class="serdelia-table-cell serdelia-table-cell-remove" style="cursor:pointer"><span class="mdi mdi-delete-forever"></span></td>
       {% endif %}
     </tr>
     {% endfor %}
 </tbody>    
 </table>
-{% if not field.disabled and field.cms.edit is not same as false %}
+{% if not field.disabled and field.cms.edit is not same as false and not field.settings.rows %}
 <span class="btn {% if not field.cms.wide %}btn-sm{% endif %} btn-default serdelia_table_row_add" style="cursor:pointer;{% if not field.cms.wide %}float:right{% endif %}" data-table="{{field.cms_field}}"><i class="mdi mdi-add"></i> <span>{{translate.add}}</span></span>
 {% endif %}

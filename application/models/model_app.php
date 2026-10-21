@@ -68,7 +68,7 @@ class model_app extends _uho_model
  
      */
     public $cms_path = '';
-    public $cms_url='';
+    public $cms_url = '';
 
     /*
         DIR to CMS folder
@@ -847,11 +847,11 @@ class model_app extends _uho_model
 
         // helper models
         if (isset($schema['cms']['helper_models'])) {
-            
+
             foreach ($schema['cms']['helper_models'] as $k => $v) {
                 $v['record'] = $this->getTwigFromHtml($v['record'], $params['twig']);
                 $schema['cms']['helper_models'][$k] = $this->apporm->get($v['model'], ['id' => $v['record']], true, null, null, ['skipSchemaFilters' => true]);
-            }            
+            }
         }
 
         if ($schema['cms']['helper_models']) {
@@ -864,14 +864,12 @@ class model_app extends _uho_model
         }
 
         // update fields with helpermpdels
-        if ($schema['cms']['helper_models'])
-        {
+        if ($schema['cms']['helper_models']) {
             foreach ($schema['fields'] as $k => $v) {
                 if (isset($v['source']['filters']))
-                foreach ($schema['fields'][$k]['source']['filters'] as $k2=>$v2)
-                {
-                    $schema['fields'][$k]['source']['filters'][$k2] = $this->fillPattern($v2, $params);
-                }
+                    foreach ($schema['fields'][$k]['source']['filters'] as $k2 => $v2) {
+                        $schema['fields'][$k]['source']['filters'][$k2] = $this->fillPattern($v2, $params);
+                    }
             }
         }
 
@@ -1041,6 +1039,24 @@ class model_app extends _uho_model
 
                         break;
 
+                    case "table":
+                        $val=$record[$v['field']];
+                        $cols = $v['settings']['cols'] ?? 1;
+                        $rows = $v['settings']['rows'];
+                        $vals = $v['settings']['data'];
+                        if ($vals && !$rows) $rows = count($vals);
+
+                        if ($rows) {
+                            for ($row = 1; $row <= $rows; $row++) {
+                                $row_value = [];
+                                for ($col = 1; $col <= $cols; $col++) {
+                                    $row_value[] = $vals[$row - 1][$col - 1] ?? $val[$row - 1][$col - 1] ?? '';
+                                }
+                                $v['value'][$row - 1] = $row_value;
+                            }
+                        }
+
+                        break;
                     case "preview":
 
                         $v['value'] = [
@@ -1404,10 +1420,9 @@ class model_app extends _uho_model
         // update HTML media
 
         foreach ($schema['fields'] as $k => $v)
-            if ($v['type'] == 'html' && isset($v['settings']['media_field']) && (in_array($v['settings']['wysiwyg'], ['ckeditor', 'ckeditor5'])))
-            {
+            if ($v['type'] == 'html' && isset($v['settings']['media_field']) && (in_array($v['settings']['wysiwyg'], ['ckeditor', 'ckeditor5']))) {
                 $media = $record[$v['settings']['media_field']];
-                
+
                 //$filename = $this->cms_folder . '/public/ckeditor/plugins/uho_media/icons/uho_media.png';
                 $filename = 'uho_media.png';
 
@@ -1417,7 +1432,7 @@ class model_app extends _uho_model
                 // $html=strip_tags($html,'<p><b><strong><i><em><a><blockquote><img><iframe><figure><h1><h2><h3><h4><h5><h6><ol><ul><li><sup><sub>');
 
                 $html = $this->removeTags($html, ['span', 'figcaption']);
-                $html=str_replace('<img style="aspect-ratio:640/360;" ','<img ',$html);
+                $html = str_replace('<img style="aspect-ratio:640/360;" ', '<img ', $html);
 
                 $max = 100;
 
@@ -1428,7 +1443,7 @@ class model_app extends _uho_model
                     $i2 = strpos($html, '>', $i1);
 
                     $image = _uho_fx::array_filter($media, 'type', 'image', ['first' => true, 'keys' => true]);
-                    
+
 
                     if ($image !== false && $i2 > $i1) {
 
@@ -1510,7 +1525,7 @@ class model_app extends _uho_model
                     'user' => $this->getUser()
                 ],
                 'nested' => $params
-            ]            
+            ]
         ];
 
         // buttons -----------------------------------------------
@@ -1549,13 +1564,13 @@ class model_app extends _uho_model
                     if ($v['params']) {
                         $v['params'] = $this->fillPattern($v['params'], [
                             'keys' => $record,
-                            'numbers' => $params                                                        
+                            'numbers' => $params
                         ]);
                     }
                     $v = $this->fillPattern($v, [
                         'keys' => $record,
-                        'numbers' => $params                        
-                        ], true);
+                        'numbers' => $params
+                    ], true);
 
                     $plugin_auth = $this->checkAuth($schema['model_name']);
                     $admin_required = isset($v['auth']) && $v['auth'] == 'admin';
@@ -1566,7 +1581,7 @@ class model_app extends _uho_model
                     ) {
                         if ($record) {
 
-                            $r=$record;
+                            $r = $record;
                             $r['helper_models'] = $schema['cms']['helper_models'] ?? [];
 
                             $v['params'] = $this->fillPattern($v['params'], ['keys' => $record]);
@@ -1863,8 +1878,7 @@ class model_app extends _uho_model
 
             foreach ($this->cache_folders as $k => $v) {
                 // url based
-                if (!empty($v['url']))
-                {
+                if (!empty($v['url'])) {
                     $file_contents = _uho_fx::fileCurl($v['url']);
                     if (is_string($file_contents)) $r = @json_decode($file_contents, true);
                     else $r = null;
@@ -2460,8 +2474,7 @@ class model_app extends _uho_model
         /*
          changing schema according to record values
         */
-        if ($schema['schema_update'])
-        {
+        if ($schema['schema_update']) {
 
             if (!is_array($schema['schema_update']))
                 $schema['schema_update'] = ['file' => $schema['schema_update']];

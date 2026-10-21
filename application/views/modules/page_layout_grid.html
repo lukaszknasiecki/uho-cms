@@ -50,8 +50,11 @@
           <a style="color:#000;text-decoration:none;" class="thumbnail">
             {% endif %}
             {% set html=[] %}
-            {% if schema.cms.layout.settings.cards %}<div class='card' {% if schema.cms.layout.settings.height
-              %}style='height:{{schema.cms.layout.settings.height}}px' {% endif %}>
+            {% if schema.cms.layout.settings.cards %}
+            <div class='card' {% if schema.cms.layout.settings.height %}style='height:{{schema.cms.layout.settings.height}}px' {% endif %}>
+              {% if schema.cms.layout.settings.card_image %}
+              <img class="card-img-top" src="{% if record.values.image.thumbnail %}{{record.values.image.thumbnail}}{% else %}/public/blank_16x9.png{% endif %}">
+              {% endif %}
               <div class='card-body'>{% endif %}
 
                 {% for item in schema.fields %}
@@ -71,7 +74,9 @@
                   {% set card_title=true %}{% else %}{% set card_title=null %}{% endif %}
                 
                 {% if card_title %}
+                
                   <h6 class='card-title'>
+
                 {% endif %}
                 {% if item.cms.list.type=="show" %}
                   {% include 'modules/page/page_'~item.type~'.html' with
