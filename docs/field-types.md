@@ -452,6 +452,13 @@ Blocks are defined in JSON file aligned with EditorJS schema.
 }
 ```
 
+You can define custom block types in CMS config folder, i.e. /cms_config/editorjs/editorjs.js file by
+simply putting types:
+
+```
+window.CustomDataTool_Types = ['Clips','Interviews'];
+```
+
 ### `image`
 
 Image upload with multiple sizes. Creates virtual schema (no SQL field).

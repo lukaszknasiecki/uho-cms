@@ -1,5 +1,6 @@
 <?php
 
+use Google\Service\DiscoveryEngine\GoogleCloudDiscoveryengineV1AnswerQueryRequestRelatedQuestionsSpec;
 use Vimeo\Vimeo;
 use Huncwot\UhoFramework\_uho_fx;
 use Huncwot\UhoFramework\_uho_thumb;
@@ -209,148 +210,148 @@ class model_app_write extends model_app
 
 		// value updates
 		foreach ($schema['fields'] as $k => $v)
-		if (!$update_payload_only || isset($data[$v['field']])) {
-			if (
-				$v['type'] != 'file'
-				&& !empty($v['cms']['auto'])
-				&& (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])
-			) {
-				$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
-			}
+			if (!$update_payload_only || isset($data[$v['field']])) {
+				if (
+					$v['type'] != 'file'
+					&& !empty($v['cms']['auto'])
+					&& (empty($v['cms']['auto']['on_null']) || !$data[$v['field']])
+				) {
+					$data_payload[$v['field']] = $data[$v['field']] = $this->updateAutoValue($v, $schema, $data_deep, $params);
+				}
 
-			switch ($v['type']) {
+				switch ($v['type']) {
 
-				case "float":
+					case "float":
 
-					break;
+						break;
 
-				case "variable":
-					$data[$v['field']] = $this->getAutoVariable($v['variable']);
-					break;
+					case "variable":
+						$data[$v['field']] = $this->getAutoVariable($v['variable']);
+						break;
 
-				case "elements":
+					case "elements":
 
-					if ($data[$v['field']]) {
-						if (is_array($data[$v['field']])) {
-							$vv = [];
-							foreach ($data[$v['field']] as $k5 => $v5)
-								$vv[] = $v5['id'];
-						} else $vv = explode(',', $data[$v['field']]);
-					} else $vv = [];
+						if ($data[$v['field']]) {
+							if (is_array($data[$v['field']])) {
+								$vv = [];
+								foreach ($data[$v['field']] as $k5 => $v5)
+									$vv[] = $v5['id'];
+							} else $vv = explode(',', $data[$v['field']]);
+						} else $vv = [];
 
-					/*
+						/*
 					$iDigits = 8;
 					if ($v['output'] == '4digits') $iDigits = 4;
 					if ($v['output'] == '6digits') $iDigits = 6;
 					if ($v['output'] == 'string') $iDigits = 0;
 					*/
 
-					// extract new
-					if (isset($data[$v['field'] . '_new'])) $new = json_decode($data[$v['field'] . '_new'], true);
-					else $new = null;
-					if ($new)
+						// extract new
+						if (isset($data[$v['field'] . '_new'])) $new = json_decode($data[$v['field'] . '_new'], true);
+						else $new = null;
+						if ($new)
+							foreach ($vv as $k2 => $v2)
+								if (substr($v2, 0, 4) == 'new_' && $new[$v2]) {
+									$add = [$v['settings']['add'] => $new[$v2]];
+
+									$this->apporm->post($v['source']['model'], $add);
+									$vv[$k2] = $this->apporm->getInsertId();
+									if (!$vv[$k2]) unset($vv[$k2]);
+								}
+
 						foreach ($vv as $k2 => $v2)
-							if (substr($v2, 0, 4) == 'new_' && $new[$v2]) {
-								$add = [$v['settings']['add'] => $new[$v2]];
+							if ($vv) {
+								//if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
+							} else unset($vv[$k2]);
 
-								$this->apporm->post($v['source']['model'], $add);
-								$vv[$k2] = $this->apporm->getInsertId();
-								if (!$vv[$k2]) unset($vv[$k2]);
-							}
-
-					foreach ($vv as $k2 => $v2)
-						if ($vv) {
-							//if ($iDigits > 0) $vv[$k2] = _uho_fx::dozeruj($v2, $iDigits);
-						} else unset($vv[$k2]);
-
-					$data[$v['field']] = $vv; // implode(',', $vv);
+						$data[$v['field']] = $vv; // implode(',', $vv);
 
 
-					break;
+						break;
 
-				case "boolean":
+					case "boolean":
 
-					if ($data[$v['field']] == 'off') $data[$v['field']] = 0;
-					elseif ($data[$v['field']] == 'on') $data[$v['field']] = 1;
+						if ($data[$v['field']] == 'off') $data[$v['field']] = 0;
+						elseif ($data[$v['field']] == 'on') $data[$v['field']] = 1;
 
-					break;
+						break;
 
-				case "timestamp":
+					case "timestamp":
 
-				
-					if (isset($v['settings']['on_update']) && $v['settings']['on_update']) {
-						unset($data[$v['field']]);
-					}
-					
 
-					break;
-
-				case "checkboxes":
-
-					$iDigits = 8;
-					if ($v['settings']['output'] == '4digits') $iDigits = 4;
-					if ($v['settings']['output'] == '6digits') $iDigits = 6;
-					if ($v['settings']['output'] == 'string') $iDigits = 0;
-
-					$val = [];
-
-					if ($data[$v['field']]) {
-						foreach ($data[$v['field']] as $k2 => $v2)
-							if ($iDigits && is_numeric($v2))
-								$val[] = _uho_fx::dozeruj($v2, $iDigits);
-							elseif (!$iDigits && $v2 != 'off') $val[] = $v2;
-					}
-
-					$data[$v['field']] = implode(',', $val);
-
-					break;
-
-				case "uid":
-					if (in_array($v['field'], $update_fields) && $old_value[$v['field']])
-						$data[$v['field']] = $old_value[$v['field']];
-					else if (!$data[$v['field']]) $data[$v['field']] = uniqid();
-					break;
-
-				case "table":
-
-					if ($update_fields && !in_array($v['field'], $update_fields));
-					else {
-
-						$t = [];
-						$vv = $data[$v['field']];
-
-						if (is_array($vv))
-							foreach ($vv as $k2 => $v2) {
-								foreach ($v2 as $k3_row => $col)
-									if (is_array($col) && is_numeric($k3_row))	// avoid fake placeholder field
-										foreach ($col as $k4_row => $value) {
-											if (!$t[$k3_row]) $t[$k3_row] = [];
-											$t[$k3_row][$k4_row] = $value;
-										}
-							}
-
-						$t = array_values($t);
-
-						foreach ($t as $k2 => $v2) {
-							$t[$k2] = array_values($v2);
-							$on = false;
-							foreach ($t[$k2] as $k3 => $v3) {
-								$t[$k2][$k3] = trim($v3);
-								$on = $on || $t[$k2][$k3];
-							}
-							if ($k2 == count($t) - 1 && !$on) unset($t[$k2]);
-						}
-
-						if (!$v['outside']) $data[$v['field']] = $t;
-						else {
-							$this->writeOutside($v, $t, $data);
+						if (isset($v['settings']['on_update']) && $v['settings']['on_update']) {
 							unset($data[$v['field']]);
 						}
-					}
 
-					break;
+
+						break;
+
+					case "checkboxes":
+
+						$iDigits = 8;
+						if ($v['settings']['output'] == '4digits') $iDigits = 4;
+						if ($v['settings']['output'] == '6digits') $iDigits = 6;
+						if ($v['settings']['output'] == 'string') $iDigits = 0;
+
+						$val = [];
+
+						if ($data[$v['field']]) {
+							foreach ($data[$v['field']] as $k2 => $v2)
+								if ($iDigits && is_numeric($v2))
+									$val[] = _uho_fx::dozeruj($v2, $iDigits);
+								elseif (!$iDigits && $v2 != 'off') $val[] = $v2;
+						}
+
+						$data[$v['field']] = implode(',', $val);
+
+						break;
+
+					case "uid":
+						if (in_array($v['field'], $update_fields) && $old_value[$v['field']])
+							$data[$v['field']] = $old_value[$v['field']];
+						else if (!$data[$v['field']]) $data[$v['field']] = uniqid();
+						break;
+
+					case "table":
+
+						if ($update_fields && !in_array($v['field'], $update_fields));
+						else {
+
+							$t = [];
+							$vv = $data[$v['field']];
+
+							if (is_array($vv))
+								foreach ($vv as $k2 => $v2) {
+									foreach ($v2 as $k3_row => $col)
+										if (is_array($col) && is_numeric($k3_row))	// avoid fake placeholder field
+											foreach ($col as $k4_row => $value) {
+												if (!$t[$k3_row]) $t[$k3_row] = [];
+												$t[$k3_row][$k4_row] = $value;
+											}
+								}
+
+							$t = array_values($t);
+
+							foreach ($t as $k2 => $v2) {
+								$t[$k2] = array_values($v2);
+								$on = false;
+								foreach ($t[$k2] as $k3 => $v3) {
+									$t[$k2][$k3] = trim($v3);
+									$on = $on || $t[$k2][$k3];
+								}
+								if ($k2 == count($t) - 1 && !$on) unset($t[$k2]);
+							}
+
+							if (!$v['outside']) $data[$v['field']] = $t;
+							else {
+								$this->writeOutside($v, $t, $data);
+								unset($data[$v['field']]);
+							}
+						}
+
+						break;
+				}
 			}
-		}
 
 		foreach ($schema['fields'] as $k => $v)
 			if (
@@ -397,12 +398,13 @@ class model_app_write extends model_app
 			switch ($v['type']) {
 
 				case "html":
-					if (isset($v['settings']['media']))
-					{
+					if (isset($v['settings']['media'])) {
 						$r = $this->htmlMediaUpdate(
 							$data[$v['field']],
 							$schema['model_name'],
-							$v['settings']['media'], $v);
+							$v['settings']['media'],
+							$v
+						);
 
 						$data[$v['field']] = $r['html'];
 						$additional_post = array_merge($additional_post, $r['post']);
@@ -419,11 +421,12 @@ class model_app_write extends model_app
 					if ($json) {
 
 						if (!empty($v['settings']['media'])) {
+
 							$r = $this->blocksMediaUpdate(
 								$json,
 								$schema['model_name'],
 								$v['settings']['media'],
-								$v['settings']['media_filters'] ?? null,
+								isset($v['settings']['media_filters']) ? $this->fillPattern($v['settings']['media_filters'], ['twig' => $data]) : null,
 								$v
 							);
 							$data[$v['field']] = $r['json'];
@@ -643,8 +646,7 @@ class model_app_write extends model_app
 							$extension = strtolower(array_pop(explode('.', $source)));
 							$uid = uniqid();
 
-							if ($image_type == 'file')
-							{
+							if ($image_type == 'file') {
 								$r = $this->fileUpload($file_field, ['uid' => $uid], $source, null, ['remove' => true]);
 								$new[$v2] = [
 									'uid' => $uid,
@@ -669,7 +671,9 @@ class model_app_write extends model_app
 							} else
 							// image
 							{
-								$r = $this->imageUpload($image_field, ['uid' => $uid], $source, false, null, $image_type);
+								$data_media = $data;
+								$data_media['uid'] = $uid;
+								$r = $this->imageUpload($image_field, $data_media, $source, false, null, $image_type);
 								if ($r) {
 
 									$new[$v2] = ['uid' => $uid, 'extension' => $r['extension']];
@@ -818,6 +822,8 @@ class model_app_write extends model_app
 						'model_id' => $id
 					];
 
+					if (!$existing) unset($delete_filters['id']);
+
 					if (isset($v['source']['filters']))
 						$delete_filters = array_merge($delete_filters, $v['source']['filters']);
 
@@ -897,7 +903,7 @@ class model_app_write extends model_app
 		/*
 		** updating  record
 		*/ {
-			
+
 			$this->backupAdd($schema['table'], $id);
 			$data['id'] = $id;
 			$this->logsAdd('edit');
@@ -916,9 +922,9 @@ class model_app_write extends model_app
 
 				foreach ($v['value'] as $kk => $vv)
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
-				
-				$result=$this->apporm->post($v['model'], $v['value']);
-				if($result===false)
+
+				$result = $this->apporm->post($v['model'], $v['value']);
+				if ($result === false)
 					exit('error on additional POST: ' . $this->apporm->getLastError());
 			}
 
@@ -1278,7 +1284,11 @@ class model_app_write extends model_app
 
 		// Prepare destination info
 		$dir = rtrim(root_doc, '/') . $field['settings']['folder'] . '/';
-		$dest = $this->updateImageDest($field, $data, $filename);
+		$dest = $this->updateImageDest(
+			$field,
+			$data,
+			$filename
+		);
 		$field['images'] = $dest['images'];
 		$extension = $dest['extension'];
 
@@ -2011,8 +2021,7 @@ class model_app_write extends model_app
 		$search = $this->temp_path . '/upload';
 
 		$max = 100;
-		while (strpos(' ' . $html, $search) && $max-- > 0)
-		{
+		while (strpos(' ' . $html, $search) && $max-- > 0) {
 
 			$i1 = strpos($html, $this->temp_path . '/upload');
 			$i2 = strpos($html, '"', $i1 + 10);
@@ -2154,6 +2163,7 @@ class model_app_write extends model_app
 	*/
 	private function blocksMediaUpdate($json, string $parent_model, string $media_model_name, array|null $media_filters, array $field): array
 	{
+
 		//$uho_media_replacer = !empty($field['settings']['media_field']);
 		$existing_uids = [];
 
@@ -2162,7 +2172,11 @@ class model_app_write extends model_app
 		$deleted_media = []; // Media records to remove
 
 		$media_model = $this->getSchema($media_model_name);
+
 		$image_field = _uho_fx::array_filter($media_model['fields'], 'field', 'image', ['first' => true]);
+
+		if ($media_filters)
+			$image_field=$this->fillPatternTwigRecursive($image_field, $media_filters);
 
 		// --- STEP 1: Process newly uploaded temp images ---
 

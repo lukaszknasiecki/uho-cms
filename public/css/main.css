@@ -829,11 +829,13 @@ display: block;
 }
 
 .serdelia-edit-elements--simple {
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px solid #ddd;  
   display: inline-block;
-  padding: 3px 10px;
+  padding: 5px 10px;
   width: auto;
-  background-color: white;
-  border: 1px solid #aaa;
+  background-color: white;  
 }
 
 .serdelia-edit-media-tool {

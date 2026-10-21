@@ -1630,6 +1630,18 @@ class model_app extends _uho_model
         return $this->getTwigFromHtml($string, $params);
     }
 
+    public function fillPatternTwigRecursive($array, $params)
+    {
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $array[$k] = $this->fillPatternTwigRecursive($v, $params);
+            } elseif (is_string($v)) {
+                $array[$k] = $this->getTwigFromHtml($v, $params);
+            }
+        }
+        return $array;
+    }
+
     public function fillPattern($array, $params)
     {
         if (!is_array($array)) {
