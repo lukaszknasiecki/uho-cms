@@ -949,6 +949,7 @@ class model_app_write extends model_app
 
 		$plugins = array_merge($plugins1, $plugins2);
 
+		// auto-run plugins for the current records
 		if ($plugins && !$update_fields) {
 			require_once("model_app_plugin.php");
 
@@ -956,6 +957,9 @@ class model_app_write extends model_app
 			$class->setParent($this);
 			$class->setCfgPath($this->cfg_path);
 			$class->apporm = $this->apporm;
+
+			$commands = _uho_fx::array_filter($plugins, 'type', 'commands');
+			$plugins = _uho_fx::array_filter($plugins, 'type', 'plugin');
 
 			foreach ($plugins as $k => $v) {
 				$p = [
@@ -967,6 +971,22 @@ class model_app_write extends model_app
 					'orm' => $this->apporm
 				];
 				$output = $class->getContentData(array('params' => $p, 'get' => []));
+			}
+
+			foreach ($commands as $k => $v) {
+				foreach ($v['commands'] as $kk => $vv) {
+					if ($vv['type'] == 'plugin') {
+						$p = [
+							'page' => $vv['page'],
+							'page_with_params' => null,
+							'params' => $v['params'] ?? null,
+							'record' => $this->getTwigFromHtml($vv['record'], $data),
+							'plugin' => $vv['plugin'],
+							'orm' => $this->apporm
+						];
+						$output = $class->getContentData(array('params' => $p, 'get' => []));
+					}
+				}
 			}
 
 			$data = $this->apporm->get($model, ['id' => $id], true, null, null, ['additionalParams' => $params]);
@@ -2176,7 +2196,7 @@ class model_app_write extends model_app
 		$image_field = _uho_fx::array_filter($media_model['fields'], 'field', 'image', ['first' => true]);
 
 		if ($media_filters)
-			$image_field=$this->fillPatternTwigRecursive($image_field, $media_filters);
+			$image_field = $this->fillPatternTwigRecursive($image_field, $media_filters);
 
 		// --- STEP 1: Process newly uploaded temp images ---
 

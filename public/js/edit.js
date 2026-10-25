@@ -172,7 +172,7 @@ Apps.Edit = function ($, window) {
               $('#' + id).prev('.alert-danger.serdelia-format-alert').remove();
 
               // Add red Bootstrap alert box before the input
-              $input.before('<div class="alert alert-danger serdelia-format-alert" role="alert">Please, update this field to match valid format.</div>');
+              $input.before('<div class="alert alert-danger serdelia-format-alert" role="alert">Please, update this field to match valid JSON format.</div>');
 
               id = $('#' + id).parents('.tab-pane').attr('id');
               $('[aria-controls="' + id + '"]').tab("show");

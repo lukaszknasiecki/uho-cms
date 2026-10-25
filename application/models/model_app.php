@@ -1040,7 +1040,7 @@ class model_app extends _uho_model
                         break;
 
                     case "table":
-                        $val=$record[$v['field']];
+                        $val = $record[$v['field']];
                         $cols = $v['settings']['cols'] ?? 1;
                         $rows = $v['settings']['rows'];
                         $vals = $v['settings']['data'];
@@ -3571,6 +3571,13 @@ class model_app extends _uho_model
         else return false;
     }
 
+    public function autoUpdatePlugin(string $plugin_name)
+    {
+        $plugin = new serdelia_plugin_interview_update($this->cms, ['record' => $session['interview']['id']], $this->parent);
+        $r = $plugin->getData();
+        if ($r['messages']) $messages = array_merge($messages, $r['messages']);
+        $this->parent->autoUpdateRecord('interviews', $session['interview']['id']);
+    }
     /**
      * Loads the list of available projects from sunship-cms.json.
      *
