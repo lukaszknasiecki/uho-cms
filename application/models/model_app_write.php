@@ -420,13 +420,16 @@ class model_app_write extends model_app
 
 					if ($json) {
 
-						if (!empty($v['settings']['media'])) {
+						if (!empty($v['settings']['media_model'])) {
+
+							$data_pattern = $data;
+							$data_pattern['id'] = $id;
 
 							$r = $this->blocksMediaUpdate(
 								$json,
 								$schema['model_name'],
-								$v['settings']['media'],
-								isset($v['settings']['media_filters']) ? $this->fillPattern($v['settings']['media_filters'], ['twig' => $data]) : null,
+								$v['settings']['media_model'],
+								isset($v['settings']['media_filters']) ? $this->fillPattern($v['settings']['media_filters'], ['twig' => $data_pattern]) : null,
 								$v
 							);
 							$data[$v['field']] = $r['json'];
@@ -2216,6 +2219,7 @@ class model_app_write extends model_app
 					$base64 = substr($img, 0, 5) == 'data:';
 					$tempdir = ('/' . $dir == $this->temp_path);
 
+					// standard new editorJS image
 					if ($base64 || $tempdir) {
 
 						$uid = uniqid();

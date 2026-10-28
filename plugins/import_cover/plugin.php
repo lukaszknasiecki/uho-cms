@@ -484,7 +484,9 @@ class serdelia_plugin_import_cover
 
     private function spotifyGet(string $spotify_id, array $keys)
     {
+        if (empty($keys['client']) || empty($keys['secret'])) return false;
         $token = $this->getSpotifyToken($keys['client'], $keys['secret']);
+
         if ($token) {
             $url = "https://api.spotify.com/v1/episodes/" . $spotify_id;
 
