@@ -3667,4 +3667,46 @@ class model_app extends _uho_model
 
         return [];
     }
+
+    public function runAI($type = 'gemini', $prompt)
+    {
+
+        switch ($type) {
+            case "gemini":
+                $token = $this->plugins_cfg['GEMINI_API_KEY'] ?? null;
+                break;
+            default:
+                $token = null;
+                break;
+        }
+
+        if (!$token) return ['result' => false, 'message' => 'No AI token'];
+
+        switch ($type) {
+            case "gemini":
+                $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' . $token;
+                $data = [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                [
+                                    'text' => $prompt
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+                $original_response = $response = _uho_fx::curl('POST', $url, $data, ['content-type' => 'application/json', 'timeout' => 60]);
+                $response = json_decode($response['data'], true);
+                $response = $response['candidates'][0]['content']['parts'][0]['text'];
+
+
+                break;
+            default:
+                return ['result' => false, 'message' => 'Unsupported AI type'];
+                break;
+        }
+
+        return ['result'=>true,'response'=>$response];
+    }
 }

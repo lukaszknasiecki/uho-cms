@@ -867,6 +867,40 @@ class model_app_write extends model_app
 			}
 
 		/*
+		** run auto-translations
+		*/
+
+		$translate = [];
+		$source_lang = 'en';
+		$dest_langs = ['es', 'pl'];
+
+		foreach ($schema['fields'] as $k => $v)
+			if (!empty($v['cms']['translate']) && !empty($data[$v['field']])) {
+				$f = explode('_', $v['field']);
+				$lang = array_pop($f);
+				$f = implode('_', $f);
+				$dest = [];
+
+				foreach ($dest_langs as $dl) {
+					$find = _uho_fx::array_filter($schema['fields'], 'field', $f . '_' . strtoupper($dl), ['first' => true]);
+					if ($find && empty($data[$find['field']]))
+						$dest[] = ['language' => $dl, 'field' => $find['field'], 'type' => $v['type'], 'value' => null];
+				}
+
+				if ($dest && $lang == strtoupper($source_lang)) {
+					if ($v['type']=='table') $val=json_encode($data[$v['field']]);
+						else $val=$data[$v['field']];
+					$translate[] = [
+						'type' => $v['type'],
+						'source' => ['language' => $source_lang, 'field' => $v['field'], 'value' => $val],
+						'destination' => $dest
+					];
+				}
+			}
+
+		if ($translate) $data = $this->translateAI($data, $translate);
+
+		/*
 		** adding new record
 		*/
 
@@ -941,6 +975,7 @@ class model_app_write extends model_app
 					if (is_string($vv)) $v['value'][$kk] = str_replace('%record_id%', $id, $vv);
 				$this->apporm->delete($v['model'], $v['value'], true);
 			}
+
 
 		/*
 		** run auto-plugins		
@@ -2542,5 +2577,34 @@ class model_app_write extends model_app
 		}
 
 		return $result;
+	}
+
+
+
+	private function translateAI($data, $translate)
+	{
+		$output=$this->runAI('gemini', 'Translate this JSON, keep the same JSON structure
+
+		' . json_encode($translate));
+
+		if (!$output['result']) return $data;
+
+		$response=preg_replace('/^\s*```(?:json)?\s*|\s*```\s*$/i', '', $output['response']);
+
+		$output = json_decode($response, true);
+		if ($output)
+		foreach ($output as $fields)
+			foreach ($fields['destination'] as $field)
+				if ($field['value'] && isset($data[$field['field']]))
+				{
+					$val=$field['value'];
+					if ($field['type']=='table' && is_string($val))
+					{
+						$val=json_decode($val, true);
+					}
+					$data[$field['field']] = $val;
+				}
+
+		return $data;
 	}
 }
