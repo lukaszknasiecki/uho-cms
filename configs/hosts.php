@@ -57,6 +57,10 @@ $cfg_domains = [
 			[
 				'client' => getEnv('GOOGLE_OAUTH_CLIENT_ID') ?? null,
 				'secret' => getEnv('GOOGLE_OAUTH_CLIENT_SECRET') ?? null,
+			],
+			'google_api'=>
+			[
+				'key' => getEnv('GOOGLE_API_KEY') ?? null
 			]
 		],
 		"2factor" => empty(getEnv("2FACTOR")) ? false : filter_var(getEnv("2FACTOR"), FILTER_VALIDATE_BOOLEAN),

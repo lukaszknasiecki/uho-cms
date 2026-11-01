@@ -867,7 +867,7 @@ class model_app_write extends model_app
 			}
 
 		/*
-		** run auto-translations
+		** run auto-translations for standard fields
 		*/
 
 		$translate = [];
@@ -875,30 +875,79 @@ class model_app_write extends model_app
 		$dest_langs = ['es', 'pl'];
 
 		foreach ($schema['fields'] as $k => $v)
-			if (!empty($v['cms']['translate']) && !empty($data[$v['field']])) {
+
+			if (!empty($v['cms']['translate']) && !empty($data[$v['field']]))
+			{
+
 				$f = explode('_', $v['field']);
 				$lang = array_pop($f);
 				$f = implode('_', $f);
 				$dest = [];
 
+				/*
+				** determine destination fields for translation
+				*/
 				foreach ($dest_langs as $dl) {
 					$find = _uho_fx::array_filter($schema['fields'], 'field', $f . '_' . strtoupper($dl), ['first' => true]);
-					if ($find && empty($data[$find['field']]))
-						$dest[] = ['language' => $dl, 'field' => $find['field'], 'type' => $v['type'], 'value' => null];
+					if ($find)
+					{
+						switch ($find['type'])
+						{
+							case 'table':
+								$val=$data[$find['field']];
+								if (isset($find['settings']['data']))
+								{
+									foreach ($find['settings']['data'] as $kr=> $row)
+									{
+										foreach ($row as $kc=> $cell)
+										if (!empty($cell))
+										{
+											unset($val[$kr][$kc]);
+										}
+										if (empty($val[$kr])) unset($val[$kr]);
+									}
+								}
+								$empty=true;
+								foreach ($val as $row)
+									foreach ($row as $cell)
+										if (!empty($cell)) $empty=false;
+								break;
+							default:
+								$empty=empty($data[$find['field']]);
+						}
+						if($empty) {
+							$dest[] = ['language' => $dl, 'field' => $find['field'], 'type' => $v['type'], 'value' => null];
+						}
+					}
 				}
 
 				if ($dest && $lang == strtoupper($source_lang)) {
-					if ($v['type']=='table') $val=json_encode($data[$v['field']]);
-						else $val=$data[$v['field']];
-					$translate[] = [
-						'type' => $v['type'],
-						'source' => ['language' => $source_lang, 'field' => $v['field'], 'value' => $val],
-						'destination' => $dest
-					];
+					
+					switch ($v['type']) {
+						case 'table':
+							$val = json_encode($data[$v['field']]);
+							break;
+						case 'file':
+							$val = null;
+							break;
+						default:
+							$val = $data[$v['field']];
+					}
+
+					if ($val)
+						$translate[] = [
+							'type' => $v['type'],
+							'source' => ['language' => $source_lang, 'field' => $v['field'], 'value' => $val],
+							'destination' => $dest
+						];
 				}
 			}
 
-		if ($translate) $data = $this->translateAI($data, $translate);
+
+		if ($translate) {
+			
+			$data = $this->translateAI($data, $translate);
+		}
 
 		/*
 		** adding new record
@@ -949,8 +998,98 @@ class model_app_write extends model_app
 			$result = $this->apporm->put($schema, $data);
 			if ($result === false) $errors[] = 'Error on PUT UPDATE ' . $this->apporm->getLastError();
 			else $result = true;
-
 			$is_new_now = false;
+		}
+
+		/*
+		** run auto-translations for non-standard fields
+		*/
+
+		$translate = [];
+		$translate_classic = [];
+		$source_lang = 'en';
+		$dest_langs = ['es', 'pl'];
+		$data_new = $this->apporm->get($schema, ['id' => $id], true);
+
+		if ($data_new) {
+			foreach ($schema['fields'] as $k => $v) {
+				$val = $data_new[$v['field']] ?? null;
+				if ($v['type'] == 'file') $val = $val['src'] ?? null;
+
+				if (in_array($v['type'], ['file']) && !empty($v['cms']['translate']) && $val) {
+
+					$f = explode('_', $v['field']);
+					$lang = array_pop($f);
+					$f = implode('_', $f);
+					$dest = [];
+
+					foreach ($dest_langs as $dl) {
+						$find = _uho_fx::array_filter($schema['fields'], 'field', $f . '_' . strtoupper($dl), ['first' => true]);
+						if ($find && empty($data_new[$find['field']]['src'])) {
+							$dest[] = [
+								'language' => $dl,
+								'field' => $find['field'],
+								'type' => $v['type'],
+								'value' => null
+							];
+						}
+					}
+
+					if ($dest && $lang == strtoupper($source_lang)) {
+						switch ($v['type']) {
+							case 'file':
+								$src = explode('?', $val)[0];
+								$val = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $src);
+								break;
+							default:
+								$val = $data[$v['field']];
+						}
+
+						if ($val && $dest)
+							if (strlen($val) > 1000)
+								$translate_classic[] = [
+									'type' => $v['type'],
+									'source' => ['language' => $source_lang, 'field' => $v['field'], 'value' => $val],
+									'destination' => $dest
+								];
+							else
+								$translate[] = [
+									'type' => $v['type'],
+									'source' => ['language' => $source_lang, 'field' => $v['field'], 'value' => $val],
+									'destination' => $dest
+								];
+					}
+				}
+			}
+
+			if ($translate || $translate_classic) {
+				$data_new = [];
+				foreach ($translate as $t) {
+					foreach ($t['destination'] as $d) {
+						$data_new[$d['field']] = ['type' => $d['type'], 'value' => $d['value']];
+					}
+				}
+
+				if ($translate) $data_new = $this->translateAI($data_new, $translate);
+				if ($translate_classic) $data_new = $this->translateClassic($data_new, $translate_classic);
+
+
+				foreach ($data_new as $k => $v)
+					if (isset($v)) {
+						$field = _uho_fx::array_filter($schema['fields'], 'field', $k, ['first' => true]);
+
+						switch ($field['type']) {
+							case 'file':
+								//if (empty($field['settings']['filename'])) $field['settings']['filename']='{{uid}}';								
+								$filename = $this->getTwigFromHtml($field['settings']['filename'], $data) . '.' . $field['settings']['extension'];
+								$filename = $_SERVER['DOCUMENT_ROOT'] . '/' . $this->getTwigFromHtml($field['settings']['folder'], $data) . '/' . $filename;
+								$filename = str_replace('//', '/', $filename);
+								file_put_contents($filename, $v);
+
+								break;
+						}
+					}
+			}
 		}
 
 
@@ -2579,31 +2718,111 @@ class model_app_write extends model_app
 		return $result;
 	}
 
-
-
-	private function translateAI($data, $translate)
+	function text2array(string $text, $max_chunk_length = 5000)
 	{
-		$output=$this->runAI('gemini', 'Translate this JSON, keep the same JSON structure
+		$paragraphs = explode("\n", $text);
+		$chunks = [];
+		$currentChunk = '';
 
-		' . json_encode($translate));
+		foreach ($paragraphs as $paragraph) {
+			if (mb_strlen($currentChunk . "\n" . $paragraph) > $max_chunk_length) {
+				$chunks[] = trim($currentChunk);
+				$currentChunk = $paragraph;
+			} else {
+				$currentChunk .= ($currentChunk === '' ? '' : "\n") . $paragraph;
+			}
+		}
+		if ($currentChunk !== '') {
+			$chunks[] = trim($currentChunk);
+		}
+
+		return $chunks;
+	}
+
+	private function translateClassic($data, $translate, $prompt = null)
+	{
+		foreach ($translate as $v) {
+			$input = $v['source']['value'];
+			$input = $this->text2array($input, 5000);
+			$apiKey = $this->getApiKeys('google_api')['key'] ?? null;
+			if (!$apiKey) return $data;
+			$url = 'https://translation.googleapis.com/language/translate/v2?key=' . urlencode($apiKey);
+
+			foreach ($v['destination'] as $dest)
+			{
+
+				$full_text=[];
+
+				foreach ($input as $chunk)
+				{
+
+					$payload = json_encode([
+						'q'      => $chunk,
+						'target' => $dest['language'],
+						'format' => 'text'
+					]);
+
+					$response = _uho_fx::fileCurl($url, [
+						'post' => true,
+						'json' => true,
+						'content-type' => 'application/json'
+					], $payload);
+
+					$response = json_decode($response, true);
+				
+					$text = $response['data']['translations'][0]['translatedText'] ?? null;
+
+					if ($text) {
+						$text = html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');						
+						$full_text[] = $text;
+					} else
+					{
+						//print_r($response); // debug output before exiting
+						//exit('no text');
+						return $data; // error
+					}
+				}
+
+				$data[$dest['field']] = implode("\n", $full_text);
+
+			}
+		}
+
+		return $data;
+	}
+
+	private function translateAI($data, $translate, $prompt = null)
+	{
+
+		if (!$prompt) {
+			$prompt = 'Translate contents of the provided JSON structure.
+
+Requirements:
+1. Maintain the exact JSON schema and key names without altering the structure.
+2. Output valid, raw JSON only.';
+		}
+
+		$full_prompt = $prompt .= '
+' . json_encode($translate);
+
+		$output = $this->runAI('gemini', $full_prompt);
 
 		if (!$output['result']) return $data;
 
-		$response=preg_replace('/^\s*```(?:json)?\s*|\s*```\s*$/i', '', $output['response']);
+		$response = preg_replace('/^\s*```(?:json)?\s*|\s*```\s*$/i', '', $output['response']);
 
 		$output = json_decode($response, true);
+
 		if ($output)
-		foreach ($output as $fields)
-			foreach ($fields['destination'] as $field)
-				if ($field['value'] && isset($data[$field['field']]))
-				{
-					$val=$field['value'];
-					if ($field['type']=='table' && is_string($val))
-					{
-						$val=json_decode($val, true);
+			foreach ($output as $fields)
+				foreach ($fields['destination'] as $field)
+					if ($field['value'] && isset($data[$field['field']])) {
+						$val = $field['value'];
+						if ($field['type'] == 'table' && is_string($val)) {
+							$val = json_decode($val, true);
+						}
+						$data[$field['field']] = $val;
 					}
-					$data[$field['field']] = $val;
-				}
 
 		return $data;
 	}

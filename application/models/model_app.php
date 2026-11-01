@@ -780,9 +780,14 @@ class model_app extends _uho_model
 
             foreach ($schema['fields'] as $k => $v) {
                 if ($v['field'] && strpos($v['field'], ':lang'))
-                    foreach ($schema['cms']['langs'] as $k2 => $v2) {
+                    foreach ($schema['cms']['langs'] as $k2 => $v2)
+                    {
+                        $org_v=$v;
                         $v['field'] = explode(':lang', $schema['fields'][$k]['field'])[0] . $v2['lang_add'];
                         $v['settings']['lang'] = $v2['lang'];
+                        foreach ($v['settings'] as $kk=>$vv)
+                            if (is_string($vv))
+                                $v['settings'][$kk] = str_replace(':lang', $v2['lang'], $vv);
                         $v['cms_field'] = 'e_' . $v['field'];
                         $v['cms']['hidden'] = (!$v2['active']);
                         if ($k2 > 0 && $v['tab'])
@@ -794,6 +799,7 @@ class model_app extends _uho_model
                         }
                         if ($k2 > 0 && isset($v['header'])) unset($v['header']);
                         $f[] = $v;
+                        $v=$org_v;
                     }
                 else {
                     $v['cms_field'] = 'e_' . $v['field'];
@@ -2419,6 +2425,7 @@ class model_app extends _uho_model
     {
 
         $schema = $this->getSchema($model, true, $params);
+        
         $schema = $this->getSchemaDepreceated($schema);
 
         // on_create defaults
@@ -3684,7 +3691,7 @@ class model_app extends _uho_model
 
         switch ($type) {
             case "gemini":
-                $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' . $token;
+                $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' . $token;
                 $data = [
                     'contents' => [
                         [

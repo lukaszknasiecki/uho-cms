@@ -760,9 +760,11 @@ Useful if you want to visually attach plugin to some field and hide top plugin b
 ```json
 {
     "type": "plugin",
+    "cms":{
     "plugin": "convert",        // plugin name, must match .plugin from buttons_edit
     "plugin_nr": 1,             // if there is more than 1 plugin of this type, choose which one to use
     "page": "items"             // plugin name, if it's of page type, must match .page from buttons_edit
+    }
 }
 ```
 
