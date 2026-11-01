@@ -787,7 +787,7 @@ class model_app extends _uho_model
                         $v['settings']['lang'] = $v2['lang'];
                         foreach ($v['settings'] as $kk=>$vv)
                             if (is_string($vv))
-                                $v['settings'][$kk] = str_replace(':lang', $v2['lang'], $vv);
+                                $v['settings'][$kk] = str_replace(':lang', strtoupper($v2['lang']), $vv);
                         $v['cms_field'] = 'e_' . $v['field'];
                         $v['cms']['hidden'] = (!$v2['active']);
                         if ($k2 > 0 && $v['tab'])
