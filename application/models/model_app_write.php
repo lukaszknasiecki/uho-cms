@@ -118,13 +118,33 @@ class model_app_write extends model_app
 			$update_fields = explode(',', _uho_fx::getGet('update_fields'));
 		}
 
+		$update_fields_even_empty = [];
+
+
 		if (!is_array($update_fields)) {
 			$update_fields = [];
 		} elseif (!empty($update_fields)) {
+			$model_schema = $this->getSchema($model, true, ['nested' => $modelParams]);
+			// Expand to language fields like label:lang
+			foreach ($update_fields as $k => $v)
+				if (str_ends_with($v, ':lang')) {
+					foreach ($model_schema['cms']['langs'] as $lang) {
+						$vv = str_replace(':lang', $lang['lang_add'], $v);
+						$update_fields[] = $vv;
+						$update_fields_even_empty[] = $vv;
+					}
+					unset($update_fields[$k]);
+				}
+
+			$update_fields = array_values($update_fields);
+
+
 			// Pre-fill data for auto-fields
 			$existing = $this->apporm->get($model, ['id' => $id], true, null, null, ['additionalParams' => $modelParams]);
 			$data = array_merge($existing, $data);
 		}
+
+
 
 		// Perform update
 		$result = $this->updateRecord(
@@ -133,7 +153,8 @@ class model_app_write extends model_app
 			$data,
 			$modelParams,
 			$update_payload_only,
-			$update_fields
+			$update_fields,
+			$update_fields_even_empty
 		);
 
 		// Clear cache and return result
@@ -153,7 +174,7 @@ class model_app_write extends model_app
 	 * @return array
 	 */
 
-	private function updateRecord($model, $id, $data, $params, $update_payload_only, $update_fields)
+	private function updateRecord($model, $id, $data, $params, $update_payload_only, $update_fields, $update_fields_even_empty = [])
 	{
 
 		$page_with_params = $model;
@@ -198,7 +219,6 @@ class model_app_write extends model_app
 		$data_deep = $this->apporm->updateRecordSources($schema, $data);
 
 		$old_value = $this->apporm->get($schema, ['id' => $id], true);
-		$update_fields_even_empty = [];
 
 		// $update_fields --> add UID if image exists
 		if ($update_fields)
@@ -353,6 +373,10 @@ class model_app_write extends model_app
 				}
 			}
 
+
+
+
+		// payload - remove unwanted fields
 		foreach ($schema['fields'] as $k => $v)
 			if (
 				($v['write'] === false) ||
@@ -447,6 +471,8 @@ class model_app_write extends model_app
 
 				case "image":
 
+					$data_id = $data;
+					$data_id['id'] = $id;
 					$filename = $data[$v['field']];
 					if ($filename && !empty($v['settings']['filename_field'])) {
 						$data[$v['settings']['filename_field']] = $filename;
@@ -468,7 +494,7 @@ class model_app_write extends model_app
 
 					// remove
 					if ($data[$v['field'] . '_remove'] == 'on')
-						$r = $this->imageRemove($v, $data, true, $backup_record_data);
+						$r = $this->imageRemove($v, $data_id, true, $backup_record_data);
 
 					// normalize original
 					if ($data[$v['field'] . '_normalize'] == 'on') {
@@ -876,8 +902,7 @@ class model_app_write extends model_app
 
 		foreach ($schema['fields'] as $k => $v)
 
-			if (!empty($v['cms']['translate']) && !empty($data[$v['field']]))
-			{
+			if (!empty($v['cms']['translate']) && !empty($data[$v['field']])) {
 
 				$f = explode('_', $v['field']);
 				$lang = array_pop($f);
@@ -887,45 +912,53 @@ class model_app_write extends model_app
 				/*
 				** determine destination fields for translation
 				*/
+
 				foreach ($dest_langs as $dl) {
+
 					$find = _uho_fx::array_filter($schema['fields'], 'field', $f . '_' . strtoupper($dl), ['first' => true]);
-					if ($find)
-					{
-						switch ($find['type'])
-						{
+					if ($find) {
+
+						switch ($find['type']) {
+							case 'blocks':
+								$val = $data[$find['field']];								
+								$empty = empty($val);
+								break;
 							case 'table':
-								$val=$data[$find['field']];
-								if (isset($find['settings']['data']))
-								{
-									foreach ($find['settings']['data'] as $kr=> $row)
-									{
-										foreach ($row as $kc=> $cell)
-										if (!empty($cell))
-										{
-											unset($val[$kr][$kc]);
-										}
+								$val = $data[$find['field']];
+								if (isset($find['settings']['data'])) {
+									foreach ($find['settings']['data'] as $kr => $row) {
+										foreach ($row as $kc => $cell)
+											if (!empty($cell)) {
+												unset($val[$kr][$kc]);
+											}
 										if (empty($val[$kr])) unset($val[$kr]);
 									}
 								}
-								$empty=true;
+								$empty = true;
 								foreach ($val as $row)
 									foreach ($row as $cell)
-										if (!empty($cell)) $empty=false;
+										if (!empty($cell)) $empty = false;
 								break;
 							default:
-								$empty=empty($data[$find['field']]);
+								$empty = empty($data[$find['field']]);
 						}
-						if($empty) {
+						if ($empty) {
 							$dest[] = ['language' => $dl, 'field' => $find['field'], 'type' => $v['type'], 'value' => null];
 						}
 					}
 				}
 
+
 				if ($dest && $lang == strtoupper($source_lang)) {
-					
+
+
 					switch ($v['type']) {
 						case 'table':
 							$val = json_encode($data[$v['field']]);
+							break;
+						case 'blocks':
+							//$val = json_encode($data[$v['field']]);
+							$val = ($data[$v['field']]);
 							break;
 						case 'file':
 							$val = null;
@@ -945,7 +978,7 @@ class model_app_write extends model_app
 
 
 		if ($translate) {
-			
+
 			$data = $this->translateAI($data, $translate);
 		}
 
@@ -1341,8 +1374,9 @@ class model_app_write extends model_app
 	 */
 
 	private function imageRemove($field, $data, $backup = false, $record = false)
-	{
-		$dest = $this->updateImageDest($field, $data);
+	{		
+		$dest = $this->updateImageDest($field, $data,'', isset($this->s3));
+
 		$webp = @$field['settings']['webp'];
 		foreach ($dest['images'] as $k => $v) {
 			if ($k == 0 && $backup) $this->backup_media_add($v['destination'], $record);
@@ -1422,7 +1456,7 @@ class model_app_write extends model_app
 	 */
 
 	private function unlink($filename)
-	{
+	{		
 		if ($this->s3) return $this->s3->unlink($filename);
 		else return @unlink($filename);
 	}
@@ -2748,13 +2782,11 @@ class model_app_write extends model_app
 			if (!$apiKey) return $data;
 			$url = 'https://translation.googleapis.com/language/translate/v2?key=' . urlencode($apiKey);
 
-			foreach ($v['destination'] as $dest)
-			{
+			foreach ($v['destination'] as $dest) {
 
-				$full_text=[];
+				$full_text = [];
 
-				foreach ($input as $chunk)
-				{
+				foreach ($input as $chunk) {
 
 					$payload = json_encode([
 						'q'      => $chunk,
@@ -2769,14 +2801,13 @@ class model_app_write extends model_app
 					], $payload);
 
 					$response = json_decode($response, true);
-				
+
 					$text = $response['data']['translations'][0]['translatedText'] ?? null;
 
 					if ($text) {
-						$text = html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');						
+						$text = html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 						$full_text[] = $text;
-					} else
-					{
+					} else {
 						//print_r($response); // debug output before exiting
 						//exit('no text');
 						return $data; // error
@@ -2784,7 +2815,6 @@ class model_app_write extends model_app
 				}
 
 				$data[$dest['field']] = implode("\n", $full_text);
-
 			}
 		}
 
@@ -2815,14 +2845,18 @@ Requirements:
 
 		if ($output)
 			foreach ($output as $fields)
-				foreach ($fields['destination'] as $field)
-					if ($field['value'] && isset($data[$field['field']])) {
+				foreach ($fields['destination'] as $field) {
+					$f = $field['field'];
+					if ($field['value']) //&& array_key_exists($f, $data))
+					{
 						$val = $field['value'];
-						if ($field['type'] == 'table' && is_string($val)) {
+						if (in_array($field['type'], ['table','blocks']) && is_string($val)) {
 							$val = json_decode($val, true);
 						}
-						$data[$field['field']] = $val;
+						$data[$f] = $val;
+						//echo ($field['field'] . '=' . $val . "\n");
 					}
+				};
 
 		return $data;
 	}

@@ -28,7 +28,7 @@ Apps.Edit = function ($, window) {
 
     $('.serdelia-edit-field').unbind('change').bind('change', changeField);
     $('.serdelia-edit-field').unbind('keyup').bind('keyup', changeField);
-    
+
     $('.serdelia-edit-toggle-field').unbind('change').bind('change', changeToggleField);
     $('.serdelia-edit-show-on-demand').unbind('click').bind('click', showOnDemand);
     $('.serdelia-edit-cancel').unbind('click').bind('click', cancel);
@@ -361,7 +361,7 @@ Apps.Edit = function ($, window) {
             var errorJson = JSON.parse(errorMessage);
             if (errorJson && errorJson.error) errorMessage = errorJson.error;
             if (errorJson && errorJson.login === true) showLogin = true;
-          } catch (e) {}
+          } catch (e) { }
 
           $('.serdelia-modal-info-footer').toggle(showLogin);
           $('.serdelia-modal-info-close').toggle(!showLogin);
@@ -479,8 +479,7 @@ Apps.Edit = function ($, window) {
 
       var now = $(this).attr('name');
 
-      if (now)       
-      {
+      if (now) {
         var then = $("body").find("[data-select-parent='" + now + "']");
         if (then.length > 0) {
           var value = $(this).val();
@@ -636,21 +635,17 @@ Apps.Edit = function ($, window) {
       data = data[found];
 
       if (data.hide)
-        for (var i = 0; i < data.hide.length; i++)
-        {
-          if (data.hide[i].charAt(0) == '#')
-          {
-            var hide=data.hide[i].substring(1);            
+        for (var i = 0; i < data.hide.length; i++) {
+          if (data.hide[i].charAt(0) == '#') {
+            var hide = data.hide[i].substring(1);
             $('[data-tab="tab_' + hide + '"]').css('display', 'none');
           }
           else $('[data-edit-field="e_' + data.hide[i] + '"]').css('display', 'none');
         }
       if (data.show)
-        for (var i = 0; i < data.show.length; i++)
-        {
-          if (data.show[i].charAt(0) == '#')
-          {
-            var show=data.show[i].substring(1);            
+        for (var i = 0; i < data.show.length; i++) {
+          if (data.show[i].charAt(0) == '#') {
+            var show = data.show[i].substring(1);
             $('[data-tab="tab_' + show + '"]').css('display', 'flex');
           }
           else $('[data-edit-field="e_' + data.show[i] + '"]').css('display', 'flex');
@@ -704,6 +699,7 @@ Apps.Edit = function ($, window) {
       var show = $(this).data('button_show');
       $('#' + show).show();
       $('#' + show).data('wasInit', false);
+
     },
 
 
@@ -752,6 +748,7 @@ Apps.Edit = function ($, window) {
           }
 
           field.show();
+          window.scrollTo({ top: $('#' + id + '_crop').offset().top - 100, behavior: 'smooth' });
 
           if (!$(this).data('wasInit')) {
             $('.serdelia-edit-imageCrop').data('wasInit', false);
